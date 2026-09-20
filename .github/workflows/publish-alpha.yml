@@ -1,0 +1,36 @@
+name: Publish uiify alpha
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact package version to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - name: Validate release version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          node -e 'const expected = require("./package.json").version; const actual =
+          process.env.RELEASE_VERSION; if (actual !== expected) throw new Error(`version mismatch:
+          ${actual} !== ${expected}`); if (!actual.endsWith("-alpha")) throw new Error("only -alpha
+          versions may be published by this workflow");'
+      - run: npm run release:check
+      - run: npm publish --access public --tag alpha

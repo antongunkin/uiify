@@ -1,0 +1,75 @@
+/* Stepper — horizontal/vertical progress steps with tab-like triggers. */
+
+@layer components {
+  .uiify-stepper__list {
+    display: flex;
+    gap: var(--space-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .uiify-stepper__list[data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  [data-uiify-stepper] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  [data-uiify-stepper][data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  [data-uiify-stepper] [data-part="step"] {
+    position: relative;
+  }
+
+  [data-uiify-stepper] [data-uiify-stepper-input] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-uiify-stepper] [data-part="step"] > label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    color: var(--color-muted-fg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+  }
+
+  [data-uiify-stepper] [data-part="step"]:has(> input:checked) > label,
+  [data-uiify-stepper] [data-part="step"][data-complete] > label {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  [data-uiify-stepper] [data-part="step"] > input:focus-visible + label {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+
+  [data-uiify-stepper] [data-uiify-stepper-panel] {
+    margin-block-start: var(--space-lg);
+    padding: var(--space-lg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font-size: var(--text-sm);
+  }
+}

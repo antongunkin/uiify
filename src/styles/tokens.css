@@ -1,0 +1,9 @@
+/*
+ * @gunkin/uiify/styles/tokens — token-only entry. Primitive + semantic tokens, including
+ * the built-in themes. Import this if you want the design tokens (and theming) but
+ * not the component skins or base layer.
+ */
+@layer reset, tokens, base, components, utilities;
+
+@import url("./tokens/primitives.css");
+@import url("./tokens/semantic.css");

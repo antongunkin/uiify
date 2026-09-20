@@ -1,0 +1,69 @@
+@layer components {
+  nav[aria-label="Pagination"] ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  [data-uiify-pagination] ol,
+  .uiify-pagination ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  [data-uiify-pagination] a,
+  [data-uiify-pagination] span,
+  .uiify-pagination a,
+  .uiify-pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2rem;
+    block-size: 2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    text-decoration: none;
+  }
+
+  [data-uiify-pagination] a,
+  .uiify-pagination a {
+    cursor: pointer;
+  }
+
+  nav[aria-label="Pagination"] button,
+  nav[aria-label="Pagination"] a,
+  nav[aria-label="Pagination"] span {
+    min-inline-size: 2rem;
+    block-size: 2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+    cursor: pointer;
+  }
+
+  [data-uiify-pagination] a[data-selected],
+  .uiify-pagination a[data-selected],
+  nav[aria-label="Pagination"] button[data-selected] {
+    background: var(--color-accent);
+    color: var(--color-accent-fg);
+    border-color: transparent;
+  }
+
+  nav[aria-label="Pagination"] button:disabled,
+  [data-uiify-pagination] span[aria-disabled="true"],
+  .uiify-pagination span[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

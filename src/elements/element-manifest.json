@@ -1,0 +1,60 @@
+{
+  "$comment": "Source of truth for @gunkin/uiify/elements. Drives architecture tests, size budgets, fixtures and documentation.",
+  "elements": {
+    "invoker": {
+      "native": "command/commandfor attributes",
+      "parts": ["Invoker"],
+      "sizeTarget": "0.3 kB",
+      "fixture": "element-invoker",
+      "docs": "/elements/invoker",
+      "consumers": ["dialog"],
+      "cssRules": []
+    },
+    "dialog": {
+      "native": "dialog + command=show-modal",
+      "parts": ["Dialog.Trigger", "Dialog.Content", "Dialog.Close"],
+      "sizeTarget": "0.5 kB",
+      "fixture": "element-dialog",
+      "docs": "/elements/dialog",
+      "consumers": ["modal", "alert-modal", "drawer"],
+      "cssRules": ["dialog:modal { overscroll-behavior: contain; }"]
+    },
+    "popover": {
+      "native": "[popover] + popovertarget",
+      "parts": ["Popover.Trigger", "Popover.Surface", "Popover.Close"],
+      "sizeTarget": "0.5 kB",
+      "fixture": "element-popover",
+      "docs": "/elements/popover",
+      "consumers": ["popup"],
+      "cssRules": [
+        "[popover]:not(:popover-open) { display: none; }",
+        "[popover] { transition: opacity, scale, display, overlay; }"
+      ]
+    },
+    "details": {
+      "native": "details/summary",
+      "parts": ["Details.Root", "Details.Summary", "Details.Content"],
+      "sizeTarget": "0.4 kB",
+      "fixture": "element-details",
+      "docs": "/elements/details",
+      "consumers": ["accordion", "collapsible", "breadcrumb"],
+      "cssRules": []
+    },
+    "choice": {
+      "native": "input[type=radio|checkbox] + label",
+      "parts": ["Choice.Group", "Choice.Item"],
+      "sizeTarget": "0.8 kB",
+      "fixture": "element-choice",
+      "docs": "/elements/choice",
+      "consumers": [
+        "radio-group",
+        "tabs",
+        "toggle-group",
+        "segmented-control",
+        "stepper",
+        "rating"
+      ],
+      "cssRules": []
+    }
+  }
+}

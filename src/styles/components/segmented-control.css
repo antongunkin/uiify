@@ -1,0 +1,78 @@
+/* Segmented control — pill toggle group with sliding indicator. */
+
+@layer components {
+  :where(.uiify-segmented-control, [data-uiify-segmented-control]) {
+    position: relative;
+    display: inline-flex;
+    padding: var(--space-xs);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-muted);
+  }
+
+  [data-uiify-segmented-control][data-full-width] {
+    inline-size: 100%;
+  }
+
+  [data-uiify-segmented-control][data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  [data-uiify-segmented-control] [data-part="item"] {
+    position: relative;
+  }
+
+  [data-uiify-segmented-control][data-full-width] [data-part="item"] {
+    flex: 1 1 0;
+  }
+
+  [data-uiify-segmented-control] [data-part="item"] > input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-uiify-segmented-control] [data-part="item"] > label {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 4rem;
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-md);
+    border-radius: calc(var(--radius-md) - var(--space-xs));
+    color: var(--color-muted-fg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+  }
+
+  [data-uiify-segmented-control][data-full-width] [data-part="item"] > label {
+    inline-size: 100%;
+  }
+
+  [data-uiify-segmented-control] [data-part="item"] > label:hover {
+    color: var(--color-fg);
+  }
+
+  [data-uiify-segmented-control] [data-part="item"]:has(> input:checked) > label {
+    color: var(--color-fg);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-1);
+  }
+
+  [data-uiify-segmented-control] [data-part="item"]:has(> input:disabled) > label {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  [data-uiify-segmented-control] [data-part="item"] > input:focus-visible + label {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+}

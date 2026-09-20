@@ -1,0 +1,18 @@
+/* Slider — native <input type="range">. accent-color handles the filled track
+   and thumb tint with the least machinery; we only set sizing and the disabled
+   affordance. */
+
+@layer components {
+  .uiify-slider {
+    inline-size: 100%;
+    max-inline-size: 16rem;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  .uiify-slider:disabled,
+  .uiify-slider[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

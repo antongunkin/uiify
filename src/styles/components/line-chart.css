@@ -1,0 +1,388 @@
+@property --line-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --line-prev-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --line-count {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --line-scale {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@layer components {
+  [data-uiify-line-chart] {
+    --line-grid: color-mix(in srgb, currentcolor 10%, transparent);
+    --line-up: oklch(67% 0.14 166deg);
+    --line-down: oklch(64% 0.21 24deg);
+    --line-flat: light-dark(oklch(43% 0.05 165deg), oklch(72% 0.04 165deg));
+    --line-axis: light-dark(
+      color-mix(in oklch, var(--color-muted-fg) 70%, var(--color-fg)),
+      var(--color-muted-fg)
+    );
+    --line-width: 0.12rem;
+
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    min-block-size: 21rem;
+    padding: 1rem 0.75rem 0.5rem;
+    overflow: clip;
+    overscroll-behavior: none;
+    touch-action: none;
+    isolation: isolate;
+    color-scheme: inherit;
+    background: transparent;
+    color: light-dark(oklch(28% 0.04 165deg), oklch(82% 0.04 165deg));
+  }
+
+  [data-uiify-line-chart] > .line-chart__plot {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4.5rem;
+    grid-template-rows: minmax(18rem, 1fr) 1.5rem;
+    gap: 0 0.75rem;
+    min-inline-size: 0;
+    min-block-size: 18rem;
+    overscroll-behavior: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__scroll-viewport {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    min-inline-size: 0;
+    min-block-size: 18rem;
+    overflow: auto hidden;
+    overscroll-behavior: none;
+    scrollbar-width: none;
+    container-type: inline-size;
+    direction: rtl;
+  }
+
+  [data-uiify-line-chart] .line-chart__scroll-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__canvas {
+    display: grid;
+    grid-template-rows: minmax(18rem, 1fr) 1.5rem;
+    inline-size: calc(100% * var(--line-scale));
+    min-inline-size: 100%;
+    min-block-size: 100%;
+    direction: ltr;
+  }
+
+  [data-uiify-line-chart] .line-chart__viewport {
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    min-inline-size: 0;
+    min-block-size: 18rem;
+    overflow: clip;
+    overscroll-behavior: none;
+  }
+
+  [data-uiify-line-chart] > figcaption {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0.75rem;
+    inset-inline-start: 1rem;
+    color: var(--line-axis);
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  [data-uiify-line-chart] .line-chart__readout {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0.75rem;
+    inset-inline-end: 1rem;
+    display: flex;
+    gap: 0.65rem;
+    align-items: baseline;
+    color: var(--line-axis);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  [data-uiify-line-chart] .line-chart__readout-time {
+    font-weight: 650;
+  }
+
+  [data-uiify-line-chart] .line-chart__points {
+    position: absolute;
+    inset: 1rem 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-image:
+      linear-gradient(to right, var(--line-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line-grid) 1px, transparent 1px);
+    background-size:
+      var(--line-segment-slot) 100%,
+      100% 20%;
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: var(--line-prev-x, var(--line-x));
+    inline-size: var(--line-slot);
+    min-inline-size: 0;
+    min-block-size: 100%;
+    color: var(--line-flat);
+    list-style: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    background: currentcolor;
+    clip-path: polygon(
+      -1% calc(var(--line-prev-y) - var(--line-width)),
+      -1% calc(var(--line-prev-y) + var(--line-width)),
+      101% calc(var(--line-y) + var(--line-width)),
+      101% calc(var(--line-y) - var(--line-width))
+    );
+    content: "";
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li:first-child::before {
+    display: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li::after {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: var(--line-y);
+    inset-inline-start: 100%;
+    display: block;
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    border: 0;
+    border-radius: 50%;
+    background: currentcolor;
+    content: "";
+    transform: translate(-50%, -50%);
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li:first-child::after {
+    inset-inline-start: 0;
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li[data-trend="up"] {
+    color: var(--line-up);
+  }
+
+  [data-uiify-line-chart] .line-chart__points > li[data-trend="down"] {
+    color: var(--line-down);
+  }
+
+  [data-uiify-line-chart] .line-chart__point-hit {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    appearance: none;
+    background: transparent;
+    color: transparent;
+    cursor: crosshair;
+    font: inherit;
+  }
+
+  [data-uiify-line-chart][data-interactive] .line-chart__points > li[data-point-selected]::after {
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, currentcolor 24%, transparent);
+  }
+
+  [data-uiify-line-chart][data-interactive] .line-chart__point-hit:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+  }
+
+  [data-uiify-line-chart] .line-chart__crosshair {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    color: light-dark(oklch(52% 0.01 0deg), oklch(72% 0.01 0deg));
+    pointer-events: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__crosshair::before,
+  [data-uiify-line-chart] .line-chart__crosshair::after {
+    position: absolute;
+    display: block;
+    background: currentcolor;
+    content: "";
+  }
+
+  [data-uiify-line-chart] .line-chart__crosshair::before {
+    inset-block: 0;
+    inset-inline-start: var(--line-crosshair-x);
+    inline-size: 1px;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      currentcolor 0 0.4rem,
+      transparent 0.4rem 0.8rem
+    );
+    background-color: transparent;
+  }
+
+  [data-uiify-line-chart] .line-chart__crosshair::after {
+    inset-block-start: calc(var(--line-cursor-y, 50%) + 1rem);
+    inset-inline: 0;
+    block-size: 1px;
+    background-image: repeating-linear-gradient(
+      to right,
+      currentcolor 0 0.4rem,
+      transparent 0.4rem 0.8rem
+    );
+    background-color: transparent;
+  }
+
+  [data-uiify-line-chart] .line-chart__crosshair-marker {
+    position: absolute;
+    inset-block-start: calc(var(--line-cursor-y, 50%) + 1rem);
+    inset-inline-start: var(--line-crosshair-x);
+    font-size: 1rem;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  [data-uiify-line-chart] .line-chart__value-axis,
+  [data-uiify-line-chart] .line-chart__time-axis {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__value-axis {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    min-inline-size: 0;
+  }
+
+  [data-uiify-line-chart] .line-chart__value-axis > li {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: var(--line-axis-y);
+    overflow: hidden;
+    color: var(--line-axis);
+    font-size: 0.65rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    text-align: end;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translateY(-50%);
+  }
+
+  [data-uiify-line-chart] .line-chart__value-axis > li:first-child {
+    transform: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__value-axis > li:last-child {
+    transform: translateY(-100%);
+  }
+
+  [data-uiify-line-chart] .line-chart__time-viewport {
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    min-inline-size: 0;
+    overflow: clip;
+    overscroll-behavior: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__time-axis {
+    position: relative;
+    inset-block: 0;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  [data-uiify-line-chart] .line-chart__time-axis > li {
+    position: absolute;
+    inset-block-start: 0.35rem;
+    inset-inline-start: var(--line-axis-x);
+    color: var(--line-axis);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-line-chart] .line-chart__time-axis > li:first-child {
+    transform: none;
+  }
+
+  [data-uiify-line-chart] .line-chart__time-axis > li:last-child {
+    transform: translateX(-100%);
+  }
+
+  [data-uiify-line-chart] .line-chart__time-axis > li:only-child {
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-line-chart] .line-chart__time-axis > li.line-chart__crosshair-time {
+    inset-inline-start: var(--line-crosshair-x);
+    padding: 0.3rem 0.5rem;
+    background: var(--line-axis);
+    color: Canvas;
+    font-weight: 650;
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-line-chart] .line-chart__value-axis > li.line-chart__crosshair-value {
+    inset-block-start: calc(var(--line-cursor-y, 50%) + 1rem);
+    inset-inline-end: 0;
+    padding: 0.3rem 0.5rem;
+    background: var(--line-axis);
+    color: Canvas;
+    font-weight: 650;
+    transform: translateY(-50%);
+  }
+
+  [data-uiify-line-chart] > table {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-line-chart] .line-chart__points > li::after {
+      transition: scale 180ms ease;
+    }
+
+    [data-uiify-line-chart][data-interactive] .line-chart__points > li[data-point-selected]::after {
+      scale: 1.15;
+    }
+  }
+}

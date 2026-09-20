@@ -1,0 +1,91 @@
+/* Accordion — built on native <details>/<summary>. Item is the <details>,
+   trigger the <summary>, content a div. A rotating chevron tracks open state.
+   [data-part] selectors let styles apply without the consumer opting into
+   the BEM classes — both are the same rule, so they can't drift apart. */
+
+@layer components {
+  :where(.uiify-accordion, [data-uiify-accordion]) {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  [data-uiify-accordion] > [data-part="item"] {
+    border-block-end: var(--border-width) solid var(--color-border);
+  }
+
+  [data-uiify-accordion] > [data-part="item"]:last-child {
+    border-block-end: none;
+  }
+
+  [data-uiify-accordion] [data-part="trigger"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  [data-uiify-accordion] [data-part="trigger"]::-webkit-details-marker {
+    display: none;
+  }
+
+  [data-uiify-accordion] [data-part="trigger"]:hover {
+    background-color: var(--color-surface-raised);
+  }
+
+  [data-uiify-accordion] [data-part="trigger"]:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+
+  /* Chevron. */
+  [data-uiify-accordion] [data-part="trigger"]::after {
+    content: "";
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-inline-end: 2px solid var(--color-muted-fg);
+    border-block-end: 2px solid var(--color-muted-fg);
+    rotate: 45deg;
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+
+  [data-uiify-accordion] [data-part="item"][open] > [data-part="trigger"]::after {
+    rotate: 225deg;
+  }
+
+  [data-uiify-accordion] [data-part="item"][open] > [data-part="trigger"] {
+    color: var(--color-accent);
+  }
+
+  @supports (interpolate-size: allow-keywords) {
+    :root {
+      interpolate-size: allow-keywords;
+    }
+
+    [data-uiify-accordion] > [data-part="item"]::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size var(--duration-base) ease,
+        content-visibility var(--duration-base) allow-discrete;
+    }
+
+    [data-uiify-accordion] > [data-part="item"][open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  [data-uiify-accordion] [data-part="panel"] {
+    padding-block: 0 var(--space-lg);
+    padding-inline: var(--space-lg);
+    color: var(--color-muted-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+}

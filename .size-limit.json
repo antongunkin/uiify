@@ -1,0 +1,338 @@
+[
+  {
+    "name": "behavior.css",
+    "path": "dist/components/behavior.css",
+    "limit": "3 kB"
+  },
+  {
+    "name": "enhance",
+    "path": "dist/components/enhance.js",
+    "limit": "1 kB"
+  },
+  {
+    "name": "modal/client",
+    "path": "dist/components/modal/client.js",
+    "limit": "1.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "root convenience export",
+    "path": "dist/index.js",
+    "limit": "39.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "root: native modal parts only",
+    "path": "dist/index.js",
+    "limit": "1 kB",
+    "import": "{ ModalTrigger, ModalContent, ModalClose }"
+  },
+  {
+    "name": "button",
+    "path": "dist/components/button.js",
+    "limit": "0.25 kB",
+    "import": "*"
+  },
+  {
+    "name": "input",
+    "path": "dist/components/input.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "textarea",
+    "path": "dist/components/textarea.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "checkbox",
+    "path": "dist/components/checkbox.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "radio-group",
+    "path": "dist/components/radio-group.js",
+    "limit": "1 kB",
+    "import": "*"
+  },
+  {
+    "name": "switch",
+    "path": "dist/components/switch.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "toggle",
+    "path": "dist/components/toggle.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "toggle-group",
+    "path": "dist/components/toggle-group.js",
+    "limit": "1 kB",
+    "import": "*"
+  },
+  {
+    "name": "slider",
+    "path": "dist/components/slider.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "modal",
+    "path": "dist/components/modal.js",
+    "limit": "600 B",
+    "import": "*"
+  },
+  {
+    "name": "popup",
+    "path": "dist/components/popup.js",
+    "limit": "1.1 kB",
+    "import": "*"
+  },
+  {
+    "name": "tooltip",
+    "path": "dist/components/tooltip.js",
+    "limit": "2.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "dropdown-menu",
+    "path": "dist/components/dropdown-menu.js",
+    "limit": "6.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "tabs",
+    "path": "dist/components/tabs.js",
+    "limit": "1 kB",
+    "import": "*"
+  },
+  {
+    "name": "accordion",
+    "path": "dist/components/accordion.js",
+    "limit": "600 B",
+    "import": "*"
+  },
+  {
+    "name": "toast",
+    "path": "dist/components/toast.js",
+    "limit": "2.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "select",
+    "path": "dist/components/select.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "combobox",
+    "path": "dist/components/combobox.js",
+    "limit": "5.25 kB",
+    "import": "*"
+  },
+  {
+    "name": "spinner",
+    "path": "dist/components/spinner.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "skeleton",
+    "path": "dist/components/skeleton.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "collapsible",
+    "path": "dist/components/collapsible.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "breadcrumb",
+    "path": "dist/components/breadcrumb.js",
+    "limit": "1.1 kB",
+    "import": "*"
+  },
+  {
+    "name": "pagination",
+    "path": "dist/components/pagination.js",
+    "limit": "2.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "table",
+    "path": "dist/components/table.js",
+    "limit": "5 kB",
+    "import": "*"
+  },
+  {
+    "name": "alert-modal",
+    "path": "dist/components/alert-modal.js",
+    "limit": "0.75 kB",
+    "import": "*"
+  },
+  {
+    "name": "hover-card",
+    "path": "dist/components/hover-card.js",
+    "limit": "2 kB",
+    "import": "*"
+  },
+  {
+    "name": "toolbar",
+    "path": "dist/components/toolbar.js",
+    "limit": "2 kB",
+    "import": "*"
+  },
+  {
+    "name": "drawer",
+    "path": "dist/components/drawer.js",
+    "limit": "4 kB",
+    "import": "*"
+  },
+  {
+    "name": "context-menu",
+    "path": "dist/components/context-menu.js",
+    "limit": "5.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "tags-input",
+    "path": "dist/components/tags-input.js",
+    "limit": "4 kB",
+    "import": "*"
+  },
+  {
+    "name": "file-upload",
+    "path": "dist/components/file-upload.js",
+    "limit": "2.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "color-picker",
+    "path": "dist/components/color-picker.js",
+    "limit": "3.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "stepper",
+    "path": "dist/components/stepper.js",
+    "limit": "1.05 kB",
+    "import": "*"
+  },
+  {
+    "name": "carousel",
+    "path": "dist/components/carousel.js",
+    "limit": "4 kB",
+    "import": "*"
+  },
+  {
+    "name": "carousel/client",
+    "path": "dist/components/carousel/client.js",
+    "limit": "7 kB",
+    "gzip": true,
+    "import": "*"
+  },
+  {
+    "name": "carousel/fade",
+    "path": "dist/components/carousel/fade.js",
+    "limit": "6 kB",
+    "gzip": true,
+    "import": "*"
+  },
+  {
+    "name": "number-field",
+    "path": "dist/components/number-field.js",
+    "limit": "2.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "otp-input",
+    "path": "dist/components/otp-input.js",
+    "limit": "2 kB",
+    "import": "*"
+  },
+  {
+    "name": "segmented-control",
+    "path": "dist/components/segmented-control.js",
+    "limit": "1 kB",
+    "import": "*"
+  },
+  {
+    "name": "rating",
+    "path": "dist/components/rating.js",
+    "limit": "1.25 kB",
+    "import": "*"
+  },
+  {
+    "name": "rating/client",
+    "path": "dist/components/rating/client.js",
+    "limit": "1.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "field",
+    "path": "dist/components/field.js",
+    "limit": "0.75 kB",
+    "import": "*"
+  },
+  {
+    "name": "form",
+    "path": "dist/components/form.js",
+    "limit": "0.25 kB",
+    "import": "*"
+  },
+  {
+    "name": "header",
+    "path": "dist/components/header.js",
+    "limit": "5.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "virtual-scroll",
+    "path": "dist/components/virtual-scroll.js",
+    "limit": "4 kB",
+    "import": "*"
+  },
+  {
+    "name": "elements/invoker",
+    "path": "dist/elements/invoker.js",
+    "limit": "0.3 kB",
+    "import": "*"
+  },
+  {
+    "name": "elements/dialog",
+    "path": "dist/elements/dialog.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "elements/popover",
+    "path": "dist/elements/popover.js",
+    "limit": "0.5 kB",
+    "import": "*"
+  },
+  {
+    "name": "elements/details",
+    "path": "dist/elements/details.js",
+    "limit": "0.4 kB",
+    "import": "*"
+  },
+  {
+    "name": "elements/choice",
+    "path": "dist/elements/choice.js",
+    "limit": "0.8 kB",
+    "import": "*"
+  },
+  {
+    "name": "elements barrel",
+    "path": "dist/elements/index.js",
+    "limit": "2 kB",
+    "import": "*"
+  }
+]

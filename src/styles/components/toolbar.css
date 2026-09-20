@@ -1,0 +1,22 @@
+/* Toolbar — grouped action buttons with separators. */
+
+@layer components {
+  .uiify-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+  }
+
+  .uiify-toolbar > hr[data-orientation] {
+    flex: none;
+    align-self: stretch;
+    inline-size: var(--border-width);
+    block-size: auto;
+    margin-inline: var(--space-md);
+    background-color: var(--color-border);
+  }
+}

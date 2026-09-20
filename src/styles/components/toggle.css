@@ -1,0 +1,117 @@
+/* Toggle + native-control toggle groups. */
+
+@layer components {
+  .uiify-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2.25rem;
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-control);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .uiify-toggle:hover {
+    background-color: var(--color-surface-raised);
+  }
+
+  .uiify-toggle[data-state="on"],
+  [data-uiify-toggle]:has(> input:checked) .uiify-toggle {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+
+  .uiify-toggle:disabled,
+  .uiify-toggle[data-disabled],
+  [data-uiify-toggle]:has(> input:disabled) .uiify-toggle {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  [data-uiify-toggle] > input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-uiify-toggle] > input:focus-visible + .uiify-toggle {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+
+  [data-uiify-toggle-group] {
+    display: inline-flex;
+    gap: var(--space-xs);
+  }
+
+  [data-uiify-toggle-group][data-orientation="vertical"] {
+    flex-direction: column;
+  }
+
+  [data-uiify-toggle-group] [data-part="item"] {
+    position: relative;
+  }
+
+  [data-uiify-toggle-group] [data-part="item"] > input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    /* stylelint-disable-next-line property-no-deprecated -- fallback for older browsers */
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-uiify-toggle-group] [data-part="item"] > label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2.25rem;
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-control);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  [data-uiify-toggle-group] [data-part="item"] > label:hover {
+    background-color: var(--color-surface-raised);
+  }
+
+  [data-uiify-toggle-group] [data-part="item"]:has(> input:checked) > label {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+
+  [data-uiify-toggle-group] [data-part="item"]:has(> input:disabled) > label {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  [data-uiify-toggle-group] [data-part="item"] > input:focus-visible + label {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+}

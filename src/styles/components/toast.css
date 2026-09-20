@@ -1,0 +1,55 @@
+/* Toast — a fixed viewport stacking cards in the corner, promoted to the top
+   layer via [popover]. inset: auto overrides the UA popover default of
+   inset: 0 so the corner offsets below can apply; the top-layer stack is
+   ordered by show order, not z-index, so no manual z-index is needed. Cards
+   use [data-uiify-toast-root] (fieldset in the shell, div in the store-driven
+   root). Cards slide in when [data-state="open"]. */
+
+@layer components {
+  .uiify-toast-viewport {
+    position: fixed;
+    inset: auto;
+    inset-block-end: var(--space-lg);
+    inset-inline-end: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    inline-size: min(24rem, calc(100vw - 2 * var(--space-lg)));
+    margin: 0;
+    padding: 0;
+
+    /* Cancels the UA popover default (`border: solid` + Canvas background) —
+       the viewport is a transparent stacking container; cards carry their
+       own border and background. */
+    border: none;
+    background: none;
+    list-style: none;
+  }
+
+  .uiify-toast-viewport :where([data-uiify-toast-root]) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-popover);
+    margin: 0;
+    min-inline-size: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .uiify-toast-viewport :where([data-uiify-toast-root][data-state="open"]) {
+      animation: uiify-toast-in var(--duration-base) var(--ease-out);
+    }
+  }
+
+  @keyframes uiify-toast-in {
+    from {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@gunkin/uiify": ["src/index.ts"],
+      "@gunkin/uiify/hooks": ["src/hooks/index.ts"],
+      "@gunkin/uiify/core": ["src/core/index.ts"],
+      "@gunkin/uiify/core/*": ["src/core/*"],
+      "@gunkin/uiify/components": ["src/components/index.ts"],
+      "@gunkin/uiify/components/*": ["src/components/*"],
+      "@gunkin/uiify/elements": ["src/elements/index.ts"],
+      "@gunkin/uiify/elements/*": ["src/elements/*"]
+    }
+  },
+  "include": ["src"]
+}

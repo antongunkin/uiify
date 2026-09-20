@@ -1,0 +1,66 @@
+/* Rating — a native radio group of stars. Inputs are visually hidden;
+   flex-direction: row-reverse restores left-to-right visual order over
+   reversed DOM order. Each input+label pair sits in its own [data-part="item"]
+   wrapper (ChoiceGroup's shape), so `~` alone can't reach across pairs —
+   `:has()` promotes a checked/hovered item onto its later (= more-preferred,
+   thanks to row-reverse) sibling wrappers. This keeps the uncontrolled rating functional without
+   JavaScript. */
+
+@layer components {
+  [data-uiify-rating] {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: var(--space-xs);
+  }
+
+  [data-uiify-rating] > [data-part="item"] > input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-uiify-rating] > [data-part="item"] > label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-border-strong);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  [data-uiify-rating] > [data-part="item"]:has(> input:checked) > label,
+  [data-uiify-rating] > [data-part="item"]:has(> input:checked) ~ [data-part="item"] > label {
+    color: var(--color-accent);
+  }
+
+  [data-uiify-rating]:not([data-disabled], [data-readonly])
+    > [data-part="item"]:has(> label:hover)
+    > label,
+  [data-uiify-rating]:not([data-disabled], [data-readonly])
+    > [data-part="item"]:has(> label:hover)
+    ~ [data-part="item"]
+    > label {
+    color: var(--color-accent);
+  }
+
+  [data-uiify-rating] > [data-part="item"] > input:focus-visible ~ label {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    border-radius: var(--radius-sm);
+  }
+
+  [data-uiify-rating][data-readonly] > [data-part="item"] > label {
+    cursor: default;
+  }
+
+  [data-uiify-rating][data-disabled] > [data-part="item"] > label {
+    cursor: default;
+    opacity: 0.5;
+  }
+}

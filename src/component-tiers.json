@@ -1,0 +1,437 @@
+{
+  "$comment": "Source of truth for the RSC/CSS-first architecture and component verification. clientDefault: true means the Tier 0 server shell exists but the default entry ships the client island.",
+  "tiers": {
+    "0": {
+      "name": "RSC — zero client JavaScript",
+      "sizeTarget": "0 kB",
+      "bannedHooks": [
+        "useContext",
+        "useState",
+        "useReducer",
+        "useSyncExternalStore",
+        "useId",
+        "useRef",
+        "useEffect",
+        "useLayoutEffect",
+        "useMemo",
+        "useCallback"
+      ],
+      "noJsContract": "full",
+      "note": "State is S1 (native element) or none. Must pass the javaScriptEnabled:false suite completely."
+    },
+    "1": {
+      "name": "RSC shell + thin client island",
+      "sizeTarget": "<= 1 kB",
+      "bannedHooks": [],
+      "noJsContract": "degraded-documented",
+      "note": "Native element owns state; JS only syncs ARIA or adds a small behavior (hover intent, auto-dismiss)."
+    },
+    "2": {
+      "name": "Client component — pre-hydration SSR",
+      "sizeTarget": "n/a",
+      "bannedHooks": [],
+      "noJsContract": "pre-hydration-only",
+      "note": "Single client entry. SSR emits native-first markup (Popover API, invoker commands) where possible; keyboard, filtering, and ARIA sync require hydration."
+    }
+  },
+  "stateSources": {
+    "S1": "Native element state — browser owns it and updates the accessibility tree itself",
+    "S2": "Hidden input + :has() propagation — CSS-readable, ARIA needs a client island",
+    "none": "Stateless markup"
+  },
+  "components": {
+    "accordion": {
+      "tier": 0,
+      "state": "S1",
+      "element": "details[name]",
+      "sizeNow": "1.75 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native details/summary disclosure; name groups single-open items. Built on @gunkin/uiify/elements/details."
+    },
+    "alert-modal": {
+      "tier": 0,
+      "state": "S1",
+      "element": "dialog[role=alertdialog] + command=show-modal",
+      "sizeNow": "0.52 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native modal alertdialog via show-modal; Cancel/Action are request-close invokers. Baseline Chrome 139 / Firefox 147 / Safari 26.2; below it UIEnhance's invoker fallback runs the command after hydration."
+    },
+    "breadcrumb": {
+      "tier": 0,
+      "state": "none",
+      "element": "nav>ol",
+      "sizeNow": "5 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Ellipsis expand/collapse is a native details/summary disclosure, built on @gunkin/uiify/elements/details."
+    },
+    "button": {
+      "tier": 0,
+      "state": "none",
+      "element": "button",
+      "sizeNow": "3 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "candle-chart": {
+      "tier": 0,
+      "state": "none",
+      "element": "figure>ol>li",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Static OHLC geometry is computed during render and expressed as percentage CSS custom properties; the decorative candle glyphs have an accessible table fallback."
+    },
+    "line-chart": {
+      "tier": 0,
+      "state": "none",
+      "element": "figure>ol>li",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Static line segments are computed during render and expressed as percentage CSS custom properties; the decorative CSS line has an accessible table fallback."
+    },
+    "carousel": {
+      "tier": 0,
+      "state": "S1",
+      "element": "section > div[scroll-snap]",
+      "sizeNow": "0 kB client behavior",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Server shell: native overflow, CSS Scroll Snap, direct fragment links and finite per-slide navigation without JavaScript. Active dots and autoplay require /client; /fade adds CSS transitions. Generated controls remain a separate site experiment."
+    },
+    "checkbox": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=checkbox]",
+      "sizeNow": "4 kB",
+      "sizeTarget": "4 kB",
+      "status": "done",
+      "clientDefault": true,
+      "note": "Native checkbox + label; default entry ships controlled callbacks with use client."
+    },
+    "collapsible": {
+      "tier": 0,
+      "state": "S1",
+      "element": "details",
+      "sizeNow": "1.23 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native details/summary disclosure. Built on @gunkin/uiify/elements/details."
+    },
+    "modal": {
+      "tier": 0,
+      "state": "S1",
+      "element": "dialog + command=show-modal",
+      "sizeNow": "0.57 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "True modal via show-modal/request-close; the browser owns inertness, Escape and focus return. Controlled/initially open state lives in @gunkin/uiify/components/modal/client. Trigger/Close built on @gunkin/uiify/elements/dialog."
+    },
+    "drawer": {
+      "tier": 0,
+      "state": "S1",
+      "element": "dialog + command=show-modal",
+      "sizeNow": "8.23 kB",
+      "sizeTarget": "12 kB",
+      "status": "done",
+      "clientDefault": true,
+      "note": "DrawerPanel native shell + compound Drawer.* client API; snap-point drag on client entry."
+    },
+    "field": {
+      "tier": 0,
+      "state": "none",
+      "element": "div:has(input)",
+      "sizeNow": "3.5 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": ":user-invalid + :has() reveals the error message"
+    },
+    "form": {
+      "tier": 0,
+      "state": "none",
+      "element": "form",
+      "sizeNow": "3.5 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "input": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input",
+      "sizeNow": "3 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "pagination": {
+      "tier": 0,
+      "state": "none",
+      "element": "nav>ol>a",
+      "sizeNow": "3.5 kB",
+      "sizeTarget": "3.5 kB",
+      "status": "done",
+      "clientDefault": true
+    },
+    "popup": {
+      "tier": 0,
+      "state": "S1",
+      "element": "[popover]+popovertarget",
+      "sizeNow": "1.0 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "slice": true,
+      "note": "Native parts anchor to their invoker (implicit anchor) and carry no aria-expanded; Chromium exposes expanded through the accessibility tree, other engines are unmeasured. The legacy Popup.Root compound keeps UIEnhance for its DOM attribute. Trigger/Content/Close built on @gunkin/uiify/elements/popover."
+    },
+    "radio-group": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=radio]",
+      "sizeNow": "6 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Data-driven native radio group; browser owns selection. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+    },
+    "rating": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=radio]",
+      "sizeNow": "1 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native radio group; hover preview and persisted selection are pure CSS (:checked/:hover sibling rules), no JS. Controlled value/onValueChange lives in the separate rating/client entry. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+    },
+    "segmented-control": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=radio]",
+      "sizeNow": "1.46 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+    },
+    "select": {
+      "tier": 0,
+      "state": "S1",
+      "element": "select",
+      "sizeNow": "0.49 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native text-only select; appearance:base-select is a Chrome+Safari cosmetic enhancement and Firefox keeps the OS picker."
+    },
+    "skeleton": {
+      "tier": 0,
+      "state": "none",
+      "element": "div",
+      "sizeNow": "1.5 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "slider": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=range]",
+      "sizeNow": "3 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "spinner": {
+      "tier": 0,
+      "state": "none",
+      "element": "div",
+      "sizeNow": "2 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "switch": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=checkbox]",
+      "sizeNow": "3 kB",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "table": {
+      "tier": 0,
+      "state": "none",
+      "element": "table",
+      "sizeNow": "6 kB",
+      "sizeTarget": "6 kB",
+      "status": "done",
+      "clientDefault": true,
+      "note": "Sorting is out of scope — DOM mutation cannot be CSS."
+    },
+    "textarea": {
+      "tier": 0,
+      "state": "S1",
+      "element": "textarea",
+      "sizeNow": "3 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "field-sizing:content replaces the auto-grow JS. Baseline since Firefox 152."
+    },
+    "toggle": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=checkbox]",
+      "sizeNow": "3 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native checkbox + label toggle; browser owns pressed state."
+    },
+    "toggle-group": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=radio|checkbox]",
+      "sizeNow": "1.42 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+    },
+    "tooltip": {
+      "tier": 1,
+      "state": "S1",
+      "element": "[popover]",
+      "sizeNow": "10 kB",
+      "sizeTarget": "0.5 kB",
+      "status": "done",
+      "clientDoes": "hover/focus intent delay — interestfor + popover=hint are Chrome/Firefox only, no Safari"
+    },
+    "hover-card": {
+      "tier": 1,
+      "state": "S1",
+      "element": "[popover]",
+      "sizeNow": "3.5 kB",
+      "sizeTarget": "0.5 kB",
+      "status": "done",
+      "clientDoes": "hover intent delay"
+    },
+    "toast": {
+      "tier": 1,
+      "state": "S1",
+      "element": "[popover] + aria-live",
+      "sizeNow": "12 kB",
+      "sizeTarget": "1 kB",
+      "status": "done",
+      "clientDoes": "auto-dismiss timer, live-region announcement — CSS has no timers for logic"
+    },
+    "number-field": {
+      "tier": 1,
+      "state": "S1",
+      "element": "input[type=number]",
+      "sizeNow": "5 kB",
+      "sizeTarget": "1 kB",
+      "status": "done",
+      "clientDoes": "increment/decrement buttons"
+    },
+    "toolbar": {
+      "tier": 1,
+      "state": "none",
+      "element": "div[role=toolbar]",
+      "sizeNow": "3 kB",
+      "sizeTarget": "1 kB",
+      "status": "done",
+      "clientDoes": "roving tabindex"
+    },
+    "stepper": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=radio]",
+      "sizeNow": "1.59 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Data-driven native radio flow; validation gating is out of scope. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+    },
+    "file-upload": {
+      "tier": 1,
+      "state": "S1",
+      "element": "input[type=file]",
+      "sizeNow": "8 kB",
+      "sizeTarget": "1 kB",
+      "status": "done",
+      "clientDoes": "drag-and-drop, preview"
+    },
+    "header": {
+      "tier": 1,
+      "state": "S1",
+      "element": "header",
+      "sizeNow": "14 kB",
+      "sizeTarget": "1 kB",
+      "status": "done",
+      "clientDoes": "composite — audit against the sub-parts it composes"
+    },
+    "tabs": {
+      "tier": 0,
+      "state": "S1",
+      "element": "input[type=radio]",
+      "sizeNow": "1.45 kB",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Data-driven native radio switcher; CSS-only panels. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+    },
+    "dropdown-menu": {
+      "tier": 2,
+      "state": "S2",
+      "element": "[popover]+commandfor",
+      "sizeNow": "12 kB",
+      "sizeTarget": "2 kB",
+      "status": "done",
+      "clientDoes": "roving focus, typeahead, checkbox/radio state, submenu keyboard behavior",
+      "ariaGap": "aria-expanded stale before hydration"
+    },
+    "combobox": {
+      "tier": 2,
+      "state": "S2",
+      "element": "input+listbox",
+      "sizeNow": "14 kB",
+      "sizeTarget": "3 kB",
+      "status": "done",
+      "clientDoes": "filtering, aria-activedescendant",
+      "ariaGap": "filtering is impossible in CSS — pre-hydration shows the unfiltered list"
+    },
+    "context-menu": {
+      "tier": 2,
+      "state": "S2",
+      "element": "[popover]",
+      "sizeNow": "14 kB",
+      "sizeTarget": "3 kB",
+      "status": "done",
+      "clientDoes": "contextmenu event — no CSS hook exists at all"
+    },
+    "tags-input": {
+      "tier": 2,
+      "state": "none",
+      "element": "input",
+      "sizeNow": "10 kB",
+      "sizeTarget": "3 kB",
+      "status": "done",
+      "clientDoes": "token add/remove is DOM mutation"
+    },
+    "otp-input": {
+      "tier": 2,
+      "state": "none",
+      "element": "input",
+      "sizeNow": "3.5 kB",
+      "sizeTarget": "2 kB",
+      "status": "done",
+      "clientDoes": "auto-advance between cells"
+    },
+    "color-picker": {
+      "tier": 2,
+      "state": "S1",
+      "element": "input[type=color]",
+      "sizeNow": "16 kB",
+      "sizeTarget": "3 kB",
+      "status": "done",
+      "clientDoes": "custom picker surface; native input[type=color] is the Tier 0 fallback"
+    },
+    "virtual-scroll": {
+      "tier": 2,
+      "state": "none",
+      "element": "div[overflow]",
+      "sizeNow": "n/a",
+      "sizeTarget": "3 kB",
+      "status": "done",
+      "clientDoes": "windowed rendering for long fixed-height lists"
+    }
+  }
+}

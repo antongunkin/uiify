@@ -1,0 +1,143 @@
+{
+  "name": "@gunkin/uiify",
+  "version": "0.0.1-alpha",
+  "description": "Native-first, accessible React 19 components that work before hydration.",
+  "keywords": [
+    "accessibility",
+    "components",
+    "headless-ui",
+    "native-html",
+    "react",
+    "server-components"
+  ],
+  "homepage": "https://uiify.gunkin.dev/",
+  "bugs": {
+    "url": "https://github.com/antongunkin/uiify/issues"
+  },
+  "license": "MIT",
+  "author": "Anton Gunkin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antongunkin/uiify.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "core/*": [
+        "dist/core/*"
+      ],
+      "hooks": [
+        "dist/hooks/index.d.ts"
+      ],
+      "hooks/*": [
+        "dist/hooks/*"
+      ],
+      "elements": [
+        "dist/elements/index.d.ts"
+      ],
+      "elements/*": [
+        "dist/elements/*"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./core/*": {
+      "types": "./dist/core/*.d.ts",
+      "import": "./dist/core/*.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./components/behavior.css": "./dist/components/behavior.css",
+    "./elements": {
+      "types": "./dist/elements/index.d.ts",
+      "import": "./dist/elements/index.js"
+    },
+    "./elements/*": {
+      "types": "./dist/elements/*.d.ts",
+      "import": "./dist/elements/*.js"
+    },
+    "./elements/behavior.css": "./dist/components/behavior.css",
+    "./styles": "./dist/styles/index.css",
+    "./styles/tokens": "./dist/styles/tokens.css",
+    "./styles/tailwind": "./dist/styles/tailwind.css",
+    "./styles/reset": "./dist/styles/reset.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "alpha"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "size": "size-limit",
+    "format": "oxfmt src scripts tsup.config.ts vitest.config.ts vitest.setup.ts package.json tsconfig.json tsconfig.build.json .size-limit.json README.md .github",
+    "format:check": "npm run format -- --check",
+    "lint": "oxlint --config .oxlintrc.json src scripts",
+    "stylelint": "stylelint \"src/**/*.css\"",
+    "check:layout-reads": "node scripts/check-banned-layout-reads.mjs",
+    "check:package": "publint . && attw --pack . --profile esm-only --exclude-entrypoints ./components/behavior.css ./elements/behavior.css ./styles ./styles/tokens ./styles/tailwind ./styles/reset",
+    "verify:tarball": "node scripts/verify-tarball.mjs",
+    "check": "npm run format:check && npm run lint && npm run stylelint && npm run typecheck && npm run build && npm test && npm run check:layout-reads && npm run check:package && npm run size",
+    "release:check": "npm run check && npm run verify:tarball",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run release:check"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.3",
+    "@ladle/react": "^5.1.1",
+    "@size-limit/preset-small-lib": "^12.1.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "browserslist": "^4.28.9",
+    "jsdom": "^29.1.1",
+    "lightningcss": "^1.32.0",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0",
+    "publint": "^0.3.21",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "size-limit": "^12.1.0",
+    "stylelint": "^17.14.1",
+    "stylelint-config-standard": "^40.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.8"
+  },
+  "peerDependencies": {
+    "react": ">=19.3.0",
+    "react-dom": ">=19.3.0"
+  },
+  "packageManager": "npm@11.7.0"
+}

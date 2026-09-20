@@ -1,0 +1,14 @@
+/*
+ * @gunkin/uiify/styles — the optional design system entry.
+ *
+ * Tokens + base layer + all component skins. Does NOT include
+ * the reset: import "@gunkin/uiify/styles/reset" separately if you want ours, or bring
+ * your own. The layer order is declared up front so precedence is stable no
+ * matter which entries a consumer loads, in what order.
+ */
+@layer reset, tokens, base, demo, components, utilities, theme;
+
+@import url("./tokens/primitives.css");
+@import url("./tokens/semantic.css");
+@import url("./base.css");
+@import url("./components/index.css");

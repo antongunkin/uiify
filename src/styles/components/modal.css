@@ -1,0 +1,63 @@
+/* Modal — native <dialog>. Entry animation uses @starting-style so the panel
+   and ::backdrop fade/scale in without JS. Compositor-only properties; gated by
+   prefers-reduced-motion. Class names stay `.uiify-dialog*` (the CSS class API
+   is unchanged by the component rename — only the file and documentation slug moved). */
+
+@layer components {
+  .uiify-dialog {
+    margin: auto;
+    inline-size: min(28rem, calc(100vw - 2 * var(--space-lg)));
+    padding: var(--space-xl);
+    border: var(--border-width) solid var(--color-border);
+
+    /* One-off: the modal is the highest-elevation surface in the 2a/2b
+       handoff (uiify Components Kit.dc.html), rounder than the --radius-lg
+       card scale (12px) that every other bordered container uses. */
+    border-radius: 14px;
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-modal);
+  }
+
+  .uiify-dialog::backdrop {
+    background-color: rgb(0 0 0 / 45%);
+  }
+
+  .uiify-dialog__title {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    line-height: 1.3;
+  }
+
+  .uiify-dialog__description {
+    margin-block: var(--space-sm) var(--space-lg);
+    color: var(--color-muted-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .uiify-dialog[open] {
+      animation: uiify-dialog-in var(--duration-base) var(--ease-out);
+    }
+
+    .uiify-dialog[open]::backdrop {
+      animation: uiify-fade-in var(--duration-base) var(--ease-out);
+    }
+  }
+
+  @keyframes uiify-dialog-in {
+    from {
+      opacity: 0;
+      translate: 0 0.5rem;
+      scale: 0.97;
+    }
+  }
+
+  @keyframes uiify-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+@layer components {
+  nav[aria-label="Breadcrumb"] ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav[aria-label="Breadcrumb"] li {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  nav[aria-label="Breadcrumb"] a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  nav[aria-label="Breadcrumb"] a:hover {
+    text-decoration: underline;
+  }
+
+  nav[aria-label="Breadcrumb"] [aria-hidden="true"] {
+    color: var(--color-muted-fg);
+  }
+
+  nav[aria-label="Breadcrumb"] [data-current] {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+}

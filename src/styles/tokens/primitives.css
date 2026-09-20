@@ -1,0 +1,91 @@
+/*
+ * Primitive tokens — layer 1 of the 3-layer model.
+ *
+ * Raw, theme-independent values: the palette (OKLCH), spacing, radii,
+ * typography, shadows, motion. Semantic tokens (layer 2) alias these; nothing
+ * in a component skin should reference a primitive directly.
+ */
+
+@layer tokens {
+  :root {
+    /* Neutral ramp (perceptually even lightness steps, hue 0 chroma 0). */
+    --gray-0: oklch(100% 0 0deg);
+    --gray-1: oklch(99% 0 0deg);
+    --gray-2: oklch(97% 0 0deg);
+    --gray-3: oklch(94% 0 0deg);
+    --gray-4: oklch(90% 0 0deg);
+    --gray-5: oklch(83% 0 0deg);
+    --gray-6: oklch(70% 0 0deg);
+    --gray-7: oklch(55% 0 0deg);
+    --gray-8: oklch(45% 0 0deg);
+    --gray-9: oklch(35% 0 0deg);
+    --gray-10: oklch(27% 0 0deg);
+    --gray-11: oklch(21% 0 0deg);
+    --gray-12: oklch(15% 0 0deg);
+
+    /* Accent (blue). */
+    --blue-4: oklch(80% 0.1 255deg);
+    --blue-5: oklch(68% 0.16 255deg);
+    --blue-6: oklch(55% 0.2 255deg);
+    --blue-7: oklch(48% 0.21 255deg);
+
+    /* Danger (red). */
+    --red-5: oklch(68% 0.18 25deg);
+    --red-6: oklch(58% 0.22 25deg);
+    --red-7: oklch(50% 0.22 25deg);
+
+    /* Success (green) — used by a couple of demo states. */
+    --green-6: oklch(62% 0.17 150deg);
+
+    /* Spacing scale (rem). */
+    --size-1: 0.25rem;
+    --size-2: 0.5rem;
+    --size-3: 0.75rem;
+    --size-4: 1rem;
+    --size-5: 1.5rem;
+    --size-6: 2rem;
+    --size-7: 3rem;
+    --size-8: 4rem;
+
+    /* Radii — 2a/2b handoff scale (design_handoff_uiify_redesign/uiify Components Kit.dc.html):
+       small (menu items/tags) 7px, control (36-38px buttons/inputs) 9px,
+       popover/floating panels 10px, cards/containers 12px, full = pill. */
+    --radius-1: 7px;
+    --radius-2: 9px;
+    --radius-3: 10px;
+    --radius-4: 12px;
+    --radius-full: 9999px;
+
+    /* Typography. */
+    --font-sans: system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", monospace;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 2rem;
+    --leading-tight: 1.2;
+    --leading-normal: 1.5;
+    --weight-normal: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+
+    /* Elevation. Plain sRGB alpha — shadows read better than OKLCH here.
+       shadow-2/3 match the 2a/2b handoff's popover/modal elevation exactly. */
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 8%);
+    --shadow-2: 0 12px 32px rgb(20 22 26 / 14%);
+    --shadow-3: 0 24px 60px rgb(20 22 26 / 20%);
+
+    /* Borders / focus. */
+    --border-width: 1px;
+    --ring-width: 3px;
+    --ring-offset: 2px;
+
+    /* Motion. */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration-fast: 120ms;
+    --duration-base: 180ms;
+  }
+}

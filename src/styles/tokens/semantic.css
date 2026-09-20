@@ -1,0 +1,83 @@
+/*
+ * Semantic tokens — layer 2 of the 3-layer model.
+ *
+ * Purpose-driven aliases that component skins consume (`--color-fg`,
+ * `--color-accent`, `--radius-md`, …). Structural aliases (spacing, radii,
+ * typography, motion) live here once and never change per theme. Color
+ * semantics use light-dark() so the element's color-scheme selects the palette.
+ * The built-in data-theme selectors live here too, keeping the published token
+ * entry self-contained.
+ */
+
+@layer tokens {
+  :root {
+    color-scheme: light;
+
+    /* Surfaces & text. */
+    --color-bg: light-dark(oklch(96.1% 0.007 88.6deg), oklch(17.8% 0.006 271deg));
+    --color-surface: light-dark(var(--gray-0), oklch(21.7% 0.008 264.4deg));
+    --color-surface-raised: light-dark(oklch(98.5% 0.003 84.6deg), oklch(19.6% 0.006 271.1deg));
+    --color-surface-muted: light-dark(var(--gray-3), oklch(26.4% 0.01 260.7deg));
+    --color-fg: light-dark(oklch(20% 0.009 264.4deg), oklch(95.2% 0.004 91.4deg));
+    --color-muted-fg: light-dark(oklch(48.5% 0.012 267.3deg), oklch(64.863% 0.0101 258.447deg));
+    --color-border: light-dark(oklch(90.4% 0.013 86.8deg), oklch(30% 0.012 258.4deg));
+    --color-border-strong: light-dark(oklch(87.1% 0.013 86.8deg), oklch(36.6% 0.015 259.8deg));
+
+    /* Accent. The accent is the brand seed: override --color-accent (with any
+       color — color-mix accepts hex/rgb/oklch) and the derived states below
+       re-tint automatically. --color-accent-fg (on-accent text) stays explicit
+       because accessible contrast can't be reliably derived in pure CSS. */
+    --color-accent: light-dark(oklch(48.6% 0.272 267.3deg), oklch(68.1% 0.169 275deg));
+    --color-accent-fg: light-dark(var(--gray-0), oklch(17.8% 0.006 271deg));
+    --color-accent-hover: light-dark(
+      color-mix(in oklch, var(--color-accent), black 12%),
+      color-mix(in oklch, var(--color-accent), white 12%)
+    );
+    --color-accent-active: light-dark(
+      color-mix(in oklch, var(--color-accent), black 20%),
+      color-mix(in oklch, var(--color-accent), white 20%)
+    );
+    --color-accent-subtle: color-mix(in oklch, var(--color-accent) 12%, transparent);
+    --color-warm: oklch(69.5% 0.15 39.1deg);
+
+    /* Danger. */
+    --color-danger: light-dark(var(--red-7), var(--red-5));
+    --color-danger-fg: light-dark(var(--gray-0), oklch(17.8% 0.006 271deg));
+    --color-danger-hover: color-mix(in oklch, var(--color-danger), black 12%);
+
+    /* Focus ring: an opaque outline color for callers that want one, and the
+       translucent flush glow (12-28% alpha) the shared base.css ring uses by
+       default. */
+    --color-ring: light-dark(var(--blue-7), oklch(68.1% 0.169 275deg));
+    --color-ring-shadow: light-dark(
+      color-mix(in oklch, var(--color-accent) 14%, transparent),
+      color-mix(in oklch, var(--color-accent) 24%, transparent)
+    );
+
+    /* Structural aliases (theme-independent). */
+    --radius-sm: var(--radius-1);
+    --radius-md: var(--radius-3);
+    --radius-lg: var(--radius-4);
+    --radius-pill: var(--radius-full);
+    --radius-control: var(--radius-2);
+    --space-xs: var(--size-1);
+    --space-sm: var(--size-2);
+    --space-md: var(--size-3);
+    --space-lg: var(--size-4);
+    --space-xl: var(--size-5);
+    --shadow-popover: var(--shadow-2);
+    --shadow-modal: var(--shadow-3);
+    --transition-colors:
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  [data-theme="basic-light"] {
+    color-scheme: light;
+  }
+
+  [data-theme="basic-dark"] {
+    color-scheme: dark;
+  }
+}

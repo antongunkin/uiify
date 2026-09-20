@@ -1,0 +1,86 @@
+/*
+ * @gunkin/uiify/styles/reset — minimal, modern, opt-in reset.
+ *
+ * Clean-room, independently written (patterns informed by modern-normalize and
+ * Andy Bell's modern reset). Targets Chromium 129+, so no legacy prefixes.
+ * Wrapped in `@layer reset` so design tokens and component skins always win,
+ * and so a consumer's own reset can be layered above or below it.
+ *
+ * This file is intentionally separate from the design system: import it only
+ * if you want our reset. Bring your own otherwise.
+ */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html {
+    text-size-adjust: 100%;
+    tab-size: 4;
+    line-height: 1.5;
+  }
+
+  body {
+    min-block-size: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Media defaults to block + never overflows its container. */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* Forms inherit typography instead of using the UA's own fonts. */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+
+  /* Avoid horizontal overflow on long words; balance/pretty wrapping. */
+  p,
+  li,
+  figcaption {
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+    line-height: 1.1;
+  }
+
+  /* Honor reduced-motion at the platform level. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Anchor a target for portalled overlays / focus management consumers. */
+  #root,
+  #__next {
+    isolation: isolate;
+  }
+}

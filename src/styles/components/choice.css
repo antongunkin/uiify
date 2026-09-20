@@ -1,0 +1,143 @@
+/* Checkbox, Radio, Switch — all native <input>s styled with appearance:none.
+   State comes from :checked / :indeterminate (works uncontrolled) and the
+   [data-state] / [data-disabled] attributes (set when controlled). Thumbs and
+   checkmarks are pseudo-elements on the input itself. */
+
+@layer components {
+  :where(.uiify-checkbox > input, .uiify-radio) {
+    appearance: none;
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+    margin: 0;
+    border: var(--border-width) solid var(--color-border-strong);
+    background-color: var(--color-surface);
+    display: inline-grid;
+    place-content: center;
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .uiify-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    cursor: pointer;
+    color: var(--color-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  .uiify-checkbox > input {
+    border-radius: var(--radius-sm);
+  }
+
+  .uiify-radio {
+    border-radius: var(--radius-full);
+  }
+
+  /* Checked fill (covers controlled [data-state] and uncontrolled :checked). */
+  .uiify-checkbox > input:checked,
+  .uiify-checkbox > input[data-state="checked"] {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+  }
+
+  /* Radio checked state is a thick accent ring around a white center, not a
+     filled dot — matches the 2a/2b handoff's target/bullseye radio anatomy. */
+  .uiify-radio:checked,
+  .uiify-radio[data-state="checked"] {
+    border-width: 5px;
+    border-color: var(--color-accent);
+    background-color: var(--color-surface);
+  }
+
+  /* Checkmark. */
+  .uiify-checkbox > input::before {
+    content: "";
+    inline-size: 0.65rem;
+    block-size: 0.65rem;
+    transform: scale(0);
+    transition: transform var(--duration-fast) var(--ease-out);
+    background-color: var(--color-accent-fg);
+    clip-path: polygon(14% 44%, 0 65%, 38% 100%, 100% 22%, 84% 6%, 38% 68%);
+  }
+
+  .uiify-checkbox > input:checked::before,
+  .uiify-checkbox > input[data-state="checked"]::before {
+    transform: scale(1);
+  }
+
+  /* Indeterminate dash. */
+  .uiify-checkbox > input:indeterminate,
+  .uiify-checkbox > input[data-state="indeterminate"] {
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+  }
+
+  .uiify-checkbox > input:indeterminate::before,
+  .uiify-checkbox > input[data-state="indeterminate"]::before {
+    transform: scale(1);
+    clip-path: inset(42% 12% 42% 12%);
+  }
+
+  :where(.uiify-checkbox > input, .uiify-radio):disabled,
+  :where(.uiify-checkbox > input, .uiify-radio)[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .uiify-checkbox:has(> input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .uiify-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  /* Switch — a pill track with a sliding thumb pseudo-element. */
+  .uiify-switch {
+    appearance: none;
+    position: relative;
+    inline-size: 2.25rem;
+    block-size: 1.25rem;
+    margin: 0;
+    flex: none;
+    border: none;
+    border-radius: var(--radius-full);
+    background-color: var(--color-border-strong);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .uiify-switch::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 2px;
+    inset-inline-start: 2px;
+    inline-size: calc(1.25rem - 4px);
+    block-size: calc(1.25rem - 4px);
+    border-radius: var(--radius-full);
+    background-color: var(--gray-0);
+    box-shadow: var(--shadow-1);
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+
+  .uiify-switch:checked,
+  .uiify-switch[data-state="checked"] {
+    background-color: var(--color-accent);
+  }
+
+  .uiify-switch:checked::before,
+  .uiify-switch[data-state="checked"]::before {
+    translate: 1rem 0;
+  }
+
+  .uiify-switch:disabled,
+  .uiify-switch[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

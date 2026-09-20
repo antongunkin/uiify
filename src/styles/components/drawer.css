@@ -1,0 +1,70 @@
+/* Drawer — edge-attached dialog sheet with optional snap drag. */
+
+@layer components {
+  .uiify-drawer {
+    margin: 0;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    padding: var(--space-xl);
+    border: var(--border-width) solid var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-modal);
+  }
+
+  .uiify-drawer::backdrop {
+    background-color: rgb(0 0 0 / 45%);
+  }
+
+  .uiify-drawer[data-side="bottom"] {
+    margin-block-start: auto;
+    max-block-size: 85vh;
+    border-block-end: none;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    translate: 0 var(--uiify-drawer-transform, 0);
+  }
+
+  .uiify-drawer[data-side="top"] {
+    margin-block-end: auto;
+    max-block-size: 85vh;
+    border-block-start: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    translate: 0 var(--uiify-drawer-transform, 0);
+  }
+
+  .uiify-drawer[data-side="left"] {
+    margin-inline-end: auto;
+    max-inline-size: min(24rem, 100vw);
+    block-size: 100%;
+    max-block-size: 100%;
+    border-inline-start: none;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    translate: var(--uiify-drawer-transform, 0) 0;
+  }
+
+  .uiify-drawer[data-side="right"] {
+    margin-inline-start: auto;
+    max-inline-size: min(24rem, 100vw);
+    block-size: 100%;
+    max-block-size: 100%;
+    border-inline-end: none;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    translate: var(--uiify-drawer-transform, 0) 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .uiify-drawer[open] {
+      animation: uiify-drawer-in var(--duration-base) var(--ease-out);
+    }
+
+    .uiify-drawer[open]::backdrop {
+      animation: uiify-fade-in var(--duration-base) var(--ease-out);
+    }
+  }
+
+  @keyframes uiify-drawer-in {
+    from {
+      opacity: 0;
+    }
+  }
+}

@@ -1,0 +1,64 @@
+/* Popup & Tooltip surfaces. Both are divs carrying [data-state] and
+   [data-side]/[data-align]. Closed surfaces are hidden; open ones get a
+   directional @starting-style entry. Class names stay `.uiify-popover`/
+   `.uiify-tooltip` (the CSS class API is unchanged by the component rename — only the file and
+   documentation slug moved). */
+
+@layer components {
+  .uiify-popover {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    inline-size: max-content;
+    max-inline-size: 18rem;
+    padding: var(--space-md);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-popover);
+  }
+
+  .uiify-popover[data-state="closed"] {
+    display: none;
+  }
+
+  .uiify-tooltip {
+    display: block;
+    inline-size: max-content;
+    max-inline-size: 16rem;
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-sm);
+
+    /* Cancels the UA popover default (`border: solid`, currentColor) — this
+       surface is borderless by design. */
+    border: none;
+    border-radius: var(--radius-md);
+    background-color: var(--color-fg);
+    color: var(--color-bg);
+    font-size: var(--text-xs);
+    line-height: var(--leading-normal);
+    box-shadow: var(--shadow-popover);
+  }
+
+  :where(.uiify-tooltip)[data-state="closed"] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :where(.uiify-tooltip)[data-state="open"] {
+      animation: uiify-overlay-in var(--duration-fast) var(--ease-out);
+    }
+
+    .uiify-popover:popover-open {
+      animation: uiify-overlay-in var(--duration-fast) var(--ease-out);
+    }
+  }
+
+  @keyframes uiify-overlay-in {
+    from {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+}

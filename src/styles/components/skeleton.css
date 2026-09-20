@@ -1,0 +1,36 @@
+@layer components {
+  [data-state="loading"][data-shape="rect"],
+  [data-state="loading"][data-shape="circle"] {
+    inline-size: var(--skeleton-w, 100%);
+    block-size: var(--skeleton-h, 1rem);
+    background: linear-gradient(
+      90deg,
+      var(--color-surface-muted) 0%,
+      var(--color-surface-raised) 50%,
+      var(--color-surface-muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: uiify-skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+  }
+
+  [data-state="loading"][data-shape="circle"] {
+    border-radius: 50%;
+  }
+
+  @keyframes uiify-skeleton-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-state="loading"] {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+/* Generic skin for custom core surfaces used by the demo and consumers. */
+
+@layer components {
+  .uiify-surface {
+    display: grid;
+    gap: var(--space-md);
+    inline-size: max-content;
+    max-inline-size: min(28rem, calc(100vw - 2 * var(--space-lg)));
+    padding: var(--space-lg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-popover);
+  }
+
+  .uiify-surface[popover]:not(:popover-open) {
+    display: none;
+  }
+}

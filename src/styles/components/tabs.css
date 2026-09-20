@@ -1,0 +1,100 @@
+/* Tabs — list of triggers with an active underline; content panels below.
+   Adapts to [data-orientation]; active state from [data-state="active"]. */
+
+@layer components {
+  .uiify-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .uiify-tabs__trigger {
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-md);
+    border: none;
+    background: none;
+    color: var(--color-muted-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+    border-block-end: 2px solid transparent;
+    margin-block-end: calc(-1 * var(--border-width));
+    transition: var(--transition-colors);
+  }
+
+  .uiify-tabs__trigger:hover {
+    color: var(--color-fg);
+  }
+
+  .uiify-tabs__trigger[data-state="active"] {
+    border-block-end-color: var(--color-accent);
+    color: var(--color-fg);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* Panel visibility is owned by @gunkin/uiify/components/behavior.css (radio :checked). */
+
+  .uiify-tabs__content {
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  [data-uiify-tabs] > [data-part="item"] {
+    display: contents;
+  }
+
+  [data-uiify-tabs] {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    align-items: start;
+    gap: 0;
+  }
+
+  [data-uiify-tabs] > [data-part="item"] > input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-uiify-tabs] > [data-part="item"] > label {
+    display: inline-flex;
+    grid-row: 1;
+    padding-block: var(--space-sm);
+    padding-inline: var(--space-md);
+    border-block-end: 2px solid transparent;
+    color: var(--color-muted-fg);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    font-weight: var(--weight-medium);
+    cursor: pointer;
+  }
+
+  [data-uiify-tabs] > [data-part="item"] > label:hover {
+    color: var(--color-fg);
+  }
+
+  [data-uiify-tabs] > [data-part="item"]:has(> input:checked) > label {
+    border-block-end-color: var(--color-accent);
+    color: var(--color-fg);
+    font-weight: var(--weight-semibold);
+  }
+
+  [data-uiify-tabs] > [data-part="item"] > input:focus-visible + label {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+
+  [data-uiify-tabs] > [data-part="item"] > [data-uiify-tabs-panel] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+}

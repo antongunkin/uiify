@@ -1,0 +1,388 @@
+@property --candle-body-height {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --candle-body-top {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --candle-slot {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
+@property --candle-wick-height {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --candle-wick-top {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --candle-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --candle-scale {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@layer components {
+  [data-uiify-candle-chart] {
+    --candle-grid: color-mix(in srgb, currentcolor 10%, transparent);
+    --candle-down: oklch(64% 0.21 24deg);
+    --candle-flat: color-mix(in srgb, currentcolor 60%, transparent);
+    --candle-up: oklch(67% 0.14 166deg);
+    --candle-axis: var(--color-muted-fg);
+
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    min-block-size: 21rem;
+    padding: 1rem 0.75rem 0.5rem;
+    overflow: clip;
+    overscroll-behavior: none;
+    touch-action: none;
+    isolation: isolate;
+    color-scheme: light dark;
+    background: transparent;
+    color: light-dark(oklch(28% 0.04 165deg), oklch(82% 0.04 165deg));
+  }
+
+  [data-uiify-candle-chart] > .candle-chart__plot {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4.5rem;
+    grid-template-rows: minmax(18rem, 1fr) 1.5rem;
+    gap: 0 0.75rem;
+    min-inline-size: 0;
+    min-block-size: 18rem;
+    overscroll-behavior: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__scroll-viewport {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    min-inline-size: 0;
+    min-block-size: 18rem;
+    overflow: auto hidden;
+    overscroll-behavior: none;
+    scrollbar-width: none;
+    container-type: inline-size;
+    direction: rtl;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__scroll-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__canvas {
+    display: grid;
+    grid-template-rows: minmax(18rem, 1fr) 1.5rem;
+    inline-size: calc(100% * var(--candle-scale));
+    min-inline-size: 100%;
+    min-block-size: 100%;
+    direction: ltr;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: auto 0;
+    inline-size: 100%;
+    margin: 0;
+    padding: 1rem 0.5rem;
+    list-style: none;
+    background-image:
+      linear-gradient(to right, var(--candle-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--candle-grid) 1px, transparent 1px);
+    background-size:
+      10% 100%,
+      100% 25%;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__viewport {
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    min-inline-size: 0;
+    min-block-size: 18rem;
+    overflow: clip;
+    overscroll-behavior: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-viewport {
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    min-inline-size: 0;
+    overflow: clip;
+    overscroll-behavior: none;
+  }
+
+  [data-uiify-candle-chart] > figcaption {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0.75rem;
+    inset-inline-start: 1rem;
+    color: var(--color-muted-fg);
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__readout {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0.75rem;
+    inset-inline-end: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.65rem;
+    align-items: baseline;
+    color: var(--candle-axis);
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__readout-time {
+    font-weight: 650;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles > li {
+    position: absolute;
+    inset: 1rem 0.5rem;
+    pointer-events: none;
+    inset-inline-start: var(--candle-x);
+    inline-size: var(--candle-slot);
+    display: block;
+    color: var(--candle-flat);
+    list-style: none;
+  }
+
+  [data-uiify-candle-chart][data-interactive] .candle-chart__candles > li {
+    pointer-events: auto;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candle-hit {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    appearance: none;
+    background: transparent;
+    color: transparent;
+    cursor: crosshair;
+    font: inherit;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles > li::before,
+  [data-uiify-candle-chart] .candle-chart__candles > li::after {
+    content: "";
+    position: absolute;
+    display: block;
+    background: currentcolor;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles > li::before {
+    inset-block-start: var(--candle-wick-top);
+    inset-inline-start: 50%;
+    inline-size: max(1px, 0.08em);
+    block-size: var(--candle-wick-height);
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles > li::after {
+    inset-block-start: var(--candle-body-top);
+    inset-inline: 17%;
+    block-size: var(--candle-body-height);
+    min-block-size: 1px;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles > li[data-direction="up"] {
+    color: var(--candle-up);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__candles > li[data-direction="down"] {
+    color: var(--candle-down);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__crosshair {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    color: light-dark(oklch(52% 0.01 0deg), oklch(72% 0.01 0deg));
+    pointer-events: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__crosshair::before,
+  [data-uiify-candle-chart] .candle-chart__crosshair::after {
+    content: "";
+    position: absolute;
+    display: block;
+    background: currentcolor;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__crosshair::before {
+    inset-block: 0;
+    inset-inline-start: var(--candle-crosshair-x);
+    inline-size: 1px;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      currentcolor 0 0.4rem,
+      transparent 0.4rem 0.8rem
+    );
+    background-color: transparent;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__crosshair::after {
+    inset-block-start: calc(var(--candle-cursor-y, 50%) + 1rem);
+    inset-inline: 0;
+    block-size: 1px;
+    background-image: repeating-linear-gradient(
+      to right,
+      currentcolor 0 0.4rem,
+      transparent 0.4rem 0.8rem
+    );
+    background-color: transparent;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__crosshair-marker {
+    position: absolute;
+    inset-block-start: calc(var(--candle-cursor-y, 50%) + 1rem);
+    inset-inline-start: var(--candle-crosshair-x);
+    font-size: 1rem;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis > .candle-chart__crosshair-time {
+    inset-block-start: 0;
+    inset-inline-start: var(--candle-crosshair-x);
+    padding: 0.3rem 0.5rem;
+    background: var(--candle-axis);
+    color: Canvas;
+    font-weight: 650;
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis > .candle-chart__crosshair-price {
+    inset-block-start: calc(var(--candle-cursor-y, 50%) + 1rem);
+    inset-inline-end: 0;
+    padding: 0.3rem 0.5rem;
+    background: var(--candle-axis);
+    color: Canvas;
+    font-weight: 650;
+    transform: translateY(-50%);
+  }
+
+  [data-uiify-candle-chart][data-interactive] .candle-chart__candle-hit:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis,
+  [data-uiify-candle-chart] .candle-chart__time-axis {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    min-inline-size: 0;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis > li {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: var(--candle-axis-y);
+    overflow: hidden;
+    color: var(--candle-axis);
+    font-size: 0.65rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    text-align: end;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translateY(-50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis > li:first-child {
+    transform: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis > li:last-child {
+    transform: translateY(-100%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis {
+    position: relative;
+    inset-block: 0;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis > li {
+    position: absolute;
+    inset-block-start: 0.35rem;
+    inset-inline-start: var(--candle-axis-x);
+    color: var(--candle-axis);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis > li:first-child {
+    transform: none;
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis > li:last-child {
+    transform: translateX(-100%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis > li:only-child {
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__time-axis > li.candle-chart__crosshair-time {
+    transform: translateX(-50%);
+  }
+
+  [data-uiify-candle-chart] .candle-chart__price-axis > li.candle-chart__crosshair-price {
+    transform: translateY(-50%);
+  }
+
+  [data-uiify-candle-chart] > table {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

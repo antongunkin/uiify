@@ -1,0 +1,118 @@
+/* Optional carousel skin. The native scrollbar is only hidden once real controls replace it. */
+@layer components {
+  [data-uiify-carousel] {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-sm);
+    inline-size: 100%;
+    max-inline-size: 24rem;
+  }
+
+  /* Full-width rows: an optional rotation button, the viewport, and the status text. */
+  [data-uiify-carousel] > [data-uiify-carousel-viewport],
+  [data-uiify-carousel] > [data-uiify-carousel-status],
+  [data-uiify-carousel] > button[data-uiify-carousel-controls][data-carousel-action="rotation"] {
+    grid-column: 1 / -1;
+  }
+
+  /*
+   * Hide the scrollbar only once the carousel is attached AND renders buttons that can
+   * take over from it. Without scripting the scrollbar is the sole indication that the
+   * content scrolls at all, so the static carousel keeps it. `scrollbar-width` alone is
+   * enough for the supported engines — no prefixed fallback.
+   */
+  [data-uiify-carousel][data-enhanced]:has(> button[data-uiify-carousel-controls])
+    > [data-uiify-carousel-viewport] {
+    scrollbar-width: none;
+  }
+
+  [data-uiify-carousel]
+    > [data-uiify-carousel-viewport]
+    > [data-uiify-carousel-slide]
+    > [data-uiify-carousel-content] {
+    display: flex;
+    aspect-ratio: 1;
+    align-items: center;
+    justify-content: center;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font-size: 2.25rem;
+    font-weight: var(--weight-semibold);
+    line-height: 1;
+    box-shadow: var(--shadow-popover);
+  }
+
+  [data-uiify-carousel] > button[data-uiify-carousel-controls] {
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  [data-uiify-carousel] > button[data-uiify-carousel-controls][data-carousel-action="rotation"] {
+    justify-self: start;
+    padding-inline: var(--space-md);
+    padding-block: var(--space-sm);
+    margin-block-end: var(--space-sm);
+  }
+
+  /* Previous/next sit either side of pagination, matching a classic ‹ dots › slider row. */
+  [data-uiify-carousel] > button[data-uiify-carousel-controls][data-carousel-action="previous"],
+  [data-uiify-carousel] > button[data-uiify-carousel-controls][data-carousel-action="next"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  [data-uiify-carousel] > button[data-uiify-carousel-controls]:hover {
+    background-color: var(--color-surface-raised);
+  }
+
+  [data-uiify-carousel] > button[data-uiify-carousel-controls]:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  [data-uiify-carousel] > button[data-uiify-carousel-controls]:focus-visible,
+  [data-uiify-carousel] > [data-uiify-carousel-dots] > a:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+  }
+
+  [data-uiify-carousel] > [data-uiify-carousel-dots] {
+    /* Explicit middle column: pagination stays centred whether or not the
+       previous/next buttons exist to occupy the outer columns. */
+    grid-column: 2;
+    justify-self: stretch;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xs);
+  }
+
+  [data-uiify-carousel] > [data-uiify-carousel-dots] > a {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-border-strong);
+    color: var(--color-fg);
+    text-decoration: none;
+    transition: var(--transition-colors);
+  }
+
+  [data-uiify-carousel] > [data-uiify-carousel-dots] > a[aria-current="true"] {
+    background-color: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+}
