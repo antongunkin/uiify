@@ -22,8 +22,6 @@ export function Tabs({
       namespace="tabs"
       orientation={orientation}
       renderPanel={(item) => item.panel}
-      withInputAttribute
-      withTriggerAttribute
     />
   );
 }

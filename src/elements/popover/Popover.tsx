@@ -25,6 +25,7 @@ import type {
 function renderInvoker(
   as: ElementType | undefined,
   marker: string,
+  part: string,
   action: PopoverTriggerAction,
   target: string,
   consumerProps: Record<string, unknown>,
@@ -32,6 +33,7 @@ function renderInvoker(
   return createElement(as ?? "button", {
     ...consumerProps,
     [marker]: "",
+    "data-part": part,
     popoverTarget: target,
     popoverTargetAction: action,
     type: "button",
@@ -41,7 +43,8 @@ function renderInvoker(
 /**
  * Acts on `target` (`action`, default `"toggle"`); light dismiss, Escape and nesting are
  * handled by the browser. The popover opened this way uses the invoker as its implicit
- * anchor, so no anchor name is emitted. Emits `data-uiify-popover-trigger`.
+ * anchor, so no anchor name is emitted. Emits `data-uiify-popover` with
+ * `data-part="trigger"`.
  */
 function popoverTrigger<TAs extends ElementType = "button">(
   props: PopoverTriggerProps<TAs>,
@@ -54,7 +57,8 @@ function popoverTrigger<TAs extends ElementType = "button">(
   } = props as PopoverTriggerProps<"button">;
   return renderInvoker(
     as,
-    "data-uiify-popover-trigger",
+    "data-uiify-popover",
+    "trigger",
     action,
     target,
     consumerProps as Record<string, unknown>,
@@ -65,9 +69,9 @@ export const PopoverTrigger = /* @__PURE__ */ Object.assign(popoverTrigger, {
 });
 
 /**
- * The popover surface. `data-side`/`data-align` drive the optional anchor CSS in
- * `@gunkin/uiify/styles`. Emits `popover`, `data-side`, `data-align`, `data-positioning="native"` and
- * `data-uiify-popover-surface`.
+ * The popover surface. `data-side`/`data-align` drive required geometry in
+ * `@gunkin/uiify/components/behavior.css`; optional skins provide the gap. Emits `popover`, `data-side`, `data-align`, `data-positioning="native"` and
+ * `data-uiify-popover` with `data-part="surface"`.
  */
 function popoverSurface(props: PopoverSurfaceProps): ReactElement {
   const { align = "center", children, mode = "auto", side = "bottom", ...consumerProps } = props;
@@ -75,9 +79,10 @@ function popoverSurface(props: PopoverSurfaceProps): ReactElement {
     <div
       {...consumerProps}
       data-align={align}
+      data-part="surface"
       data-positioning="native"
       data-side={side}
-      data-uiify-popover-surface=""
+      data-uiify-popover=""
       popover={mode}
     >
       {children}
@@ -89,7 +94,7 @@ export const PopoverSurface = /* @__PURE__ */ Object.assign(popoverSurface, {
 });
 
 /**
- * Hides `target`. Emits `data-uiify-popover-close`.
+ * Hides `target`. Emits `data-uiify-popover` with `data-part="close"`.
  */
 function popoverClose<TAs extends ElementType = "button">(
   props: PopoverCloseProps<TAs>,
@@ -97,7 +102,8 @@ function popoverClose<TAs extends ElementType = "button">(
   const { as, target, ...consumerProps } = props as PopoverCloseProps<"button">;
   return renderInvoker(
     as,
-    "data-uiify-popover-close",
+    "data-uiify-popover",
+    "close",
     "hide",
     target,
     consumerProps as Record<string, unknown>,

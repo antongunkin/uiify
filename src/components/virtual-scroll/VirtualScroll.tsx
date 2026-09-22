@@ -511,12 +511,12 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       ref={ref}
       data-testid={testId}
       data-uiify-virtual-scroll=""
-      data-uiify-dynamic-layout={dynamicLayout ? "" : undefined}
+      data-dynamic-layout={dynamicLayout ? "" : undefined}
       role={role}
       className={className}
       style={scrollportStyle}
     >
-      <div data-uiify-virtual-scroll-spacer="" style={spacerStyle}>
+      <div data-part="spacer" style={spacerStyle}>
         {rowSlots.map((slot) => {
           const store = measurementStoreRef.current;
           const rowOffset = dynamicLayout ? store.getRowOffset(slot.index) : undefined;

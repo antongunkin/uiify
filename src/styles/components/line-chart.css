@@ -29,8 +29,8 @@
     --line-down: oklch(64% 0.21 24deg);
     --line-flat: light-dark(oklch(43% 0.05 165deg), oklch(72% 0.04 165deg));
     --line-axis: light-dark(
-      color-mix(in oklch, var(--color-muted-fg) 70%, var(--color-fg)),
-      var(--color-muted-fg)
+      color-mix(in oklch, var(--muted-foreground) 70%, var(--foreground)),
+      var(--muted-foreground)
     );
     --line-width: 0.12rem;
 
@@ -48,7 +48,7 @@
     color: light-dark(oklch(28% 0.04 165deg), oklch(82% 0.04 165deg));
   }
 
-  [data-uiify-line-chart] > .line-chart__plot {
+  [data-uiify-line-chart] > [data-part="plot"] {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 4.5rem;
@@ -59,7 +59,7 @@
     overscroll-behavior: none;
   }
 
-  [data-uiify-line-chart] .line-chart__scroll-viewport {
+  [data-uiify-line-chart] [data-part="scroll-viewport"] {
     grid-column: 1;
     grid-row: 1 / span 2;
     min-inline-size: 0;
@@ -71,11 +71,11 @@
     direction: rtl;
   }
 
-  [data-uiify-line-chart] .line-chart__scroll-viewport::-webkit-scrollbar {
+  [data-uiify-line-chart] [data-part="scroll-viewport"]::-webkit-scrollbar {
     display: none;
   }
 
-  [data-uiify-line-chart] .line-chart__canvas {
+  [data-uiify-line-chart] [data-part="canvas"] {
     display: grid;
     grid-template-rows: minmax(18rem, 1fr) 1.5rem;
     inline-size: calc(100% * var(--line-scale));
@@ -84,7 +84,7 @@
     direction: ltr;
   }
 
-  [data-uiify-line-chart] .line-chart__viewport {
+  [data-uiify-line-chart] [data-part="viewport"] {
     position: relative;
     grid-column: 1;
     grid-row: 1;
@@ -106,7 +106,7 @@
     text-transform: uppercase;
   }
 
-  [data-uiify-line-chart] .line-chart__readout {
+  [data-uiify-line-chart] [data-part="readout"] {
     position: absolute;
     z-index: 1;
     inset-block-start: 0.75rem;
@@ -121,11 +121,11 @@
     white-space: nowrap;
   }
 
-  [data-uiify-line-chart] .line-chart__readout-time {
+  [data-uiify-line-chart] [data-part="readout-time"] {
     font-weight: 650;
   }
 
-  [data-uiify-line-chart] .line-chart__points {
+  [data-uiify-line-chart] [data-part="points"] {
     position: absolute;
     inset: 1rem 0;
     display: block;
@@ -140,7 +140,7 @@
       100% 20%;
   }
 
-  [data-uiify-line-chart] .line-chart__points > li {
+  [data-uiify-line-chart] [data-part="points"] > li {
     position: absolute;
     inset-block: 0;
     inset-inline-start: var(--line-prev-x, var(--line-x));
@@ -151,7 +151,7 @@
     list-style: none;
   }
 
-  [data-uiify-line-chart] .line-chart__points > li::before {
+  [data-uiify-line-chart] [data-part="points"] > li::before {
     position: absolute;
     z-index: 1;
     inset: 0;
@@ -166,11 +166,11 @@
     content: "";
   }
 
-  [data-uiify-line-chart] .line-chart__points > li:first-child::before {
+  [data-uiify-line-chart] [data-part="points"] > li:first-child::before {
     display: none;
   }
 
-  [data-uiify-line-chart] .line-chart__points > li::after {
+  [data-uiify-line-chart] [data-part="points"] > li::after {
     position: absolute;
     z-index: 2;
     inset-block-start: var(--line-y);
@@ -185,19 +185,19 @@
     transform: translate(-50%, -50%);
   }
 
-  [data-uiify-line-chart] .line-chart__points > li:first-child::after {
+  [data-uiify-line-chart] [data-part="points"] > li:first-child::after {
     inset-inline-start: 0;
   }
 
-  [data-uiify-line-chart] .line-chart__points > li[data-trend="up"] {
+  [data-uiify-line-chart] [data-part="points"] > li[data-trend="up"] {
     color: var(--line-up);
   }
 
-  [data-uiify-line-chart] .line-chart__points > li[data-trend="down"] {
+  [data-uiify-line-chart] [data-part="points"] > li[data-trend="down"] {
     color: var(--line-down);
   }
 
-  [data-uiify-line-chart] .line-chart__point-hit {
+  [data-uiify-line-chart] [data-part="point-hit"] {
     position: absolute;
     z-index: 3;
     inset: 0;
@@ -213,16 +213,16 @@
     font: inherit;
   }
 
-  [data-uiify-line-chart][data-interactive] .line-chart__points > li[data-point-selected]::after {
+  [data-uiify-line-chart][data-interactive] [data-part="points"] > li[data-point-selected]::after {
     box-shadow: 0 0 0 0.2rem color-mix(in srgb, currentcolor 24%, transparent);
   }
 
-  [data-uiify-line-chart][data-interactive] .line-chart__point-hit:focus-visible {
+  [data-uiify-line-chart][data-interactive] [data-part="point-hit"]:focus-visible {
     outline: 2px solid currentcolor;
     outline-offset: -2px;
   }
 
-  [data-uiify-line-chart] .line-chart__crosshair {
+  [data-uiify-line-chart] [data-part="crosshair"] {
     position: absolute;
     z-index: 4;
     inset: 0;
@@ -232,15 +232,15 @@
     pointer-events: none;
   }
 
-  [data-uiify-line-chart] .line-chart__crosshair::before,
-  [data-uiify-line-chart] .line-chart__crosshair::after {
+  [data-uiify-line-chart] [data-part="crosshair"]::before,
+  [data-uiify-line-chart] [data-part="crosshair"]::after {
     position: absolute;
     display: block;
     background: currentcolor;
     content: "";
   }
 
-  [data-uiify-line-chart] .line-chart__crosshair::before {
+  [data-uiify-line-chart] [data-part="crosshair"]::before {
     inset-block: 0;
     inset-inline-start: var(--line-crosshair-x);
     inline-size: 1px;
@@ -252,7 +252,7 @@
     background-color: transparent;
   }
 
-  [data-uiify-line-chart] .line-chart__crosshair::after {
+  [data-uiify-line-chart] [data-part="crosshair"]::after {
     inset-block-start: calc(var(--line-cursor-y, 50%) + 1rem);
     inset-inline: 0;
     block-size: 1px;
@@ -264,7 +264,7 @@
     background-color: transparent;
   }
 
-  [data-uiify-line-chart] .line-chart__crosshair-marker {
+  [data-uiify-line-chart] [data-part="crosshair-marker"] {
     position: absolute;
     inset-block-start: calc(var(--line-cursor-y, 50%) + 1rem);
     inset-inline-start: var(--line-crosshair-x);
@@ -273,21 +273,21 @@
     transform: translate(-50%, -50%);
   }
 
-  [data-uiify-line-chart] .line-chart__value-axis,
-  [data-uiify-line-chart] .line-chart__time-axis {
+  [data-uiify-line-chart] [data-part="value-axis"],
+  [data-uiify-line-chart] [data-part="time-axis"] {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  [data-uiify-line-chart] .line-chart__value-axis {
+  [data-uiify-line-chart] [data-part="value-axis"] {
     position: relative;
     grid-column: 2;
     grid-row: 1;
     min-inline-size: 0;
   }
 
-  [data-uiify-line-chart] .line-chart__value-axis > li {
+  [data-uiify-line-chart] [data-part="value-axis"] > li {
     position: absolute;
     inset-inline: 0;
     inset-block-start: var(--line-axis-y);
@@ -302,15 +302,15 @@
     transform: translateY(-50%);
   }
 
-  [data-uiify-line-chart] .line-chart__value-axis > li:first-child {
+  [data-uiify-line-chart] [data-part="value-axis"] > li:first-child {
     transform: none;
   }
 
-  [data-uiify-line-chart] .line-chart__value-axis > li:last-child {
+  [data-uiify-line-chart] [data-part="value-axis"] > li:last-child {
     transform: translateY(-100%);
   }
 
-  [data-uiify-line-chart] .line-chart__time-viewport {
+  [data-uiify-line-chart] [data-part="time-viewport"] {
     position: relative;
     grid-column: 1;
     grid-row: 2;
@@ -319,14 +319,14 @@
     overscroll-behavior: none;
   }
 
-  [data-uiify-line-chart] .line-chart__time-axis {
+  [data-uiify-line-chart] [data-part="time-axis"] {
     position: relative;
     inset-block: 0;
     inline-size: 100%;
     min-inline-size: 0;
   }
 
-  [data-uiify-line-chart] .line-chart__time-axis > li {
+  [data-uiify-line-chart] [data-part="time-axis"] > li {
     position: absolute;
     inset-block-start: 0.35rem;
     inset-inline-start: var(--line-axis-x);
@@ -336,19 +336,19 @@
     transform: translateX(-50%);
   }
 
-  [data-uiify-line-chart] .line-chart__time-axis > li:first-child {
+  [data-uiify-line-chart] [data-part="time-axis"] > li:first-child {
     transform: none;
   }
 
-  [data-uiify-line-chart] .line-chart__time-axis > li:last-child {
+  [data-uiify-line-chart] [data-part="time-axis"] > li:last-child {
     transform: translateX(-100%);
   }
 
-  [data-uiify-line-chart] .line-chart__time-axis > li:only-child {
+  [data-uiify-line-chart] [data-part="time-axis"] > li:only-child {
     transform: translateX(-50%);
   }
 
-  [data-uiify-line-chart] .line-chart__time-axis > li.line-chart__crosshair-time {
+  [data-uiify-line-chart] [data-part="time-axis"] > li[data-part="crosshair-time"] {
     inset-inline-start: var(--line-crosshair-x);
     padding: 0.3rem 0.5rem;
     background: var(--line-axis);
@@ -357,7 +357,7 @@
     transform: translateX(-50%);
   }
 
-  [data-uiify-line-chart] .line-chart__value-axis > li.line-chart__crosshair-value {
+  [data-uiify-line-chart] [data-part="value-axis"] > li[data-part="crosshair-value"] {
     inset-block-start: calc(var(--line-cursor-y, 50%) + 1rem);
     inset-inline-end: 0;
     padding: 0.3rem 0.5rem;
@@ -377,11 +377,13 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-line-chart] .line-chart__points > li::after {
+    [data-uiify-line-chart] [data-part="points"] > li::after {
       transition: scale 180ms ease;
     }
 
-    [data-uiify-line-chart][data-interactive] .line-chart__points > li[data-point-selected]::after {
+    [data-uiify-line-chart][data-interactive]
+      [data-part="points"]
+      > li[data-point-selected]::after {
       scale: 1.15;
     }
   }

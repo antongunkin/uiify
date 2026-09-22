@@ -40,8 +40,8 @@ describe("Popup native parts", () => {
     // before asserting on the attribute.
     const parsed = document.createElement("div");
     parsed.innerHTML = html;
-    const trigger = parsed.querySelector("[data-uiify-popover-trigger]");
-    const close = parsed.querySelector("[data-uiify-popover-close]");
+    const trigger = parsed.querySelector('[data-uiify-popup][data-part="trigger"]');
+    const close = parsed.querySelector('[data-uiify-popup][data-part="close"]');
     expect(trigger?.getAttribute("popovertarget")).toBe("help");
     expect(trigger?.getAttribute("popovertargetaction")).toBe("toggle");
     expect(close?.getAttribute("popovertargetaction")).toBe("hide");
@@ -68,7 +68,8 @@ describe("Popup native parts", () => {
     expect(panel.getAttribute("data-side")).toBe("top");
     expect(panel.getAttribute("data-align")).toBe("start");
     expect(panel.style.zIndex).toBe("5");
-    expect(panel.hasAttribute("data-uiify-popover-content")).toBe(true);
+    expect(panel.getAttribute("data-uiify-popup")).toBe("");
+    expect(panel.getAttribute("data-part")).toBe("content");
   });
 
   it("owns type=button and the popovertarget attributes on the invoker", () => {
@@ -81,7 +82,8 @@ describe("Popup native parts", () => {
     expect(button.getAttribute("type")).toBe("button");
     expect(button.getAttribute("popovertarget")).toBe("help");
     expect(button.getAttribute("popovertargetaction")).toBe("toggle");
-    expect(button.hasAttribute("data-uiify-popover-trigger")).toBe(true);
+    expect(button.getAttribute("data-uiify-popup")).toBe("");
+    expect(button.getAttribute("data-part")).toBe("trigger");
   });
 
   it("calls the consumer onClick once and lets it cancel the native action", () => {

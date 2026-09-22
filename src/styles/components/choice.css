@@ -4,101 +4,101 @@
    checkmarks are pseudo-elements on the input itself. */
 
 @layer components {
-  :where(.uiify-checkbox > input, .uiify-radio) {
+  :where([data-uiify-checkbox] > input, [data-uiify-radio]) {
     appearance: none;
     inline-size: 1.15rem;
     block-size: 1.15rem;
     margin: 0;
-    border: var(--border-width) solid var(--color-border-strong);
-    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--input);
+    background-color: var(--card);
     display: inline-grid;
     place-content: center;
     cursor: pointer;
     transition: var(--transition-colors);
   }
 
-  .uiify-checkbox {
+  [data-uiify-checkbox] {
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
     cursor: pointer;
-    color: var(--color-fg);
+    color: var(--foreground);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
   }
 
-  .uiify-checkbox > input {
+  [data-uiify-checkbox] > input {
     border-radius: var(--radius-sm);
   }
 
-  .uiify-radio {
+  [data-uiify-radio] {
     border-radius: var(--radius-full);
   }
 
   /* Checked fill (covers controlled [data-state] and uncontrolled :checked). */
-  .uiify-checkbox > input:checked,
-  .uiify-checkbox > input[data-state="checked"] {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
+  [data-uiify-checkbox] > input:checked,
+  [data-uiify-checkbox] > input[data-state="checked"] {
+    border-color: var(--primary);
+    background-color: var(--primary);
   }
 
   /* Radio checked state is a thick accent ring around a white center, not a
      filled dot — matches the 2a/2b handoff's target/bullseye radio anatomy. */
-  .uiify-radio:checked,
-  .uiify-radio[data-state="checked"] {
+  [data-uiify-radio]:checked,
+  [data-uiify-radio][data-state="checked"] {
     border-width: 5px;
-    border-color: var(--color-accent);
-    background-color: var(--color-surface);
+    border-color: var(--primary);
+    background-color: var(--card);
   }
 
   /* Checkmark. */
-  .uiify-checkbox > input::before {
+  [data-uiify-checkbox] > input::before {
     content: "";
     inline-size: 0.65rem;
     block-size: 0.65rem;
     transform: scale(0);
     transition: transform var(--duration-fast) var(--ease-out);
-    background-color: var(--color-accent-fg);
+    background-color: var(--primary-foreground);
     clip-path: polygon(14% 44%, 0 65%, 38% 100%, 100% 22%, 84% 6%, 38% 68%);
   }
 
-  .uiify-checkbox > input:checked::before,
-  .uiify-checkbox > input[data-state="checked"]::before {
+  [data-uiify-checkbox] > input:checked::before,
+  [data-uiify-checkbox] > input[data-state="checked"]::before {
     transform: scale(1);
   }
 
   /* Indeterminate dash. */
-  .uiify-checkbox > input:indeterminate,
-  .uiify-checkbox > input[data-state="indeterminate"] {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
+  [data-uiify-checkbox] > input:indeterminate,
+  [data-uiify-checkbox] > input[data-state="indeterminate"] {
+    border-color: var(--primary);
+    background-color: var(--primary);
   }
 
-  .uiify-checkbox > input:indeterminate::before,
-  .uiify-checkbox > input[data-state="indeterminate"]::before {
+  [data-uiify-checkbox] > input:indeterminate::before,
+  [data-uiify-checkbox] > input[data-state="indeterminate"]::before {
     transform: scale(1);
     clip-path: inset(42% 12% 42% 12%);
   }
 
-  :where(.uiify-checkbox > input, .uiify-radio):disabled,
-  :where(.uiify-checkbox > input, .uiify-radio)[data-disabled] {
+  :where([data-uiify-checkbox] > input, [data-uiify-radio]):disabled,
+  :where([data-uiify-checkbox] > input, [data-uiify-radio])[data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .uiify-checkbox:has(> input:disabled) {
+  [data-uiify-checkbox]:has(> input:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .uiify-radio-group {
+  [data-uiify-radio-group] {
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
   }
 
   /* Switch — a pill track with a sliding thumb pseudo-element. */
-  .uiify-switch {
+  [data-uiify-switch] {
     appearance: none;
     position: relative;
     inline-size: 2.25rem;
@@ -107,12 +107,12 @@
     flex: none;
     border: none;
     border-radius: var(--radius-full);
-    background-color: var(--color-border-strong);
+    background-color: var(--input);
     cursor: pointer;
     transition: background-color var(--duration-fast) var(--ease-out);
   }
 
-  .uiify-switch::before {
+  [data-uiify-switch]::before {
     content: "";
     position: absolute;
     inset-block-start: 2px;
@@ -125,18 +125,18 @@
     transition: translate var(--duration-fast) var(--ease-out);
   }
 
-  .uiify-switch:checked,
-  .uiify-switch[data-state="checked"] {
-    background-color: var(--color-accent);
+  [data-uiify-switch]:checked,
+  [data-uiify-switch][data-state="checked"] {
+    background-color: var(--primary);
   }
 
-  .uiify-switch:checked::before,
-  .uiify-switch[data-state="checked"]::before {
+  [data-uiify-switch]:checked::before,
+  [data-uiify-switch][data-state="checked"]::before {
     translate: 1rem 0;
   }
 
-  .uiify-switch:disabled,
-  .uiify-switch[data-disabled] {
+  [data-uiify-switch]:disabled,
+  [data-uiify-switch][data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
   }

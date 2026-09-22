@@ -76,10 +76,11 @@ describe("syncTabs", () => {
     syncTabs("t1");
 
     const [triggerA, triggerB] = [
-      ...document.querySelectorAll<HTMLElement>("[data-uiify-tabs-trigger]"),
+      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="trigger"]'),
     ] as [HTMLElement, HTMLElement];
-    const panelA = document.querySelector<HTMLElement>('[data-uiify-tabs-panel="a"]')!;
-    const panelB = document.querySelector<HTMLElement>('[data-uiify-tabs-panel="b"]')!;
+    const [panelA, panelB] = [
+      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="panel"]'),
+    ] as [HTMLElement, HTMLElement];
 
     expect(triggerA.getAttribute("aria-selected")).toBe("false");
     expect(triggerA.dataset["state"]).toBe("inactive");

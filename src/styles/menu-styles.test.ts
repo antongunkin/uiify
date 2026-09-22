@@ -21,7 +21,12 @@ describe("DropdownMenu skin", () => {
     expect(css).toContain("prefers-reduced-motion: reduce");
     expect(css).toContain("max-block-size:");
     expect(css).toContain("overflow-y: auto");
-    expect(css).toContain("[data-danger]:hover");
+    expect(css.replace(/\s+/g, " ")).toContain(
+      "[data-danger]:is(:hover, :focus-visible, [data-highlighted])",
+    );
     expect(css).toContain('[data-part="shortcut"]');
+    expect(css.replace(/\s+/g, " ")).toContain(
+      '[data-uiify-menu] [data-part="sub-content"][data-side="right"] { --uiify-anchor-offset: 0;',
+    );
   });
 });

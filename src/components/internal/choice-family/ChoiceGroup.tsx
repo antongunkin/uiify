@@ -9,8 +9,7 @@ import type { ChoiceGroupProps, ChoiceItem } from "./types.js";
 /**
  * Built on `@gunkin/uiify/elements/choice`: this component
  * stays the ergonomic, items-array API six components share, now implemented as a thin map
- * from `items` onto `Choice.Item` — this file's `namespace`/`with*Attribute` flags translate
- * into the element's explicit `inputProps`/`labelProps`/`panelProps` escape hatches.
+ * from `items` onto `Choice.Item` with canonical `data-part` anatomy.
  */
 export function ChoiceGroup<TItem extends ChoiceItem>(
   props: ChoiceGroupProps<TItem>,
@@ -27,8 +26,6 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
     className,
     itemPart = "item",
     labelPart = false,
-    withInputAttribute = false,
-    withTriggerAttribute = false,
     rootAttributes,
     itemWrapperAttributes,
     itemInputClassName,
@@ -59,16 +56,17 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
             groupId={id}
             inputProps={{
               className: itemInputClassName?.(item),
-              ...(withInputAttribute ? { [`data-uiify-${namespace}-input`]: "" } : {}),
+              "data-part": "control",
+              ...(kind === "single" ? { "data-uiify-radio": "" } : {}),
             }}
             key={item.value}
             kind={kind}
             label={renderLabel ? renderLabel(item) : item.label}
-            labelPart={labelPart}
-            labelProps={withTriggerAttribute ? { [`data-uiify-${namespace}-trigger`]: "" } : {}}
+            labelPart={false}
+            labelProps={{ "data-part": labelPart ? "trigger" : "label" }}
             name={groupName}
             {...(onItemChange ? { onChange: () => onItemChange(item) } : {})}
-            panelProps={{ [`data-uiify-${namespace}-panel`]: item.value }}
+            panelProps={{ "data-part": "panel" }}
             part={itemPart}
             value={item.value}
           />

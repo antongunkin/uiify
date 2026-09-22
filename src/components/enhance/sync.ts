@@ -51,19 +51,23 @@ export function syncTabs(tabsId: string): void {
   if (!root) return;
 
   const checked = root.querySelector<HTMLInputElement>(
-    `[data-uiify-tabs-input][name="${escapeAttrValue(tabsId)}"]:checked`,
+    `[data-uiify-tabs] > [data-part="item"] > [data-part="control"][name="${escapeAttrValue(tabsId)}"]:checked`,
   );
   const selectedValue = checked?.value;
 
-  for (const trigger of root.querySelectorAll<HTMLElement>("[data-uiify-tabs-trigger]")) {
+  for (const trigger of root.querySelectorAll<HTMLElement>(
+    '[data-uiify-tabs] [data-part="trigger"]',
+  )) {
     const value = tabTriggerValue(trigger, root);
     const selected = value !== undefined && value === selectedValue;
     trigger.setAttribute("aria-selected", String(selected));
     trigger.dataset["state"] = selected ? "active" : "inactive";
   }
 
-  for (const panel of root.querySelectorAll<HTMLElement>("[data-uiify-tabs-panel]")) {
-    const selected = panel.dataset["uiifyTabsPanel"] === selectedValue;
+  const panelPrefix = `${tabsId}-panel-`;
+  for (const panel of root.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="panel"]')) {
+    const selected =
+      panel.id.startsWith(panelPrefix) && panel.id.slice(panelPrefix.length) === selectedValue;
     panel.dataset["state"] = selected ? "active" : "inactive";
     panel.tabIndex = selected ? 0 : -1;
   }

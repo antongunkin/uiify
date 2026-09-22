@@ -103,4 +103,22 @@ describe("Button", () => {
     );
     expect(screen.getByRole("button", { name: "Save" }).getAttribute("data-disabled")).toBe("");
   });
+
+  it("forwards consumer styling props and owns its identity marker", () => {
+    render(
+      <Button
+        className="consumer-button"
+        data-layout="compact"
+        data-uiify-button="consumer-value"
+        style={{ marginBlock: "1rem" }}
+      >
+        Save
+      </Button>,
+    );
+    const button = screen.getByRole("button", { name: "Save" });
+    expect(button.getAttribute("class")).toBe("consumer-button");
+    expect(button.getAttribute("data-layout")).toBe("compact");
+    expect(button.getAttribute("data-uiify-button")).toBe("");
+    expect(button.style.marginBlock).toBe("1rem");
+  });
 });

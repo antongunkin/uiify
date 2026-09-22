@@ -170,7 +170,7 @@ export function BreadcrumbSeparator<TAs extends ElementType = "span">(
 function BreadcrumbEllipsis({ hiddenItems, separator }: BreadcrumbEllipsisProps): ReactElement {
   return (
     <BreadcrumbItem>
-      <DetailsRoot data-uiify-breadcrumb-ellipsis="">
+      <DetailsRoot data-part="ellipsis" data-uiify-breadcrumb="">
         <DetailsSummary aria-label="Show collapsed breadcrumbs">…</DetailsSummary>
         <DetailsContent as="ol">
           {hiddenItems.map((item) => (

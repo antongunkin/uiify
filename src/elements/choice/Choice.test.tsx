@@ -23,7 +23,8 @@ describe("Choice", () => {
     expect(markup).toContain('id="plan-label-pro"');
     expect(markup).toContain('id="plan-panel-pro"');
     expect(markup).toContain("data-uiify-choice");
-    expect(markup).toContain("data-uiify-choice-item");
+    const parsed = new DOMParser().parseFromString(markup, "text/html");
+    expect(parsed.querySelector('[data-uiify-choice][data-part="item"]')).not.toBeNull();
     expect(markup).toContain('data-part="item"');
     expect(markup).not.toContain('data-part="panel"><');
   });
@@ -82,23 +83,23 @@ describe("Choice", () => {
       <ChoiceGroup id="plan" kind="single">
         <ChoiceItem
           groupId="plan"
-          inputProps={{ "data-uiify-tabs-input": "", type: "hijacked" }}
+          inputProps={{ "data-consumer-input": "", type: "hijacked" }}
           kind="single"
           label="Free"
-          labelProps={{ "data-uiify-tabs-trigger": "" }}
+          labelProps={{ "data-consumer-label": "" }}
           panel={<p>Body</p>}
-          panelProps={{ "data-uiify-tabs-panel": "free" }}
+          panelProps={{ "data-consumer-panel": "free" }}
           value="free"
         />
       </ChoiceGroup>,
     );
     const input = screen.getByRole("radio", { name: "Free" });
-    expect(input.hasAttribute("data-uiify-tabs-input")).toBe(true);
+    expect(input.hasAttribute("data-consumer-input")).toBe(true);
     expect(input.getAttribute("type")).toBe("radio");
     const label = screen.getByText("Free");
-    expect(label.hasAttribute("data-uiify-tabs-trigger")).toBe(true);
+    expect(label.hasAttribute("data-consumer-label")).toBe(true);
     const panel = screen.getByText("Body").closest("[data-part='panel']");
-    expect(panel?.getAttribute("data-uiify-tabs-panel")).toBe("free");
+    expect(panel?.getAttribute("data-consumer-panel")).toBe("free");
   });
 
   it("supports a custom wrapper part name", () => {

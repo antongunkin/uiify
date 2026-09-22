@@ -14,18 +14,14 @@ export function Modal({
   description,
   children,
   closeLabel = "Close",
-  triggerClassName,
   className,
-  closeClassName,
 }: ModalProps): ReactElement {
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
 
   return (
-    <div data-uiify-dialog-scope="" data-uiify-modal-scope="">
-      <ModalTrigger className={triggerClassName} target={id}>
-        {trigger}
-      </ModalTrigger>
+    <div data-part="root" data-uiify-modal="">
+      <ModalTrigger target={id}>{trigger}</ModalTrigger>
       <ModalContent
         aria-describedby={description === undefined ? undefined : descriptionId}
         aria-labelledby={titleId}
@@ -35,9 +31,7 @@ export function Modal({
         <h2 id={titleId}>{title}</h2>
         {description === undefined ? null : <p id={descriptionId}>{description}</p>}
         {children}
-        <ModalClose className={closeClassName} target={id}>
-          {closeLabel}
-        </ModalClose>
+        <ModalClose target={id}>{closeLabel}</ModalClose>
       </ModalContent>
     </div>
   );

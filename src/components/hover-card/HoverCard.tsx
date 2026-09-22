@@ -182,6 +182,8 @@ export function HoverCardContent<TAs extends ElementType = "div">(
       popover: "manual",
       // The consumer's own non-empty `id` wins; otherwise the context-generated id is used.
       id: resolvedId,
+      "data-part": "content",
+      "data-uiify-hover-card": "",
       "data-state": open ? "open" : "closed",
       ...(className ? { className } : {}),
       onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => {

@@ -92,6 +92,25 @@ describe("Select", () => {
     expect(screen.getByRole("combobox").getAttribute("data-disabled")).toBe("");
   });
 
+  it("forwards consumer styling props and owns its identity marker", () => {
+    render(
+      <Select.Root
+        aria-label="Plan"
+        className="consumer-select"
+        data-layout="compact"
+        data-uiify-select="consumer-value"
+      >
+        <Select.Content>
+          <Select.Item value="a">A</Select.Item>
+        </Select.Content>
+      </Select.Root>,
+    );
+    const select = screen.getByRole("combobox");
+    expect(select.getAttribute("class")).toBe("consumer-select");
+    expect(select.getAttribute("data-layout")).toBe("compact");
+    expect(select.getAttribute("data-uiify-select")).toBe("");
+  });
+
   it("lets a consumer onChange veto the internal value sync (policy #1: form-control change veto)", () => {
     const onValueChange = vi.fn();
     const consumerCalls: string[] = [];

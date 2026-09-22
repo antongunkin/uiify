@@ -16,7 +16,7 @@
   }
 
   nav[aria-label="Breadcrumb"] a {
-    color: var(--color-accent);
+    color: var(--primary);
     text-decoration: none;
   }
 
@@ -25,11 +25,11 @@
   }
 
   nav[aria-label="Breadcrumb"] [aria-hidden="true"] {
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
   }
 
   nav[aria-label="Breadcrumb"] [data-current] {
-    color: var(--color-fg);
+    color: var(--foreground);
     font-weight: 600;
   }
 }

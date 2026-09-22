@@ -26,7 +26,6 @@ export function RadioGroup({
       isChecked={(item) => item.value === defaultValue}
       itemInputClassName={(item) => item.className}
       kind="single"
-      labelPart
       namespace="radio-group"
       orientation={orientation}
       rootAttributes={{ "aria-label": ariaLabel, "data-disabled": disabled ? "" : undefined }}

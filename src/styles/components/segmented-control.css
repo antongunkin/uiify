@@ -1,13 +1,13 @@
 /* Segmented control — pill toggle group with sliding indicator. */
 
 @layer components {
-  :where(.uiify-segmented-control, [data-uiify-segmented-control]) {
+  :where([data-uiify-segmented-control], [data-uiify-segmented-control]) {
     position: relative;
     display: inline-flex;
     padding: var(--space-xs);
-    border: var(--border-width) solid var(--color-border);
+    border: var(--border-width) solid var(--border);
     border-radius: var(--radius-md);
-    background-color: var(--color-surface-muted);
+    background-color: var(--muted);
   }
 
   [data-uiify-segmented-control][data-full-width] {
@@ -46,7 +46,7 @@
     padding-block: var(--space-xs);
     padding-inline: var(--space-md);
     border-radius: calc(var(--radius-md) - var(--space-xs));
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
     font-size: var(--text-sm);
     font-weight: var(--weight-medium);
     cursor: pointer;
@@ -57,12 +57,12 @@
   }
 
   [data-uiify-segmented-control] [data-part="item"] > label:hover {
-    color: var(--color-fg);
+    color: var(--foreground);
   }
 
   [data-uiify-segmented-control] [data-part="item"]:has(> input:checked) > label {
-    color: var(--color-fg);
-    background-color: var(--color-surface);
+    color: var(--foreground);
+    background-color: var(--card);
     box-shadow: var(--shadow-1);
   }
 
@@ -73,6 +73,6 @@
 
   [data-uiify-segmented-control] [data-part="item"] > input:focus-visible + label {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 }

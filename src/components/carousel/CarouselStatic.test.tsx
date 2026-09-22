@@ -72,8 +72,8 @@ describe("Carousel server renderer", () => {
         items={[{ id: "only", label: "Only", children: "Only content" }]}
       />,
     );
-    expect(container.querySelector("[data-uiify-carousel-slide-nav]")).toBeNull();
-    expect(container.querySelector("[data-uiify-carousel-dots]")).toBeNull();
+    expect(container.querySelector('[data-part="slide-nav"]')).toBeNull();
+    expect(container.querySelector('[data-part="dots"]')).toBeNull();
     expect(screen.getByRole("group", { name: "Only, 1 of 1" })).toBeTruthy();
   });
 
@@ -147,12 +147,10 @@ describe("Carousel server renderer", () => {
     expect(document.getElementById("inner--slide-two")).toBeTruthy();
     expect(screen.getAllByRole("region")).toHaveLength(3);
     const outer = screen.getByRole("region", { name: "Outer gallery" });
-    expect(outer.querySelector(":scope > [data-uiify-carousel-viewport]")?.children).toHaveLength(
-      1,
-    );
+    expect(outer.querySelector(':scope > [data-part="viewport"]')?.children).toHaveLength(1);
   });
 
-  it("forwards localized labels, direction, styles and every class slot", () => {
+  it("forwards root and item classes and exposes public parts through data-part", () => {
     render(
       <CarouselMarkup
         base={{
@@ -164,18 +162,6 @@ describe("Carousel server renderer", () => {
           ],
           dir: "rtl",
           className: "root",
-          classNames: {
-            viewport: "viewport",
-            slide: "slide",
-            slideContent: "content",
-            controls: "controls",
-            previous: "previous",
-            next: "next",
-            dots: "dots",
-            dot: "dot",
-            rotation: "rotation",
-            status: "status",
-          },
           style: { "--uiify-carousel-gap": "2rem" },
           labels: {
             previous: "Назад",
@@ -198,23 +184,20 @@ describe("Carousel server renderer", () => {
     expect(root.classList.contains("root")).toBe(true);
     expect(root.getAttribute("dir")).toBe("rtl");
     expect((root as HTMLElement).style.getPropertyValue("--uiify-carousel-gap")).toBe("2rem");
-    expect(root.querySelector(".viewport")).toBeTruthy();
-    expect(root.querySelector(".slide.item")).toBeTruthy();
-    expect(root.querySelector(".content")).toBeTruthy();
-    expect(root.querySelector(".controls")).toBeTruthy();
-    expect(within(root).getByRole("button", { name: "Назад" }).classList.contains("previous")).toBe(
-      true,
-    );
-    expect(within(root).getByRole("button", { name: "Вперёд" }).classList.contains("next")).toBe(
-      true,
-    );
+    expect(root.querySelector(':scope > [data-part="viewport"]')).toBeTruthy();
     expect(
-      within(root).getByRole("link", { name: "Перейти к One" }).classList.contains("dot"),
-    ).toBe(true);
+      root.querySelector(':scope > [data-part="viewport"] > [data-part="slide"].item'),
+    ).toBeTruthy();
+    expect(root.querySelector('[data-part="slide-content"]')).toBeTruthy();
     expect(
-      within(root).getByRole("button", { name: "Остановить" }).classList.contains("rotation"),
-    ).toBe(true);
-    expect(root.querySelector(".status")).toBeTruthy();
+      root.querySelector('[data-part="controls"][data-carousel-action="previous"]'),
+    ).toBeTruthy();
+    expect(root.querySelector('[data-part="controls"][data-carousel-action="next"]')).toBeTruthy();
+    expect(root.querySelector('[data-part="dot"]')).toBeTruthy();
+    expect(
+      root.querySelector('[data-part="controls"][data-carousel-action="rotation"]'),
+    ).toBeTruthy();
+    expect(root.querySelector('[data-part="status"]')).toBeTruthy();
     expect(root.querySelector("[aria-label='One, 1 из 2']")).toBeTruthy();
   });
 

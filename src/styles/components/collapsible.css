@@ -3,8 +3,8 @@
    into the BEM classes, both rules kept together so they can't drift apart. */
 
 @layer components {
-  :where(.uiify-collapsible, [data-uiify-collapsible]) {
-    border: var(--border-width) solid var(--color-border);
+  :where([data-uiify-collapsible], [data-uiify-collapsible]) {
+    border: var(--border-width) solid var(--border);
     border-radius: var(--radius-md);
     overflow: hidden;
   }
@@ -26,20 +26,20 @@
   }
 
   [data-uiify-collapsible] [data-part="trigger"]:hover {
-    background-color: var(--color-surface-raised);
+    background-color: var(--secondary);
   }
 
   [data-uiify-collapsible] [data-part="trigger"]:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: inset 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 
   [data-uiify-collapsible] [data-part="trigger"]::after {
     content: "";
     inline-size: 0.5rem;
     block-size: 0.5rem;
-    border-inline-end: 2px solid var(--color-muted-fg);
-    border-block-end: 2px solid var(--color-muted-fg);
+    border-inline-end: 2px solid var(--muted-foreground);
+    border-block-end: 2px solid var(--muted-foreground);
     rotate: 45deg;
     transition: rotate var(--duration-fast) var(--ease-out);
   }
@@ -49,13 +49,13 @@
   }
 
   [data-uiify-collapsible][open] [data-part="trigger"] {
-    color: var(--color-accent);
+    color: var(--primary);
   }
 
   [data-uiify-collapsible] [data-part="panel"] {
     padding-block: 0 var(--space-lg);
     padding-inline: var(--space-lg);
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
     font-size: var(--text-sm);
   }
 
@@ -64,7 +64,7 @@
       interpolate-size: allow-keywords;
     }
 
-    :where(.uiify-collapsible, [data-uiify-collapsible])::details-content {
+    :where([data-uiify-collapsible], [data-uiify-collapsible])::details-content {
       block-size: 0;
       overflow: clip;
       transition:
@@ -72,7 +72,7 @@
         content-visibility var(--duration-base) allow-discrete;
     }
 
-    :where(.uiify-collapsible, [data-uiify-collapsible])[open]::details-content {
+    :where([data-uiify-collapsible], [data-uiify-collapsible])[open]::details-content {
       block-size: auto;
     }
   }

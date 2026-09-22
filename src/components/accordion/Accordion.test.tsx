@@ -17,6 +17,14 @@ describe("Accordion", () => {
     expect(markup).not.toContain("<input");
   });
 
+  it("keeps the component identity on the root, not on each item", () => {
+    const markup = renderToStaticMarkup(
+      <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,
+    );
+    expect(markup.match(/data-uiify-accordion=""/g)).toHaveLength(1);
+    expect(markup).not.toContain('data-part="item" data-uiify-accordion=""');
+  });
+
   it("sets a shared name on every item for type=single, enabling exclusivity", () => {
     const markup = renderToStaticMarkup(
       <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,

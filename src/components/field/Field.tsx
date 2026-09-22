@@ -58,6 +58,7 @@ export function FieldLabel(props: FieldLabelProps): ReactElement | null {
       ...consumerProps,
       id: labelId,
       htmlFor: controlId,
+      "data-part": "label",
       "data-disabled": disabled ? "" : undefined,
       "data-required": required ? "" : undefined,
       ...(className ? { className } : {}),
@@ -81,13 +82,21 @@ export function FieldControl<TAs extends ElementType = "div">(
   } = props as FieldControlProps<ElementType>;
   const { controlId, descriptionId, errorId, labelId } = getFieldIds(fieldId);
   const describedBy = [descriptionId, invalid ? errorId : undefined].filter(Boolean).join(" ");
+  const controlIdentity =
+    as === "input"
+      ? { "data-uiify-input": "" }
+      : as === "textarea"
+        ? { "data-uiify-textarea": "" }
+        : {};
 
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
       ...consumerProps,
+      ...controlIdentity,
       id: controlId,
+      "data-part": "control",
       "aria-labelledby": labelId,
       "aria-describedby": describedBy || undefined,
       "aria-invalid": invalid || undefined,
@@ -110,6 +119,7 @@ export function FieldDescription(props: FieldDescriptionProps): ReactElement | n
     props: {
       ...consumerProps,
       id: descriptionId,
+      "data-part": "description",
       "data-disabled": disabled ? "" : undefined,
       ...(className ? { className } : {}),
       children,
@@ -127,6 +137,7 @@ export function FieldError(props: FieldErrorProps): ReactElement | null {
     props: {
       ...consumerProps,
       id: errorId,
+      "data-part": "error",
       role: "alert",
       "data-invalid": "",
       ...(className ? { className } : {}),

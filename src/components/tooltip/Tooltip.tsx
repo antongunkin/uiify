@@ -235,6 +235,8 @@ export function TooltipContent<TAs extends ElementType = "div">(
       // The consumer's own non-empty `id` wins; otherwise the context-generated id is used.
       id: resolvedId,
       role: "tooltip",
+      "data-part": "content",
+      "data-uiify-tooltip": "",
       "data-state": open ? "open" : "closed",
       ...(className ? { className } : {}),
       onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => {

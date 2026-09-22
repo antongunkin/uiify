@@ -7,7 +7,7 @@ describe("applyVirtualScrollRangeToDom", () => {
   it("writes --uiify-range-start on the spacer for fixed-height lists", () => {
     const scrollport = document.createElement("div");
     const spacer = document.createElement("div");
-    spacer.dataset.uiifyVirtualScrollSpacer = "";
+    spacer.dataset.part = "spacer";
     scrollport.append(spacer);
 
     applyVirtualScrollRangeToDom(
@@ -32,9 +32,9 @@ describe("applyVirtualScrollRangeToDom", () => {
   it("writes per-row offsets for dynamic lists", () => {
     const scrollport = document.createElement("div");
     const spacer = document.createElement("div");
-    spacer.dataset.uiifyVirtualScrollSpacer = "";
+    spacer.dataset.part = "spacer";
     const row = document.createElement("div");
-    row.dataset.uiifyVirtualScrollRow = "";
+    row.dataset.part = "row";
     spacer.append(row);
     scrollport.append(spacer);
 

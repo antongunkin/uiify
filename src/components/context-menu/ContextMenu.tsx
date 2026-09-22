@@ -42,6 +42,7 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
   const { children, defaultOpen, onOpenChange, open } = props;
   const virtualAnchorRef = useRef<HTMLSpanElement | null>(null);
   const [radioValue, setRadioValue] = useState<string | undefined>();
+  const [pointerAnchor, setPointerAnchor] = useState(false);
   const surface = useMenuSurface({
     align: "start",
     mode: "manual",
@@ -57,6 +58,7 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
       event.preventDefault();
       virtualAnchorRef.current?.style.setProperty("--uiify-context-menu-x", `${event.clientX}px`);
       virtualAnchorRef.current?.style.setProperty("--uiify-context-menu-y", `${event.clientY}px`);
+      setPointerAnchor(true);
       setTriggerElement(event.currentTarget);
       openPopover();
       queueMicrotask(() => focusMenuItem(contentRef.current));
@@ -65,8 +67,14 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
   );
 
   const contextValue = useMemo<ContextMenuContextValue>(
-    () => ({ ...surface, openAtPointer, radioValue, setRadioValue }),
-    [surface, openAtPointer, radioValue],
+    () => ({
+      ...surface,
+      anchorProps: pointerAnchor ? {} : surface.anchorProps,
+      openAtPointer,
+      radioValue,
+      setRadioValue,
+    }),
+    [pointerAnchor, surface, openAtPointer, radioValue],
   );
 
   return (
@@ -77,7 +85,7 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
           virtualAnchorRef.current = element;
         }}
         data-virtual-anchor=""
-        {...surface.anchorProps}
+        {...(pointerAnchor ? surface.anchorProps : {})}
         style={
           {
             position: "fixed",
@@ -99,7 +107,7 @@ export function ContextMenuTrigger<TAs extends ElementType = "div">(
   props: ContextMenuTriggerProps<TAs>,
 ): ReactElement | null {
   const { as, render, className, ...consumerProps } = props as ContextMenuTriggerProps<"div">;
-  const { open, openAtPointer, setTriggerElement } = useContextMenuContext("Trigger");
+  const { anchorProps, open, openAtPointer, setTriggerElement } = useContextMenuContext("Trigger");
   const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
   const mergedRef = useMergedRefs(setTriggerElement, consumerRef);
   const { onContextMenu: consumerOnContextMenu } = withoutRef as {
@@ -111,6 +119,7 @@ export function ContextMenuTrigger<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       ...withoutRef,
+      ...anchorProps,
       ref: mergedRef,
       ...(className ? { className } : {}),
       onContextMenu: composeEventHandlers(consumerOnContextMenu, openAtPointer),
@@ -147,6 +156,8 @@ export function ContextMenuContent<TAs extends ElementType = "div">(
     ...positionerProps,
     ref: mergedRef,
     role: "menu",
+    "data-part": "content",
+    "data-uiify-menu": "",
     "data-state": open ? "open" : "closed",
     ...(className ? { className } : {}),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
@@ -204,6 +215,7 @@ export function ContextMenuItem<TAs extends ElementType = "div">(
   const itemProps = {
     ...consumerProps,
     role: "menuitem",
+    "data-part": "item",
     ...(className ? { className } : {}),
     onClick: composeEventHandlers(consumerOnClick, handleSelect),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
@@ -293,6 +305,7 @@ export function ContextMenuCheckboxItem(
       {...{
         ...consumerProps,
         role: "menuitemcheckbox",
+        "data-part": "item",
         "aria-checked": (isIndeterminate ? "mixed" : isChecked) as boolean | "mixed",
         "data-state": isIndeterminate ? "indeterminate" : isChecked ? "checked" : "unchecked",
         ...(className ? { className } : {}),
@@ -327,6 +340,7 @@ export function ContextMenuRadioItem(props: ContextMenuRadioItemOwnProps): React
       {...{
         ...consumerProps,
         role: "menuitemradio",
+        "data-part": "item",
         "aria-checked": checked,
         "data-state": checked ? "checked" : "unchecked",
         ...(className ? { className } : {}),
@@ -384,6 +398,7 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
       {...{
         ...consumerProps,
         role: "menuitem",
+        "data-part": "item",
         "aria-haspopup": "menu" as const,
         "aria-expanded": sub.open,
         ...(className ? { className } : {}),
@@ -405,6 +420,8 @@ export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): Rea
     defaultTag: "div",
     props: {
       role: "menu",
+      "data-part": "sub-content",
+      "data-uiify-menu": "",
       "data-state": sub.open ? "open" : "closed",
       hidden: !sub.open ? true : undefined,
       ...(className ? { className } : {}),

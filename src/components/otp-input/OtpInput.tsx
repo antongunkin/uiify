@@ -96,6 +96,7 @@ export function OtpInputRoot<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       ...consumerProps,
+      "data-uiify-otp-input": "",
       "data-disabled": disabled ? "" : undefined,
       "data-complete": value.length === length ? "" : undefined,
       onClick: composeEventHandlers(consumerOnClick, handleClick),
@@ -128,6 +129,7 @@ export function OtpInputSlot<TAs extends ElementType = "div">(
     props: {
       ...consumerProps,
       "aria-hidden": true,
+      "data-part": "slot",
       "data-active": active ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-filled": filled ? "" : undefined,
@@ -199,6 +201,7 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
     defaultTag: "input",
     props: {
       ...consumerProps,
+      "data-part": "control",
       id: inputId,
       ref: hiddenInputRef,
       type: mask ? "password" : "text",

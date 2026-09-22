@@ -17,8 +17,11 @@ describe("DrawerPanel (native shell)", () => {
     expect(trigger.getAttribute("command")).toBe("show-modal");
     expect(trigger.getAttribute("commandfor")).toBe("settings");
     expect(trigger.getAttribute("type")).toBe("button");
+    expect(trigger.getAttribute("data-uiify-button")).toBe("");
     expect(close.getAttribute("command")).toBe("request-close");
     expect(close.getAttribute("commandfor")).toBe("settings");
+    expect(close.getAttribute("data-uiify-button")).toBe("");
+    expect(close.getAttribute("data-variant")).toBe("ghost");
     expect(dialog.hasAttribute("popover")).toBe(false);
     expect(dialog.hasAttribute("open")).toBe(false);
   });

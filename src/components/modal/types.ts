@@ -8,9 +8,7 @@ export interface ModalProps {
   readonly description?: ReactNode;
   readonly children?: ReactNode;
   readonly closeLabel?: ReactNode;
-  readonly triggerClassName?: string;
   readonly className?: string;
-  readonly closeClassName?: string;
 }
 
 /** Own props of the native `show-modal` invoker. */

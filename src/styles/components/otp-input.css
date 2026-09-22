@@ -1,38 +1,38 @@
 /* OTP input — segmented code entry slots. */
 
 @layer components {
-  .uiify-otp-input {
+  [data-uiify-otp-input] {
     position: relative;
     display: inline-flex;
     gap: var(--space-sm);
   }
 
-  .uiify-otp-input__slot {
+  [data-uiify-otp-input] [data-part="slot"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     inline-size: 2.5rem;
     block-size: 2.5rem;
-    border: var(--border-width) solid var(--color-border-strong);
-    border-radius: var(--radius-control);
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+    border: var(--border-width) solid var(--input);
+    border-radius: var(--radius-md);
+    background-color: var(--card);
+    color: var(--foreground);
     font-size: var(--text-lg);
     font-weight: var(--weight-medium);
     transition: var(--transition-colors);
   }
 
-  .uiify-otp-input__slot[data-active] {
-    border-color: var(--color-accent);
-    outline: 2px solid color-mix(in oklch, var(--color-ring) 35%, transparent);
+  [data-uiify-otp-input] [data-part="slot"][data-active] {
+    border-color: var(--primary);
+    outline: 2px solid color-mix(in oklch, var(--ring) 35%, transparent);
     outline-offset: 0;
   }
 
-  .uiify-otp-input__slot[data-filled] {
-    border-color: var(--color-border-strong);
+  [data-uiify-otp-input] [data-part="slot"][data-filled] {
+    border-color: var(--input);
   }
 
-  .uiify-otp-input[data-disabled] .uiify-otp-input__slot {
+  [data-uiify-otp-input][data-disabled] [data-part="slot"] {
     opacity: 0.5;
     cursor: not-allowed;
   }

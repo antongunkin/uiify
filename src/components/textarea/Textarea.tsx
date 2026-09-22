@@ -36,6 +36,7 @@ export function Textarea<TAs extends ElementType = "textarea">(
     defaultTag: "textarea",
     props: {
       ...consumerProps,
+      "data-uiify-textarea": "",
       "aria-invalid": invalid || undefined,
       "data-autosize": autoSize ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,

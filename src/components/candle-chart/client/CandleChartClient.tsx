@@ -14,7 +14,7 @@ interface InteractiveCandleStyle extends CSSProperties {
 interface CursorState extends CandleChartPointerPosition {}
 
 /**
- * `.candle-chart__plot`'s fixed price-axis column (4.5rem) plus its grid gap
+ * `[data-part="plot"]`'s fixed price-axis column (4.5rem) plus its grid gap
  * (0.75rem) — see candle-chart.css. `useChartViewport` measures the whole
  * `<figure>`, but candles only ever get the width left over after this
  * column, so it must be subtracted before sizing `minItemWidth`.

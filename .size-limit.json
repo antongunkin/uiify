@@ -7,7 +7,7 @@
   {
     "name": "enhance",
     "path": "dist/components/enhance.js",
-    "limit": "1 kB"
+    "limit": "1.05 kB"
   },
   {
     "name": "modal/client",
@@ -126,7 +126,7 @@
   {
     "name": "select",
     "path": "dist/components/select.js",
-    "limit": "0.5 kB",
+    "limit": "0.55 kB",
     "import": "*"
   },
   {

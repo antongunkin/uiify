@@ -54,7 +54,7 @@ function getViewport(container: HTMLElement): HTMLDivElement {
 }
 
 function getSpacer(container: HTMLElement): HTMLDivElement {
-  return container.querySelector("[data-uiify-virtual-scroll-spacer]") as HTMLDivElement;
+  return container.querySelector('[data-part="spacer"]') as HTMLDivElement;
 }
 
 async function flushScrollSync(): Promise<void> {
@@ -171,7 +171,7 @@ describe("VirtualScroll", () => {
   it("renders only the visible window plus overscan rows", () => {
     renderSongList(createSongs(10_000));
 
-    const renderedRows = document.querySelectorAll("[data-uiify-virtual-scroll-row]");
+    const renderedRows = document.querySelectorAll('[data-part="row"]');
     const visibleInWindow = Math.ceil(600 / VIRTUAL_SCROLL_ROW_HEIGHT);
     const expectedMax = visibleInWindow + VIRTUAL_SCROLL_OVERSCAN * 2;
 
@@ -186,7 +186,7 @@ describe("VirtualScroll", () => {
 
     expect(getSpacer(container).style.getPropertyValue("--uiify-range-start")).toBe("0");
 
-    const firstRow = container.querySelector("[data-uiify-virtual-scroll-row]") as HTMLDivElement;
+    const firstRow = container.querySelector('[data-part="row"]') as HTMLDivElement;
     expect(firstRow.style.getPropertyValue("--uiify-slot-index")).toBe("0");
     expect(firstRow.style.getPropertyValue("--uiify-row-index")).toBe("");
   });
@@ -246,7 +246,7 @@ describe("VirtualScroll", () => {
     const viewport = getViewport(container);
     await scrollViewport(viewport, VIRTUAL_SCROLL_ROW_HEIGHT * 10);
 
-    const firstRow = container.querySelector("[data-uiify-virtual-scroll-row]") as HTMLDivElement;
+    const firstRow = container.querySelector('[data-part="row"]') as HTMLDivElement;
     expect(firstRow.style.getPropertyValue("--uiify-slot-index")).toBe("0");
     expect(getSpacer(container).style.getPropertyValue("--uiify-range-start")).toBe("5");
   });
@@ -264,12 +264,12 @@ describe("VirtualScroll", () => {
     const { container } = renderSongList(createSongs(200));
     const viewport = getViewport(container);
 
-    const countBefore = container.querySelectorAll("[data-uiify-virtual-scroll-row]").length;
+    const countBefore = container.querySelectorAll('[data-part="row"]').length;
     expect(countBefore).toBeGreaterThan(0);
 
     await scrollViewport(viewport, VIRTUAL_SCROLL_ROW_HEIGHT * 10);
 
-    expect(container.querySelectorAll("[data-uiify-virtual-scroll-row]").length).toBe(countBefore);
+    expect(container.querySelectorAll('[data-part="row"]').length).toBe(countBefore);
   });
 
   it("does not re-render rows when scroll stays within the same visible range", async () => {
@@ -347,7 +347,7 @@ describe("VirtualScroll", () => {
     const viewport = getViewport(container);
     await scrollViewport(viewport, items.length * VIRTUAL_SCROLL_ROW_HEIGHT);
 
-    const rows = container.querySelectorAll("[data-uiify-virtual-scroll-row]");
+    const rows = container.querySelectorAll('[data-part="row"]');
     for (const row of rows) {
       expect(row.querySelector("[data-testid^='title-']")).toBeTruthy();
     }
@@ -356,7 +356,7 @@ describe("VirtualScroll", () => {
   it("renders no rows for an empty list", () => {
     const { container } = renderSongList([]);
 
-    expect(container.querySelectorAll("[data-uiify-virtual-scroll-row]")).toHaveLength(0);
+    expect(container.querySelectorAll('[data-part="row"]')).toHaveLength(0);
     expect(getViewport(container).style.getPropertyValue("--uiify-virtual-scroll-count")).toBe("0");
   });
 
@@ -379,7 +379,7 @@ describe("VirtualScroll", () => {
       observer.trigger(getViewport(container), 400);
     });
 
-    const rows = document.querySelectorAll("[data-uiify-virtual-scroll-row]");
+    const rows = document.querySelectorAll('[data-part="row"]');
     const visible = Math.ceil(400 / rowHeight);
     expect(rows.length).toBeLessThanOrEqual(visible + overscan * 2);
     expect(getViewport(container).style.getPropertyValue("--uiify-virtual-scroll-row-height")).toBe(
@@ -434,7 +434,7 @@ describe("VirtualScroll", () => {
       observer.trigger(viewport, 320);
     });
 
-    const rows = container.querySelectorAll("[data-uiify-virtual-scroll-row]");
+    const rows = container.querySelectorAll('[data-part="row"]');
     const visible = Math.ceil(320 / VIRTUAL_SCROLL_ROW_HEIGHT);
     expect(rows.length).toBeLessThanOrEqual(visible + VIRTUAL_SCROLL_OVERSCAN * 2);
 
@@ -452,13 +452,13 @@ describe("VirtualScroll", () => {
       observer.trigger(viewport, 200);
     });
 
-    const rowsBefore = container.querySelectorAll("[data-uiify-virtual-scroll-row]").length;
+    const rowsBefore = container.querySelectorAll('[data-part="row"]').length;
 
     await act(async () => {
       observer.trigger(viewport, 600);
     });
 
-    const rowsAfter = container.querySelectorAll("[data-uiify-virtual-scroll-row]").length;
+    const rowsAfter = container.querySelectorAll('[data-part="row"]').length;
     expect(rowsAfter).toBeGreaterThan(rowsBefore);
 
     vi.unstubAllGlobals();
@@ -474,8 +474,8 @@ describe("VirtualScroll", () => {
     );
 
     expect(markup).toContain('data-uiify-virtual-scroll=""');
-    expect(markup).toContain('data-uiify-virtual-scroll-spacer=""');
-    expect(markup).toContain('data-uiify-virtual-scroll-row=""');
+    expect(markup).toContain('data-part="spacer"');
+    expect(markup).toContain('data-part="row"');
     expect(markup).toContain("Song 1");
   });
 
@@ -485,7 +485,7 @@ describe("VirtualScroll", () => {
     const viewport = screen.getByRole("list");
     expect(viewport.dataset.uiifyVirtualScroll).toBe("");
 
-    const row = viewport.querySelector("[data-uiify-virtual-scroll-row]") as HTMLElement;
+    const row = viewport.querySelector('[data-part="row"]') as HTMLElement;
     expect(row.getAttribute("role")).toBe("listitem");
     expect(row.getAttribute("aria-setsize")).toBe("20");
     expect(row.getAttribute("aria-posinset")).toBe("1");
@@ -600,14 +600,14 @@ describe("VirtualScroll", () => {
     );
 
     const viewport = getViewport(container);
-    expect(viewport.dataset.uiifyDynamicLayout).toBe("");
+    expect(viewport.dataset.dynamicLayout).toBe("");
 
     await act(async () => {
       observer.trigger(viewport, 600);
       await scrollViewport(viewport, 400);
     });
 
-    const row = container.querySelector("[data-uiify-virtual-scroll-row]") as HTMLElement;
+    const row = container.querySelector('[data-part="row"]') as HTMLElement;
     expect(row.style.getPropertyValue("--uiify-row-offset")).not.toBe("");
 
     vi.unstubAllGlobals();
@@ -639,7 +639,7 @@ describe("VirtualScroll", () => {
       />,
     );
 
-    const rows = container.querySelectorAll("[data-uiify-virtual-scroll-row]");
+    const rows = container.querySelectorAll('[data-part="row"]');
     expect(rows.length).toBeGreaterThan(1);
 
     // One observer for the scrollport viewport, one for the whole row Fragment.

@@ -63,7 +63,7 @@ export function LineChart<TAs extends ElementType = "figure">(
       >
         {interactive ? (
           <button
-            className="line-chart__point-hit"
+            data-part="point-hit"
             type="button"
             aria-label={`Point ${String(point.time)}`}
             aria-pressed={isSelected}
@@ -91,17 +91,17 @@ export function LineChart<TAs extends ElementType = "figure">(
         <>
           <figcaption>{label}</figcaption>
           {interactive && readoutPoint ? (
-            <div className="line-chart__readout" aria-live="polite">
-              <span className="line-chart__readout-time">{String(readoutPoint.time)}</span>
+            <div data-part="readout" aria-live="polite">
+              <span data-part="readout-time">{String(readoutPoint.time)}</span>
               <span>{readoutPoint.value}</span>
             </div>
           ) : null}
-          <div className="line-chart__plot" aria-hidden={interactive ? undefined : true}>
-            <div className="line-chart__scroll-viewport">
-              <div className="line-chart__canvas">
-                <div className="line-chart__viewport">
+          <div data-part="plot" aria-hidden={interactive ? undefined : true}>
+            <div data-part="scroll-viewport">
+              <div data-part="canvas">
+                <div data-part="viewport">
                   <ol
-                    className="line-chart__points"
+                    data-part="points"
                     aria-label={`${label} points`}
                     style={pointsStyle(data.length)}
                   >
@@ -109,20 +109,16 @@ export function LineChart<TAs extends ElementType = "figure">(
                   </ol>
                   {interactive && crosshairPoint && activePointIndex !== undefined ? (
                     <div
-                      className="line-chart__crosshair"
+                      data-part="crosshair"
                       aria-hidden="true"
                       style={crosshairStyle(activePointIndex, data.length, cursorY)}
                     >
-                      <span className="line-chart__crosshair-marker">+</span>
+                      <span data-part="crosshair-marker">+</span>
                     </div>
                   ) : null}
                 </div>
-                <div className="line-chart__time-viewport">
-                  <ol
-                    className="line-chart__time-axis"
-                    data-axis="time"
-                    aria-label={`${label} dates`}
-                  >
+                <div data-part="time-viewport">
+                  <ol data-part="time-axis" data-axis="time" aria-label={`${label} dates`}>
                     {timeLabels.map((axisLabel, index) => (
                       <li
                         key={`${axisLabel.position}-${index}`}
@@ -133,7 +129,7 @@ export function LineChart<TAs extends ElementType = "figure">(
                     ))}
                     {interactive && crosshairPoint && activePointIndex !== undefined ? (
                       <li
-                        className="line-chart__crosshair-time"
+                        data-part="crosshair-time"
                         style={crosshairStyle(activePointIndex, data.length, undefined)}
                       >
                         {String(crosshairPoint.time)}
@@ -143,7 +139,7 @@ export function LineChart<TAs extends ElementType = "figure">(
                 </div>
               </div>
             </div>
-            <ol className="line-chart__value-axis" data-axis="value" aria-label={`${label} values`}>
+            <ol data-part="value-axis" data-axis="value" aria-label={`${label} values`}>
               {valueLabels.map((axisLabel, index) => (
                 <li
                   key={`${axisLabel.position}-${index}`}
@@ -153,13 +149,13 @@ export function LineChart<TAs extends ElementType = "figure">(
                 </li>
               ))}
               {interactive && crosshairPoint && activePointIndex !== undefined ? (
-                <li className="line-chart__crosshair-value" style={cursorStyle(cursorY)}>
+                <li data-part="crosshair-value" style={cursorStyle(cursorY)}>
                   {crosshairPoint.value}
                 </li>
               ) : null}
             </ol>
           </div>
-          <table className="line-chart__data" aria-label={`${label} data`}>
+          <table data-part="data" aria-label={`${label} data`}>
             <thead>
               <tr>
                 <th scope="col">Time</th>

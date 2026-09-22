@@ -33,7 +33,6 @@ describe("CandleChart styles", () => {
     expect(css).not.toContain("--candle-low");
     expect(css).not.toContain("--candle-close");
     expect(css).not.toContain("--candle-time");
-    expect(css).not.toContain("candle-chart__tooltip");
     expect(css).toContain("color: light-dark(oklch(52% 0.01 0deg), oklch(72% 0.01 0deg))");
     expect(css).toContain("inline-size: 100%");
   });

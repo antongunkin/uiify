@@ -22,7 +22,7 @@ describe("AlertModal", () => {
     expect(dialog.getAttribute("aria-describedby")).toBe("delete-item-description");
     expect(dialog.hasAttribute("popover")).toBe(false);
     expect(dialog.hasAttribute("open")).toBe(false);
-    expect(trigger.closest("[data-uiify-alert-dialog-scope]")).not.toBeNull();
+    expect(trigger.closest("[data-uiify-alert-modal]")).not.toBeNull();
   });
 
   it("renders cancel and action as request-close invokers with their values", () => {

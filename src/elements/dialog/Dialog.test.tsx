@@ -32,7 +32,9 @@ describe("Dialog", () => {
     expect(html).toContain('command="request-close"');
     expect(html).toContain('class="custom"');
     expect(html).toContain('<h2 id="settings-title">Settings</h2>');
-    expect(html).toContain('data-uiify-dialog-content=""');
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    const content = parsed.querySelector('[data-uiify-dialog][data-part="content"]');
+    expect(content).not.toBeNull();
     expect(html).not.toContain("popover=");
     expect(html).not.toContain("aria-expanded=");
     expect(html).not.toContain("data-state=");
@@ -49,7 +51,8 @@ describe("Dialog", () => {
     expect(button.getAttribute("type")).toBe("button");
     expect(button.getAttribute("command")).toBe("show-modal");
     expect(button.getAttribute("commandfor")).toBe("settings");
-    expect(button.hasAttribute("data-uiify-dialog-trigger")).toBe(true);
+    expect(button.getAttribute("data-uiify-dialog")).toBe("");
+    expect(button.getAttribute("data-part")).toBe("trigger");
   });
 
   it("calls the consumer onClick once and lets it cancel the native action", () => {
@@ -73,7 +76,8 @@ describe("Dialog", () => {
     );
     expect(ref.current).toBe(screen.getByRole("button", { name: "Close" }));
     expect(ref.current?.getAttribute("command")).toBe("request-close");
-    expect(ref.current?.hasAttribute("data-uiify-dialog-close")).toBe(true);
+    expect(ref.current?.getAttribute("data-uiify-dialog")).toBe("");
+    expect(ref.current?.getAttribute("data-part")).toBe("close");
   });
 
   it("renders a custom button component as the invoker and keeps its own props", () => {

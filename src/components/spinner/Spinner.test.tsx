@@ -35,13 +35,12 @@ describe("Spinner", () => {
     expect(screen.getByRole("status").className).toBe("docs-spinner docs-spinner--small");
   });
 
-  it("renders a visible label when labelClassName is provided", () => {
-    render(<Spinner label="Loading content" labelClassName="docs-spinner__label" />);
+  it("renders a visible label when showLabel is true", () => {
+    render(<Spinner label="Loading content" showLabel />);
     const status = screen.getByRole("status", { name: "Loading content" });
 
     const visibleLabel = status.querySelector('[data-part="label"]');
-    expect(visibleLabel?.className).toBe("docs-spinner__label");
-    expect(visibleLabel?.getAttribute("data-uiify-spinner-label")).toBe("");
+    expect(visibleLabel?.getAttribute("data-part")).toBe("label");
     expect(visibleLabel?.textContent).toBe("Loading content");
   });
 

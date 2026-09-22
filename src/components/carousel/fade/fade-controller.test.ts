@@ -14,9 +14,9 @@ async function frame() {
 }
 beforeEach(() => {
   vi.useFakeTimers();
-  document.body.innerHTML = `<section data-uiify-carousel><button>Control</button><div data-uiify-carousel-viewport tabindex="0">${[0, 1, 2].map((i) => `<div id="s${i}" data-uiify-carousel-slide><button>Content ${i}</button></div>`).join("")}</div></section>`;
+  document.body.innerHTML = `<section data-uiify-carousel><button>Control</button><div data-part="viewport" tabindex="0">${[0, 1, 2].map((i) => `<div id="s${i}" data-part="slide"><button>Content ${i}</button></div>`).join("")}</div></section>`;
   root = document.querySelector("section")!;
-  slides = Array.from(root.querySelectorAll("[data-uiify-carousel-slide]"));
+  slides = Array.from(root.querySelectorAll('[data-part="slide"]'));
   for (const slide of slides) slide.getAnimations = () => [];
 });
 afterEach(() => {

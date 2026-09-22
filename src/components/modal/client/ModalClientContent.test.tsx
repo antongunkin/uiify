@@ -50,6 +50,20 @@ function getModal(): HTMLDialogElement {
   return screen.getByRole("dialog", { hidden: true }) as HTMLDialogElement;
 }
 
+function stubDialogBox(dialog: HTMLDialogElement): void {
+  vi.spyOn(dialog, "getBoundingClientRect").mockReturnValue({
+    bottom: 300,
+    height: 200,
+    left: 100,
+    right: 300,
+    top: 100,
+    width: 200,
+    x: 100,
+    y: 100,
+    toJSON: () => ({}),
+  });
+}
+
 function ControlledHarness({ onOpenChange }: { readonly onOpenChange?: (open: boolean) => void }) {
   const [open, setOpen] = useState(false);
   return (
@@ -167,9 +181,13 @@ describe("ModalClientContent", () => {
         <p>Body</p>
       </ModalClientContent>,
     );
+    const dialog = getModal();
+    stubDialogBox(dialog);
+    fireEvent.click(dialog, { clientX: 106, clientY: 106 });
+    expect(requestClose).not.toHaveBeenCalled();
     fireEvent.click(screen.getByText("Body"));
     expect(requestClose).not.toHaveBeenCalled();
-    fireEvent.click(getModal());
+    fireEvent.click(dialog, { clientX: 50, clientY: 50 });
     expect(requestClose).toHaveBeenCalledTimes(1);
 
     const veto = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
@@ -178,7 +196,7 @@ describe("ModalClientContent", () => {
         <p>Body</p>
       </ModalClientContent>,
     );
-    fireEvent.click(getModal());
+    fireEvent.click(dialog, { clientX: 50, clientY: 50 });
     expect(veto).toHaveBeenCalledTimes(1);
     expect(requestClose).toHaveBeenCalledTimes(1);
   });

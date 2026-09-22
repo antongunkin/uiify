@@ -1,10 +1,5 @@
 import type { ReactElement } from "react";
-import {
-  carouselFragment,
-  carouselSlideId,
-  joinClassNames,
-  normalizeCarouselProps,
-} from "./carousel-markup.js";
+import { carouselFragment, carouselSlideId, normalizeCarouselProps } from "./carousel-markup.js";
 import type { CarouselMarkupProps } from "./types.js";
 
 export function CarouselMarkup({
@@ -13,7 +8,7 @@ export function CarouselMarkup({
   presentation,
 }: CarouselMarkupProps): ReactElement | null {
   const base = normalizeCarouselProps(rawBase);
-  const { items, classNames, labels } = base;
+  const { items, labels } = base;
   const hasControls = items.length > 1;
 
   if (items.length === 0) return null;
@@ -47,8 +42,7 @@ export function CarouselMarkup({
       {presentation && hasControls && presentation.autoplay ? (
         <button
           type="button"
-          className={joinClassNames(classNames?.controls, classNames?.rotation)}
-          data-uiify-carousel-controls=""
+          data-part="controls"
           data-carousel-action="rotation"
           hidden={!enhanced}
         >
@@ -61,8 +55,7 @@ export function CarouselMarkup({
         tabIndex={0}
         role="group"
         aria-label={base["aria-label"]}
-        className={classNames?.viewport}
-        data-uiify-carousel-viewport=""
+        data-part="viewport"
       >
         {items.map((item, index) => {
           const slideId = carouselSlideId(base.id, item.id);
@@ -73,17 +66,15 @@ export function CarouselMarkup({
               role="group"
               aria-roledescription="slide"
               aria-label={`${item.label}, ${index + 1} ${labels.of} ${items.length}`}
-              className={joinClassNames(classNames?.slide, item.className)}
-              data-uiify-carousel-slide=""
+              className={item.className}
+              data-part="slide"
               data-carousel-index={index}
               {...(enhanced
                 ? { "data-state": index === presentedIndex ? "active" : "inactive" }
                 : {})}
               {...(fade && index !== presentedIndex ? { inert: true, "aria-hidden": true } : {})}
             >
-              <div className={classNames?.slideContent} data-uiify-carousel-content="">
-                {item.children}
-              </div>
+              <div data-part="slide-content">{item.children}</div>
             </div>
           );
         })}
@@ -92,9 +83,8 @@ export function CarouselMarkup({
       {presentation && hasControls && base.navigation ? (
         <button
           type="button"
-          className={joinClassNames(classNames?.controls, classNames?.previous)}
           aria-label={labels.previous}
-          data-uiify-carousel-controls=""
+          data-part="controls"
           data-carousel-action="previous"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atStart : undefined}
@@ -104,11 +94,7 @@ export function CarouselMarkup({
       ) : null}
 
       {base.pagination && hasControls ? (
-        <nav
-          aria-label={labels.navigation}
-          className={classNames?.dots}
-          data-uiify-carousel-dots=""
-        >
+        <nav aria-label={labels.navigation} data-part="dots">
           {dotIndices.map((itemIndex) => {
             const item = items[itemIndex];
             if (!item) return null;
@@ -118,8 +104,7 @@ export function CarouselMarkup({
                 href={carouselFragment(carouselSlideId(base.id, item.id))}
                 aria-label={`${labels.goTo} ${item.label}`}
                 aria-current={showActiveDot && itemIndex === activeIndex ? "true" : undefined}
-                className={classNames?.dot}
-                data-uiify-carousel-dot=""
+                data-part="dot"
                 data-carousel-index={itemIndex}
               >
                 {itemIndex + 1}
@@ -132,9 +117,8 @@ export function CarouselMarkup({
       {presentation && hasControls && base.navigation ? (
         <button
           type="button"
-          className={joinClassNames(classNames?.controls, classNames?.next)}
           aria-label={labels.next}
-          data-uiify-carousel-controls=""
+          data-part="controls"
           data-carousel-action="next"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atEnd : undefined}
@@ -145,10 +129,9 @@ export function CarouselMarkup({
 
       {presentation ? (
         <div
-          className={classNames?.status}
           aria-live={presentation.autoplay?.playing ? "off" : "polite"}
           aria-atomic="true"
-          data-uiify-carousel-status=""
+          data-part="status"
         >
           {enhanced && activeIndex !== undefined
             ? `${items[activeIndex]?.label ?? ""}, ${activeIndex + 1} ${labels.of} ${items.length}`

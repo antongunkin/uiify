@@ -18,6 +18,7 @@ export function Button<TAs extends ElementType = "button">(
     defaultTag: "button",
     props: {
       ...consumerProps,
+      "data-uiify-button": "",
       ...(nativeButton
         ? { type: type ?? "button", ...(disabled ? { disabled: true } : {}) }
         : disabled

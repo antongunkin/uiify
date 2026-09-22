@@ -9,7 +9,7 @@ export interface SpinnerOwnProps {
   readonly children?: ReactNode;
   readonly delay?: number;
   readonly label?: string;
-  readonly labelClassName?: string;
+  readonly showLabel?: boolean;
   readonly size?: SpinnerSize;
 }
 

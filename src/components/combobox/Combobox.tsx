@@ -77,6 +77,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
   }
 
   const {
+    className,
     children,
     defaultInputValue,
     defaultOpen,
@@ -296,9 +297,11 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
   );
 
   return (
-    <CollectionProvider>
-      <ComboboxProvider value={contextValue}>{children}</ComboboxProvider>
-    </CollectionProvider>
+    <div className={className} data-uiify-combobox="">
+      <CollectionProvider>
+        <ComboboxProvider value={contextValue}>{children}</ComboboxProvider>
+      </CollectionProvider>
+    </div>
   );
 }
 ComboboxRoot.displayName = "ComboboxRoot";
@@ -475,6 +478,7 @@ export function ComboboxInput<TAs extends ElementType = "input">(
       "aria-controls": listboxId,
       "aria-expanded": openState,
       ...(activeId ? { "aria-activedescendant": activeId } : {}),
+      "data-part": "input",
       ...(className ? { className } : {}),
       value: inputValue,
       onChange: composeEventHandlers(consumerOnChange, handleChange),
@@ -513,6 +517,7 @@ export function ComboboxTrigger<TAs extends ElementType = "button">(
       "aria-haspopup": "listbox",
       ...(nativeButton ? { type: "button" } : {}),
       ...(className ? { className } : {}),
+      "data-part": "trigger",
       children,
       onClick: composeEventHandlers(consumerOnClick, handleClick),
     },
@@ -560,6 +565,7 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
       role="listbox"
       aria-multiselectable={multiple ? true : undefined}
       data-align={align}
+      data-part="content"
       data-side={side}
       data-state={openState ? "open" : "closed"}
       {...(className ? { className } : {})}
@@ -593,6 +599,7 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
       "data-disabled": item.disabled ? "" : undefined,
       "data-highlighted": active ? "" : undefined,
       "data-selected": multiple && selected ? "" : undefined,
+      "data-part": "item",
       ...(className ? { className } : {}),
       children: item.label,
       onMouseDown(event: SyntheticEvent<HTMLElement>) {
@@ -612,6 +619,7 @@ export function ComboboxEmpty(props: ComboboxEmptyOwnProps): ReactElement | null
     defaultTag: "div",
     props: {
       role: "presentation",
+      "data-part": "empty",
       ...(className ? { className } : {}),
       children,
     },

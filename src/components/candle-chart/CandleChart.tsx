@@ -238,7 +238,7 @@ export function CandleChart<TAs extends ElementType = "figure">(
       >
         {interactive ? (
           <button
-            className="candle-chart__candle-hit"
+            data-part="candle-hit"
             type="button"
             aria-label={`Candle ${String(candle.time)}`}
             aria-pressed={isSelected}
@@ -266,37 +266,33 @@ export function CandleChart<TAs extends ElementType = "figure">(
         <>
           <figcaption>{label}</figcaption>
           {interactive && readoutCandle ? (
-            <div className="candle-chart__readout" aria-live="polite">
-              <span className="candle-chart__readout-time">{String(readoutCandle.time)}</span>
+            <div data-part="readout" aria-live="polite">
+              <span data-part="readout-time">{String(readoutCandle.time)}</span>
               <span>O {readoutCandle.open}</span>
               <span>H {readoutCandle.high}</span>
               <span>L {readoutCandle.low}</span>
               <span>C {readoutCandle.close}</span>
             </div>
           ) : null}
-          <div className="candle-chart__plot" aria-hidden={interactive ? undefined : true}>
-            <div className="candle-chart__scroll-viewport">
-              <div className="candle-chart__canvas">
-                <div className="candle-chart__viewport">
-                  <ol className="candle-chart__candles" aria-label={`${label} candles`}>
+          <div data-part="plot" aria-hidden={interactive ? undefined : true}>
+            <div data-part="scroll-viewport">
+              <div data-part="canvas">
+                <div data-part="viewport">
+                  <ol data-part="candles" aria-label={`${label} candles`}>
                     {candles}
                   </ol>
                   {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                     <div
-                      className="candle-chart__crosshair"
+                      data-part="crosshair"
                       aria-hidden="true"
                       style={crosshairStyle(activeCandleIndex, data.length, cursorY)}
                     >
-                      <span className="candle-chart__crosshair-marker">+</span>
+                      <span data-part="crosshair-marker">+</span>
                     </div>
                   ) : null}
                 </div>
-                <div className="candle-chart__time-viewport">
-                  <ol
-                    className="candle-chart__time-axis"
-                    data-axis="time"
-                    aria-label={`${label} months`}
-                  >
+                <div data-part="time-viewport">
+                  <ol data-part="time-axis" data-axis="time" aria-label={`${label} months`}>
                     {monthLabels.map((axisLabel, index) => (
                       <li
                         key={`${axisLabel.position}-${index}`}
@@ -307,7 +303,7 @@ export function CandleChart<TAs extends ElementType = "figure">(
                     ))}
                     {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                       <li
-                        className="candle-chart__crosshair-time"
+                        data-part="crosshair-time"
                         style={crosshairStyle(activeCandleIndex, data.length, undefined)}
                       >
                         {String(crosshairCandle.time)}
@@ -317,11 +313,7 @@ export function CandleChart<TAs extends ElementType = "figure">(
                 </div>
               </div>
             </div>
-            <ol
-              className="candle-chart__price-axis"
-              data-axis="price"
-              aria-label={`${label} prices`}
-            >
+            <ol data-part="price-axis" data-axis="price" aria-label={`${label} prices`}>
               {priceLabels.map((axisLabel, index) => (
                 <li
                   key={`${axisLabel.position}-${index}`}
@@ -331,13 +323,13 @@ export function CandleChart<TAs extends ElementType = "figure">(
                 </li>
               ))}
               {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
-                <li className="candle-chart__crosshair-price" style={cursorStyle(cursorY)}>
+                <li data-part="crosshair-price" style={cursorStyle(cursorY)}>
                   {crosshairCandle.close}
                 </li>
               ) : null}
             </ol>
           </div>
-          <table className="candle-chart__data" aria-label={`${label} data`}>
+          <table data-part="data" aria-label={`${label} data`}>
             <thead>
               <tr>
                 <th scope="col">Time</th>

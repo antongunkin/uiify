@@ -1,58 +1,58 @@
 /* Number field — spinbutton with increment/decrement controls. */
 
 @layer components {
-  .uiify-number-field {
+  [data-uiify-number-field] {
     display: inline-flex;
     align-items: stretch;
-    border: var(--border-width) solid var(--color-border-strong);
-    border-radius: var(--radius-control);
-    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--input);
+    border-radius: var(--radius-md);
+    background-color: var(--card);
     overflow: hidden;
   }
 
-  .uiify-number-field > [role="spinbutton"] {
+  [data-uiify-number-field] > [role="spinbutton"] {
     inline-size: 4rem;
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
     border: none;
     background: none;
-    color: var(--color-fg);
+    color: var(--foreground);
     font-size: var(--text-sm);
     text-align: center;
     outline: none;
   }
 
-  .uiify-number-field > [role="spinbutton"]:focus-visible {
+  [data-uiify-number-field] > [role="spinbutton"]:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: inset 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 
-  .uiify-number-field > button {
+  [data-uiify-number-field] > button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     inline-size: 2.25rem;
     padding: 0;
     border: none;
-    border-inline-start: var(--border-width) solid var(--color-border);
+    border-inline-start: var(--border-width) solid var(--border);
     background-color: transparent;
-    color: var(--color-fg);
+    color: var(--foreground);
     font-size: var(--text-lg);
     line-height: 1;
     cursor: pointer;
     transition: var(--transition-colors);
   }
 
-  .uiify-number-field > button:first-child {
+  [data-uiify-number-field] > button:first-child {
     border-inline-start: none;
-    border-inline-end: var(--border-width) solid var(--color-border);
+    border-inline-end: var(--border-width) solid var(--border);
   }
 
-  .uiify-number-field > button:hover {
-    background-color: color-mix(in oklch, var(--color-fg) 8%, transparent);
+  [data-uiify-number-field] > button:hover {
+    background-color: color-mix(in oklch, var(--foreground) 8%, transparent);
   }
 
-  .uiify-number-field > button[data-disabled] {
+  [data-uiify-number-field] > button[data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
   }

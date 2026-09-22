@@ -39,7 +39,7 @@ interface VirtualScrollRowShellProps {
  *
  * Stateless by design: measurement is owned by the single ResizeObserver that
  * VirtualScroll attaches to the row Fragment, so this component holds no hooks.
- * `data-uiify-row-index` is how that observer's callback maps an entry back to
+ * `data-row-index` is how that observer's callback maps an entry back to
  * a list index.
  */
 export function VirtualScrollRowShell({
@@ -60,9 +60,9 @@ export function VirtualScrollRowShell({
 
   return (
     <div
-      data-uiify-virtual-scroll-row=""
-      data-uiify-row-index={index}
-      data-uiify-dynamic-row={dynamicLayout ? "" : undefined}
+      data-part="row"
+      data-dynamic-row={dynamicLayout ? "" : undefined}
+      data-row-index={index}
       role={listRole === "list" ? "listitem" : "row"}
       aria-setsize={itemCount}
       aria-posinset={index + 1}

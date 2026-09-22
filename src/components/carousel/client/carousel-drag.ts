@@ -39,7 +39,7 @@ function ownsEvent(root: HTMLElement, target: EventTarget | null): target is Ele
 
 /** Adds optional mouse dragging without intercepting touch, pen, wheel, or pre-intent selection. */
 export function attachCarouselDrag(root: HTMLElement, controller: CarouselController): () => void {
-  const candidate = root.querySelector<HTMLElement>(":scope > [data-uiify-carousel-viewport]");
+  const candidate = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
   if (!candidate) return () => {};
   const viewport = candidate;
 

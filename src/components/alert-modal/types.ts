@@ -9,10 +9,7 @@ export interface AlertModalProps {
   readonly children?: ReactNode;
   readonly actionLabel?: ReactNode;
   readonly cancelLabel?: ReactNode;
-  readonly triggerClassName?: string;
   readonly className?: string;
-  readonly actionClassName?: string;
-  readonly cancelClassName?: string;
 }
 
 export interface AlertModalTriggerOwnProps {

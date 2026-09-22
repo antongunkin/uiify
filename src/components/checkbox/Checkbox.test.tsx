@@ -27,12 +27,13 @@ describe("Checkbox", () => {
     );
   });
 
-  it("applies the styling hook to the native input", () => {
-    render(<Checkbox id="terms" label="Terms" className="uiify-checkbox" />);
+  it("keeps the consumer class on the label and exposes the identity marker", () => {
+    render(<Checkbox id="terms" label="Terms" className="custom-checkbox" />);
 
     const checkbox = screen.getByRole("checkbox", { name: "Terms" });
     expect(checkbox.className).toBe("");
-    expect(checkbox.parentElement?.className).toBe("uiify-checkbox");
+    expect(checkbox.parentElement?.className).toBe("custom-checkbox");
+    expect(checkbox.parentElement?.getAttribute("data-uiify-checkbox")).toBe("");
   });
 
   it("renders consistent SSR markup", () => {

@@ -32,7 +32,9 @@ describe("Slider", () => {
 
   it("reflects controlled data-state", () => {
     render(<Slider value={55} aria-label="Volume" />);
-    expect(screen.getByRole("slider", { name: "Volume" }).getAttribute("data-state")).toBe("55");
+    const slider = screen.getByRole("slider", { name: "Volume" });
+    expect(slider.getAttribute("data-state")).toBe("55");
+    expect(slider.getAttribute("data-uiify-slider")).toBe("");
   });
 
   it("owns data-disabled and data-state; consumer cannot override them", () => {

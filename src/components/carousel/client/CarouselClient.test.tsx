@@ -137,7 +137,7 @@ describe("CarouselClient hydration and presentation", () => {
     );
     expect(
       container
-        .querySelector('[data-carousel-index="0"][data-uiify-carousel-slide]')
+        .querySelector('[data-carousel-index="0"][data-part="slide"]')
         ?.hasAttribute("inert"),
     ).toBe(false);
     expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
@@ -151,7 +151,7 @@ describe("CarouselClient hydration and presentation", () => {
     expect(screen.getByRole("link", { name: "Go to Three" })).toBe(dot);
     act(() => screen.getByRole("button", { name: "Previous slide" }).focus());
     expect(screen.queryByRole("link", { name: "Go to Three" })).toBeNull();
-    expect(container.querySelectorAll("[data-uiify-carousel-dot]")).toHaveLength(2);
+    expect(container.querySelectorAll('[data-part="dot"]')).toHaveLength(2);
     expect(screen.getByRole<HTMLButtonElement>("button", { name: "Next slide" }).disabled).toBe(
       true,
     );
@@ -161,8 +161,8 @@ describe("CarouselClient hydration and presentation", () => {
     const container = document.createElement("div");
     document.body.append(container);
     container.innerHTML = renderToString(<CarouselClient {...props} />);
-    expect(container.querySelector("[data-uiify-carousel-slide-nav]")).toBeNull();
-    const dot = container.querySelector<HTMLAnchorElement>("[data-uiify-carousel-dot]")!;
+    expect(container.querySelector('[data-part="slide-nav"]')).toBeNull();
+    const dot = container.querySelector<HTMLAnchorElement>('[data-part="dot"]')!;
     dot.focus();
     const errors: unknown[] = [];
     let hydrated: ReturnType<typeof hydrateRoot>;
@@ -187,7 +187,7 @@ describe("CarouselClient hydration and presentation", () => {
     rerender(<CarouselClient id="g" aria-label="Gallery" items={items} value={1} rewind />);
     deliver();
     expect(Element.prototype.scrollBy).toHaveBeenLastCalledWith({ left: 100, behavior: "auto" });
-    fireEvent(container.querySelector("[data-uiify-carousel-viewport]")!, new Event("scrollend"));
+    fireEvent(container.querySelector('[data-part="viewport"]')!, new Event("scrollend"));
     deliver(100);
     expect(container.querySelector('[aria-current="true"]')?.textContent).toBe("2");
     rerender(
@@ -208,7 +208,7 @@ describe("CarouselClient hydration and presentation", () => {
     act(() => ref.current?.next());
     deliver();
     expect(Element.prototype.scrollBy).toHaveBeenLastCalledWith({ left: 100, behavior: "auto" });
-    fireEvent(container.querySelector("[data-uiify-carousel-viewport]")!, new Event("scrollend"));
+    fireEvent(container.querySelector('[data-part="viewport"]')!, new Event("scrollend"));
     deliver(100);
     expect(() =>
       renderToString(<CarouselClient id="bad" aria-label="Bad" items={items} value={NaN} />),
@@ -229,7 +229,7 @@ describe("CarouselClient hydration and presentation", () => {
       <CarouselClient id="g" aria-label="Gallery" items={items} value={0} onSelect={onSelect} />,
     );
     deliver();
-    const viewport = container.querySelector("[data-uiify-carousel-viewport]")!;
+    const viewport = container.querySelector('[data-part="viewport"]')!;
     fireEvent(viewport, new Event("scroll"));
     fireEvent(viewport, new Event("scrollend"));
     deliver(100);

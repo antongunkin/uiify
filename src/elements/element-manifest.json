@@ -17,7 +17,10 @@
       "fixture": "element-dialog",
       "docs": "/elements/dialog",
       "consumers": ["modal", "alert-modal", "drawer"],
-      "cssRules": ["dialog:modal { overscroll-behavior: contain; }"]
+      "cssRules": [
+        "dialog:modal { overscroll-behavior: contain; }",
+        "dialog:not([open]) { display: none; }"
+      ]
     },
     "popover": {
       "native": "[popover] + popovertarget",
@@ -26,10 +29,7 @@
       "fixture": "element-popover",
       "docs": "/elements/popover",
       "consumers": ["popup"],
-      "cssRules": [
-        "[popover]:not(:popover-open) { display: none; }",
-        "[popover] { transition: opacity, scale, display, overlay; }"
-      ]
+      "cssRules": ["[popover]:not(:popover-open) { display: none; }"]
     },
     "details": {
       "native": "details/summary",

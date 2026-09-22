@@ -24,8 +24,8 @@ export function attachEnhancers(doc: Document = document): () => void {
 
   const onChange = (event: Event): void => {
     const target = event.target as HTMLElement | null;
-    if (!target?.hasAttribute("data-uiify-tabs-input")) return;
-    // The root Tabs renders is `data-uiify-tabs`, not `data-uiify-tabs-root`:
+    if (!target?.matches('[data-uiify-tabs] > [data-part="item"] > [data-part="control"]')) return;
+    // The root Tabs marker is `data-uiify-tabs`:
     // the latter never existed outside this selector, so syncTabs was never
     // reached in production. Pinned by listeners.test.ts, which now builds its
     // fixture with renderToStaticMarkup instead of hand-written HTML.

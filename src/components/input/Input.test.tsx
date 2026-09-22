@@ -97,6 +97,23 @@ describe("Input", () => {
     expect(input.getAttribute("data-invalid")).toBe("");
   });
 
+  it("forwards consumer styling props and owns its identity marker", () => {
+    render(
+      <Input
+        aria-label="Field"
+        className="consumer-input"
+        data-layout="compact"
+        data-uiify-input="consumer-value"
+        style={{ marginBlock: "1rem" }}
+      />,
+    );
+    const input = screen.getByRole("textbox", { name: "Field" });
+    expect(input.getAttribute("class")).toBe("consumer-input");
+    expect(input.getAttribute("data-layout")).toBe("compact");
+    expect(input.getAttribute("data-uiify-input")).toBe("");
+    expect(input.style.marginBlock).toBe("1rem");
+  });
+
   it("renders consistent SSR markup", () => {
     const markup = renderToStaticMarkup(<Input defaultValue="hello" disabled aria-label="Field" />);
     expect(markup).toContain('value="hello"');

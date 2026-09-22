@@ -26,7 +26,7 @@ interface ToolbarRootClientProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function getToolbarItems(root: HTMLDivElement): HTMLElement[] {
-  return Array.from(root.querySelectorAll<HTMLElement>("[data-uiify-toolbar-item]"));
+  return Array.from(root.querySelectorAll<HTMLElement>('[data-uiify-toolbar][data-part="item"]'));
 }
 
 function isDisabledItem(item: HTMLElement): boolean {
@@ -84,7 +84,7 @@ export function ToolbarRootClient({
     const handleFocusIn = (event: FocusEvent) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
-      const item = target.closest<HTMLElement>("[data-uiify-toolbar-item]");
+      const item = target.closest<HTMLElement>('[data-uiify-toolbar][data-part="item"]');
       if (!item || !root.contains(item) || isDisabledItem(item)) return;
       currentRef.current = syncTabStops(root, item);
     };
@@ -92,7 +92,7 @@ export function ToolbarRootClient({
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
-      const item = target.closest<HTMLElement>("[data-uiify-toolbar-item]");
+      const item = target.closest<HTMLElement>('[data-uiify-toolbar][data-part="item"]');
       if (!item || !root.contains(item)) return;
 
       const enabled = getToolbarItems(root).filter((entry) => !isDisabledItem(entry));
@@ -138,6 +138,8 @@ export function ToolbarRootClient({
       {...consumerProps}
       className={className}
       data-orientation={orientation}
+      data-part="root"
+      data-uiify-toolbar=""
       dir={dir}
       ref={rootRef}
       role="toolbar"

@@ -44,6 +44,7 @@ export interface DropdownMenuBarOwnProps {
 export type DropdownMenuBarProps = DropdownMenuBarOwnProps;
 
 export interface DropdownMenuRootOwnProps {
+  readonly className?: string;
   readonly children?: ReactNode;
   readonly defaultOpen?: boolean;
   readonly dir?: Direction;

@@ -14,7 +14,7 @@ describe("LineChart", () => {
   it("renders a CSS-only line with responsive point and segment geometry", () => {
     const { container } = render(<LineChart data={DATA} data-testid="chart" />);
     const chart = container.querySelector("[data-testid='chart']") as HTMLElement;
-    const points = [...chart.querySelectorAll(".line-chart__points > li")];
+    const points = [...chart.querySelectorAll('[data-part="points"] > li')];
 
     expect(chart.tagName).toBe("FIGURE");
     expect(chart.getAttribute("data-uiify-line-chart")).toBe("");
@@ -27,7 +27,7 @@ describe("LineChart", () => {
     expect(points[1]?.getAttribute("style")).toContain("--line-prev-y:");
     expect(points[1]?.getAttribute("style")).toContain("--line-prev-x: 0%");
     expect(points[1]?.getAttribute("data-time")).toBe("2026-09-02");
-    expect(chart.querySelectorAll(".line-chart__points button")).toHaveLength(0);
+    expect(chart.querySelectorAll('[data-part="points"] button')).toHaveLength(0);
   });
 
   it("renders a table fallback with the original values", () => {
@@ -43,7 +43,7 @@ describe("LineChart", () => {
   it("keeps a flat range renderable", () => {
     const { container } = render(<LineChart data={[{ time: 1, value: 10 }]} />);
 
-    expect(container.querySelector(".line-chart__points > li")?.getAttribute("style")).toContain(
+    expect(container.querySelector('[data-part="points"] > li')?.getAttribute("style")).toContain(
       "--line-y: 50%",
     );
   });
@@ -79,17 +79,17 @@ describe("LineChart", () => {
         onPointClick={onPointClick}
       />,
     );
-    const points = container.querySelectorAll(".line-chart__points > li");
+    const points = container.querySelectorAll('[data-part="points"] > li');
     const active = points[2];
     const hit = active?.querySelector("button") as HTMLButtonElement;
 
-    expect(container.querySelector(".line-chart__plot")?.getAttribute("aria-hidden")).toBeNull();
+    expect(container.querySelector('[data-part="plot"]')?.getAttribute("aria-hidden")).toBeNull();
     expect(active?.getAttribute("data-crosshair-active")).toBe("");
     expect(hit.getAttribute("aria-label")).toBe("Point 2026-10-01");
     expect(hit.getAttribute("aria-pressed")).toBe("true");
-    expect(container.querySelector(".line-chart__readout")?.textContent).toContain("110");
-    expect(container.querySelector(".line-chart__crosshair")).not.toBeNull();
-    expect(container.querySelector(".line-chart__crosshair")?.getAttribute("style")).toContain(
+    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("110");
+    expect(container.querySelector('[data-part="crosshair"]')).not.toBeNull();
+    expect(container.querySelector('[data-part="crosshair"]')?.getAttribute("style")).toContain(
       "--line-crosshair-x: 100%",
     );
 

@@ -39,6 +39,7 @@ export function Switch<TAs extends ElementType = "input">(
       disabled: disabled || undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-state": isControlled ? (checked ? "checked" : "unchecked") : undefined,
+      "data-uiify-switch": "",
       onChange: composeEventHandlers(consumerOnChange, handleChange),
       ...(isControlled ? { checked } : defaultChecked !== undefined ? { defaultChecked } : {}),
     },

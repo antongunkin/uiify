@@ -21,6 +21,7 @@ describe("Field", () => {
     const label = screen.getByText("Name");
     const control = screen.getByRole("textbox");
     expect(label.getAttribute("for")).toBe(control.id);
+    expect(control.getAttribute("data-uiify-input")).toBe("");
   });
 
   it("wires aria-describedby to description and error", () => {

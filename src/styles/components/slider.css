@@ -3,15 +3,15 @@
    affordance. */
 
 @layer components {
-  .uiify-slider {
+  [data-uiify-slider] {
     inline-size: 100%;
     max-inline-size: 16rem;
-    accent-color: var(--color-accent);
+    accent-color: var(--primary);
     cursor: pointer;
   }
 
-  .uiify-slider:disabled,
-  .uiify-slider[data-disabled] {
+  [data-uiify-slider]:disabled,
+  [data-uiify-slider][data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
   }

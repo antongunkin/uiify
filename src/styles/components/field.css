@@ -3,83 +3,83 @@
    the native field-sizing (Chrome 123+) when the component sets data-autosize. */
 
 @layer components {
-  :where(.uiify-input, .uiify-textarea) {
+  :where([data-uiify-input], [data-uiify-textarea]) {
     display: block;
     inline-size: 100%;
     max-inline-size: 24rem;
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
-    border: var(--border-width) solid var(--color-border-strong);
-    border-radius: var(--radius-control);
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+    border: var(--border-width) solid var(--input);
+    border-radius: var(--radius-md);
+    background-color: var(--card);
+    color: var(--foreground);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
     transition: var(--transition-colors);
   }
 
-  :where(.uiify-input, .uiify-textarea)::placeholder {
-    color: var(--color-muted-fg);
+  :where([data-uiify-input], [data-uiify-textarea])::placeholder {
+    color: var(--muted-foreground);
   }
 
-  :where(.uiify-input, .uiify-textarea):focus-visible {
-    border-color: var(--color-accent);
+  :where([data-uiify-input], [data-uiify-textarea]):focus-visible {
+    border-color: var(--primary);
   }
 
-  :where(.uiify-input, .uiify-textarea):disabled,
-  :where(.uiify-input, .uiify-textarea)[data-disabled] {
+  :where([data-uiify-input], [data-uiify-textarea]):disabled,
+  :where([data-uiify-input], [data-uiify-textarea])[data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  :where(.uiify-input, .uiify-textarea)[data-invalid],
-  :where(.uiify-input, .uiify-textarea):user-invalid {
-    border-color: var(--color-danger);
+  :where([data-uiify-input], [data-uiify-textarea])[data-invalid],
+  :where([data-uiify-input], [data-uiify-textarea]):user-invalid {
+    border-color: var(--destructive);
   }
 
-  :where(.uiify-input, .uiify-textarea)[data-invalid]:focus-visible {
-    outline-color: var(--color-danger);
+  :where([data-uiify-input], [data-uiify-textarea])[data-invalid]:focus-visible {
+    outline-color: var(--destructive);
   }
 
-  .uiify-textarea {
+  [data-uiify-textarea] {
     min-block-size: 4lh;
     resize: vertical;
   }
 
-  .uiify-textarea[data-autosize] {
+  [data-uiify-textarea][data-autosize] {
     field-sizing: content;
     resize: none;
   }
 
-  .uiify-field {
+  [data-uiify-field] {
     display: grid;
     gap: var(--space-sm);
     inline-size: 100%;
     max-inline-size: 24rem;
   }
 
-  .uiify-field__label {
-    color: var(--color-fg);
+  [data-uiify-field] [data-part="label"] {
+    color: var(--foreground);
     font-size: var(--text-sm);
     font-weight: var(--weight-medium);
     line-height: var(--leading-normal);
   }
 
-  .uiify-field__label[data-required]::after {
+  [data-uiify-field] [data-part="label"][data-required]::after {
     content: " *";
-    color: var(--color-danger);
+    color: var(--destructive);
   }
 
-  .uiify-field__description {
+  [data-uiify-field] [data-part="description"] {
     margin: 0;
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
     font-size: var(--text-xs);
     line-height: var(--leading-normal);
   }
 
-  .uiify-field__error {
+  [data-uiify-field] [data-part="error"] {
     margin: 0;
-    color: var(--color-danger);
+    color: var(--destructive);
     font-size: var(--text-xs);
     line-height: var(--leading-normal);
   }

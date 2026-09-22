@@ -7,22 +7,22 @@ const componentIndex = readFileSync(resolve(import.meta.dirname, "components/ind
 
 describe("Combobox skin", () => {
   it("styles the control and chip anatomy", () => {
-    expect(css).toContain(".uiify-combobox__control:focus-within");
+    expect(css).toContain('[data-uiify-combobox] [data-part="control"]:focus-within');
     expect(css).toContain('[data-part="tags"]');
     expect(css).toContain('[data-part="tag"]');
     expect(css).toContain('[data-part="tag-remove"]');
-    expect(css).toContain("border: var(--border-width) solid var(--color-border-strong)");
-    expect(css).toContain("border-radius: var(--radius-control)");
-    expect(css).toContain("background-color: var(--color-surface)");
+    expect(css).toContain("border: var(--border-width) solid var(--input)");
+    expect(css).toContain("border-radius: var(--radius-md)");
+    expect(css).toContain("background-color: var(--card)");
   });
 
   it("aligns popup and selected item states with the menu skin", () => {
     expect(css).toContain("max-block-size: min(24rem, calc(100dvb - 2rem))");
     expect(css).toContain("padding: var(--space-xs)");
-    expect(css).toContain("border: var(--border-width) solid var(--color-border)");
+    expect(css).toContain("border: var(--border-width) solid var(--border)");
     expect(css).toContain("border-radius: var(--radius-md)");
     expect(css).toContain("box-shadow: var(--shadow-popover)");
-    expect(css).toContain(".uiify-combobox__item[data-selected]");
+    expect(css).toContain('[data-uiify-combobox] [data-part="item"][data-selected]');
     expect(css).toContain("prefers-reduced-motion: reduce");
   });
 

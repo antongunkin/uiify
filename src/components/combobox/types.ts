@@ -68,6 +68,7 @@ export interface ComboboxContextValue {
 }
 
 export interface ComboboxRootShellOwnProps {
+  readonly className?: string;
   readonly defaultInputValue?: string;
   readonly defaultOpen?: boolean;
   readonly defaultValue?: string;

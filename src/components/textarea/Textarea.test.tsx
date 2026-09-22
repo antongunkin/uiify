@@ -54,6 +54,23 @@ describe("Textarea", () => {
     expect(textarea.getAttribute("data-invalid")).toBe("");
   });
 
+  it("forwards consumer styling props and owns its identity marker", () => {
+    render(
+      <Textarea
+        aria-label="Notes"
+        className="consumer-textarea"
+        data-layout="compact"
+        data-uiify-textarea="consumer-value"
+        style={{ marginBlock: "1rem" }}
+      />,
+    );
+    const textarea = screen.getByRole("textbox", { name: "Notes" });
+    expect(textarea.getAttribute("class")).toBe("consumer-textarea");
+    expect(textarea.getAttribute("data-layout")).toBe("compact");
+    expect(textarea.getAttribute("data-uiify-textarea")).toBe("");
+    expect(textarea.style.marginBlock).toBe("1rem");
+  });
+
   it("lets a consumer onChange veto the internal value sync (policy #1: form-control change veto)", () => {
     const onValueChange = vi.fn();
     const consumerCalls: string[] = [];

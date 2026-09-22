@@ -13,27 +13,106 @@
     overscroll-behavior: contain;
   }
 
+  /* Closed dialogs stay hidden even when author CSS sets display. */
+  dialog:not([open]) {
+    display: none;
+  }
+
+  [data-anchor]:not([data-positioning]) {
+    anchor-name: var(--uiify-anchor, attr(data-anchor type(<custom-ident>)));
+  }
+
+  [data-positioning="native"] {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+
+  [data-positioning="native"][data-anchor] {
+    position-anchor: var(--uiify-anchor, attr(data-anchor type(<custom-ident>)));
+  }
+
+  [data-positioning="native"][data-side="top"] {
+    position-area: top;
+    margin-block-end: var(--uiify-anchor-offset, 0);
+  }
+
+  [data-positioning="native"][data-side="right"] {
+    position-area: right;
+    margin-inline-start: var(--uiify-anchor-offset, 0);
+  }
+
+  [data-positioning="native"][data-side="bottom"] {
+    position-area: bottom;
+    margin-block-start: var(--uiify-anchor-offset, 0);
+  }
+
+  [data-positioning="native"][data-side="left"] {
+    position-area: left;
+    margin-inline-end: var(--uiify-anchor-offset, 0);
+  }
+
+  [data-positioning="native"][data-side="top"][data-align="start"] {
+    position-area: top span-right;
+    justify-self: start;
+  }
+
+  [data-positioning="native"][data-side="top"][data-align="end"] {
+    position-area: top span-left;
+    justify-self: end;
+  }
+
+  [data-positioning="native"][data-side="bottom"][data-align="start"] {
+    position-area: bottom span-right;
+    justify-self: start;
+  }
+
+  [data-positioning="native"][data-side="bottom"][data-align="end"] {
+    position-area: bottom span-left;
+    justify-self: end;
+  }
+
+  [data-positioning="native"][data-side="right"][data-align="start"] {
+    align-self: start;
+    position-area: right span-bottom;
+  }
+
+  [data-positioning="native"][data-side="right"][data-align="end"] {
+    align-self: end;
+    position-area: right span-top;
+  }
+
+  [data-positioning="native"][data-side="left"][data-align="start"] {
+    align-self: start;
+    position-area: left span-bottom;
+  }
+
+  [data-positioning="native"][data-side="left"][data-align="end"] {
+    align-self: end;
+    position-area: left span-top;
+  }
+
   /*
    * Local open-state hooks. Top layer does not change DOM ancestry, so a scope
    * that directly contains its surface can read the native state. Consumers
    * style with the selector or with the variable; neither is a second source of truth.
    *
-   * `modal`/`alert-modal` (formerly `dialog`/`alert-dialog`) emit both their
-   * new scope attribute and the deprecated one for one major, so selecting on
-   * the new name alone is enough. `popup`'s scope div is consumer-authored
-   * (there is no Root wrapper for the native parts — see
-   * docs/guides/native-composition.md), so existing markup keeps writing the
-   * deprecated `data-uiify-popover-scope`; both selectors stay until that
-   * compatibility window.
+   * Compound roots and their public trigger parts share one component identity plus
+   * `data-part`, so native state stays readable without a second scope convention.
    */
-  [data-uiify-modal-scope]:has(> dialog[open]) > [data-uiify-modal-trigger],
-  [data-uiify-alert-modal-scope]:has(> dialog[open]) > [data-uiify-alert-modal-trigger],
-  [data-uiify-popup-scope]:has(> :popover-open) > [data-uiify-popup-trigger],
-  [data-uiify-popover-scope]:has(> :popover-open) > [data-uiify-popover-trigger] {
+  [data-uiify-modal][data-part="root"]:has(> [data-uiify-modal][data-part="content"][open])
+    > [data-uiify-modal][data-part="trigger"],
+  [data-uiify-alert-modal][data-part="root"]:has(
+      > [data-uiify-alert-modal][data-part="content"][open]
+    )
+    > [data-uiify-alert-modal][data-part="trigger"],
+  [data-uiify-popup][data-part="root"]:has(> [data-uiify-popup][data-part="content"]:popover-open)
+    > [data-uiify-popup][data-part="trigger"] {
     --uiify-trigger-open: 1;
   }
 
-  [data-uiify-accordion-item][data-disabled] > summary,
+  [data-uiify-accordion] > [data-part="item"][data-disabled] > summary,
   [data-uiify-collapsible][data-disabled] > summary {
     cursor: not-allowed;
     pointer-events: none;
@@ -44,34 +123,12 @@
      implicit anchor positioning. Behavior only — no visual opinion. Engines
      without support ignore this and keep the classic OS picker, which stays
      fully functional. */
-  .uiify-select,
-  .uiify-select::picker(select) {
+  [data-uiify-select],
+  [data-uiify-select]::picker(select) {
     appearance: base-select;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    @starting-style {
-      [popover]:popover-open {
-        opacity: 0;
-        scale: 0.96;
-      }
-    }
-
-    [popover] {
-      transition:
-        opacity var(--duration-fast, 150ms) ease-out,
-        scale var(--duration-fast, 150ms) ease-out,
-        display var(--duration-fast, 150ms) allow-discrete,
-        overlay var(--duration-fast, 150ms) allow-discrete;
-    }
-
-    [popover]:popover-open {
-      opacity: 1;
-      scale: 1;
-    }
-  }
-
-  [data-uiify-tabs-input] {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="control"] {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -85,23 +142,23 @@
     border: 0;
   }
 
-  [data-uiify-tabs-panel] {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="panel"] {
     display: none;
   }
 
-  [data-uiify-tabs-input]:checked ~ [data-uiify-tabs-panel] {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="control"]:checked ~ [data-part="panel"] {
     display: block;
   }
 
-  [data-uiify-stepper-panel] {
+  [data-uiify-stepper] > [data-part="step"] > [data-part="panel"] {
     display: none;
   }
 
-  [data-uiify-stepper-input]:checked ~ [data-uiify-stepper-panel] {
+  [data-uiify-stepper] > [data-part="step"] > [data-part="control"]:checked ~ [data-part="panel"] {
     display: block;
   }
 
-  [data-uiify-tabs-trigger][data-disabled] {
+  [data-uiify-tabs] [data-part="trigger"][data-disabled] {
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -120,13 +177,13 @@
     }
   }
 
-  [data-uiify-breadcrumb-ellipsis] > ol {
+  [data-uiify-breadcrumb] [data-part="ellipsis"] > ol {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  [data-uiify-carousel] > [data-uiify-carousel-viewport] {
+  [data-uiify-carousel] > [data-part="viewport"] {
     display: grid;
     min-inline-size: 0;
     min-block-size: 0;
@@ -134,7 +191,7 @@
     scroll-behavior: auto;
   }
 
-  [data-uiify-carousel][data-axis="inline"] > [data-uiify-carousel-viewport] {
+  [data-uiify-carousel][data-axis="inline"] > [data-part="viewport"] {
     grid-auto-flow: column;
     grid-auto-columns: var(--uiify-carousel-slide-size, 100%);
     overflow-inline: auto;
@@ -142,7 +199,7 @@
     scroll-snap-type: inline mandatory;
   }
 
-  [data-uiify-carousel][data-axis="block"] > [data-uiify-carousel-viewport] {
+  [data-uiify-carousel][data-axis="block"] > [data-part="viewport"] {
     grid-auto-flow: row;
     grid-auto-rows: var(--uiify-carousel-slide-size, 100%);
     overflow-block: auto;
@@ -150,30 +207,30 @@
     scroll-snap-type: block mandatory;
   }
 
-  [data-uiify-carousel] > [data-uiify-carousel-viewport] > [data-uiify-carousel-slide] {
+  [data-uiify-carousel] > [data-part="viewport"] > [data-part="slide"] {
     min-inline-size: 0;
     min-block-size: 0;
     scroll-snap-align: start;
   }
 
-  [data-uiify-carousel] > [data-uiify-carousel-viewport]:focus-visible,
-  [data-uiify-carousel] > button[data-uiify-carousel-controls]:focus-visible,
-  [data-uiify-carousel] > [data-uiify-carousel-dots] > a:focus-visible {
+  [data-uiify-carousel] > [data-part="viewport"]:focus-visible,
+  [data-uiify-carousel] > button[data-part="controls"]:focus-visible,
+  [data-uiify-carousel] > [data-part="dots"] > a:focus-visible {
     outline: auto;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-carousel] > [data-uiify-carousel-viewport] {
+    [data-uiify-carousel] > [data-part="viewport"] {
       scroll-behavior: smooth;
     }
   }
 
-  [data-uiify-carousel] > [data-uiify-carousel-viewport][data-dragging] {
+  [data-uiify-carousel] > [data-part="viewport"][data-dragging] {
     scroll-behavior: auto;
     scroll-snap-type: none;
   }
 
-  [data-uiify-carousel][data-mode="fade"][data-enhanced] > [data-uiify-carousel-viewport] {
+  [data-uiify-carousel][data-mode="fade"][data-enhanced] > [data-part="viewport"] {
     grid-auto-flow: row;
     grid-template-columns: 100%;
     grid-auto-columns: auto;
@@ -183,24 +240,24 @@
   }
 
   [data-uiify-carousel][data-mode="fade"][data-enhanced]
-    > [data-uiify-carousel-viewport]
-    > [data-uiify-carousel-slide] {
+    > [data-part="viewport"]
+    > [data-part="slide"] {
     grid-area: 1 / 1;
     opacity: 0;
     pointer-events: none;
   }
 
   [data-uiify-carousel][data-mode="fade"][data-enhanced]
-    > [data-uiify-carousel-viewport]
-    > [data-uiify-carousel-slide][data-state="active"] {
+    > [data-part="viewport"]
+    > [data-part="slide"][data-state="active"] {
     opacity: 1;
     pointer-events: auto;
   }
 
   @media (prefers-reduced-motion: no-preference) {
     [data-uiify-carousel][data-mode="fade"][data-enhanced]
-      > [data-uiify-carousel-viewport]
-      > [data-uiify-carousel-slide] {
+      > [data-part="viewport"]
+      > [data-part="slide"] {
       transition: opacity var(--uiify-carousel-fade-duration, 300ms) ease;
     }
   }
@@ -211,7 +268,7 @@
     overflow-y: auto;
   }
 
-  [data-uiify-virtual-scroll] [data-uiify-virtual-scroll-spacer] {
+  [data-uiify-virtual-scroll] > [data-part="spacer"] {
     position: relative;
     block-size: var(
       --uiify-virtual-scroll-total-size,
@@ -219,7 +276,7 @@
     );
   }
 
-  [data-uiify-virtual-scroll] [data-uiify-virtual-scroll-row] {
+  [data-uiify-virtual-scroll] [data-part="row"] {
     position: absolute;
     inset-inline: 0;
     block-size: var(--uiify-row-height, var(--uiify-virtual-scroll-row-height));

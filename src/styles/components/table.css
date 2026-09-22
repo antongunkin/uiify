@@ -9,22 +9,22 @@
   table td {
     padding: 0.5rem 0.75rem;
     text-align: start;
-    border-block-end: 1px solid var(--color-border);
+    border-block-end: 1px solid var(--border);
   }
 
   table thead th {
     position: sticky;
     inset-block-start: 0;
-    background: var(--color-surface);
+    background: var(--card);
     font-weight: 600;
   }
 
   table tbody tr:nth-child(even) {
-    background: var(--color-surface-raised);
+    background: var(--secondary);
   }
 
   table tbody tr[data-selected] {
-    background: var(--color-accent-subtle);
+    background: var(--accent);
   }
 
   table th[aria-sort]:not([aria-sort="none"]) {

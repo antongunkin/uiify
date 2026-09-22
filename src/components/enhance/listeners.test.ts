@@ -70,12 +70,14 @@ describe("attachEnhancers", () => {
     inputB.dispatchEvent(new Event("change", { bubbles: true }));
 
     const [triggerA, triggerB] = [
-      ...document.querySelectorAll<HTMLElement>("[data-uiify-tabs-trigger]"),
+      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="trigger"]'),
     ];
     expect(triggerA!.getAttribute("aria-selected")).toBe("false");
     expect(triggerB!.getAttribute("aria-selected")).toBe("true");
 
-    const [panelA, panelB] = [...document.querySelectorAll<HTMLElement>("[data-uiify-tabs-panel]")];
+    const [panelA, panelB] = [
+      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="panel"]'),
+    ];
     expect(panelA!.dataset["state"]).toBe("inactive");
     expect(panelB!.dataset["state"]).toBe("active");
   });

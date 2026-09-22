@@ -2,7 +2,7 @@ import type { CarouselObserver } from "../types.js";
 
 /** Each measurement owns its observer, so old deliveries cannot mix with fresh geometry. */
 export function observeCarousel(root: HTMLElement): CarouselObserver {
-  const viewport = root.querySelector<HTMLElement>(":scope > [data-uiify-carousel-viewport]");
+  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
   let current: IntersectionObserver | undefined;
   let generation = 0;
   let destroyed = false;
@@ -11,8 +11,8 @@ export function observeCarousel(root: HTMLElement): CarouselObserver {
       current?.disconnect();
       const token = ++generation;
       if (destroyed || !viewport) return;
-      const slides = Array.from(viewport.children).filter((node) =>
-        node.hasAttribute("data-uiify-carousel-slide"),
+      const slides = Array.from(viewport.children).filter(
+        (node) => node.getAttribute("data-part") === "slide",
       );
       if (!slides.length) return;
       const entries = new Map<Element, IntersectionObserverEntry>();

@@ -20,6 +20,7 @@ export function Toggle({
         aria-labelledby={labelId}
         checked={checked}
         data-disabled={disabled ? "" : undefined}
+        data-part="control"
         data-state={isControlled ? (pressed ? "on" : "off") : undefined}
         defaultChecked={!isControlled ? defaultPressed : undefined}
         disabled={disabled || undefined}

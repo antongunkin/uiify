@@ -39,13 +39,11 @@ it("SSR is a readable scroller and hydrated fade transitions update accessibilit
   const { container } = render(<FadeCarouselClient {...props} />);
   fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
   expect(
-    container
-      .querySelector('[data-uiify-carousel-slide][data-carousel-index="0"]')!
-      .hasAttribute("inert"),
+    container.querySelector('[data-part="slide"][data-carousel-index="0"]')!.hasAttribute("inert"),
   ).toBe(true);
   expect(
     container
-      .querySelector('[data-uiify-carousel-slide][data-carousel-index="1"]')!
+      .querySelector('[data-part="slide"][data-carousel-index="1"]')!
       .getAttribute("aria-hidden"),
   ).toBeNull();
   await act(async () => {
@@ -118,7 +116,7 @@ it("keeps an accepted controlled selection without starting a return transition"
   expect(screen.getByRole("link", { name: "Go to Two" }).getAttribute("aria-current")).toBe("true");
   expect(
     container
-      .querySelector('[data-uiify-carousel-slide][data-carousel-index="1"]')!
+      .querySelector('[data-part="slide"][data-carousel-index="1"]')!
       .getAttribute("data-state"),
   ).toBe("active");
   await act(async () => {
@@ -133,7 +131,7 @@ it.each(["touch", "pen"])(
     const { container, rerender } = render(
       <FadeCarouselClient id="g" aria-label="Gallery" items={items} />,
     );
-    const viewport = container.querySelector<HTMLElement>("[data-uiify-carousel-viewport]")!;
+    const viewport = container.querySelector<HTMLElement>('[data-part="viewport"]')!;
     viewport.setPointerCapture = vi.fn();
     viewport.hasPointerCapture = () => true;
     viewport.releasePointerCapture = vi.fn();

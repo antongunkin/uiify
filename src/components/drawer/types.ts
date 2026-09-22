@@ -10,7 +10,5 @@ export interface DrawerProps {
   readonly children?: ReactNode;
   readonly closeLabel?: ReactNode;
   readonly side?: DrawerSide;
-  readonly triggerClassName?: string;
   readonly className?: string;
-  readonly closeClassName?: string;
 }

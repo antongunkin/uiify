@@ -14,8 +14,8 @@ function isDefaultOpen(
 /**
  * Built on `@gunkin/uiify/elements/details`: `Details.Root` already owns `data-disabled` (from its own
  * `disabled` prop) and `data-uiify-details`; `Details.Summary`'s `disabled` prop already owns
- * `aria-disabled`/`tabIndex`. This component adds its own `data-part`/`data-uiify-accordion-*`
- * markers and the `name`/`defaultOpen` wiring that makes single-select exclusive.
+ * `aria-disabled`/`tabIndex`. This component adds its own identity/anatomy markers and the
+ * `name`/`defaultOpen` wiring that makes single-select exclusive.
  */
 export function Accordion({
   id,
@@ -25,11 +25,10 @@ export function Accordion({
   className,
 }: AccordionProps): ReactElement {
   return (
-    <div className={className} data-uiify-accordion="" data-uiify-choice-kind={type}>
+    <div className={className} data-kind={type} data-uiify-accordion="">
       {items.map((item) => (
         <DetailsRoot
           data-part="item"
-          data-uiify-accordion-item=""
           defaultOpen={isDefaultOpen(type, defaultValue, item.value)}
           disabled={item.disabled ?? false}
           key={item.value}

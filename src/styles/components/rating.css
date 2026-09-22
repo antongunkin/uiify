@@ -27,7 +27,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-border-strong);
+    color: var(--input);
     font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
@@ -36,7 +36,7 @@
 
   [data-uiify-rating] > [data-part="item"]:has(> input:checked) > label,
   [data-uiify-rating] > [data-part="item"]:has(> input:checked) ~ [data-part="item"] > label {
-    color: var(--color-accent);
+    color: var(--primary);
   }
 
   [data-uiify-rating]:not([data-disabled], [data-readonly])
@@ -46,12 +46,12 @@
     > [data-part="item"]:has(> label:hover)
     ~ [data-part="item"]
     > label {
-    color: var(--color-accent);
+    color: var(--primary);
   }
 
   [data-uiify-rating] > [data-part="item"] > input:focus-visible ~ label {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
     border-radius: var(--radius-sm);
   }
 

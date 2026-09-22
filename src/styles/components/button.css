@@ -1,87 +1,87 @@
-/* Button — solid by default, with a ghost modifier used by overlay close/dismiss
-   buttons in the demo. State comes from the native :disabled / [data-disabled]. */
+/* Button — solid by default, with a ghost modifier used by close/dismiss buttons. */
 
 @layer components {
-  :where(.uiify-button) {
+  :where([data-uiify-button]) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm);
+    gap: 0.375rem;
     min-block-size: 36px;
     padding-block: 0;
-    padding-inline: var(--space-lg);
+    padding-inline: 0.625rem;
     border: var(--border-width) solid transparent;
-    border-radius: var(--radius-control);
-    background-color: var(--color-accent);
-    color: var(--color-accent-fg);
+    border-radius: var(--radius-md);
+    background-color: var(--primary);
+    background-clip: padding-box;
+    color: var(--primary-foreground);
     font-size: var(--text-sm);
     font-weight: var(--weight-medium);
-    line-height: 1;
+    line-height: 1.25rem;
     cursor: pointer;
     transition: var(--transition-colors);
   }
 
-  .uiify-button:hover {
-    background-color: var(--color-accent-hover);
+  [data-uiify-button]:hover {
+    background-color: color-mix(in oklch, var(--primary), transparent 20%);
   }
 
-  .uiify-button:active {
-    background-color: var(--color-accent-active);
+  [data-uiify-button]:active {
+    background-color: color-mix(in oklch, var(--primary), var(--primary-foreground) 20%);
   }
 
-  .uiify-button:disabled,
-  .uiify-button[data-disabled] {
+  [data-uiify-button]:disabled,
+  [data-uiify-button][data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
   /* Ghost: low-emphasis, for dismiss/close actions. */
-  .uiify-button--ghost {
+  [data-uiify-button][data-variant="ghost"] {
     background-color: transparent;
-    color: var(--color-fg);
-    border-color: var(--color-border);
+    color: var(--foreground);
+    border-color: var(--border);
   }
 
   /* Outline and solid names mirror the component-kit vocabulary while the
      unmodified button remains the primary action. */
-  .uiify-button--outline {
-    border-color: var(--color-border-strong);
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+  [data-uiify-button][data-variant="outline"] {
+    border-color: var(--input);
+    background-color: var(--card);
+    color: var(--foreground);
   }
 
-  .uiify-button--outline:hover {
-    background-color: var(--color-surface-raised);
+  [data-uiify-button][data-variant="outline"]:hover {
+    background-color: var(--secondary);
   }
 
-  .uiify-button--solid {
-    background-color: var(--color-fg);
-    color: var(--color-bg);
+  [data-uiify-button][data-variant="solid"] {
+    background-color: var(--foreground);
+    color: var(--background);
   }
 
-  .uiify-button--solid:hover {
-    background-color: var(--color-muted-fg);
+  [data-uiify-button][data-variant="solid"]:hover {
+    background-color: var(--muted-foreground);
   }
 
-  .uiify-button--ghost:hover {
-    background-color: color-mix(in oklch, var(--color-fg) 8%, transparent);
+  [data-uiify-button][data-variant="ghost"]:hover {
+    background-color: color-mix(in oklch, var(--foreground) 8%, transparent);
   }
 
-  .uiify-button--ghost:active {
-    background-color: color-mix(in oklch, var(--color-fg) 14%, transparent);
+  [data-uiify-button][data-variant="ghost"]:active {
+    background-color: color-mix(in oklch, var(--foreground) 14%, transparent);
   }
 
-  /* Danger: destructive actions (alert-modal confirm, delete). */
-  .uiify-button--danger {
-    background-color: var(--color-danger);
-    color: var(--color-danger-fg);
+  /* Danger: destructive actions. */
+  [data-uiify-button][data-variant="danger"] {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
   }
 
-  .uiify-button--danger:hover {
-    background-color: color-mix(in oklch, var(--color-danger), black 12%);
+  [data-uiify-button][data-variant="danger"]:hover {
+    background-color: color-mix(in oklch, var(--destructive), black 12%);
   }
 
-  .uiify-button--danger:active {
-    background-color: color-mix(in oklch, var(--color-danger), black 20%);
+  [data-uiify-button][data-variant="danger"]:active {
+    background-color: color-mix(in oklch, var(--destructive), black 20%);
   }
 }

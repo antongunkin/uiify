@@ -31,10 +31,6 @@ export interface ChoiceGroupProps<TItem extends ChoiceItem = ChoiceItem> {
   readonly itemPart?: string;
   /** Adds `data-part="label"` to the label. */
   readonly labelPart?: boolean;
-  /** Adds `data-uiify-<namespace>-input` to the input. */
-  readonly withInputAttribute?: boolean;
-  /** Adds `data-uiify-<namespace>-trigger` to the label. */
-  readonly withTriggerAttribute?: boolean;
   /** Extra attributes spread onto the root, e.g. `data-full-width`, `aria-label`. */
   readonly rootAttributes?: Record<string, string | undefined>;
   /** Extra attributes spread onto each item's wrapper div, e.g. Stepper's `data-complete`. */

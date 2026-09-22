@@ -3,6 +3,11 @@ import type { ElementType, ReactElement } from "react";
 
 export type NativeInvokerCommand = "show-modal" | "request-close";
 
+interface NativeInvokerOptions {
+  readonly button?: boolean;
+  readonly variant?: "ghost" | "danger";
+}
+
 /**
  * Render a native invoker button. `command`/`commandfor` are lowercase HTML
  * attributes that React 19.2 passes through untouched; @types/react 19.2 does
@@ -12,20 +17,22 @@ export type NativeInvokerCommand = "show-modal" | "request-close";
  * command semantics; Popup uses `popoverTarget`/`popoverTargetAction` instead
  * and keeps its own renderer (see popup/PopupParts.tsx).
  *
- * `marker` accepts one or more attribute names so a component can emit its own
- * marker alongside a deprecated one during a rename transition; every name is set to `""`.
  */
 export function renderNativeInvoker(
   as: ElementType | undefined,
-  marker: string | readonly string[],
+  marker: string,
+  part: string,
   command: NativeInvokerCommand,
   target: string,
   consumerProps: Record<string, unknown>,
+  options: NativeInvokerOptions = {},
 ): ReactElement {
-  const markers = typeof marker === "string" ? [marker] : marker;
   return createElement(as ?? "button", {
     ...consumerProps,
-    ...Object.fromEntries(markers.map((name) => [name, ""])),
+    ...(options.button ? { "data-uiify-button": "" } : {}),
+    [marker]: "",
+    "data-part": part,
+    ...(options.variant ? { "data-variant": options.variant } : {}),
     command,
     commandfor: target,
     type: "button",

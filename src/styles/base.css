@@ -1,129 +1,48 @@
 /*
  * Base layer — page-level defaults that consume the tokens. Kept light: the
- * design system styles components via `.uiify-*` classes, not bare elements, so
+ * design system styles component identity and anatomy attributes, not bare elements, so
  * this only sets the canvas (body bg/fg, default font) and a shared
  * focus-visible treatment used by skins.
  */
 
 @layer base {
   body {
-    background-color: var(--color-bg);
-    color: var(--color-fg);
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: var(--font-sans);
     font-size: var(--text-base);
     line-height: var(--leading-normal);
   }
 
   /*
-   * Native popover top-layer positioning uses inset: 0 plus UA-assigned margins.
-   * Reset zeros every margin; restore the platform value only while open.
+   * Non-native popovers still need the platform margin restore. Native surfaces
+   * use behavior.css geometry and get their spacing from the offset hook below.
    */
-  [popover]:popover-open {
+  [popover]:popover-open:not([data-positioning="native"]) {
     margin: revert;
   }
 
   /*
-   * --uiify-anchor (set via inline style, e.g. Popover) is the primary source: it
-   * works in every engine. The attr() fallback is unrelated to this task's fix —
-   * it preserves the pre-existing (Chromium-only) behavior for components that
-   * still emit the anchor name as the bare `data-anchor` attribute value instead
-   * of `--uiify-anchor` (@gunkin/uiify/core's shared useAnchorPosition, e.g. Tooltip,
-   * DropdownMenu). Dropping the fallback outright regresses those components'
-   * positioning in Chromium too, not just leaves Firefox/Safari as-is; keep it
-   * until they are migrated to --uiify-anchor as well.
+   * behavior.css owns the required geometry. This optional skin supplies only
+   * the design-system gap for native surfaces.
    */
-  [data-anchor]:not([data-positioning]) {
-    anchor-name: var(--uiify-anchor, attr(data-anchor type(<custom-ident>)));
+  [data-positioning="native"] {
+    --uiify-anchor-offset: var(--space-sm);
   }
 
-  [data-positioning="native"][data-anchor] {
-    position: fixed;
-    position-anchor: var(--uiify-anchor, attr(data-anchor type(<custom-ident>)));
-    inset: auto;
-    margin: 0;
-    position-try-fallbacks: flip-block, flip-inline;
-  }
-
-  /*
-   * Implicit anchor: a popover shown by a popovertarget/commandfor invoker uses
-   * that invoker as its anchor (position-anchor stays at its initial `auto`).
-   * The native parts emit no anchor name, so no `data-anchor` attribute.
-   */
-  [data-positioning="native"]:not([data-anchor]) {
-    position: fixed;
-    inset: auto;
-    margin: 0;
-    position-try-fallbacks: flip-block, flip-inline;
-  }
-
-  [data-positioning="native"][data-side="top"] {
-    position-area: top;
-    margin-block-end: var(--space-sm);
-  }
-
-  [data-positioning="native"][data-side="right"] {
-    position-area: right;
-    margin-inline-start: var(--space-sm);
-  }
-
-  [data-positioning="native"][data-side="bottom"] {
-    position-area: bottom;
-    margin-block-start: var(--space-sm);
-  }
-
-  [data-positioning="native"][data-side="left"] {
-    position-area: left;
-    margin-inline-end: var(--space-sm);
-  }
-
-  /* Align modifiers for position-area */
-  [data-positioning="native"][data-side="top"][data-align="start"] {
-    position-area: top span-right;
-    justify-self: start;
-  }
-
-  [data-positioning="native"][data-side="top"][data-align="end"] {
-    position-area: top span-left;
-    justify-self: end;
-  }
-
-  [data-positioning="native"][data-side="bottom"][data-align="start"] {
-    position-area: bottom span-right;
-    justify-self: start;
-  }
-
-  [data-positioning="native"][data-side="bottom"][data-align="end"] {
-    position-area: bottom span-left;
-    justify-self: end;
-  }
-
-  [data-positioning="native"][data-side="right"][data-align="start"] {
-    align-self: start;
-    position-area: right span-bottom;
-  }
-
-  [data-positioning="native"][data-side="right"][data-align="end"] {
-    align-self: end;
-    position-area: right span-top;
-  }
-
-  [data-positioning="native"][data-side="left"][data-align="start"] {
-    align-self: start;
-    position-area: left span-bottom;
-  }
-
-  [data-positioning="native"][data-side="left"][data-align="end"] {
-    align-self: end;
-    position-area: left span-top;
-  }
-
-  /* Shared focus-visible ring. Skins opt in with `.uiify-focusable`, and most
-     interactive skins compose it directly. A flush, translucent glow (2a/2b
-     handoff: `box-shadow: 0 0 0 3px rgba(accent, 12-28%)`, never an opaque
-     offset outline) so it reads as a soft halo instead of a hard ring. */
-  .uiify-focusable:focus-visible,
-  :where([class^="uiify-"], [class*=" uiify-"]):focus-visible {
+  /* Shared focus-visible ring for public interactive parts. A flush,
+     translucent glow reads as a soft halo instead of a hard ring. */
+  :where(
+    [data-uiify-button],
+    [data-uiify-input],
+    [data-uiify-textarea],
+    [data-uiify-select],
+    [data-uiify-checkbox],
+    [data-uiify-radio],
+    [data-uiify-switch],
+    [data-uiify-toggle]
+  ):focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 }

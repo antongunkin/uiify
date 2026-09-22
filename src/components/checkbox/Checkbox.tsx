@@ -54,13 +54,14 @@ export function Checkbox(props: CheckboxProps): ReactElement {
       onChange={handleChange}
       ref={inputRef}
       type="checkbox"
+      {...(label === undefined ? { "data-uiify-checkbox": "" } : { "data-part": "control" })}
     />
   );
 
   return label === undefined ? (
     input
   ) : (
-    <label className={className} id={`${id}-label`}>
+    <label className={className} data-uiify-checkbox="" id={`${id}-label`}>
       {input}
       {label}
     </label>

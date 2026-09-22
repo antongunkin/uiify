@@ -66,6 +66,7 @@ const [DropdownMenuProvider, useDropdownMenuContext] =
 export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | null {
   const {
     children,
+    className,
     defaultOpen,
     dir: localDir,
     disabled = false,
@@ -113,7 +114,11 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     }),
     [cancelHoverClose, surface, dir, disabled, loop, scheduleHoverClose],
   );
-  return <DropdownMenuProvider value={value}>{children}</DropdownMenuProvider>;
+  return (
+    <div className={className} data-uiify-menu="">
+      <DropdownMenuProvider value={value}>{children}</DropdownMenuProvider>
+    </div>
+  );
 }
 
 export function DropdownMenuTrigger<TAs extends ElementType = "button">(

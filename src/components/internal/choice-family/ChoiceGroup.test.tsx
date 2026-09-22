@@ -27,6 +27,7 @@ describe("ChoiceGroup", () => {
 
         const inputType = kind === "single" ? "radio" : "checkbox";
         expect(markup).toContain(`type="${inputType}"`);
+        expect(markup).toContain(kind === "single" ? 'data-uiify-radio=""' : 'data-part="control"');
         expect(markup).toContain('id="group-control-a"');
         expect(markup).toContain('id="group-control-b"');
         expect(markup).toContain('for="group-control-a"');
@@ -124,15 +125,17 @@ describe("ChoiceGroup", () => {
       <ChoiceGroup
         id="group"
         items={items}
-        itemWrapperAttributes={(item) => ({ "data-complete": item.value === "a" ? "" : undefined })}
+        itemWrapperAttributes={(item) => ({
+          "data-complete": item.value === "a" ? "true" : undefined,
+        })}
         kind="single"
         namespace="test"
         orientation="horizontal"
         isChecked={() => false}
       />,
     );
-    const aIndex = markup.indexOf('data-part="item"');
-    expect(markup.slice(aIndex, aIndex + 300)).toContain("data-complete");
+    const aIndex = markup.indexOf('data-complete="true"');
+    expect(markup.slice(aIndex, aIndex + 300)).toContain('data-complete="true"');
   });
 
   it("applies itemInputClassName per item", () => {
@@ -200,7 +203,7 @@ describe("ChoiceGroup", () => {
     expect(markup).toContain("Custom: Item A");
   });
 
-  it("adds the trigger attribute to the label when withTriggerAttribute is set", () => {
+  it("marks the label as a trigger when the trigger anatomy is requested", () => {
     const markup = renderToStaticMarkup(
       <ChoiceGroup
         id="group"
@@ -208,20 +211,19 @@ describe("ChoiceGroup", () => {
         kind="single"
         namespace="tabs"
         orientation="horizontal"
-        withTriggerAttribute
+        labelPart
         isChecked={() => false}
       />,
     );
-    expect(markup).toContain("data-uiify-tabs-trigger=");
+    expect(markup).toContain('data-part="trigger"');
   });
 
-  it("adds a data-part=label marker to the label when labelPart is set", () => {
+  it("leaves a plain choice label without trigger anatomy by default", () => {
     const markup = renderToStaticMarkup(
       <ChoiceGroup
         id="group"
         items={items}
         kind="single"
-        labelPart
         namespace="test"
         orientation="horizontal"
         isChecked={() => false}
@@ -230,7 +232,7 @@ describe("ChoiceGroup", () => {
     expect(markup).toContain('data-part="label"');
   });
 
-  it("adds an input data-* marker when withInputAttribute is set", () => {
+  it("marks the input as the control anatomy", () => {
     const markup = renderToStaticMarkup(
       <ChoiceGroup
         id="group"
@@ -238,11 +240,36 @@ describe("ChoiceGroup", () => {
         kind="single"
         namespace="stepper"
         orientation="horizontal"
-        withInputAttribute
         isChecked={() => false}
       />,
     );
-    expect(markup).toContain("data-uiify-stepper-input=");
+    expect(markup).toContain('data-part="control"');
+  });
+
+  it("marks single-choice controls as radios without changing multiple-choice controls", () => {
+    const single = renderToStaticMarkup(
+      <ChoiceGroup
+        id="single"
+        items={items}
+        kind="single"
+        namespace="radio-group"
+        orientation="horizontal"
+        isChecked={() => false}
+      />,
+    );
+    const multiple = renderToStaticMarkup(
+      <ChoiceGroup
+        id="multiple"
+        items={items}
+        kind="multiple"
+        namespace="test"
+        orientation="horizontal"
+        isChecked={() => false}
+      />,
+    );
+
+    expect(single).toContain('data-uiify-radio=""');
+    expect(multiple).not.toContain('data-uiify-radio=""');
   });
 
   it("fires onItemChange with the selected item when an input changes", () => {

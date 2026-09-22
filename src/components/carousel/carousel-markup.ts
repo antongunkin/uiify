@@ -56,8 +56,3 @@ export function carouselSlideId(carouselId: string, itemId: string): string {
 export function carouselFragment(id: string): string {
   return `#${encodeURIComponent(id)}`;
 }
-
-export function joinClassNames(...values: readonly (string | undefined)[]): string | undefined {
-  const value = values.filter(Boolean).join(" ");
-  return value || undefined;
-}

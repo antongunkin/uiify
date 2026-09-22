@@ -99,14 +99,22 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
     onClick?.(event);
     if (event.defaultPrevented || !closeOnBackdropClick) return;
     if (event.target !== event.currentTarget) return;
+    // A click on dialog padding targets the dialog too; only outside its border box is backdrop.
+    const box = event.currentTarget.getBoundingClientRect(); // banned-read-ok: one read per user click, never per frame
+    const onBackdrop =
+      event.clientX < box.left ||
+      event.clientX > box.right ||
+      event.clientY < box.top ||
+      event.clientY > box.bottom;
+    if (!onBackdrop) return;
     (event.currentTarget as HTMLDialogElement & { requestClose(): void }).requestClose();
   };
 
   return (
     <dialog
       {...dialogProps}
-      data-uiify-dialog-content=""
-      data-uiify-modal-content=""
+      data-part="content"
+      data-uiify-modal=""
       onClick={handleClick}
       ref={mergedRef}
       // SSR markup is always closed, but the browser may have already opened this

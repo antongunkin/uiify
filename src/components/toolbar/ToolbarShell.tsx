@@ -23,6 +23,7 @@ export function ToolbarRoot(props: ToolbarRootProps): ReactElement | null {
       {...consumerProps}
       className={className}
       data-orientation={orientation}
+      data-part="root"
       data-uiify-toolbar=""
       dir={dir}
       role="toolbar"
@@ -34,16 +35,17 @@ export function ToolbarRoot(props: ToolbarRootProps): ReactElement | null {
 ToolbarRoot.displayName = "ToolbarRoot";
 
 export function ToolbarButton(props: ToolbarButtonProps): ReactElement | null {
-  const { children, className, disabled = false, onClick } = props;
+  const { children, className, disabled = false, ...consumerProps } = props;
 
   return (
     <button
+      {...consumerProps}
       aria-disabled={disabled || undefined}
-      data-uiify-toolbar-item=""
+      data-part="item"
+      data-uiify-toolbar=""
       disabled={disabled}
       type="button"
       {...(className ? { className } : {})}
-      {...(onClick ? { onClick } : {})}
     >
       {children}
     </button>
@@ -52,10 +54,10 @@ export function ToolbarButton(props: ToolbarButtonProps): ReactElement | null {
 ToolbarButton.displayName = "ToolbarButton";
 
 export function ToolbarLink(props: ToolbarLinkProps): ReactElement | null {
-  const { children, className, href } = props;
+  const { children, className, href, ...consumerProps } = props;
 
   return (
-    <a data-uiify-toolbar-item="" href={href} {...(className ? { className } : {})}>
+    <a {...consumerProps} className={className} data-part="item" data-uiify-toolbar="" href={href}>
       {children}
     </a>
   );
@@ -69,6 +71,7 @@ export function ToolbarSeparator(props: ToolbarSeparatorProps): ReactElement | n
       {...consumerProps}
       {...(className ? { className } : {})}
       aria-orientation={orientation}
+      data-part="separator"
       data-orientation={orientation}
     />
   );

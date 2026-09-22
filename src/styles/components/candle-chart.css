@@ -46,7 +46,7 @@
     --candle-down: oklch(64% 0.21 24deg);
     --candle-flat: color-mix(in srgb, currentcolor 60%, transparent);
     --candle-up: oklch(67% 0.14 166deg);
-    --candle-axis: var(--color-muted-fg);
+    --candle-axis: var(--muted-foreground);
 
     position: relative;
     display: block;
@@ -62,7 +62,7 @@
     color: light-dark(oklch(28% 0.04 165deg), oklch(82% 0.04 165deg));
   }
 
-  [data-uiify-candle-chart] > .candle-chart__plot {
+  [data-uiify-candle-chart] > [data-part="plot"] {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 4.5rem;
@@ -73,7 +73,7 @@
     overscroll-behavior: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__scroll-viewport {
+  [data-uiify-candle-chart] [data-part="scroll-viewport"] {
     grid-column: 1;
     grid-row: 1 / span 2;
     min-inline-size: 0;
@@ -85,11 +85,11 @@
     direction: rtl;
   }
 
-  [data-uiify-candle-chart] .candle-chart__scroll-viewport::-webkit-scrollbar {
+  [data-uiify-candle-chart] [data-part="scroll-viewport"]::-webkit-scrollbar {
     display: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__canvas {
+  [data-uiify-candle-chart] [data-part="canvas"] {
     display: grid;
     grid-template-rows: minmax(18rem, 1fr) 1.5rem;
     inline-size: calc(100% * var(--candle-scale));
@@ -98,7 +98,7 @@
     direction: ltr;
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles {
+  [data-uiify-candle-chart] [data-part="candles"] {
     position: absolute;
     inset-block: 0;
     inset-inline: auto 0;
@@ -114,7 +114,7 @@
       100% 25%;
   }
 
-  [data-uiify-candle-chart] .candle-chart__viewport {
+  [data-uiify-candle-chart] [data-part="viewport"] {
     position: relative;
     grid-column: 1;
     grid-row: 1;
@@ -124,7 +124,7 @@
     overscroll-behavior: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-viewport {
+  [data-uiify-candle-chart] [data-part="time-viewport"] {
     position: relative;
     grid-column: 1;
     grid-row: 2;
@@ -138,14 +138,14 @@
     z-index: 1;
     inset-block-start: 0.75rem;
     inset-inline-start: 1rem;
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
     font-size: 0.75rem;
     font-weight: 650;
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
 
-  [data-uiify-candle-chart] .candle-chart__readout {
+  [data-uiify-candle-chart] [data-part="readout"] {
     position: absolute;
     z-index: 1;
     inset-block-start: 0.75rem;
@@ -161,11 +161,11 @@
     white-space: nowrap;
   }
 
-  [data-uiify-candle-chart] .candle-chart__readout-time {
+  [data-uiify-candle-chart] [data-part="readout-time"] {
     font-weight: 650;
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles > li {
+  [data-uiify-candle-chart] [data-part="candles"] > li {
     position: absolute;
     inset: 1rem 0.5rem;
     pointer-events: none;
@@ -176,11 +176,11 @@
     list-style: none;
   }
 
-  [data-uiify-candle-chart][data-interactive] .candle-chart__candles > li {
+  [data-uiify-candle-chart][data-interactive] [data-part="candles"] > li {
     pointer-events: auto;
   }
 
-  [data-uiify-candle-chart] .candle-chart__candle-hit {
+  [data-uiify-candle-chart] [data-part="candle-hit"] {
     position: absolute;
     z-index: 1;
     inset: 0;
@@ -196,15 +196,15 @@
     font: inherit;
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles > li::before,
-  [data-uiify-candle-chart] .candle-chart__candles > li::after {
+  [data-uiify-candle-chart] [data-part="candles"] > li::before,
+  [data-uiify-candle-chart] [data-part="candles"] > li::after {
     content: "";
     position: absolute;
     display: block;
     background: currentcolor;
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles > li::before {
+  [data-uiify-candle-chart] [data-part="candles"] > li::before {
     inset-block-start: var(--candle-wick-top);
     inset-inline-start: 50%;
     inline-size: max(1px, 0.08em);
@@ -212,22 +212,22 @@
     transform: translateX(-50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles > li::after {
+  [data-uiify-candle-chart] [data-part="candles"] > li::after {
     inset-block-start: var(--candle-body-top);
     inset-inline: 17%;
     block-size: var(--candle-body-height);
     min-block-size: 1px;
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles > li[data-direction="up"] {
+  [data-uiify-candle-chart] [data-part="candles"] > li[data-direction="up"] {
     color: var(--candle-up);
   }
 
-  [data-uiify-candle-chart] .candle-chart__candles > li[data-direction="down"] {
+  [data-uiify-candle-chart] [data-part="candles"] > li[data-direction="down"] {
     color: var(--candle-down);
   }
 
-  [data-uiify-candle-chart] .candle-chart__crosshair {
+  [data-uiify-candle-chart] [data-part="crosshair"] {
     position: absolute;
     z-index: 3;
     inset: 0;
@@ -237,15 +237,15 @@
     pointer-events: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__crosshair::before,
-  [data-uiify-candle-chart] .candle-chart__crosshair::after {
+  [data-uiify-candle-chart] [data-part="crosshair"]::before,
+  [data-uiify-candle-chart] [data-part="crosshair"]::after {
     content: "";
     position: absolute;
     display: block;
     background: currentcolor;
   }
 
-  [data-uiify-candle-chart] .candle-chart__crosshair::before {
+  [data-uiify-candle-chart] [data-part="crosshair"]::before {
     inset-block: 0;
     inset-inline-start: var(--candle-crosshair-x);
     inline-size: 1px;
@@ -257,7 +257,7 @@
     background-color: transparent;
   }
 
-  [data-uiify-candle-chart] .candle-chart__crosshair::after {
+  [data-uiify-candle-chart] [data-part="crosshair"]::after {
     inset-block-start: calc(var(--candle-cursor-y, 50%) + 1rem);
     inset-inline: 0;
     block-size: 1px;
@@ -269,7 +269,7 @@
     background-color: transparent;
   }
 
-  [data-uiify-candle-chart] .candle-chart__crosshair-marker {
+  [data-uiify-candle-chart] [data-part="crosshair-marker"] {
     position: absolute;
     inset-block-start: calc(var(--candle-cursor-y, 50%) + 1rem);
     inset-inline-start: var(--candle-crosshair-x);
@@ -278,7 +278,7 @@
     transform: translate(-50%, -50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis > .candle-chart__crosshair-time {
+  [data-uiify-candle-chart] [data-part="time-axis"] > [data-part="crosshair-time"] {
     inset-block-start: 0;
     inset-inline-start: var(--candle-crosshair-x);
     padding: 0.3rem 0.5rem;
@@ -288,7 +288,7 @@
     transform: translateX(-50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis > .candle-chart__crosshair-price {
+  [data-uiify-candle-chart] [data-part="price-axis"] > [data-part="crosshair-price"] {
     inset-block-start: calc(var(--candle-cursor-y, 50%) + 1rem);
     inset-inline-end: 0;
     padding: 0.3rem 0.5rem;
@@ -298,26 +298,26 @@
     transform: translateY(-50%);
   }
 
-  [data-uiify-candle-chart][data-interactive] .candle-chart__candle-hit:focus-visible {
+  [data-uiify-candle-chart][data-interactive] [data-part="candle-hit"]:focus-visible {
     outline: 2px solid currentcolor;
     outline-offset: -2px;
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis,
-  [data-uiify-candle-chart] .candle-chart__time-axis {
+  [data-uiify-candle-chart] [data-part="price-axis"],
+  [data-uiify-candle-chart] [data-part="time-axis"] {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis {
+  [data-uiify-candle-chart] [data-part="price-axis"] {
     position: relative;
     grid-column: 2;
     grid-row: 1;
     min-inline-size: 0;
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis > li {
+  [data-uiify-candle-chart] [data-part="price-axis"] > li {
     position: absolute;
     inset-inline: 0;
     inset-block-start: var(--candle-axis-y);
@@ -332,22 +332,22 @@
     transform: translateY(-50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis > li:first-child {
+  [data-uiify-candle-chart] [data-part="price-axis"] > li:first-child {
     transform: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis > li:last-child {
+  [data-uiify-candle-chart] [data-part="price-axis"] > li:last-child {
     transform: translateY(-100%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis {
+  [data-uiify-candle-chart] [data-part="time-axis"] {
     position: relative;
     inset-block: 0;
     inline-size: 100%;
     min-inline-size: 0;
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis > li {
+  [data-uiify-candle-chart] [data-part="time-axis"] > li {
     position: absolute;
     inset-block-start: 0.35rem;
     inset-inline-start: var(--candle-axis-x);
@@ -357,23 +357,23 @@
     transform: translateX(-50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis > li:first-child {
+  [data-uiify-candle-chart] [data-part="time-axis"] > li:first-child {
     transform: none;
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis > li:last-child {
+  [data-uiify-candle-chart] [data-part="time-axis"] > li:last-child {
     transform: translateX(-100%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis > li:only-child {
+  [data-uiify-candle-chart] [data-part="time-axis"] > li:only-child {
     transform: translateX(-50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__time-axis > li.candle-chart__crosshair-time {
+  [data-uiify-candle-chart] [data-part="time-axis"] > li[data-part="crosshair-time"] {
     transform: translateX(-50%);
   }
 
-  [data-uiify-candle-chart] .candle-chart__price-axis > li.candle-chart__crosshair-price {
+  [data-uiify-candle-chart] [data-part="price-axis"] > li[data-part="crosshair-price"] {
     transform: translateY(-50%);
   }
 

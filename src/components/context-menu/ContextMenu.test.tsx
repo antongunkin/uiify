@@ -5,7 +5,7 @@ import { ContextMenu } from "./ContextMenu.js";
 
 describe("ContextMenu", () => {
   it("opens at pointer coordinates on contextmenu", () => {
-    render(
+    const { container } = render(
       <ContextMenu.Root>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
         <ContextMenu.Content>
@@ -17,6 +17,29 @@ describe("ContextMenu", () => {
     const trigger = screen.getByText("Area");
     fireEvent.contextMenu(trigger, { clientX: 120, clientY: 80 });
     expect(screen.getByRole("menuitem", { name: "Copy" })).toBeTruthy();
+    expect(trigger.getAttribute("data-anchor")).toBeNull();
+    expect(container.querySelector("[data-virtual-anchor]")?.getAttribute("data-anchor")).toBe(
+      container.querySelector("[role=menu]")?.getAttribute("data-anchor"),
+    );
+  });
+
+  it("anchors default-open menus to their trigger instead of the viewport origin", () => {
+    const { container } = render(
+      <ContextMenu.Root defaultOpen>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>Copy</ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+
+    const trigger = screen.getByText("Area");
+    const virtualAnchor = container.querySelector("[data-virtual-anchor]");
+    const content = screen.getByRole("menu");
+
+    expect(trigger.getAttribute("data-anchor")).toBeTruthy();
+    expect(virtualAnchor?.getAttribute("data-anchor")).toBeNull();
+    expect(content.getAttribute("data-anchor")).toBe(trigger.getAttribute("data-anchor"));
   });
 
   it("selects an item and closes the menu", () => {
@@ -98,6 +121,8 @@ describe("ContextMenu", () => {
 
     const content = screen.getByRole("menu");
     expect(content.getAttribute("data-state")).toBe("open");
+    expect(content.getAttribute("data-uiify-menu")).toBe("");
+    expect(content.getAttribute("data-part")).toBe("content");
     expect(content.id).not.toBe("my-id");
     expect(content.getAttribute("data-align")).toBe("start");
     expect(content.getAttribute("data-side")).toBe("bottom");
@@ -115,6 +140,7 @@ describe("ContextMenu", () => {
 
     fireEvent.keyDown(screen.getByRole("menu"), { key: "Escape" });
     expect(screen.getByRole("menuitem", { name: "Copy" })).toBeTruthy();
+    expect(screen.getByRole("menuitem", { name: "Copy" }).getAttribute("data-part")).toBe("item");
   });
 
   it("owns Item's role regardless of consumer override", () => {

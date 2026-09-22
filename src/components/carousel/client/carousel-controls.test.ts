@@ -5,7 +5,7 @@ import { emptyCarouselSnapshot } from "./CarouselClientView.js";
 import { attachCarouselControls } from "./carousel-controls.js";
 
 function fixture(ready = true) {
-  document.body.innerHTML = `<section data-uiify-carousel><div data-uiify-carousel-viewport><div id="one"></div><div id="two"></div></div><button data-carousel-action="previous">Previous</button><button data-carousel-action="next"><span>Next</span></button><button data-carousel-action="rotation">Rotation</button><a data-uiify-carousel-dot data-carousel-index="1" href="#two">Go to Two</a><a href="#one">Content link</a><section data-uiify-carousel><button data-carousel-action="next">Nested</button></section></section>`;
+  document.body.innerHTML = `<section data-uiify-carousel><div data-part="viewport"><div id="one"></div><div id="two"></div></div><button data-carousel-action="previous">Previous</button><button data-carousel-action="next"><span>Next</span></button><button data-carousel-action="rotation">Rotation</button><a data-part="dot" data-carousel-index="1" href="#two">Go to Two</a><a href="#one">Content link</a><section data-uiify-carousel><button data-carousel-action="next">Nested</button></section></section>`;
   const root = document.querySelector<HTMLElement>("section")!;
   const controller: CarouselController = {
     getSnapshot: () => ({ ...emptyCarouselSnapshot, ready }),
@@ -22,7 +22,7 @@ function fixture(ready = true) {
   return {
     root,
     controller,
-    anchor: root.querySelector<HTMLAnchorElement>("[data-uiify-carousel-dot]")!,
+    anchor: root.querySelector<HTMLAnchorElement>('[data-part="dot"]')!,
   };
 }
 afterEach(() => {

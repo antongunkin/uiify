@@ -29,7 +29,9 @@ describe("AlertModal native parts", () => {
     expect(html).toContain('command="show-modal"');
     expect(html).toContain('commandfor="delete"');
     expect(html).toContain('role="alertdialog"');
-    expect(html).toContain('data-uiify-alert-dialog-content=""');
+    const parsed = document.createElement("div");
+    parsed.innerHTML = html;
+    expect(parsed.querySelector('[data-uiify-alert-modal][data-part="content"]')).not.toBeNull();
     expect(html).toContain('value="cancel"');
     expect(html).toContain('value="confirm"');
     expect((html.match(/command="request-close"/g) ?? []).length).toBe(2);
@@ -46,7 +48,21 @@ describe("AlertModal native parts", () => {
     );
     const button = screen.getByRole("button", { name: "Confirm" });
     expect(ref.current).toBe(button);
-    expect(button.hasAttribute("data-uiify-alert-dialog-action")).toBe(true);
+    expect(button.getAttribute("data-uiify-alert-modal")).toBe("");
+    expect(button.getAttribute("data-uiify-button")).toBe("");
+    expect(button.getAttribute("data-part")).toBe("action");
+    expect(button.getAttribute("data-variant")).toBe("danger");
     expect(button.getAttribute("type")).toBe("button");
+  });
+
+  it("marks cancel as a shared ghost button", () => {
+    render(
+      <AlertModalCancel ref={createRef<HTMLButtonElement>()} target="delete">
+        Cancel
+      </AlertModalCancel>,
+    );
+    const button = screen.getByRole("button", { name: "Cancel" });
+    expect(button.getAttribute("data-uiify-button")).toBe("");
+    expect(button.getAttribute("data-variant")).toBe("ghost");
   });
 });

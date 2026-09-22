@@ -11,16 +11,14 @@
 }
 
 @layer components {
-  .uiify-spinner,
   [data-uiify-spinner] {
     position: relative;
     display: inline-block;
     inline-size: 2.125rem;
     block-size: 2.125rem;
-    color: var(--color-accent);
+    color: var(--primary);
   }
 
-  .uiify-spinner::before,
   [data-uiify-spinner]::before {
     position: absolute;
     inset: 0;
@@ -38,60 +36,49 @@
       uiify-spinner-orbit 1.5s ease-in-out infinite;
   }
 
-  [data-uiify-spinner][data-state="delayed"]::before,
-  .uiify-spinner[data-state="delayed"]::before {
+  [data-uiify-spinner][data-state="delayed"]::before {
     animation: none;
   }
 
-  [data-uiify-spinner][data-size="small"],
-  .uiify-spinner[data-size="small"] {
+  [data-uiify-spinner][data-size="small"] {
     inline-size: 1.25rem;
     block-size: 1.25rem;
   }
 
-  [data-uiify-spinner][data-size="small"]::before,
-  .uiify-spinner[data-size="small"]::before {
+  [data-uiify-spinner][data-size="small"]::before {
     mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 1px));
   }
 
-  [data-uiify-spinner][data-size="default"],
-  .uiify-spinner[data-size="default"] {
+  [data-uiify-spinner][data-size="default"] {
     inline-size: 2.125rem;
     block-size: 2.125rem;
   }
 
-  [data-uiify-spinner][data-size="large"],
-  .uiify-spinner[data-size="large"] {
+  [data-uiify-spinner][data-size="large"] {
     inline-size: 6.25rem;
     block-size: 6.25rem;
   }
 
-  [data-uiify-spinner][data-size="large"]::before,
-  .uiify-spinner[data-size="large"]::before {
+  [data-uiify-spinner][data-size="large"]::before {
     mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
   }
 
-  [data-uiify-spinner][data-align="center"],
-  .uiify-spinner[data-align="center"] {
+  [data-uiify-spinner][data-align="center"] {
     margin-inline: auto;
   }
 
   [data-uiify-spinner][data-align="fixed"],
-  [data-uiify-spinner][data-align="absolute"],
-  .uiify-spinner[data-align="fixed"],
-  .uiify-spinner[data-align="absolute"] {
+  [data-uiify-spinner][data-align="absolute"] {
     inset-block-start: 50%;
     inset-inline-start: 50%;
     translate: -50% -50%;
   }
 
-  [data-uiify-spinner][data-align="fixed"],
-  .uiify-spinner[data-align="fixed"] {
+  [data-uiify-spinner][data-align="fixed"] {
     position: fixed;
   }
 
-  [data-uiify-spinner][data-align="absolute"],
-  .uiify-spinner[data-align="absolute"] {
+  [data-uiify-spinner][data-align="absolute"] {
     position: absolute;
   }
 
@@ -119,7 +106,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .uiify-spinner::before,
     [data-uiify-spinner]::before {
       animation: uiify-spinner-orbit 2.5s ease-in-out infinite;
     }

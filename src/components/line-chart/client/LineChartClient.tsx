@@ -14,7 +14,7 @@ interface InteractiveLineStyle extends CSSProperties {
 }
 
 /**
- * `.line-chart__plot`'s fixed price-axis column (4.5rem) plus its grid gap
+ * `[data-part="plot"]`'s fixed price-axis column (4.5rem) plus its grid gap
  * (0.75rem) — see line-chart.css. `useChartViewport` measures the whole
  * `<figure>`, but points only ever get the width left over after this
  * column, so it must be subtracted before sizing `minItemWidth`.

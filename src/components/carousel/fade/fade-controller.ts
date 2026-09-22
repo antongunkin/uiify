@@ -11,7 +11,7 @@ export function createFadeController(
   root: HTMLElement,
   initialOptions: CarouselControllerOptions,
 ): CarouselController {
-  const viewport = root.querySelector<HTMLElement>(":scope > [data-uiify-carousel-viewport]");
+  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
   if (!viewport) throw new Error("Carousel viewport is missing");
   const listeners = new Set<() => void>();
   let options = initialOptions;
@@ -109,7 +109,7 @@ export function createFadeController(
     if (destroyed) return;
     const next = Array.from(viewport!.children).filter(
       (node): node is HTMLElement =>
-        node instanceof HTMLElement && node.hasAttribute("data-uiify-carousel-slide"),
+        node instanceof HTMLElement && node.getAttribute("data-part") === "slide",
     );
     if (
       snapshot.ready &&

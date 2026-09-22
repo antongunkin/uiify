@@ -35,6 +35,7 @@ export function Input<TAs extends ElementType = "input">(
     defaultTag: "input",
     props: {
       ...consumerProps,
+      "data-uiify-input": "",
       "aria-invalid": invalid || undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-readonly": readOnly ? "" : undefined,

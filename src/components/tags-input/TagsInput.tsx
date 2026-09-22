@@ -34,6 +34,7 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
     addOnPaste = true,
     allowDuplicates = false,
     children,
+    className,
     defaultValue = [],
     delimiters = [","],
     disabled = false,
@@ -118,7 +119,9 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
 
   return (
     <TagsInputProvider value={contextValue}>
-      <div data-disabled={disabled ? "" : undefined}>{children}</div>
+      <div className={className} data-disabled={disabled ? "" : undefined} data-uiify-tags-input="">
+        {children}
+      </div>
     </TagsInputProvider>
   );
 }
@@ -191,6 +194,7 @@ export function TagsInputInput<TAs extends ElementType = "input">(
       "aria-controls": listId,
       "aria-expanded": false,
       disabled: disabled || undefined,
+      "data-part": "input",
       value: inputValue,
       placeholder,
       ...(className ? { className } : {}),
@@ -214,6 +218,7 @@ export function TagsInputList(props: TagsInputListOwnProps): ReactElement | null
       id={listId}
       orientation="horizontal"
       {...(className ? { className } : {})}
+      data-part="list"
     >
       {tags.map((tag, index) => (
         <li data-index={index} data-value={tag} key={`${tag}-${index}`}>
@@ -256,6 +261,7 @@ export function TagsInputTag<TAs extends ElementType = "li">(
   const tagProps = {
     ...consumerProps,
     role: "listitem",
+    "data-part": "tag",
     "data-value": value,
     ...(className ? { className } : {}),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
@@ -293,6 +299,7 @@ export function TagsInputTagRemove(props: TagsInputTagRemoveOwnProps): ReactElem
     props: {
       type: "button",
       "aria-label": "Remove tag",
+      "data-part": "tag-remove",
       disabled: disabled || undefined,
       ...(className ? { className } : {}),
       onClick: () => removeAt(index),

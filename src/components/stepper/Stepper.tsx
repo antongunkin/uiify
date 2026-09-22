@@ -18,6 +18,7 @@ export function Stepper({
       itemPart="step"
       itemWrapperAttributes={(item) => ({ "data-complete": item.complete ? "" : undefined })}
       kind="single"
+      labelPart
       namespace="stepper"
       orientation={orientation}
       renderLabel={(item) => (
@@ -27,7 +28,6 @@ export function Stepper({
         </>
       )}
       renderPanel={(item) => item.panel}
-      withInputAttribute
     />
   );
 }

@@ -20,7 +20,9 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
   return (
     <section
       aria-label={ariaLabel}
+      data-part="viewport"
       data-testid="toast-viewport"
+      data-uiify-toast=""
       ref={ref}
       {...(popover ? { popover } : {})}
       {...(className ? { className } : {})}
@@ -37,8 +39,9 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
   return (
     <fieldset
       aria-label={typeof toast.title === "string" ? toast.title : "Notification"}
+      data-part="item"
       data-state="open"
-      data-uiify-toast-root=""
+      data-uiify-toast=""
     >
       {toast.title ? <ToastTitle>{toast.title}</ToastTitle> : null}
       {toast.description ? <ToastDescription>{toast.description}</ToastDescription> : null}

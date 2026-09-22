@@ -29,19 +29,6 @@ export interface CarouselLabels {
   readonly of: string;
 }
 
-export interface CarouselClassNames {
-  readonly viewport?: string;
-  readonly slide?: string;
-  readonly slideContent?: string;
-  readonly controls?: string;
-  readonly previous?: string;
-  readonly next?: string;
-  readonly dots?: string;
-  readonly dot?: string;
-  readonly rotation?: string;
-  readonly status?: string;
-}
-
 /**
  * Visible content for the client entries' buttons. Empty by default: `labels` already
  * supplies each button's accessible name, so a consumer supplies whatever it wants to
@@ -67,7 +54,6 @@ export interface CarouselProps {
   readonly navigation?: boolean;
   readonly pagination?: boolean;
   readonly className?: string;
-  readonly classNames?: CarouselClassNames;
   readonly style?: CarouselStyle;
   readonly labels?: Partial<CarouselLabels>;
   readonly icons?: CarouselIcons;

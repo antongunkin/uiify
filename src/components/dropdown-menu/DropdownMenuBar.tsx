@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { useDirection } from "@gunkin/uiify/core/direction";
 import type { DropdownMenuBarProps } from "./types.js";
 
-const ITEM_SELECTOR = "[data-uiify-menu-bar-item]";
+const ITEM_SELECTOR = '[data-uiify-menu] [data-part="trigger"]';
 
 function getItems(root: HTMLElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>(ITEM_SELECTOR));
@@ -36,7 +36,7 @@ function moveIndex(
 }
 
 /**
- * Roving focus and ArrowLeft/ArrowRight/Home/End across `data-uiify-menu-bar-item` descendants.
+ * Roving focus and ArrowLeft/ArrowRight/Home/End across menu trigger descendants.
  * Modeled on Toolbar's own delegated-listener pattern but scoped to one axis and addressed by its
  * own marker: DropdownMenu.Trigger does not participate in @gunkin/uiify/core/roving-focus, and
  * Toolbar.Button drops any prop it does not itself destructure, so neither can host this directly.
@@ -102,7 +102,13 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
   }, [dir, loop]);
 
   return (
-    <div {...(className ? { className } : {})} dir={dir} ref={rootRef} role="menubar">
+    <div
+      {...(className ? { className } : {})}
+      data-uiify-menu-bar=""
+      dir={dir}
+      ref={rootRef}
+      role="menubar"
+    >
       {children}
     </div>
   );

@@ -9,7 +9,7 @@ export function attachCarouselFocus(
     receive(
       target instanceof Element &&
         target.closest("[data-uiify-carousel]") === root &&
-        target.closest("[data-uiify-carousel-dot]") !== null,
+        target.closest('[data-part="dot"]') !== null,
     );
   }
   const focusIn = (event: FocusEvent) => preserve(event.target);
@@ -42,9 +42,7 @@ export function attachCarouselControls(
       event.target.closest("[data-uiify-carousel]") !== root
     )
       return;
-    const control = event.target.closest<HTMLElement>(
-      "[data-carousel-action], [data-uiify-carousel-dot]",
-    );
+    const control = event.target.closest<HTMLElement>('[data-carousel-action], [data-part="dot"]');
     if (!control || !root.contains(control)) return;
     if (control instanceof HTMLButtonElement) {
       if (control.disabled) return;
@@ -69,8 +67,9 @@ export function attachCarouselControls(
     )
       return;
     const index = Number(control.dataset.carouselIndex);
-    const slide = root.querySelector<HTMLElement>(":scope > [data-uiify-carousel-viewport]")
-      ?.children[index];
+    const slide = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]')?.children[
+      index
+    ];
     if (
       !Number.isInteger(index) ||
       index < 0 ||

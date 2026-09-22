@@ -19,8 +19,8 @@ describe("LineChartClient", () => {
     const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
 
     expect(chart.style.getPropertyValue("--line-scale")).toBe("3.2");
-    expect(chart.querySelector(".line-chart__scroll-viewport")).not.toBeNull();
-    expect(chart.querySelector(".line-chart__canvas")).not.toBeNull();
+    expect(chart.querySelector('[data-part="scroll-viewport"]')).not.toBeNull();
+    expect(chart.querySelector('[data-part="canvas"]')).not.toBeNull();
 
     fireEvent.wheel(chart, { deltaY: -100 });
     expect(chart.style.getPropertyValue("--line-scale")).toBe("3.84");
@@ -32,7 +32,7 @@ describe("LineChartClient", () => {
       <LineChartClient data={DATA} onPointPointerMove={onPointPointerMove} />,
     );
     const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
-    const target = chart.querySelectorAll<HTMLLIElement>(".line-chart__points > li")[1];
+    const target = chart.querySelectorAll<HTMLLIElement>('[data-part="points"] > li')[1];
     const hit = target?.querySelector("button") as HTMLButtonElement;
     const pointerMove = createEvent.pointerMove(hit);
     Object.defineProperty(pointerMove, "offsetY", { value: 24 });
@@ -41,7 +41,7 @@ describe("LineChartClient", () => {
 
     expect(target?.getAttribute("data-crosshair-active")).toBe("");
     expect(target?.getAttribute("style")).toContain("--line-cursor-y: 24px");
-    expect(chart.querySelector(".line-chart__crosshair")).not.toBeNull();
+    expect(chart.querySelector('[data-part="crosshair"]')).not.toBeNull();
     expect(onPointPointerMove).toHaveBeenCalledWith({ index: 1, offsetY: 24 });
   });
 
@@ -49,7 +49,7 @@ describe("LineChartClient", () => {
     const onPointClick = vi.fn();
     const { container } = render(<LineChartClient data={DATA} onPointClick={onPointClick} />);
     const hit = container.querySelectorAll<HTMLButtonElement>(
-      ".line-chart__points button",
+      '[data-part="points"] button',
     )[2] as HTMLButtonElement;
 
     fireEvent.click(hit);
@@ -63,11 +63,11 @@ describe("LineChartClient", () => {
   it("clears the active point when the pointer leaves", () => {
     const { container } = render(<LineChartClient data={DATA} />);
     const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
-    const hit = chart.querySelector(".line-chart__points button") as HTMLButtonElement;
+    const hit = chart.querySelector('[data-part="points"] button') as HTMLButtonElement;
 
     fireEvent.pointerMove(hit);
-    expect(chart.querySelector(".line-chart__crosshair")).not.toBeNull();
+    expect(chart.querySelector('[data-part="crosshair"]')).not.toBeNull();
     fireEvent.pointerLeave(hit);
-    expect(chart.querySelector(".line-chart__crosshair")).toBeNull();
+    expect(chart.querySelector('[data-part="crosshair"]')).toBeNull();
   });
 });

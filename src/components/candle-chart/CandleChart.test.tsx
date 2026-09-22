@@ -13,7 +13,7 @@ describe("CandleChart", () => {
   it("renders each OHLC item as a decorative candle with responsive geometry", () => {
     const { container } = render(<CandleChart data={DATA} data-testid="chart" />);
     const chart = container.querySelector("[data-testid='chart']") as HTMLElement;
-    const candles = [...chart.querySelectorAll(".candle-chart__candles > li")];
+    const candles = [...chart.querySelectorAll('[data-part="candles"] > li')];
 
     expect(chart.tagName).toBe("FIGURE");
     expect(chart.getAttribute("data-uiify-candle-chart")).toBe("");
@@ -54,21 +54,21 @@ describe("CandleChart", () => {
         onCandleClick={onCandleClick}
       />,
     );
-    const candles = container.querySelectorAll(".candle-chart__candles > li");
+    const candles = container.querySelectorAll('[data-part="candles"] > li');
     const active = candles[1];
 
-    expect(container.querySelector(".candle-chart__plot")?.getAttribute("aria-hidden")).toBeNull();
-    expect(active?.querySelector(".candle-chart__candle-hit")?.tagName).toBe("BUTTON");
+    expect(container.querySelector('[data-part="plot"]')?.getAttribute("aria-hidden")).toBeNull();
+    expect(active?.querySelector('[data-part="candle-hit"]')?.tagName).toBe("BUTTON");
     expect(active?.getAttribute("data-crosshair-active")).toBe("");
     expect(active?.getAttribute("data-tooltip-open")).toBeNull();
     expect(active?.getAttribute("style")).not.toContain("--candle-open");
-    expect(active?.querySelector(".candle-chart__crosshair")).toBeNull();
-    expect(container.querySelector(".candle-chart__readout")?.textContent).toContain("O 108");
-    expect(container.querySelector(".candle-chart__readout")?.textContent).toContain("H 110");
-    expect(container.querySelector(".candle-chart__readout")?.textContent).toContain("L 98");
-    expect(container.querySelector(".candle-chart__readout")?.textContent).toContain("C 101");
+    expect(active?.querySelector('[data-part="crosshair"]')).toBeNull();
+    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("O 108");
+    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("H 110");
+    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("L 98");
+    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("C 101");
     expect(
-      container.querySelector(".candle-chart__viewport > .candle-chart__crosshair"),
+      container.querySelector('[data-part="viewport"] > [data-part="crosshair"]'),
     ).not.toBeNull();
   });
 
@@ -78,7 +78,7 @@ describe("CandleChart", () => {
     );
 
     expect(
-      container.querySelector(".candle-chart__candles > li")?.getAttribute("data-direction"),
+      container.querySelector('[data-part="candles"] > li')?.getAttribute("data-direction"),
     ).toBe("flat");
   });
 
@@ -87,7 +87,7 @@ describe("CandleChart", () => {
       <CandleChart data={[{ time: 1, open: 10, high: 10, low: 10, close: 10 }]} />,
     );
 
-    expect(container.querySelector(".candle-chart__candles > li")?.getAttribute("style")).toContain(
+    expect(container.querySelector('[data-part="candles"] > li')?.getAttribute("style")).toContain(
       "--candle-body-top: 50%",
     );
   });
@@ -99,15 +99,15 @@ describe("CandleChart", () => {
     ] satisfies readonly CandleChartData[];
     const { container } = render(<CandleChart data={data} />);
 
-    const timeViewport = container.querySelector(".candle-chart__time-viewport");
-    const scrollViewport = container.querySelector(".candle-chart__scroll-viewport");
-    const canvas = container.querySelector(".candle-chart__canvas");
+    const timeViewport = container.querySelector('[data-part="time-viewport"]');
+    const scrollViewport = container.querySelector('[data-part="scroll-viewport"]');
+    const canvas = container.querySelector('[data-part="canvas"]');
     const months = container.querySelectorAll("[data-axis='time'] > li");
     const prices = container.querySelectorAll("[data-axis='price'] > li");
 
     expect(timeViewport).not.toBeNull();
     expect(scrollViewport).not.toBeNull();
-    expect(scrollViewport?.querySelector(".candle-chart__canvas")).toBe(canvas);
+    expect(scrollViewport?.querySelector('[data-part="canvas"]')).toBe(canvas);
     expect(timeViewport?.querySelector("[data-axis='time']")).not.toBeNull();
     expect(months).toHaveLength(2);
     expect(months[0]?.textContent).toContain("Sep");

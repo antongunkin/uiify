@@ -1,20 +1,26 @@
 /* Generic skin for custom core surfaces used by the demo and consumers. */
 
 @layer components {
-  .uiify-surface {
+  [data-uiify-surface] {
     display: grid;
     gap: var(--space-md);
     inline-size: max-content;
     max-inline-size: min(28rem, calc(100vw - 2 * var(--space-lg)));
     padding: var(--space-lg);
-    border: var(--border-width) solid var(--color-border);
+    border: var(--border-width) solid var(--border);
     border-radius: var(--radius-lg);
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+    background-color: var(--card);
+    color: var(--card-foreground);
     box-shadow: var(--shadow-popover);
   }
 
-  .uiify-surface[popover]:not(:popover-open) {
+  [data-uiify-surface][popover]:not(:popover-open) {
     display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-surface][popover]:popover-open {
+      animation: uiify-overlay-in var(--duration-fast) var(--ease-out);
+    }
   }
 }

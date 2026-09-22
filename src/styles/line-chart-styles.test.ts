@@ -30,11 +30,11 @@ describe("LineChart styles", () => {
 
   it("uses the shared muted text token and filled trend-colored point centers", () => {
     expect(css).toMatch(
-      /--line-axis:\s*light-dark\(\s*color-mix\(in oklch, var\(--color-muted-fg\) 70%, var\(--color-fg\)\),\s*var\(--color-muted-fg\)\s*\);/,
+      /--line-axis:\s*light-dark\(\s*color-mix\(in oklch, var\(--muted-foreground\) 70%, var\(--foreground\)\),\s*var\(--muted-foreground\)\s*\);/,
     );
     expect(css).toContain("color-scheme: inherit;");
     expect(css).toMatch(
-      /\.line-chart__points > li::after \{[^}]*border: 0;[^}]*background: currentcolor;/,
+      /\[data-part="points"\] > li::after \{[^}]*border: 0;[^}]*background: currentcolor;/,
     );
     expect(css).toMatch(/> figcaption \{[\s\S]*?color: var\(--line-axis\);/);
   });

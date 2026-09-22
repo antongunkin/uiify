@@ -1,22 +1,22 @@
 /* Drawer — edge-attached dialog sheet with optional snap drag. */
 
 @layer components {
-  .uiify-drawer {
+  [data-uiify-drawer][data-part="content"] {
     margin: 0;
     inline-size: 100%;
     max-inline-size: 100%;
     padding: var(--space-xl);
-    border: var(--border-width) solid var(--color-border);
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+    border: var(--border-width) solid var(--border);
+    background-color: var(--popover);
+    color: var(--popover-foreground);
     box-shadow: var(--shadow-modal);
   }
 
-  .uiify-drawer::backdrop {
+  [data-uiify-drawer][data-part="content"]::backdrop {
     background-color: rgb(0 0 0 / 45%);
   }
 
-  .uiify-drawer[data-side="bottom"] {
+  [data-uiify-drawer][data-part="content"][data-side="bottom"] {
     margin-block-start: auto;
     max-block-size: 85vh;
     border-block-end: none;
@@ -24,7 +24,7 @@
     translate: 0 var(--uiify-drawer-transform, 0);
   }
 
-  .uiify-drawer[data-side="top"] {
+  [data-uiify-drawer][data-part="content"][data-side="top"] {
     margin-block-end: auto;
     max-block-size: 85vh;
     border-block-start: none;
@@ -32,7 +32,7 @@
     translate: 0 var(--uiify-drawer-transform, 0);
   }
 
-  .uiify-drawer[data-side="left"] {
+  [data-uiify-drawer][data-part="content"][data-side="left"] {
     margin-inline-end: auto;
     max-inline-size: min(24rem, 100vw);
     block-size: 100%;
@@ -42,7 +42,7 @@
     translate: var(--uiify-drawer-transform, 0) 0;
   }
 
-  .uiify-drawer[data-side="right"] {
+  [data-uiify-drawer][data-part="content"][data-side="right"] {
     margin-inline-start: auto;
     max-inline-size: min(24rem, 100vw);
     block-size: 100%;
@@ -53,11 +53,11 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .uiify-drawer[open] {
+    [data-uiify-drawer][data-part="content"][open] {
       animation: uiify-drawer-in var(--duration-base) var(--ease-out);
     }
 
-    .uiify-drawer[open]::backdrop {
+    [data-uiify-drawer][data-part="content"][open]::backdrop {
       animation: uiify-fade-in var(--duration-base) var(--ease-out);
     }
   }

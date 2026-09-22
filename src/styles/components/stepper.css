@@ -1,18 +1,6 @@
 /* Stepper — horizontal/vertical progress steps with tab-like triggers. */
 
 @layer components {
-  .uiify-stepper__list {
-    display: flex;
-    gap: var(--space-md);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .uiify-stepper__list[data-orientation="vertical"] {
-    flex-direction: column;
-  }
-
   [data-uiify-stepper] {
     display: flex;
     flex-wrap: wrap;
@@ -27,7 +15,7 @@
     position: relative;
   }
 
-  [data-uiify-stepper] [data-uiify-stepper-input] {
+  [data-uiify-stepper] > [data-part="step"] > [data-part="control"] {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -43,10 +31,10 @@
     gap: var(--space-sm);
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-pill);
-    background-color: var(--color-surface);
-    color: var(--color-muted-fg);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-full);
+    background-color: var(--card);
+    color: var(--muted-foreground);
     font-size: var(--text-sm);
     font-weight: var(--weight-medium);
     cursor: pointer;
@@ -54,22 +42,22 @@
 
   [data-uiify-stepper] [data-part="step"]:has(> input:checked) > label,
   [data-uiify-stepper] [data-part="step"][data-complete] > label {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    border-color: var(--primary);
+    color: var(--primary);
   }
 
   [data-uiify-stepper] [data-part="step"] > input:focus-visible + label {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 
-  [data-uiify-stepper] [data-uiify-stepper-panel] {
+  [data-uiify-stepper] > [data-part="step"] > [data-part="panel"] {
     margin-block-start: var(--space-lg);
     padding: var(--space-lg);
-    border: var(--border-width) solid var(--color-border);
+    border: var(--border-width) solid var(--border);
     border-radius: var(--radius-lg);
-    background-color: var(--color-surface);
-    color: var(--color-fg);
+    background-color: var(--card);
+    color: var(--foreground);
     font-size: var(--text-sm);
   }
 }

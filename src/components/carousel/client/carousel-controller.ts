@@ -14,7 +14,7 @@ export function createCarouselController(
   root: HTMLElement,
   initialOptions: CarouselControllerOptions,
 ): CarouselController {
-  const viewport = root.querySelector<HTMLElement>(":scope > [data-uiify-carousel-viewport]");
+  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
   if (!viewport) throw new Error("Carousel viewport is missing");
   const observer = observeCarousel(root);
   const listeners = new Set<() => void>();
@@ -41,7 +41,7 @@ export function createCarouselController(
   let touchActive = false;
   const resizedSlides = new Set<Element>();
   const slides = () =>
-    Array.from(viewport.children).filter((node) => node.hasAttribute("data-uiify-carousel-slide"));
+    Array.from(viewport.children).filter((node) => node.getAttribute("data-part") === "slide");
   function publish(next: CarouselSnapshot) {
     if (JSON.stringify(snapshot) === JSON.stringify(next)) return;
     snapshot = next;

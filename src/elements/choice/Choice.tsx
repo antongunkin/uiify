@@ -26,8 +26,8 @@ ChoiceGroup.displayName = "ChoiceGroup";
 /**
  * One radio/checkbox choice: an `<input>`, its `<label>`, and an optional panel. `groupId` and
  * `kind` are explicit (see `ChoiceGroupOwnProps.id`) — this part does not read them from its
- * `Choice.Group` ancestor. Emits `data-part` (default `"item"`) and `data-uiify-choice-item`
- * on the wrapper.
+ * `Choice.Group` ancestor. Emits `data-uiify-choice` and `data-part` (default `"item"`) on the
+ * wrapper.
  */
 export function ChoiceItem(props: ChoiceItemProps): ReactElement {
   const {
@@ -56,7 +56,7 @@ export function ChoiceItem(props: ChoiceItemProps): ReactElement {
   const inputType = kind === "single" ? "radio" : "checkbox";
 
   return (
-    <div data-part={part} data-uiify-choice-item="" {...consumerProps}>
+    <div {...consumerProps} data-part={part} data-uiify-choice="">
       <input
         {...inputProps}
         aria-labelledby={labelId}

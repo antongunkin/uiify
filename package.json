@@ -84,9 +84,14 @@
     },
     "./elements/behavior.css": "./dist/components/behavior.css",
     "./styles": "./dist/styles/index.css",
+    "./styles/index.css": "./dist/styles/index.css",
+    "./styles.css": "./dist/styles/index.css",
     "./styles/tokens": "./dist/styles/tokens.css",
+    "./styles/tokens.css": "./dist/styles/tokens.css",
     "./styles/tailwind": "./dist/styles/tailwind.css",
+    "./styles/tailwind.css": "./dist/styles/tailwind.css",
     "./styles/reset": "./dist/styles/reset.css",
+    "./styles/reset.css": "./dist/styles/reset.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {

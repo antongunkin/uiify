@@ -32,6 +32,7 @@ export interface TagsInputContextValue {
 }
 
 export interface TagsInputRootShellOwnProps {
+  readonly className?: string;
   readonly addOnPaste?: boolean;
   readonly allowDuplicates?: boolean;
   readonly defaultValue?: readonly string[];

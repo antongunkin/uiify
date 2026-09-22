@@ -131,7 +131,8 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
     <div
       aria-label={typeof toast.title === "string" ? toast.title : "Notification"}
       data-state="open"
-      data-uiify-toast-root=""
+      data-part="item"
+      data-uiify-toast=""
       role="group"
       tabIndex={0}
       onFocus={() => pause(toast.id)}

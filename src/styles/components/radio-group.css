@@ -1,7 +1,7 @@
 /* Radio group — radio button list with alignment and spacing. */
 
 @layer components {
-  :where(.uiify-radio-group, [data-uiify-radio-group]) {
+  :where([data-uiify-radio-group]) {
     display: flex;
     flex-direction: column;
     padding: var(--space-md);

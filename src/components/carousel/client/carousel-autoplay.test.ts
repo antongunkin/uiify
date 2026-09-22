@@ -89,7 +89,7 @@ function mediaFixture(initial = false): MediaFixture {
 }
 
 function rootFixture() {
-  document.body.innerHTML = `<section data-uiify-carousel><button data-carousel-action="rotation">Rotation</button><div data-uiify-carousel-viewport tabindex="0"></div><button data-carousel-action="next">Next</button><section data-uiify-carousel><button>Nested</button></section></section>`;
+  document.body.innerHTML = `<section data-uiify-carousel><button data-carousel-action="rotation">Rotation</button><div data-part="viewport" tabindex="0"></div><button data-carousel-action="next">Next</button><section data-uiify-carousel><button>Nested</button></section></section>`;
   return document.querySelector<HTMLElement>("section")!;
 }
 
@@ -166,7 +166,7 @@ describe("carousel autoplay", () => {
     const autoplay = createCarouselAutoplay(root, fixture.controller, { delay: 5000 });
 
     root
-      .querySelector<HTMLElement>("[data-uiify-carousel-viewport]")!
+      .querySelector<HTMLElement>('[data-part="viewport"]')!
       .dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
     root.dispatchEvent(new FocusEvent("focusout", { bubbles: true }));
     vi.advanceTimersByTime(15000);
@@ -235,7 +235,7 @@ describe("carousel autoplay", () => {
       const root = rootFixture();
       const fixture = controllerFixture();
       const autoplay = createCarouselAutoplay(root, fixture.controller, { delay: 1000 });
-      const viewport = root.querySelector("[data-uiify-carousel-viewport]")!;
+      const viewport = root.querySelector('[data-part="viewport"]')!;
 
       viewport.dispatchEvent(
         startType === "pointerdown"
@@ -266,7 +266,7 @@ describe("carousel autoplay", () => {
       const root = rootFixture();
       const fixture = controllerFixture();
       const autoplay = createCarouselAutoplay(root, fixture.controller, { delay: 1000 });
-      const viewport = root.querySelector("[data-uiify-carousel-viewport]")!;
+      const viewport = root.querySelector('[data-part="viewport"]')!;
 
       viewport.dispatchEvent(
         startType === "pointerdown"
@@ -372,7 +372,7 @@ describe("carousel autoplay", () => {
     const autoplay = createCarouselAutoplay(root, fixture.controller, { delay: 1000 });
     const wheel = new WheelEvent("wheel", { bubbles: true, cancelable: true });
 
-    root.querySelector("[data-uiify-carousel-viewport]")!.dispatchEvent(wheel);
+    root.querySelector('[data-part="viewport"]')!.dispatchEvent(wheel);
     expect(wheel.defaultPrevented).toBe(false);
     fixture.publish({ moving: true });
     vi.advanceTimersByTime(2000);

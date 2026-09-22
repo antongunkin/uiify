@@ -10,7 +10,7 @@ export function applyVirtualScrollRangeToDom(
     readonly getRowOffset: (index: number) => number;
   },
 ): void {
-  const spacer = scrollport.querySelector("[data-uiify-virtual-scroll-spacer]");
+  const spacer = scrollport.querySelector('[data-part="spacer"]');
   if (!(spacer instanceof HTMLElement)) return;
 
   if (!options.dynamicLayout) {
@@ -18,7 +18,7 @@ export function applyVirtualScrollRangeToDom(
     return;
   }
 
-  const rows = spacer.querySelectorAll("[data-uiify-virtual-scroll-row]");
+  const rows = spacer.querySelectorAll('[data-part="row"]');
   for (let slotIndex = 0; slotIndex < options.slotCount; slotIndex++) {
     const row = rows[slotIndex];
     if (!(row instanceof HTMLElement)) continue;

@@ -24,7 +24,7 @@ describe("Modal", () => {
     expect(dialog.hasAttribute("popover")).toBe(false);
     expect(dialog.hasAttribute("open")).toBe(false);
     expect(dialog.hasAttribute("data-state")).toBe(false);
-    expect(trigger.closest("[data-uiify-dialog-scope]")).not.toBeNull();
+    expect(trigger.closest("[data-uiify-modal]")).not.toBeNull();
   });
 
   it("closes through a request-close invoker instead of a dialog form", () => {

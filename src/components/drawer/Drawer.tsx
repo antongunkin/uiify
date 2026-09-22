@@ -131,6 +131,9 @@ export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
       ...consumerProps,
       ref: mergedRef,
       type: "button",
+      "data-uiify-button": "",
+      "data-part": "trigger",
+      "data-uiify-drawer": "",
       "aria-controls": contentId,
       "aria-expanded": open,
       "aria-haspopup": "dialog",
@@ -193,8 +196,10 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
       "aria-describedby": descriptionId,
       "aria-labelledby": labelId,
       "aria-modal": modal ? true : undefined,
+      "data-part": "content",
       "data-side": side,
       "data-state": open ? "open" : "closed",
+      "data-uiify-drawer": "",
       "data-snap-enabled": snapEnabled ? "" : undefined,
       ...(className ? { className } : {}),
       ...(consumerStyle || styleVars ? { style: { ...consumerStyle, ...styleVars } } : {}),
@@ -232,6 +237,8 @@ export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
     defaultTag: "h2",
     props: {
       id,
+      "data-part": "title",
+      "data-uiify-drawer": "",
       ...(className ? { className } : {}),
       children,
     },
@@ -253,6 +260,8 @@ export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElemen
     defaultTag: "p",
     props: {
       id,
+      "data-part": "description",
+      "data-uiify-drawer": "",
       ...(className ? { className } : {}),
       children,
     },
@@ -269,6 +278,10 @@ export function DrawerClose(props: DrawerCloseProps): ReactElement | null {
     props: {
       ...consumerProps,
       type: "button",
+      "data-uiify-button": "",
+      "data-part": "close",
+      "data-uiify-drawer": "",
+      "data-variant": "ghost",
       onClick: composeEventHandlers(consumerProps.onClick, () => {
         close();
       }),
@@ -295,6 +308,8 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
     props: snapEnabled
       ? {
           "aria-hidden": true,
+          "data-part": "handle",
+          "data-uiify-drawer": "",
           "data-dragging": dragging ? "" : undefined,
           "data-side": side,
           ...(className ? { className } : {}),

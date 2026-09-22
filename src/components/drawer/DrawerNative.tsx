@@ -1,9 +1,5 @@
 import type { ReactElement } from "react";
-import {
-  DialogClose as ElementDialogClose,
-  DialogContent as ElementDialogContent,
-  DialogTrigger as ElementDialogTrigger,
-} from "../../elements/dialog/index.js";
+import { renderNativeInvoker } from "@gunkin/uiify/core/render";
 import type { DrawerProps } from "./types.js";
 
 /**
@@ -28,33 +24,48 @@ export function DrawerPanel({
   children,
   closeLabel = "Close",
   side = "bottom",
-  triggerClassName,
   className,
-  closeClassName,
 }: DrawerProps): ReactElement {
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
 
   return (
-    <div data-uiify-drawer="" data-side={side}>
-      <ElementDialogTrigger className={triggerClassName} data-uiify-drawer-trigger="" target={id}>
-        {trigger}
-      </ElementDialogTrigger>
-      <ElementDialogContent
+    <div data-part="root" data-side={side} data-uiify-drawer="">
+      {renderNativeInvoker(
+        "button",
+        "data-uiify-drawer",
+        "trigger",
+        "show-modal",
+        id,
+        {
+          children: trigger,
+        },
+        { button: true },
+      )}
+      <dialog
         aria-describedby={description === undefined ? undefined : descriptionId}
         aria-labelledby={titleId}
         className={className}
+        data-part="content"
         data-side={side}
-        data-uiify-drawer-content=""
+        data-uiify-drawer=""
         id={id}
       >
         <h2 id={titleId}>{title}</h2>
         {description === undefined ? null : <p id={descriptionId}>{description}</p>}
         {children}
-        <ElementDialogClose className={closeClassName} data-uiify-drawer-close="" target={id}>
-          {closeLabel}
-        </ElementDialogClose>
-      </ElementDialogContent>
+        {renderNativeInvoker(
+          "button",
+          "data-uiify-drawer",
+          "close",
+          "request-close",
+          id,
+          {
+            children: closeLabel,
+          },
+          { button: true, variant: "ghost" },
+        )}
+      </dialog>
     </div>
   );
 }

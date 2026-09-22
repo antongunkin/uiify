@@ -2,18 +2,12 @@
    Adapts to [data-orientation]; active state from [data-state="active"]. */
 
 @layer components {
-  .uiify-tabs {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-  }
-
-  .uiify-tabs__trigger {
+  [data-uiify-tabs] [data-part="trigger"] {
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
     border: none;
     background: none;
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
     font-weight: var(--weight-medium);
@@ -23,19 +17,19 @@
     transition: var(--transition-colors);
   }
 
-  .uiify-tabs__trigger:hover {
-    color: var(--color-fg);
+  [data-uiify-tabs] [data-part="trigger"]:hover {
+    color: var(--foreground);
   }
 
-  .uiify-tabs__trigger[data-state="active"] {
-    border-block-end-color: var(--color-accent);
-    color: var(--color-fg);
+  [data-uiify-tabs] [data-part="trigger"][data-state="active"] {
+    border-block-end-color: var(--primary);
+    color: var(--foreground);
     font-weight: var(--weight-semibold);
   }
 
   /* Panel visibility is owned by @gunkin/uiify/components/behavior.css (radio :checked). */
 
-  .uiify-tabs__content {
+  [data-uiify-tabs] [data-part="panel"] {
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
   }
@@ -69,7 +63,7 @@
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
     border-block-end: 2px solid transparent;
-    color: var(--color-muted-fg);
+    color: var(--muted-foreground);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
     font-weight: var(--weight-medium);
@@ -77,21 +71,21 @@
   }
 
   [data-uiify-tabs] > [data-part="item"] > label:hover {
-    color: var(--color-fg);
+    color: var(--foreground);
   }
 
   [data-uiify-tabs] > [data-part="item"]:has(> input:checked) > label {
-    border-block-end-color: var(--color-accent);
-    color: var(--color-fg);
+    border-block-end-color: var(--primary);
+    color: var(--foreground);
     font-weight: var(--weight-semibold);
   }
 
   [data-uiify-tabs] > [data-part="item"] > input:focus-visible + label {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) var(--color-ring-shadow);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 
-  [data-uiify-tabs] > [data-part="item"] > [data-uiify-tabs-panel] {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="panel"] {
     grid-column: 1 / -1;
     grid-row: 2;
     font-size: var(--text-sm);

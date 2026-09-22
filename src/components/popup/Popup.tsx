@@ -81,9 +81,8 @@ export function PopupRoot(props: PopupRootProps): ReactElement | null {
     {
       ...consumerProps,
       ...(className ? { className } : {}),
-      // Emit both the current marker and the deprecated marker during the compatibility window.
-      "data-uiify-popover-root": "",
-      "data-uiify-popup-root": "",
+      "data-part": "root",
+      "data-uiify-popup": "",
     },
     enhancedChildren,
   );
@@ -104,6 +103,8 @@ export function PopupTrigger(props: PopupTriggerInternalProps): ReactElement | n
     {
       ...consumerProps,
       ...createAnchorTriggerProps(anchorName, consumerProps.style),
+      "data-part": "trigger",
+      "data-uiify-popup": "",
       "aria-controls": __popupId,
       "aria-expanded": false,
       className,
@@ -154,6 +155,8 @@ export function PopupContent(props: PopupContentInternalProps): ReactElement | n
         side,
       }),
       ...(className ? { className } : {}),
+      "data-part": "content",
+      "data-uiify-popup": "",
       id: __popupId,
       popover: __mode,
     },
@@ -174,6 +177,8 @@ export function PopupClose(props: PopupCloseInternalProps): ReactElement | null 
     {
       ...consumerProps,
       ...(className ? { className } : {}),
+      "data-part": "close",
+      "data-uiify-popup": "",
       command: "hide-popover",
       commandfor: __popupId,
       type: "button",

@@ -12,7 +12,7 @@ export function Spinner<TAs extends ElementType = "div">(
     render,
     delay = 0,
     label = "Loading",
-    labelClassName,
+    showLabel = false,
     size = "default",
     children,
     ...consumerProps
@@ -35,11 +35,7 @@ export function Spinner<TAs extends ElementType = "div">(
       role: "status",
       children: (
         <>
-          {labelClassName ? (
-            <span className={labelClassName} data-part="label" data-uiify-spinner-label="">
-              {label}
-            </span>
-          ) : null}
+          {showLabel ? <span data-part="label">{label}</span> : null}
           {children}
         </>
       ),

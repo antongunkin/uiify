@@ -36,6 +36,7 @@ export interface FileUploadContextValue {
 }
 
 export interface FileUploadRootOwnProps {
+  readonly className?: string;
   readonly accept?: readonly string[];
   readonly defaultValue?: readonly File[];
   readonly disabled?: boolean;

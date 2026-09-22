@@ -23,10 +23,10 @@ describe("RadioGroup", () => {
 
   it("applies each item styling hook to its native radio", () => {
     render(
-      <RadioGroup id="plan" items={[{ value: "a", label: "Plan A", className: "uiify-radio" }]} />,
+      <RadioGroup id="plan" items={[{ value: "a", label: "Plan A", className: "custom-radio" }]} />,
     );
 
-    expect(screen.getByRole("radio", { name: "Plan A" }).className).toBe("uiify-radio");
+    expect(screen.getByRole("radio", { name: "Plan A" }).className).toBe("custom-radio");
   });
 
   it("lets the browser own selection without React state", () => {

@@ -37,6 +37,7 @@ export function Slider<TAs extends ElementType = "input">(
     props: {
       ...consumerProps,
       type: "range",
+      "data-uiify-slider": "",
       min,
       max,
       step,

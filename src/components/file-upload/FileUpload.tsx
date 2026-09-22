@@ -25,6 +25,7 @@ const [FileUploadProvider, useFileUploadContext] =
 export function FileUploadRootClient(props: FileUploadRootProps): ReactElement | null {
   const {
     accept = [],
+    className,
     children,
     defaultValue = [],
     disabled = false,
@@ -96,7 +97,11 @@ export function FileUploadRootClient(props: FileUploadRootProps): ReactElement |
     [accept, disabled, inputId, multiple, openPicker, processFiles, removeAt, store],
   );
 
-  return <FileUploadProvider value={contextValue}>{children}</FileUploadProvider>;
+  return (
+    <div className={className} data-uiify-file-upload="">
+      <FileUploadProvider value={contextValue}>{children}</FileUploadProvider>
+    </div>
+  );
 }
 FileUploadRootClient.displayName = "FileUploadRootClient";
 
@@ -113,6 +118,7 @@ export function FileUploadHiddenInput(props: FileUploadHiddenInputOwnProps): Rea
       ref: hiddenInputRef,
       id: inputId,
       type: "file",
+      "data-part": "input",
       tabIndex: -1,
       accept: accept.length > 0 ? accept.join(",") : undefined,
       multiple: multiple || undefined,
@@ -168,6 +174,7 @@ export function FileUploadTrigger<TAs extends ElementType = "label">(
     props: {
       ...consumerProps,
       ...interactiveProps,
+      "data-part": "trigger",
       ...(className ? { className } : {}),
       children,
     },
@@ -193,6 +200,7 @@ export function FileUploadDropzone<TAs extends ElementType = "div">(
     props: {
       ...consumerProps,
       role: "region",
+      "data-part": "dropzone",
       "aria-label": "Drop files here",
       "data-disabled": disabled ? "" : undefined,
       onDragOver: composeEventHandlers(consumerOnDragOver, (event: DragEvent<HTMLElement>) => {
@@ -215,7 +223,7 @@ export function FileUploadList(props: FileUploadListOwnProps): ReactElement | nu
   const { children, className } = props;
   return useRenderElement({
     defaultTag: "ul",
-    props: { role: "list", ...(className ? { className } : {}), children },
+    props: { role: "list", "data-part": "list", ...(className ? { className } : {}), children },
     state: {},
   });
 }
@@ -235,6 +243,7 @@ export function FileUploadItem<TAs extends ElementType = "li">(
     props: {
       ...consumerProps,
       role: "listitem",
+      "data-part": "item",
       "data-name": file?.name,
       ...(className ? { className } : {}),
       children: children ?? file?.name,
@@ -256,6 +265,7 @@ export function FileUploadItemRemove(props: FileUploadItemRemoveOwnProps): React
     props: {
       type: "button",
       "aria-label": "Remove file",
+      "data-part": "remove",
       disabled: disabled || undefined,
       ...(className ? { className } : {}),
       onClick: () => removeAt(index),

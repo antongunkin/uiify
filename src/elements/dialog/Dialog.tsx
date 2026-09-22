@@ -4,7 +4,7 @@ import type { DialogCloseProps, DialogContentProps, DialogTriggerProps } from ".
 
 /**
  * Opens `target` modally through the browser: no React handler, works before hydration.
- * Emits `data-uiify-dialog-trigger`.
+ * Emits `data-uiify-dialog` with `data-part="trigger"`.
  *
  * Defined via `Object.assign(fn, { displayName })` rather than this file's usual
  * `fn.displayName = "…"` statement: `Dialog.Trigger`/`.Content`/`.Close` are meant to be
@@ -21,7 +21,8 @@ function dialogTrigger<TAs extends ElementType = "button">(
   const { as, target, ...consumerProps } = props as DialogTriggerProps<"button">;
   return renderNativeInvoker(
     as,
-    "data-uiify-dialog-trigger",
+    "data-uiify-dialog",
+    "trigger",
     "show-modal",
     target,
     consumerProps as Record<string, unknown>,
@@ -32,12 +33,12 @@ export const DialogTrigger = /* @__PURE__ */ Object.assign(dialogTrigger, {
 });
 
 /**
- * A plain, initially closed `<dialog>`. Emits `data-uiify-dialog-content`.
+ * A plain, initially closed `<dialog>`. Emits `data-uiify-dialog` with `data-part="content"`.
  */
 function dialogContent(props: DialogContentProps): ReactElement {
   const { children, ...dialogProps } = props;
   return (
-    <dialog {...dialogProps} data-uiify-dialog-content="">
+    <dialog {...dialogProps} data-part="content" data-uiify-dialog="">
       {children}
     </dialog>
   );
@@ -48,7 +49,7 @@ export const DialogContent = /* @__PURE__ */ Object.assign(dialogContent, {
 
 /**
  * Requests closing `target` (fires the cancelable `cancel` event first).
- * Emits `data-uiify-dialog-close`.
+ * Emits `data-uiify-dialog` with `data-part="close"`.
  */
 function dialogClose<TAs extends ElementType = "button">(
   props: DialogCloseProps<TAs>,
@@ -56,7 +57,8 @@ function dialogClose<TAs extends ElementType = "button">(
   const { as, target, ...consumerProps } = props as DialogCloseProps<"button">;
   return renderNativeInvoker(
     as,
-    "data-uiify-dialog-close",
+    "data-uiify-dialog",
+    "close",
     "request-close",
     target,
     consumerProps as Record<string, unknown>,

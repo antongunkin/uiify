@@ -16,7 +16,7 @@ describe("CandleChartClient", () => {
     const chart = container.querySelector("[data-uiify-candle-chart]") as HTMLElement;
 
     expect(chart.style.getPropertyValue("--candle-scale")).toBe("3.2");
-    expect(chart.querySelectorAll(".candle-chart__candles > li")).toHaveLength(100);
+    expect(chart.querySelectorAll('[data-part="candles"] > li')).toHaveLength(100);
     expect(chart.querySelectorAll("tbody tr")).toHaveLength(100);
   });
 
@@ -34,22 +34,20 @@ describe("CandleChartClient", () => {
   it("snaps the crosshair to the moved candle and updates the React readout on click", () => {
     const { container } = render(<CandleChartClient data={DATA} />);
     const chart = container.querySelector("[data-uiify-candle-chart]") as HTMLElement;
-    const candles = chart.querySelectorAll<HTMLLIElement>(".candle-chart__candles > li");
+    const candles = chart.querySelectorAll<HTMLLIElement>('[data-part="candles"] > li');
     const target = candles[7] as HTMLLIElement;
-    const hit = target.querySelector(".candle-chart__candle-hit") as HTMLButtonElement;
+    const hit = target.querySelector('[data-part="candle-hit"]') as HTMLButtonElement;
 
     const pointerMove = createEvent.pointerMove(hit);
     Object.defineProperty(pointerMove, "offsetY", { value: 24 });
     fireEvent(hit, pointerMove);
     expect(target?.getAttribute("data-crosshair-active")).toBe("");
-    expect(
-      chart.querySelector(".candle-chart__viewport > .candle-chart__crosshair"),
-    ).not.toBeNull();
+    expect(chart.querySelector('[data-part="viewport"] > [data-part="crosshair"]')).not.toBeNull();
     expect(target?.getAttribute("style")).toContain("--candle-cursor-y: 24px");
 
     fireEvent.click(hit);
     expect(target?.getAttribute("data-tooltip-open")).toBeNull();
-    expect(chart.querySelector(".candle-chart__readout")?.textContent).toContain("O 107");
-    expect(chart.querySelector(".candle-chart__readout")?.textContent).toContain("C 112");
+    expect(chart.querySelector('[data-part="readout"]')?.textContent).toContain("O 107");
+    expect(chart.querySelector('[data-part="readout"]')?.textContent).toContain("C 112");
   });
 });

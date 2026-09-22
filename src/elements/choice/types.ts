@@ -48,7 +48,7 @@ export interface ChoiceItemOwnProps {
   readonly part?: string;
   /** Adds `data-part="label"` to the `<label>`. */
   readonly labelPart?: boolean;
-  /** Escape hatch: extra attributes spread onto the `<input>` (e.g. `data-uiify-tabs-input`). */
+  /** Escape hatch: extra attributes spread onto the `<input>` (for example, `data-part="control"`). */
   readonly inputProps?: Record<string, unknown>;
   /** Escape hatch: extra attributes spread onto the `<label>`. */
   readonly labelProps?: Record<string, unknown>;
