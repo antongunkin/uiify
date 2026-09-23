@@ -296,7 +296,7 @@
   {
     "name": "virtual-scroll",
     "path": "dist/components/virtual-scroll.js",
-    "limit": "4 kB",
+    "limit": "4.2 kB",
     "import": "*"
   },
   {

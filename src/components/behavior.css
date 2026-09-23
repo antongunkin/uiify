@@ -277,16 +277,42 @@
   }
 
   [data-uiify-virtual-scroll] [data-part="row"] {
+    --uiify-row-position: var(
+      --uiify-row-offset,
+      calc(
+        (var(--uiify-range-start, 0) + var(--uiify-slot-index, 0)) *
+          var(--uiify-virtual-scroll-row-height)
+      )
+    );
+
     position: absolute;
     inset-inline: 0;
     block-size: var(--uiify-row-height, var(--uiify-virtual-scroll-row-height));
-    translate: 0
-      var(
-        --uiify-row-offset,
-        calc(
-          (var(--uiify-range-start, 0) + var(--uiify-slot-index, 0)) *
-            var(--uiify-virtual-scroll-row-height)
-        )
-      );
+    translate: 0 var(--uiify-row-position);
+  }
+
+  /* Horizontal: the row size runs along the inline axis. Rows sit at a logical
+     inline offset so RTL needs no direction selector; child combinators keep a
+     vertical list nested inside a horizontal row on the vertical rules. */
+  [data-uiify-virtual-scroll][data-orientation="horizontal"] {
+    overflow: auto hidden;
+  }
+
+  [data-uiify-virtual-scroll][data-orientation="horizontal"] > [data-part="spacer"] {
+    block-size: 100%;
+    inline-size: var(
+      --uiify-virtual-scroll-total-size,
+      calc(var(--uiify-virtual-scroll-count, 0) * var(--uiify-virtual-scroll-row-height))
+    );
+  }
+
+  [data-uiify-virtual-scroll][data-orientation="horizontal"]
+    > [data-part="spacer"]
+    > [data-part="row"] {
+    inset-block: 0;
+    inset-inline: var(--uiify-row-position) auto;
+    block-size: auto;
+    inline-size: var(--uiify-row-height, var(--uiify-virtual-scroll-row-height));
+    translate: none;
   }
 }

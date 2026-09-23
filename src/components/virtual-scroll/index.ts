@@ -4,6 +4,7 @@ export type {
   VirtualScrollHandle,
   VirtualScrollItem,
   VirtualScrollListRole,
+  VirtualScrollOrientation,
   VirtualScrollOwnProps,
   VirtualScrollRangeChange,
   VirtualScrollRowSlot,

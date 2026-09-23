@@ -20,6 +20,9 @@ export type VirtualScrollListRole = "list" | "grid";
 
 export type VirtualScrollAnchor = "start" | "end";
 
+/** Scroll axis. Row size props (`rowHeight`, `estimateRowHeight`) measure along this axis. */
+export type VirtualScrollOrientation = "vertical" | "horizontal";
+
 export type VirtualScrollScrollAlign = "start" | "center" | "end" | "auto";
 
 export type VirtualScrollScrollBehavior = "auto" | "instant" | "smooth";
@@ -56,8 +59,11 @@ export interface VirtualScrollHandle {
 
 export interface VirtualScrollOwnProps<T extends VirtualScrollItem> {
   readonly items: readonly T[];
+  /** Scrollport height; also the viewport extent used before the first resize measurement. */
   readonly height?: number;
+  /** Fixed item size along the scroll axis — row height when vertical, item width when horizontal. */
   readonly rowHeight?: number;
+  readonly orientation?: VirtualScrollOrientation;
   readonly overscan?: number;
   readonly className?: string;
   readonly testId?: string;

@@ -69,7 +69,7 @@ test("owns all standalone release commands", () => {
   });
 });
 
-test("excludes CSS-only exports from attw resolution", () => {
+test("excludes the elements behavior stylesheet from attw resolution", () => {
   const checkPackage = readPackageManifest().scripts?.["check:package"] ?? "";
 
   for (const entrypoint of [

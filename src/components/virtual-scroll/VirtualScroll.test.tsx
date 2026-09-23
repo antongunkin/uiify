@@ -650,3 +650,96 @@ describe("VirtualScroll", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("VirtualScroll horizontal orientation", () => {
+  function renderHorizontal(
+    items: Song[],
+    options: { readonly dir?: "ltr" | "rtl"; readonly handle?: { current: unknown } } = {},
+  ) {
+    return render(
+      <div dir={options.dir ?? "ltr"}>
+        <VirtualScroll
+          height={120}
+          items={items}
+          orientation="horizontal"
+          {...(options.handle
+            ? {
+                scrollRef: options.handle as {
+                  current: import("./types.js").VirtualScrollHandle | null;
+                },
+              }
+            : {})}
+          renderRow={(song) => <span data-testid={`title-${song.id}`}>{song.title}</span>}
+        />
+      </div>,
+    );
+  }
+
+  async function scrollInline(viewport: HTMLDivElement, scrollLeft: number): Promise<void> {
+    await act(async () => {
+      viewport.scrollLeft = scrollLeft;
+      fireEvent.scroll(viewport);
+    });
+  }
+
+  it("marks the scrollport horizontal and scrolls on the inline axis", () => {
+    const { container } = renderHorizontal(createSongs(100));
+    const viewport = getViewport(container);
+
+    expect(viewport.dataset.orientation).toBe("horizontal");
+    expect(viewport.style.overflowX).toBe("auto");
+    expect(viewport.style.overflowY).toBe("hidden");
+  });
+
+  it("sizes the window from the measured viewport width", async () => {
+    const observer = stubResizeObserver(120);
+    const { container } = renderHorizontal(createSongs(10_000));
+
+    await act(async () => {
+      observer.trigger(getViewport(container), 120);
+    });
+
+    // resizeEntry reports an 800px-wide content box.
+    expect(container.querySelectorAll('[data-part="row"]')).toHaveLength(
+      computeVirtualScrollSlotCount(800, VIRTUAL_SCROLL_ROW_HEIGHT, VIRTUAL_SCROLL_OVERSCAN),
+    );
+    vi.unstubAllGlobals();
+  });
+
+  it("updates the visible slice from scrollLeft", async () => {
+    const { container } = renderHorizontal(createSongs(10_000));
+    const viewport = getViewport(container);
+
+    await scrollInline(viewport, VIRTUAL_SCROLL_ROW_HEIGHT * 500);
+
+    expect(screen.queryByTestId("title-1")).toBeNull();
+    expect(screen.getByTestId("title-501")).toBeTruthy();
+    expect(getSpacer(container).style.getPropertyValue("--uiify-range-start")).toBe("495");
+  });
+
+  it("reads negative RTL scrollLeft as distance from the inline start", async () => {
+    const { container } = renderHorizontal(createSongs(10_000), { dir: "rtl" });
+    const viewport = getViewport(container);
+
+    await scrollInline(viewport, -VIRTUAL_SCROLL_ROW_HEIGHT * 500);
+
+    expect(screen.getByTestId("title-501")).toBeTruthy();
+    expect(getSpacer(container).style.getPropertyValue("--uiify-range-start")).toBe("495");
+  });
+
+  it.each([
+    ["ltr", 1],
+    ["rtl", -1],
+  ] as const)("scrollToIndex writes scrollLeft in %s", async (dir, sign) => {
+    const handle = { current: null as import("./types.js").VirtualScrollHandle | null };
+    const { container } = renderHorizontal(createSongs(10_000), { dir, handle });
+
+    await act(async () => {
+      handle.current?.scrollToIndex(500, { align: "start", behavior: "instant" });
+    });
+
+    expect(getViewport(container).scrollLeft).toBe(sign * VIRTUAL_SCROLL_ROW_HEIGHT * 500);
+    expect(getViewport(container).scrollTop).toBe(0);
+    expect(screen.getByTestId("title-501")).toBeTruthy();
+  });
+});
