@@ -2,9 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 
-const stylesRoot = resolve(
-  process.cwd().endsWith("/packages/uiify") ? "src/styles" : "packages/uiify/src/styles",
-);
+const stylesRoot = resolve(import.meta.dirname);
 
 function cssSources(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {

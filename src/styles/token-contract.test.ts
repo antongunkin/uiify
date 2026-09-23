@@ -2,18 +2,13 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 
-const currentDirectory = resolve(process.cwd());
-const repositoryRoot = existsSync(
-  resolve(currentDirectory, "packages/uiify/src/styles/tokens/semantic.css"),
-)
-  ? currentDirectory
-  : resolve(currentDirectory, "../..");
-const semanticSource = readFileSync(
-  resolve(repositoryRoot, "packages/uiify/src/styles/tokens/semantic.css"),
-  "utf8",
-);
+const packageRoot = resolve(import.meta.dirname, "../..");
+const repositoryRoot = existsSync(resolve(packageRoot, "../../apps/site/src/docs"))
+  ? resolve(packageRoot, "../..")
+  : packageRoot;
+const semanticSource = readFileSync(resolve(packageRoot, "src/styles/tokens/semantic.css"), "utf8");
 const primitiveSource = readFileSync(
-  resolve(repositoryRoot, "packages/uiify/src/styles/tokens/primitives.css"),
+  resolve(packageRoot, "src/styles/tokens/primitives.css"),
   "utf8",
 );
 
@@ -78,11 +73,11 @@ function hasCssVariable(source: string, name: string): boolean {
 }
 
 const styleRoots = [
-  resolve(repositoryRoot, "packages/uiify/src/styles"),
+  resolve(packageRoot, "src/styles"),
   resolve(repositoryRoot, "packages/test-fixtures/src"),
   resolve(repositoryRoot, "apps/site/src/docs"),
   resolve(repositoryRoot, "apps/shadcn-smoke/app"),
-];
+].filter(existsSync);
 
 function cssFiles(path: string): string[] {
   if (statSync(path).isFile()) return path.endsWith(".css") ? [path] : [];

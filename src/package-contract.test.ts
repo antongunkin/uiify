@@ -38,11 +38,11 @@ test("defines the uiify package and its initial public subpaths", () => {
   });
 });
 
-test("declares the first public alpha release metadata", () => {
+test("declares public alpha release metadata", () => {
   const manifest = readPackageManifest();
   expect(manifest).toMatchObject({
     name: "@gunkin/uiify",
-    version: "0.0.1-alpha",
+    version: expect.stringMatching(/^\d+\.\d+\.\d+-alpha(?:\.\d+)?$/),
     license: "MIT",
     repository: {
       type: "git",
@@ -69,8 +69,24 @@ test("owns all standalone release commands", () => {
   });
 });
 
-test("excludes the elements behavior stylesheet from attw resolution", () => {
-  expect(readPackageManifest().scripts?.["check:package"]).toContain("./elements/behavior.css");
+test("excludes CSS-only exports from attw resolution", () => {
+  const checkPackage = readPackageManifest().scripts?.["check:package"] ?? "";
+
+  for (const entrypoint of [
+    "./components/behavior.css",
+    "./elements/behavior.css",
+    "./styles",
+    "./styles/index.css",
+    "./styles.css",
+    "./styles/tokens",
+    "./styles/tokens.css",
+    "./styles/tailwind",
+    "./styles/tailwind.css",
+    "./styles/reset",
+    "./styles/reset.css",
+  ]) {
+    expect(checkPackage).toContain(entrypoint);
+  }
 });
 
 test("emits built Carousel base and explicit adapter entry points", () => {
