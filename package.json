@@ -1,6 +1,6 @@
 {
   "name": "@gunkin/uiify",
-  "version": "0.0.1-alpha",
+  "version": "0.0.4-alpha",
   "description": "Native-first, accessible React 19 components that work before hydration.",
   "keywords": [
     "accessibility",
