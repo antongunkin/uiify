@@ -5,8 +5,13 @@ import { describe, expect, it } from "vitest";
 const css = readFileSync(resolve(import.meta.dirname, "components/line-chart.css"), "utf8");
 
 describe("LineChart styles", () => {
-  it("draws segments with CSS clip-path and grid-based responsive geometry", () => {
-    expect(css).toContain("clip-path: polygon(");
+  it("draws constant-thickness segments rotated to their slope, with grid-based geometry", () => {
+    // Thickness must not depend on slope: a bar rotated by atan2, not a clipped polygon.
+    expect(css).not.toContain("clip-path: polygon(");
+    expect(css).toContain("inline-size: hypot(var(--line-dx), var(--line-dy));");
+    expect(css).toContain("rotate: atan2(var(--line-dy), var(--line-dx));");
+    // The slope container needs a definite height: the absolutely inset points list.
+    expect(css).toMatch(/\[data-part="points"\] \{\s*container-type: size;/);
     expect(css).toContain("display: block;");
     expect(css).toContain("--line-prev-y");
     expect(css).toContain("linear-gradient(to right");
@@ -23,7 +28,9 @@ describe("LineChart styles", () => {
 
   it("uses modern CSS for theme and motion-safe interaction", () => {
     expect(css).toContain("@property --line-y");
-    expect(css).toContain("color-scheme: inherit;");
+    // The chart inherits the page's color-scheme; declaring `inherit` explicitly
+    // gets rewritten to `normal` by Lightning CSS in consumer bundlers.
+    expect(css).not.toMatch(/^\s*color-scheme:/m);
     expect(css).toContain("light-dark(");
     expect(css).toContain("prefers-reduced-motion");
   });
@@ -32,9 +39,8 @@ describe("LineChart styles", () => {
     expect(css).toMatch(
       /--line-axis:\s*light-dark\(\s*color-mix\(in oklch, var\(--muted-foreground\) 70%, var\(--foreground\)\),\s*var\(--muted-foreground\)\s*\);/,
     );
-    expect(css).toContain("color-scheme: inherit;");
     expect(css).toMatch(
-      /\[data-part="points"\] > li::after \{[^}]*border: 0;[^}]*background: currentcolor;/,
+      /\[data-part="point"\]::after \{[^}]*border: 0;[^}]*background: currentcolor;/,
     );
     expect(css).toMatch(/> figcaption \{[\s\S]*?color: var\(--line-axis\);/);
   });

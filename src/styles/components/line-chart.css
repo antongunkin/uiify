@@ -41,18 +41,33 @@
     padding: 1rem 0.75rem 0.5rem;
     overflow: clip;
     overscroll-behavior: none;
-    touch-action: none;
     isolation: isolate;
-    color-scheme: inherit;
+
+    /* No color-scheme declaration: it inherits, so light-dark() colors and the
+       live scrollbar follow the page theme. An explicit `inherit` is rewritten
+       to `normal` by Lightning CSS in consumer bundlers such as Next. */
     background: transparent;
     color: light-dark(oklch(28% 0.04 165deg), oklch(82% 0.04 165deg));
   }
 
+  /* Interactive charts own touch and horizontal wheel gestures (crosshair,
+     zoom, native scroll); a static chart leaves page scrolling alone. */
+  [data-uiify-line-chart][data-interactive] {
+    touch-action: none;
+  }
+
+  [data-uiify-line-chart][data-interactive] [data-part="scroll-viewport"] {
+    overscroll-behavior-inline: none;
+  }
+
+  /* The time-axis row also reserves the horizontal scrollbar, measured by the
+     client entry (0 for overlay scrollbars and static charts), so the flexible
+     candle row does not absorb it and stays aligned with the value axis. */
   [data-uiify-line-chart] > [data-part="plot"] {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 4.5rem;
-    grid-template-rows: minmax(18rem, 1fr) 1.5rem;
+    grid-template-rows: minmax(18rem, 1fr) calc(1.5rem + var(--line-scrollbar-size, 0px));
     gap: 0 0.75rem;
     min-inline-size: 0;
     min-block-size: 18rem;
@@ -65,14 +80,8 @@
     min-inline-size: 0;
     min-block-size: 18rem;
     overflow: auto hidden;
-    overscroll-behavior: none;
-    scrollbar-width: none;
     container-type: inline-size;
     direction: rtl;
-  }
-
-  [data-uiify-line-chart] [data-part="scroll-viewport"]::-webkit-scrollbar {
-    display: none;
   }
 
   [data-uiify-line-chart] [data-part="canvas"] {
@@ -84,7 +93,9 @@
     direction: ltr;
   }
 
+  /* Inline-size container: live-mode segments measure their run in cqw. */
   [data-uiify-line-chart] [data-part="viewport"] {
+    container-type: inline-size;
     position: relative;
     grid-column: 1;
     grid-row: 1;
@@ -125,7 +136,11 @@
     font-weight: 650;
   }
 
+  /* Size container for segment slopes. Its height comes from insets, so it is
+     definite (a height from min-block-size alone reports 0cqh in Chromium).
+     One container for all points keeps every line below every dot. */
   [data-uiify-line-chart] [data-part="points"] {
+    container-type: size;
     position: absolute;
     inset: 1rem 0;
     display: block;
@@ -140,37 +155,77 @@
       100% 20%;
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li {
+  /* Live mode: a horizontal VirtualScroll replaces the static list. The grid sits
+     on the viewport, so it holds still while points scroll past and a classic
+     scrollbar cannot squeeze it. */
+  [data-uiify-line-chart] [data-part="viewport"] > [data-uiify-virtual-scroll] {
     position: absolute;
-    inset-block: 0;
-    inset-inline-start: var(--line-prev-x, var(--line-x));
-    inline-size: var(--line-slot);
+    inset: 0;
+  }
+
+  [data-uiify-line-chart] [data-part="viewport"]:has(> [data-uiify-virtual-scroll]) {
+    background-image:
+      linear-gradient(to right, var(--line-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line-grid) 1px, transparent 1px);
+    background-position: 0 1rem;
+    background-size:
+      10% 100%,
+      100% calc((100% - 2rem) / 5);
+  }
+
+  [data-uiify-line-chart] [data-part="point"] {
+    position: absolute;
     min-inline-size: 0;
-    min-block-size: 100%;
     color: var(--line-flat);
     list-style: none;
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li::before {
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    display: block;
-    background: currentcolor;
-    clip-path: polygon(
-      -1% calc(var(--line-prev-y) - var(--line-width)),
-      -1% calc(var(--line-prev-y) + var(--line-width)),
-      101% calc(var(--line-y) + var(--line-width)),
-      101% calc(var(--line-y) - var(--line-width))
-    );
-    content: "";
+  [data-uiify-line-chart] [data-part="points"] > [data-part="point"] {
+    inset-block: 0;
+    inset-inline-start: var(--line-prev-x, var(--line-x));
+    inline-size: var(--line-slot);
+    min-block-size: 100%;
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li:first-child::before {
+  /* A virtual row is one point slot; the point element spans from the previous
+     slot's center to this one's, so the segment ends on the row center. Its
+     block size comes from the plot, since a classic scrollbar shortens rows. */
+  [data-uiify-line-chart] [data-uiify-virtual-scroll] [data-part="point"] {
+    --line-point-block-size: calc(var(--line-plot-height, 18rem) - 2rem);
+
+    inset-block: 1rem auto;
+    inset-inline-start: -50%;
+    inline-size: 100%;
+    block-size: var(--line-point-block-size);
+  }
+
+  /* Each segment is a bar of constant thickness rotated to its slope, so steep
+     jumps stay as thick as flat runs. The run is one slot (`--line-run`% of the
+     plot width); the rise is `--line-rise`% of the point box height — the points
+     list in the static chart, the explicit point size in live mode. */
+  [data-uiify-line-chart] [data-part="point"]::before {
+    --line-dx: calc(var(--line-run, 0) * 1cqw);
+    --line-dy: calc(var(--line-rise, 0) / 100 * var(--line-point-block-size, 100cqh));
+
+    position: absolute;
+    z-index: 1;
+    inset-block-start: calc(var(--line-prev-y) - var(--line-width));
+    inset-inline-start: 0;
+    display: block;
+    inline-size: hypot(var(--line-dx), var(--line-dy));
+    block-size: calc(var(--line-width) * 2);
+    border-radius: var(--line-width);
+    background: currentcolor;
+    content: "";
+    transform-origin: 0 50%;
+    rotate: atan2(var(--line-dy), var(--line-dx));
+  }
+
+  [data-uiify-line-chart] [data-part="point"][data-first]::before {
     display: none;
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li::after {
+  [data-uiify-line-chart] [data-part="point"]::after {
     position: absolute;
     z-index: 2;
     inset-block-start: var(--line-y);
@@ -185,15 +240,15 @@
     transform: translate(-50%, -50%);
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li:first-child::after {
+  [data-uiify-line-chart] [data-part="points"] > [data-part="point"][data-first]::after {
     inset-inline-start: 0;
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li[data-trend="up"] {
+  [data-uiify-line-chart] [data-part="point"][data-trend="up"] {
     color: var(--line-up);
   }
 
-  [data-uiify-line-chart] [data-part="points"] > li[data-trend="down"] {
+  [data-uiify-line-chart] [data-part="point"][data-trend="down"] {
     color: var(--line-down);
   }
 
@@ -213,7 +268,7 @@
     font: inherit;
   }
 
-  [data-uiify-line-chart][data-interactive] [data-part="points"] > li[data-point-selected]::after {
+  [data-uiify-line-chart][data-interactive] [data-part="point"][data-point-selected]::after {
     box-shadow: 0 0 0 0.2rem color-mix(in srgb, currentcolor 24%, transparent);
   }
 
@@ -222,11 +277,14 @@
     outline-offset: -2px;
   }
 
+  /* The crosshair and time axis span the scrolled content in live mode:
+     `--line-content-size` is its width, `--line-scroll-x` its scroll offset. */
   [data-uiify-line-chart] [data-part="crosshair"] {
     position: absolute;
     z-index: 4;
     inset: 0;
-    inline-size: 100%;
+    inline-size: var(--line-content-size, 100%);
+    translate: calc(-1 * var(--line-scroll-x, 0px)) 0;
     block-size: 100%;
     color: light-dark(oklch(52% 0.01 0deg), oklch(72% 0.01 0deg));
     pointer-events: none;
@@ -322,7 +380,8 @@
   [data-uiify-line-chart] [data-part="time-axis"] {
     position: relative;
     inset-block: 0;
-    inline-size: 100%;
+    inline-size: var(--line-content-size, 100%);
+    translate: calc(-1 * var(--line-scroll-x, 0px)) 0;
     min-inline-size: 0;
   }
 
@@ -377,13 +436,11 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-line-chart] [data-part="points"] > li::after {
+    [data-uiify-line-chart] [data-part="point"]::after {
       transition: scale 180ms ease;
     }
 
-    [data-uiify-line-chart][data-interactive]
-      [data-part="points"]
-      > li[data-point-selected]::after {
+    [data-uiify-line-chart][data-interactive] [data-part="point"][data-point-selected]::after {
       scale: 1.15;
     }
   }

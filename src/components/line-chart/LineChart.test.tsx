@@ -25,6 +25,8 @@ describe("LineChart", () => {
     expect(points[0]?.getAttribute("style")).toContain("--line-x: 0%");
     expect(points[0]?.getAttribute("style")).not.toContain("--line-prev-y");
     expect(points[1]?.getAttribute("style")).toContain("--line-prev-y:");
+    expect(points[0]?.getAttribute("style")).not.toContain("--line-rise");
+    expect(points[1]?.getAttribute("style")).toMatch(/--line-rise: -?\d/);
     expect(points[1]?.getAttribute("style")).toContain("--line-prev-x: 0%");
     expect(points[1]?.getAttribute("data-time")).toBe("2026-09-02");
     expect(chart.querySelectorAll('[data-part="points"] button')).toHaveLength(0);

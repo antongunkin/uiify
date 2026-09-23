@@ -7,7 +7,13 @@ import type {
   ReactNode,
 } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import type { CandleChartAxisLabel, CandleChartData, CandleChartProps } from "./types.js";
+import type {
+  CandleChartAxisLabel,
+  CandleChartCandleProps,
+  CandleChartData,
+  CandleChartProps,
+  CandleChartViewProps,
+} from "./types.js";
 
 interface CandleStyle extends CSSProperties {
   "--candle-body-height": string;
@@ -61,7 +67,7 @@ function directionFor(candle: CandleChartData): CandleDirection {
   return "flat";
 }
 
-function getPriceBounds(data: readonly CandleChartData[]): { max: number; min: number } {
+export function getPriceBounds(data: readonly CandleChartData[]): { max: number; min: number } {
   let min = Number.POSITIVE_INFINITY;
   let max = Number.NEGATIVE_INFINITY;
 
@@ -128,8 +134,8 @@ function priceLabelsFor(min: number, max: number): AxisLabel[] {
 
 function geometryFor(
   candle: CandleChartData,
-  index: number,
-  count: number,
+  x: number,
+  slot: number,
   min: number,
   max: number,
 ): CandleGeometry {
@@ -143,10 +149,10 @@ function geometryFor(
     bodyHeight: percent(Math.abs(close - open)),
     bodyTop: percent(Math.min(open, close)),
     direction: directionFor(candle),
-    slot: percent(100 / count),
+    slot: percent(slot),
     wickHeight: percent(Math.max(0, low - high)),
     wickTop: percent(high),
-    x: percent((index / count) * 100),
+    x: percent(x),
   };
 }
 
@@ -190,6 +196,58 @@ function axisLabelsFor(
   return overrides ?? fallback;
 }
 
+/** One candle glyph with its optional hit target; shared by the static list and virtual rows. */
+export function CandleChartCandle({
+  as: Tag,
+  candle,
+  index,
+  x,
+  slot,
+  min,
+  max,
+  interactive,
+  isActive,
+  isSelected,
+  cursorY,
+  onCandleClick,
+  onCandlePointerLeave,
+  onCandlePointerMove,
+}: CandleChartCandleProps): ReactElement {
+  const geometry = geometryFor(candle, x, slot, min, max);
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onCandleClick?.(index);
+  };
+
+  return (
+    <Tag
+      aria-hidden={interactive ? undefined : true}
+      data-part="candle"
+      data-direction={geometry.direction}
+      data-crosshair-active={interactive && isActive ? "" : undefined}
+      data-time={String(candle.time)}
+      style={candleStyle(geometry, isActive ? cursorY : undefined)}
+    >
+      {interactive ? (
+        <button
+          data-part="candle-hit"
+          type="button"
+          aria-label={`Candle ${String(candle.time)}`}
+          aria-pressed={isSelected}
+          onClick={() => onCandleClick?.(index)}
+          onKeyDown={handleKeyDown}
+          onPointerLeave={onCandlePointerLeave}
+          onPointerMove={(event: PointerEvent<HTMLButtonElement>) =>
+            onCandlePointerMove?.({ index, offsetY: event.nativeEvent.offsetY })
+          }
+        />
+      ) : null}
+    </Tag>
+  );
+}
+CandleChartCandle.displayName = "CandleChartCandle";
+
 export function CandleChart<TAs extends ElementType = "figure">(
   props: CandleChartProps<TAs>,
 ): ReactElement | null {
@@ -207,8 +265,12 @@ export function CandleChart<TAs extends ElementType = "figure">(
     onCandlePointerLeave,
     onCandlePointerMove,
     selectedCandleIndex,
+    candleLayer,
+    announceReadout = true,
+    slotCount = data.length,
+    slotOffset = 0,
     ...consumerProps
-  } = props as CandleChartProps<"figure">;
+  } = props as CandleChartProps<"figure"> & CandleChartViewProps;
   const { min, max } = getPriceBounds(data);
   const label = ariaLabel ?? "Candlestick chart";
   const monthLabels = axisLabelsFor(xAxis, monthLabelsFor(data));
@@ -217,42 +279,29 @@ export function CandleChart<TAs extends ElementType = "figure">(
     activeCandleIndex ?? selectedCandleIndex ?? (data.length > 0 ? data.length - 1 : undefined);
   const readoutCandle = readoutIndex === undefined ? undefined : data[readoutIndex];
   const crosshairCandle = activeCandleIndex === undefined ? undefined : data[activeCandleIndex];
-  const candles = data.map((candle, index) => {
-    const geometry = geometryFor(candle, index, data.length, min, max);
-    const isActive = activeCandleIndex === index;
-    const isSelected = selectedCandleIndex === index;
-    const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      onCandleClick?.(index);
-    };
-
-    return (
-      <li
-        key={`${candle.time}-${index}`}
-        aria-hidden={interactive ? undefined : true}
-        data-direction={geometry.direction}
-        data-crosshair-active={interactive && isActive ? "" : undefined}
-        data-time={String(candle.time)}
-        style={candleStyle(geometry, isActive ? cursorY : undefined)}
-      >
-        {interactive ? (
-          <button
-            data-part="candle-hit"
-            type="button"
-            aria-label={`Candle ${String(candle.time)}`}
-            aria-pressed={isSelected}
-            onClick={() => onCandleClick?.(index)}
-            onKeyDown={handleKeyDown}
-            onPointerLeave={onCandlePointerLeave}
-            onPointerMove={(event: PointerEvent<HTMLButtonElement>) =>
-              onCandlePointerMove?.({ index, offsetY: event.nativeEvent.offsetY })
-            }
-          />
-        ) : null}
-      </li>
-    );
-  });
+  const candles = candleLayer ?? (
+    <ol data-part="candles" aria-label={`${label} candles`}>
+      {data.map((candle, index) => (
+        <CandleChartCandle
+          key={`${candle.time}-${index}`}
+          as="li"
+          candle={candle}
+          index={index}
+          x={(index / data.length) * 100}
+          slot={100 / data.length}
+          min={min}
+          max={max}
+          interactive={interactive}
+          isActive={activeCandleIndex === index}
+          isSelected={selectedCandleIndex === index}
+          cursorY={cursorY}
+          onCandleClick={onCandleClick}
+          onCandlePointerLeave={onCandlePointerLeave}
+          onCandlePointerMove={onCandlePointerMove}
+        />
+      ))}
+    </ol>
+  );
 
   return useRenderElement({
     as,
@@ -266,7 +315,7 @@ export function CandleChart<TAs extends ElementType = "figure">(
         <>
           <figcaption>{label}</figcaption>
           {interactive && readoutCandle ? (
-            <div data-part="readout" aria-live="polite">
+            <div data-part="readout" aria-live={announceReadout ? "polite" : "off"}>
               <span data-part="readout-time">{String(readoutCandle.time)}</span>
               <span>O {readoutCandle.open}</span>
               <span>H {readoutCandle.high}</span>
@@ -278,14 +327,12 @@ export function CandleChart<TAs extends ElementType = "figure">(
             <div data-part="scroll-viewport">
               <div data-part="canvas">
                 <div data-part="viewport">
-                  <ol data-part="candles" aria-label={`${label} candles`}>
-                    {candles}
-                  </ol>
+                  {candles}
                   {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                     <div
                       data-part="crosshair"
                       aria-hidden="true"
-                      style={crosshairStyle(activeCandleIndex, data.length, cursorY)}
+                      style={crosshairStyle(slotOffset + activeCandleIndex, slotCount, cursorY)}
                     >
                       <span data-part="crosshair-marker">+</span>
                     </div>
@@ -304,7 +351,7 @@ export function CandleChart<TAs extends ElementType = "figure">(
                     {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                       <li
                         data-part="crosshair-time"
-                        style={crosshairStyle(activeCandleIndex, data.length, undefined)}
+                        style={crosshairStyle(slotOffset + activeCandleIndex, slotCount, undefined)}
                       >
                         {String(crosshairCandle.time)}
                       </li>

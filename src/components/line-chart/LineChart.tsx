@@ -10,9 +10,64 @@ import {
   monthLabelsFor,
   pointStyle,
   pointsStyle,
+  slotCrosshairStyle,
   valueLabelsFor,
 } from "./line-chart-geometry.js";
-import type { LineChartProps } from "./types.js";
+import type { LineChartPointProps, LineChartProps, LineChartViewProps } from "./types.js";
+
+/** One point and the segment from its predecessor; shared by the static list and virtual rows. */
+export function LineChartPoint({
+  as: Tag,
+  point,
+  previousPoint,
+  index,
+  count,
+  min,
+  max,
+  interactive,
+  isActive,
+  isSelected,
+  cursorY,
+  onPointClick,
+  onPointPointerLeave,
+  onPointPointerMove,
+}: LineChartPointProps): ReactElement {
+  const geometry = geometryFor(point, previousPoint, index, count, min, max);
+  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    onPointClick?.(index);
+  };
+
+  return (
+    <Tag
+      aria-hidden={interactive ? undefined : true}
+      data-part="point"
+      data-first={previousPoint === undefined ? "" : undefined}
+      data-crosshair-active={interactive && isActive ? "" : undefined}
+      data-point-selected={interactive && isSelected ? "" : undefined}
+      data-time={String(point.time)}
+      data-trend={geometry.trend}
+      style={pointStyle(geometry, isActive ? cursorY : undefined)}
+    >
+      {interactive ? (
+        <button
+          data-part="point-hit"
+          type="button"
+          aria-label={`Point ${String(point.time)}`}
+          aria-pressed={isSelected}
+          onClick={() => onPointClick?.(index)}
+          onKeyDown={handleKeyDown}
+          onPointerLeave={onPointPointerLeave}
+          onPointerMove={(event: PointerEvent<HTMLButtonElement>) =>
+            onPointPointerMove?.({ index, offsetY: event.nativeEvent.offsetY })
+          }
+        />
+      ) : null}
+    </Tag>
+  );
+}
+LineChartPoint.displayName = "LineChartPoint";
 
 export function LineChart<TAs extends ElementType = "figure">(
   props: LineChartProps<TAs>,
@@ -31,8 +86,12 @@ export function LineChart<TAs extends ElementType = "figure">(
     onPointPointerLeave,
     onPointPointerMove,
     selectedPointIndex,
+    pointLayer,
+    announceReadout = true,
+    slotCount,
+    slotOffset = 0,
     ...consumerProps
-  } = props as LineChartProps<"figure">;
+  } = props as LineChartProps<"figure"> & LineChartViewProps;
   const { min, max } = getValueBounds(data);
   const label = ariaLabel ?? "Line chart";
   const timeLabels = axisLabelsFor(xAxis, monthLabelsFor(data));
@@ -41,43 +100,33 @@ export function LineChart<TAs extends ElementType = "figure">(
     activePointIndex ?? selectedPointIndex ?? (data.length > 0 ? data.length - 1 : undefined);
   const readoutPoint = readoutIndex === undefined ? undefined : data[readoutIndex];
   const crosshairPoint = activePointIndex === undefined ? undefined : data[activePointIndex];
-  const points = data.map((point, index) => {
-    const geometry = geometryFor(point, data[index - 1], index, data.length, min, max);
-    const isActive = activePointIndex === index;
-    const isSelected = selectedPointIndex === index;
-    const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      onPointClick?.(index);
-    };
-
-    return (
-      <li
-        key={`${point.time}-${index}`}
-        aria-hidden={interactive ? undefined : true}
-        data-crosshair-active={interactive && isActive ? "" : undefined}
-        data-point-selected={interactive && isSelected ? "" : undefined}
-        data-time={String(point.time)}
-        data-trend={geometry.trend}
-        style={pointStyle(geometry, isActive ? cursorY : undefined)}
-      >
-        {interactive ? (
-          <button
-            data-part="point-hit"
-            type="button"
-            aria-label={`Point ${String(point.time)}`}
-            aria-pressed={isSelected}
-            onClick={() => onPointClick?.(index)}
-            onKeyDown={handleKeyDown}
-            onPointerLeave={onPointPointerLeave}
-            onPointerMove={(event: PointerEvent<HTMLButtonElement>) =>
-              onPointPointerMove?.({ index, offsetY: event.nativeEvent.offsetY })
-            }
-          />
-        ) : null}
-      </li>
-    );
-  });
+  const points = pointLayer ?? (
+    <ol data-part="points" aria-label={`${label} points`} style={pointsStyle(data.length)}>
+      {data.map((point, index) => (
+        <LineChartPoint
+          key={`${point.time}-${index}`}
+          as="li"
+          point={point}
+          previousPoint={data[index - 1]}
+          index={index}
+          count={data.length}
+          min={min}
+          max={max}
+          interactive={interactive}
+          isActive={activePointIndex === index}
+          isSelected={selectedPointIndex === index}
+          cursorY={cursorY}
+          onPointClick={onPointClick}
+          onPointPointerLeave={onPointPointerLeave}
+          onPointPointerMove={onPointPointerMove}
+        />
+      ))}
+    </ol>
+  );
+  const crosshairFor = (index: number, y: number | undefined) =>
+    slotCount === undefined
+      ? crosshairStyle(index, data.length, y)
+      : slotCrosshairStyle(slotOffset + index, slotCount, y);
 
   return useRenderElement({
     as,
@@ -91,7 +140,7 @@ export function LineChart<TAs extends ElementType = "figure">(
         <>
           <figcaption>{label}</figcaption>
           {interactive && readoutPoint ? (
-            <div data-part="readout" aria-live="polite">
+            <div data-part="readout" aria-live={announceReadout ? "polite" : "off"}>
               <span data-part="readout-time">{String(readoutPoint.time)}</span>
               <span>{readoutPoint.value}</span>
             </div>
@@ -100,18 +149,12 @@ export function LineChart<TAs extends ElementType = "figure">(
             <div data-part="scroll-viewport">
               <div data-part="canvas">
                 <div data-part="viewport">
-                  <ol
-                    data-part="points"
-                    aria-label={`${label} points`}
-                    style={pointsStyle(data.length)}
-                  >
-                    {points}
-                  </ol>
+                  {points}
                   {interactive && crosshairPoint && activePointIndex !== undefined ? (
                     <div
                       data-part="crosshair"
                       aria-hidden="true"
-                      style={crosshairStyle(activePointIndex, data.length, cursorY)}
+                      style={crosshairFor(activePointIndex, cursorY)}
                     >
                       <span data-part="crosshair-marker">+</span>
                     </div>
@@ -130,7 +173,7 @@ export function LineChart<TAs extends ElementType = "figure">(
                     {interactive && crosshairPoint && activePointIndex !== undefined ? (
                       <li
                         data-part="crosshair-time"
-                        style={crosshairStyle(activePointIndex, data.length, undefined)}
+                        style={crosshairFor(activePointIndex, undefined)}
                       >
                         {String(crosshairPoint.time)}
                       </li>

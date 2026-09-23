@@ -55,18 +55,30 @@
     padding: 1rem 0.75rem 0.5rem;
     overflow: clip;
     overscroll-behavior: none;
-    touch-action: none;
     isolation: isolate;
     color-scheme: light dark;
     background: transparent;
     color: light-dark(oklch(28% 0.04 165deg), oklch(82% 0.04 165deg));
   }
 
+  /* Interactive charts own touch and horizontal wheel gestures (crosshair,
+     zoom, native scroll); a static chart leaves page scrolling alone. */
+  [data-uiify-candle-chart][data-interactive] {
+    touch-action: none;
+  }
+
+  [data-uiify-candle-chart][data-interactive] [data-part="scroll-viewport"] {
+    overscroll-behavior-inline: none;
+  }
+
+  /* The time-axis row also reserves the horizontal scrollbar, measured by the
+     client entry (0 for overlay scrollbars and static charts), so the flexible
+     candle row does not absorb it and stays aligned with the value axis. */
   [data-uiify-candle-chart] > [data-part="plot"] {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 4.5rem;
-    grid-template-rows: minmax(18rem, 1fr) 1.5rem;
+    grid-template-rows: minmax(18rem, 1fr) calc(1.5rem + var(--candle-scrollbar-size, 0px));
     gap: 0 0.75rem;
     min-inline-size: 0;
     min-block-size: 18rem;
@@ -79,14 +91,8 @@
     min-inline-size: 0;
     min-block-size: 18rem;
     overflow: auto hidden;
-    overscroll-behavior: none;
-    scrollbar-width: none;
     container-type: inline-size;
     direction: rtl;
-  }
-
-  [data-uiify-candle-chart] [data-part="scroll-viewport"]::-webkit-scrollbar {
-    display: none;
   }
 
   [data-uiify-candle-chart] [data-part="canvas"] {
@@ -106,6 +112,25 @@
     margin: 0;
     padding: 1rem 0.5rem;
     list-style: none;
+  }
+
+  /* Live mode: a horizontal VirtualScroll replaces the static list. The grid sits
+     on the viewport, so it holds still while candles scroll past and a classic
+     scrollbar cannot squeeze it. */
+  [data-uiify-candle-chart] [data-part="viewport"] > [data-uiify-virtual-scroll] {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* A classic scrollbar shortens the virtual rows; size candles from the plot
+     height so they stay aligned with the price axis. */
+  [data-uiify-candle-chart] [data-uiify-virtual-scroll] [data-part="candle"] {
+    inset-block: 1rem auto;
+    block-size: calc(var(--candle-plot-height, 18rem) - 2rem);
+  }
+
+  [data-uiify-candle-chart] [data-part="candles"],
+  [data-uiify-candle-chart] [data-part="viewport"]:has(> [data-uiify-virtual-scroll]) {
     background-image:
       linear-gradient(to right, var(--candle-grid) 1px, transparent 1px),
       linear-gradient(to bottom, var(--candle-grid) 1px, transparent 1px);
@@ -165,7 +190,7 @@
     font-weight: 650;
   }
 
-  [data-uiify-candle-chart] [data-part="candles"] > li {
+  [data-uiify-candle-chart] [data-part="candle"] {
     position: absolute;
     inset: 1rem 0.5rem;
     pointer-events: none;
@@ -176,7 +201,7 @@
     list-style: none;
   }
 
-  [data-uiify-candle-chart][data-interactive] [data-part="candles"] > li {
+  [data-uiify-candle-chart][data-interactive] [data-part="candle"] {
     pointer-events: auto;
   }
 
@@ -196,15 +221,15 @@
     font: inherit;
   }
 
-  [data-uiify-candle-chart] [data-part="candles"] > li::before,
-  [data-uiify-candle-chart] [data-part="candles"] > li::after {
+  [data-uiify-candle-chart] [data-part="candle"]::before,
+  [data-uiify-candle-chart] [data-part="candle"]::after {
     content: "";
     position: absolute;
     display: block;
     background: currentcolor;
   }
 
-  [data-uiify-candle-chart] [data-part="candles"] > li::before {
+  [data-uiify-candle-chart] [data-part="candle"]::before {
     inset-block-start: var(--candle-wick-top);
     inset-inline-start: 50%;
     inline-size: max(1px, 0.08em);
@@ -212,26 +237,29 @@
     transform: translateX(-50%);
   }
 
-  [data-uiify-candle-chart] [data-part="candles"] > li::after {
+  [data-uiify-candle-chart] [data-part="candle"]::after {
     inset-block-start: var(--candle-body-top);
     inset-inline: 17%;
     block-size: var(--candle-body-height);
     min-block-size: 1px;
   }
 
-  [data-uiify-candle-chart] [data-part="candles"] > li[data-direction="up"] {
+  [data-uiify-candle-chart] [data-part="candle"][data-direction="up"] {
     color: var(--candle-up);
   }
 
-  [data-uiify-candle-chart] [data-part="candles"] > li[data-direction="down"] {
+  [data-uiify-candle-chart] [data-part="candle"][data-direction="down"] {
     color: var(--candle-down);
   }
 
+  /* The crosshair and time axis span the scrolled content in live mode:
+     `--candle-content-size` is its width, `--candle-scroll-x` its scroll offset. */
   [data-uiify-candle-chart] [data-part="crosshair"] {
     position: absolute;
     z-index: 3;
     inset: 0;
-    inline-size: 100%;
+    inline-size: var(--candle-content-size, 100%);
+    translate: calc(-1 * var(--candle-scroll-x, 0px)) 0;
     block-size: 100%;
     color: light-dark(oklch(52% 0.01 0deg), oklch(72% 0.01 0deg));
     pointer-events: none;
@@ -343,7 +371,8 @@
   [data-uiify-candle-chart] [data-part="time-axis"] {
     position: relative;
     inset-block: 0;
-    inline-size: 100%;
+    inline-size: var(--candle-content-size, 100%);
+    translate: calc(-1 * var(--candle-scroll-x, 0px)) 0;
     min-inline-size: 0;
   }
 

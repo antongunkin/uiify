@@ -4,6 +4,7 @@ import type { LineChartAxisLabel, LineChartData } from "./types.js";
 export interface PointStyle extends CSSProperties {
   "--line-prev-x"?: string;
   "--line-prev-y"?: string;
+  "--line-rise"?: string;
   "--line-slot": string;
   "--line-x": string;
   "--line-y": string;
@@ -12,6 +13,8 @@ export interface PointStyle extends CSSProperties {
 
 export interface PointsStyle extends CSSProperties {
   "--line-count": string;
+  /** One segment's width in percentage points of the viewport width, unitless. */
+  "--line-run": string;
   "--line-segment-slot": string;
 }
 
@@ -34,6 +37,8 @@ type LineTrend = "down" | "flat" | "up";
 interface LinePointGeometry {
   readonly previousX: string | undefined;
   readonly previousY: string | undefined;
+  /** `y − previousY` in percentage points of the point box height, unitless. */
+  readonly rise: string | undefined;
   readonly slot: string;
   readonly trend: LineTrend;
   readonly x: string;
@@ -134,16 +139,17 @@ export function geometryFor(
   max: number,
 ): LinePointGeometry {
   const range = max - min;
+  const y = valueToPercent(point.value, min, range);
+  const previousY =
+    previousPoint === undefined ? undefined : valueToPercent(previousPoint.value, min, range);
   return {
     previousX: previousPoint === undefined ? undefined : percent(pointPosition(index - 1, count)),
-    previousY:
-      previousPoint === undefined
-        ? undefined
-        : percent(valueToPercent(previousPoint.value, min, range)),
+    previousY: previousY === undefined ? undefined : percent(previousY),
+    rise: previousY === undefined ? undefined : String(Math.round((y - previousY) * 10000) / 10000),
     slot: percent(count > 1 ? 100 / (count - 1) : 100),
     trend: trendFor(point.value, previousPoint?.value),
     x: percent(pointPosition(index, count)),
-    y: percent(valueToPercent(point.value, min, range)),
+    y: percent(y),
   };
 }
 
@@ -151,6 +157,7 @@ export function pointStyle(geometry: LinePointGeometry, cursorY: number | undefi
   return {
     ...(geometry.previousX === undefined ? {} : { "--line-prev-x": geometry.previousX }),
     ...(geometry.previousY === undefined ? {} : { "--line-prev-y": geometry.previousY }),
+    ...(geometry.rise === undefined ? {} : { "--line-rise": geometry.rise }),
     "--line-slot": geometry.slot,
     "--line-x": geometry.x,
     "--line-y": geometry.y,
@@ -161,6 +168,7 @@ export function pointStyle(geometry: LinePointGeometry, cursorY: number | undefi
 export function pointsStyle(count: number): PointsStyle {
   return {
     "--line-count": String(Math.max(count, 1)),
+    "--line-run": String(Math.round((count > 1 ? 100 / (count - 1) : 100) * 10000) / 10000),
     "--line-segment-slot": percent(count > 1 ? 100 / (count - 1) : 100),
   };
 }
@@ -172,6 +180,18 @@ export function crosshairStyle(
 ): CrosshairStyle {
   return {
     "--line-crosshair-x": percent(pointPosition(index, count)),
+    ...(cursorY === undefined ? {} : { "--line-cursor-y": `${Math.max(0, cursorY)}px` }),
+  };
+}
+
+/** Crosshair at the center of slot `index` of `count` equal slots (live mode). */
+export function slotCrosshairStyle(
+  index: number,
+  count: number,
+  cursorY: number | undefined,
+): CrosshairStyle {
+  return {
+    "--line-crosshair-x": percent(((index + 0.5) / Math.max(count, 1)) * 100),
     ...(cursorY === undefined ? {} : { "--line-cursor-y": `${Math.max(0, cursorY)}px` }),
   };
 }
