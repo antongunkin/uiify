@@ -36,14 +36,20 @@ describe("NumberField", () => {
     expect(markup).toContain('required=""');
   });
 
-  it("owns data-disabled on Root regardless of a consumer override attempt", () => {
+  it("owns the component identity and data-disabled on Root regardless of consumer overrides", () => {
     const { container } = render(
-      <NumberField.Root defaultValue={1} disabled data-disabled="nope">
+      <NumberField.Root
+        defaultValue={1}
+        disabled
+        data-disabled="nope"
+        data-uiify-number-field="nope"
+      >
         <NumberField.Input aria-label="Amount" />
       </NumberField.Root>,
     );
     const root = container.firstElementChild as HTMLElement;
     expect(root.getAttribute("data-disabled")).toBe("");
+    expect(root.getAttribute("data-uiify-number-field")).toBe("");
   });
 
   it("owns data-disabled on Group regardless of a consumer override attempt", () => {

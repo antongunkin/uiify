@@ -416,13 +416,13 @@
       "clientDoes": "auto-advance between cells"
     },
     "color-picker": {
-      "tier": 2,
+      "tier": 1,
       "state": "S1",
       "element": "input[type=color]",
-      "sizeNow": "16 kB",
-      "sizeTarget": "3 kB",
+      "sizeNow": "n/a",
+      "sizeTarget": "1 kB",
       "status": "done",
-      "clientDoes": "custom picker surface; native input[type=color] is the Tier 0 fallback"
+      "clientDoes": "synchronizes the displayed CSS value and preview with the native color input; the browser owns the OS picker UI."
     },
     "virtual-scroll": {
       "tier": 2,

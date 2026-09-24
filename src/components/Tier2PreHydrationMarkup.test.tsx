@@ -1,8 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { ColorPicker } from "./color-picker/index.js";
-import { createColor } from "./color-picker/color.js";
 import { Combobox } from "./combobox/index.js";
 import { ContextMenu } from "./context-menu/index.js";
 import { DropdownMenu } from "./dropdown-menu/index.js";
@@ -73,17 +71,5 @@ describe("Tier 2 pre-hydration SSR markup", () => {
     expect((screen.getByRole("textbox", { name: "One-time code" }) as HTMLInputElement).value).toBe(
       "12",
     );
-  });
-
-  it("renders a popover-backed color picker trigger", () => {
-    render(
-      <ColorPicker.Root defaultValue={createColor({ r: 255, g: 0, b: 0, a: 1 })}>
-        <ColorPicker.Trigger>Pick color</ColorPicker.Trigger>
-        <ColorPicker.Content />
-      </ColorPicker.Root>,
-    );
-    const trigger = screen.getByRole("button", { name: "Pick color" });
-    expect(trigger.getAttribute("command")).toBe("toggle-popover");
-    expect(trigger.getAttribute("commandfor")).toBeTruthy();
   });
 });

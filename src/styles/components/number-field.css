@@ -43,6 +43,18 @@
     transition: var(--transition-colors);
   }
 
+  [data-uiify-number-field] > button:empty::before {
+    display: block;
+  }
+
+  [data-uiify-number-field] > button:first-child:empty::before {
+    content: "←";
+  }
+
+  [data-uiify-number-field] > button:last-child:empty::before {
+    content: "→";
+  }
+
   [data-uiify-number-field] > button:first-child {
     border-inline-start: none;
     border-inline-end: var(--border-width) solid var(--border);

@@ -28,6 +28,26 @@
     outline-offset: 0;
   }
 
+  [data-uiify-otp-input] [data-part="slot"][data-active]::after {
+    inline-size: 1px;
+    block-size: 1em;
+    background-color: currentcolor;
+    content: "";
+    animation: uiify-otp-input-caret-blink 1s step-end infinite;
+  }
+
+  @keyframes uiify-otp-input-caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-uiify-otp-input] [data-part="slot"][data-active]::after {
+      animation: none;
+    }
+  }
+
   [data-uiify-otp-input] [data-part="slot"][data-filled] {
     border-color: var(--input);
   }

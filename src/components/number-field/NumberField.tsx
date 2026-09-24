@@ -163,7 +163,11 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
   const element = useRenderElement({
     as,
     defaultTag: "div",
-    props: { ...consumerProps, "data-disabled": disabled ? "" : undefined },
+    props: {
+      ...consumerProps,
+      "data-disabled": disabled ? "" : undefined,
+      "data-uiify-number-field": "",
+    },
     render,
     state: { disabled, readOnly, required },
   });

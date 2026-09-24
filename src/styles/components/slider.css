@@ -1,18 +1,242 @@
-/* Slider — native <input type="range">. accent-color handles the filled track
-   and thumb tint with the least machinery; we only set sizing and the disabled
-   affordance. */
+/* Native controls stay visible until hydration; the client entry then adds a
+   labeled track while retaining the real range inputs for input semantics. */
 
 @layer components {
+  [data-uiify-slider],
+  [data-uiify-slider-client] {
+    --uiify-slider-track-size: 0.375rem;
+    --uiify-slider-track-radius: 999px;
+    --uiify-slider-thumb-size: 1.125rem;
+  }
+
   [data-uiify-slider] {
+    box-sizing: border-box;
+    display: block;
     inline-size: 100%;
-    max-inline-size: 16rem;
-    accent-color: var(--primary);
+    max-inline-size: 22rem;
+    min-inline-size: 14rem;
+    min-block-size: 2.75rem;
+    padding-inline: 0.5625rem;
+    appearance: none;
+    background-color: transparent;
     cursor: pointer;
+  }
+
+  [data-uiify-slider]::-webkit-slider-runnable-track {
+    block-size: var(--uiify-slider-track-size);
+    border-radius: var(--uiify-slider-track-radius);
+    background: linear-gradient(
+      to right,
+      var(--primary) 0 var(--uiify-slider-progress, 50%),
+      var(--muted) var(--uiify-slider-progress, 50%) 100%
+    );
+  }
+
+  [data-uiify-slider]::-webkit-slider-thumb {
+    box-sizing: border-box;
+    inline-size: var(--uiify-slider-thumb-size);
+    block-size: var(--uiify-slider-thumb-size);
+    border: 2px solid var(--background);
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+    margin-block-start: calc((var(--uiify-slider-track-size) - var(--uiify-slider-thumb-size)) / 2);
+    appearance: none;
+  }
+
+  [data-uiify-slider]::-moz-range-thumb {
+    box-sizing: border-box;
+    inline-size: var(--uiify-slider-thumb-size);
+    block-size: var(--uiify-slider-thumb-size);
+    border: 2px solid var(--background);
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+
+  [data-uiify-slider]::-moz-range-track {
+    block-size: var(--uiify-slider-track-size);
+    border: 0;
+    border-radius: var(--uiify-slider-track-radius);
+    background: linear-gradient(
+      to right,
+      var(--primary) 0 var(--uiify-slider-progress, 50%),
+      var(--muted) var(--uiify-slider-progress, 50%) 100%
+    );
+  }
+
+  [data-uiify-slider]::-moz-range-progress {
+    background: transparent;
+  }
+
+  [dir="rtl"] [data-uiify-slider]::-webkit-slider-runnable-track,
+  [dir="rtl"] [data-uiify-slider]::-moz-range-track {
+    background-image: linear-gradient(
+      to left,
+      var(--primary) 0 var(--uiify-slider-progress, 50%),
+      var(--muted) var(--uiify-slider-progress, 50%) 100%
+    );
+  }
+
+  [data-uiify-slider]:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 0.25rem;
   }
 
   [data-uiify-slider]:disabled,
   [data-uiify-slider][data-disabled] {
-    opacity: 0.5;
+    opacity: 0.55;
     cursor: not-allowed;
+  }
+
+  [data-uiify-slider-client] {
+    position: relative;
+    display: grid;
+    align-items: center;
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    min-inline-size: 14rem;
+    min-block-size: 2.75rem;
+    accent-color: var(--primary);
+  }
+
+  [data-uiify-slider-client] > input[data-part="thumb"] {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    accent-color: var(--primary);
+    opacity: 0.001;
+  }
+
+  [data-uiify-slider-client] [data-part="track"] {
+    position: absolute;
+    display: block;
+    inset-inline: 0.5625rem;
+    inset-block-start: 50%;
+    block-size: var(--uiify-slider-track-size);
+    border-radius: var(--uiify-slider-track-radius);
+    background: var(--muted);
+    pointer-events: none;
+    translate: 0 -50%;
+  }
+
+  [data-uiify-slider-client][data-enhanced][data-range] > input[data-part="thumb"]:first-of-type {
+    clip-path: inset(0 calc(100% - var(--uiify-slider-middle)) 0 0);
+  }
+
+  [data-uiify-slider-client][data-enhanced][data-range] > input[data-part="thumb"]:last-of-type {
+    clip-path: inset(0 0 0 var(--uiify-slider-middle));
+  }
+
+  [data-uiify-slider-client] [data-part="range"] {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: var(--uiify-slider-start);
+    inline-size: calc(var(--uiify-slider-end) - var(--uiify-slider-start));
+    border-radius: var(--uiify-slider-track-radius);
+    background: var(--primary);
+  }
+
+  [data-uiify-slider-client] [data-part="mark"] {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: calc(50% + 0.8rem);
+    inset-inline-start: var(--uiify-slider-position);
+    display: grid;
+    justify-items: center;
+    gap: 0.25rem;
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    line-height: 1;
+    text-align: center;
+    translate: -50% 0;
+  }
+
+  [data-uiify-slider-client] [data-part="mark"]::before {
+    inline-size: 1px;
+    block-size: 0.4rem;
+    background: currentcolor;
+    content: "";
+  }
+
+  [data-uiify-slider-client] [data-part="visual-thumb"] {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: 50%;
+    inset-inline-start: var(--uiify-slider-position);
+    inline-size: var(--uiify-slider-thumb-size);
+    aspect-ratio: 1;
+    border: 2px solid var(--background);
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+    translate: -50% -50%;
+  }
+
+  [data-uiify-slider-client]:has(input:focus-visible) [data-part="track"] {
+    outline: 3px solid var(--ring);
+    outline-offset: 0.25rem;
+  }
+
+  [data-uiify-slider-client][data-disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  [data-uiify-slider-client][data-disabled] > input {
+    cursor: not-allowed;
+  }
+
+  [data-uiify-slider-client][data-orientation="vertical"] {
+    inline-size: 14rem;
+    max-inline-size: none;
+    block-size: 3rem;
+    writing-mode: vertical-rl;
+  }
+
+  [data-uiify-slider-client][data-orientation="vertical"] [data-part="track"] {
+    inset-inline: 0.5625rem;
+    inset-block: 50% auto;
+    inline-size: auto;
+    block-size: 0.375rem;
+    translate: 50% 0;
+  }
+
+  [data-uiify-slider-client][data-enhanced][data-range][data-orientation="vertical"]
+    > input[data-part="thumb"]:first-of-type {
+    clip-path: inset(0 0 calc(100% - var(--uiify-slider-middle)) 0);
+  }
+
+  [data-uiify-slider-client][data-enhanced][data-range][data-orientation="vertical"]
+    > input[data-part="thumb"]:last-of-type {
+    clip-path: inset(var(--uiify-slider-middle) 0 0 0);
+  }
+
+  [data-uiify-slider-client][data-orientation="vertical"] [data-part="range"] {
+    inset-block: 0;
+    inset-inline: var(--uiify-slider-start) auto;
+    inline-size: calc(var(--uiify-slider-end) - var(--uiify-slider-start));
+    block-size: 100%;
+  }
+
+  [data-uiify-slider-client][data-orientation="vertical"] [data-part="mark"] {
+    inset-block-start: var(--uiify-slider-position);
+    inset-inline: calc(50% + 0.8rem) auto;
+    justify-items: start;
+    writing-mode: horizontal-tb;
+    translate: 0 -50%;
+  }
+
+  [data-uiify-slider-client][data-orientation="vertical"] [data-part="mark"]::before {
+    inline-size: 0.4rem;
+    block-size: 1px;
+  }
+
+  [data-uiify-slider-client][data-orientation="vertical"] [data-part="visual-thumb"] {
+    inset-block-start: 50%;
+    inset-inline-start: var(--uiify-slider-position);
+    translate: 50% -50%;
   }
 }

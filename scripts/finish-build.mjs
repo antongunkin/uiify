@@ -50,6 +50,7 @@ await writePublicWrappers("components", [
   "carousel/fade",
   "segmented-control/client",
   "toggle-group/client",
+  "slider/client",
 ]);
 
 const elementManifest = JSON.parse(

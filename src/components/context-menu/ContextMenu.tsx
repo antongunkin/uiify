@@ -6,11 +6,11 @@ import type {
   FocusEvent,
   KeyboardEvent,
   MouseEvent,
-  PointerEvent,
+  PointerEvent as ReactPointerEvent,
   ReactElement,
   SyntheticEvent,
 } from "react";
-import { useMergedRefs } from "@gunkin/uiify/hooks";
+import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
@@ -138,6 +138,23 @@ export function ContextMenuContent<TAs extends ElementType = "div">(
     useContextMenuContext("Content");
   const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
   const mergedRef = useMergedRefs(popupRef, contentRef, consumerRef);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!open) return;
+
+    const content = contentRef.current;
+    const ownerDocument = content?.ownerDocument;
+    if (!content || !ownerDocument) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (event.composedPath().includes(content)) return;
+      close();
+    };
+
+    ownerDocument.addEventListener("pointerdown", handlePointerDown, true);
+    return () => ownerDocument.removeEventListener("pointerdown", handlePointerDown, true);
+  }, [close, contentRef, open]);
+
   const { onKeyDown: consumerOnKeyDown } = withoutRef as {
     onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
   };
@@ -381,7 +398,7 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
   } = consumerProps as {
     onFocus?: (event: FocusEvent<HTMLElement>) => void;
     onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
-    onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
+    onPointerEnter?: (event: ReactPointerEvent<HTMLElement>) => void;
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {

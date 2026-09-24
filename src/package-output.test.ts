@@ -73,6 +73,7 @@ it.each([
   // Component modules
   "components/carousel/client/CarouselClient.tsx",
   "components/carousel/fade/FadeCarouselClient.tsx",
+  "components/slider/client/SliderClient.tsx",
   "components/checkbox/Checkbox.tsx",
   "components/color-picker/ColorPicker.tsx",
   "components/combobox/Combobox.tsx",
@@ -110,6 +111,7 @@ it.each([
 it.each([
   // pure/neutral files the brief calls out directly
   "components/modal/ModalParts.tsx",
+  "components/slider/Slider.tsx",
   "core/render.ts",
   "core/use-render-element.tsx",
   // barrels — never get a shared "use client"
@@ -139,6 +141,8 @@ it("emits a neutral root and canonical implementation modules", () => {
   expect(hasClientDirective(dist("components/index.js"))).toBe(false);
   expect(hasClientDirective(dist("core/index.js"))).toBe(false);
   expect(hasClientDirective(dist("components/modal/ModalParts.js"))).toBe(false);
+  expect(hasClientDirective(dist("components/color-picker/ColorPicker.js"))).toBe(true);
+  expect(hasClientDirective(dist("components/slider/Slider.js"))).toBe(false);
   expect(hasClientDirective(dist("components/number-field/NumberField.js"))).toBe(true);
   expect(dist("components/modal.js").trim()).toBe('export * from "./modal/index.js";');
   expect(dist("components/modal/client.js").trim()).toBe('export * from "./client/index.js";');
@@ -146,6 +150,8 @@ it("emits a neutral root and canonical implementation modules", () => {
     'export * from "./client/index.js";',
   );
   expect(dist("components/line-chart/client.js").trim()).toBe('export * from "./client/index.js";');
+  expect(dist("components/slider/client.js").trim()).toBe('export * from "./client/index.js";');
+  expect(dist("components/slider/client.d.ts").trim()).toBe('export * from "./client/index.js";');
 });
 
 it("emits every production module with its own source directive", () => {

@@ -18,6 +18,7 @@ describe("Slider", () => {
     const slider = screen.getByRole("slider", { name: "Volume" });
     fireEvent.change(slider, { target: { value: "42" } });
     expect(onValueChange).toHaveBeenCalledWith(42);
+    expect(slider.getAttribute("style")).toContain("--uiify-slider-progress: 42%");
     expect(getCommitCount()).toBe(1);
   });
 
@@ -34,6 +35,7 @@ describe("Slider", () => {
     render(<Slider value={55} aria-label="Volume" />);
     const slider = screen.getByRole("slider", { name: "Volume" });
     expect(slider.getAttribute("data-state")).toBe("55");
+    expect(slider.getAttribute("style")).toContain("--uiify-slider-progress: 55%");
     expect(slider.getAttribute("data-uiify-slider")).toBe("");
   });
 
