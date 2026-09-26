@@ -67,13 +67,25 @@
     :where([data-uiify-collapsible], [data-uiify-collapsible])::details-content {
       block-size: 0;
       overflow: clip;
-      transition:
-        block-size var(--duration-base) ease,
-        content-visibility var(--duration-base) allow-discrete;
     }
 
     :where([data-uiify-collapsible], [data-uiify-collapsible])[open]::details-content {
       block-size: auto;
+    }
+  }
+
+  /* Shared presence timing; block-size only interpolates where the block above applies. */
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-uiify-collapsible], [data-uiify-collapsible])::details-content {
+      opacity: 0;
+      transition:
+        opacity var(--duration-fast) var(--ease-out),
+        block-size var(--duration-fast) var(--ease-out),
+        content-visibility var(--duration-fast) allow-discrete;
+    }
+
+    :where([data-uiify-collapsible], [data-uiify-collapsible])[open]::details-content {
+      opacity: 1;
     }
   }
 }

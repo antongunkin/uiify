@@ -6,6 +6,17 @@
  */
 
 @layer base {
+  :root {
+    /* Text-entry controls below 16px make iOS Safari zoom the page on focus. */
+    --uiify-control-text: var(--text-sm);
+  }
+
+  @media (pointer: coarse) {
+    :root {
+      --uiify-control-text: var(--text-base);
+    }
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);

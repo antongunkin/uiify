@@ -16,7 +16,7 @@
     border-radius: var(--radius-md);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--text-sm);
+    font-size: var(--uiify-control-text);
     line-height: var(--leading-normal);
     cursor: pointer;
     transition: var(--transition-colors);
@@ -40,6 +40,10 @@
     display: inline-block;
     inline-size: 0.3rem;
     block-size: 0.3rem;
+
+    /* Safari's user-agent sheet pads ::picker-icon, which stretched the corner into a
+       chevron about twice Chromium's size. */
+    padding: 0;
     margin-block-end: 0.1rem;
     margin-inline-start: auto;
     border-inline-end: 2px solid var(--muted-foreground);
@@ -69,18 +73,24 @@
     color: var(--popover-foreground);
     box-shadow: var(--shadow-popover);
     overscroll-behavior: contain;
-    opacity: 0;
     inset-block-start: calc(anchor(bottom) + var(--space-sm));
-    transition: opacity var(--duration-fast) var(--ease-out) allow-discrete;
   }
 
-  [data-uiify-select]:open::picker(select) {
-    opacity: 1;
-  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-select]::picker(select) {
+      transition: var(--transition-presence);
+    }
 
-  @starting-style {
-    [data-uiify-select]:open::picker(select) {
+    [data-uiify-select]:not(:open)::picker(select) {
       opacity: 0;
+      scale: var(--presence-scale);
+    }
+
+    @starting-style {
+      [data-uiify-select]:open::picker(select) {
+        opacity: 0;
+        scale: var(--presence-scale);
+      }
     }
   }
 
@@ -143,27 +153,26 @@
 
   /* Selection marker — matches the menu's checkbox item-indicator (filled
      accent square, not the radio dot): ::checkmark only ever exists on the
-     selected option, so there's no separate "unchecked" state to draw, and a
-     single-choice control reads better with the checkbox's positive check
-     than with a radio-style empty/filled dot. A literal glyph is used
-     instead of an SVG data URI so `color` stays theme-token driven —
-     `--primary-foreground` flips between light and dark text across themes, and
-     a baked-in SVG image can't follow that. */
+     selected option, so there's no separate "unchecked" state to draw. The
+     check is punched out of the square with a mask instead of typeset as a
+     glyph: U+2713 falls back to a different font in each engine, and in Safari
+     it sat above and left of centre. The hole shows the popover surface, which
+     is what the theme's --primary-foreground already contrasts with. */
   [data-uiify-select] option::checkmark {
     order: -1;
     box-sizing: border-box;
     inline-size: 1.15rem;
     block-size: 1.15rem;
     flex: 0 0 1.15rem;
-    display: inline-grid;
-    place-items: center;
+    display: block;
     border-radius: var(--radius-sm);
     background: var(--primary);
-    color: var(--primary-foreground);
-    font-size: 0.8rem;
-    font-weight: var(--weight-semibold);
-    line-height: 1;
-    content: "\2713";
+    content: "";
+    mask:
+      linear-gradient(#000 0 0),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.6l3 3L12.4 4.8' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+        center / 100% 100% no-repeat;
+    mask-composite: exclude;
   }
 
   [data-uiify-select] hr {

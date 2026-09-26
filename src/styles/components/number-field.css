@@ -17,7 +17,7 @@
     border: none;
     background: none;
     color: var(--foreground);
-    font-size: var(--text-sm);
+    font-size: var(--uiify-control-text);
     text-align: center;
     outline: none;
   }

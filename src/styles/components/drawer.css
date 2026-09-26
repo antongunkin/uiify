@@ -52,19 +52,17 @@
     translate: var(--uiify-drawer-transform, 0) 0;
   }
 
+  /* Presence fades without the shared scale: the sheet is attached to an edge,
+     and its translate is owned by the drag. Backdrop motion lives in modal.css. */
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-drawer][data-part="content"][open] {
-      animation: uiify-drawer-in var(--duration-base) var(--ease-out);
-    }
-
-    [data-uiify-drawer][data-part="content"][open]::backdrop {
-      animation: uiify-fade-in var(--duration-base) var(--ease-out);
-    }
-  }
-
-  @keyframes uiify-drawer-in {
-    from {
+    [data-uiify-drawer][data-part="content"]:not([open]) {
       opacity: 0;
+    }
+
+    @starting-style {
+      [data-uiify-drawer][data-part="content"][open] {
+        opacity: 0;
+      }
     }
   }
 }

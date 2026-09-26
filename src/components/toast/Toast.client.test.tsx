@@ -9,6 +9,9 @@ const showPopover = vi.fn();
 const hidePopover = vi.fn();
 
 beforeAll(() => {
+  // jsdom has no CSS namespace; React escapes <ViewTransition> names with
+  // CSS.escape while committing, which every supported browser provides.
+  vi.stubGlobal("CSS", { escape: (value: string) => value });
   for (const [name, value] of [
     ["showPopover", showPopover],
     ["hidePopover", hidePopover],

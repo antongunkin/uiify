@@ -13,7 +13,7 @@
     border-radius: var(--radius-md);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--text-sm);
+    font-size: var(--uiify-control-text);
     line-height: var(--leading-normal);
     transition: var(--transition-colors);
   }
@@ -82,5 +82,18 @@
     color: var(--destructive);
     font-size: var(--text-xs);
     line-height: var(--leading-normal);
+  }
+
+  /* Shared presence fade when an error message is mounted. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-field] [data-part="error"] {
+      transition: opacity var(--duration-fast) var(--ease-out);
+    }
+
+    @starting-style {
+      [data-uiify-field] [data-part="error"] {
+        opacity: 0;
+      }
+    }
   }
 }

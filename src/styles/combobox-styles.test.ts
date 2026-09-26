@@ -23,7 +23,7 @@ describe("Combobox skin", () => {
     expect(css).toContain("border-radius: var(--radius-md)");
     expect(css).toContain("box-shadow: var(--shadow-popover)");
     expect(css).toContain('[data-uiify-combobox] [data-part="item"][data-selected]');
-    expect(css).toContain("prefers-reduced-motion: reduce");
+    expect(css).toContain("prefers-reduced-motion: no-preference");
   });
 
   it("keeps importing the TagsInput skin while the legacy component remains public", () => {

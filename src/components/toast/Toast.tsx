@@ -1,6 +1,16 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import {
+  addTransitionType,
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  ViewTransition,
+} from "react";
 import type { FocusEvent, KeyboardEvent, PointerEvent, ReactElement } from "react";
 import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
@@ -39,6 +49,9 @@ export type {
 } from "./types.js";
 
 const SWIPE_DISMISS_THRESHOLD = 80;
+
+/** Transition type and view-transition-class shared with behavior.css and styles/toast.css. */
+const TOAST_TRANSITION = "uiify-toast";
 
 const [ToastStoreProvider, useToastStoreContext] = createPartContext<ToastContextValue>(
   "Toast",
@@ -88,7 +101,19 @@ ToastProvider.displayName = "ToastProvider";
 
 export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null {
   const { store } = useToastStoreContext("Viewport");
-  const toasts = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
+  // Not useSyncExternalStore: a store read there always commits synchronously, and
+  // <ViewTransition> only animates commits made inside a Transition.
+  const [toasts, setToasts] = useState(store.getServerSnapshot);
+  useEffect(() => {
+    const sync = () =>
+      startTransition(() => {
+        addTransitionType(TOAST_TRANSITION);
+        setToasts(store.getSnapshot());
+      });
+    const unsubscribe = store.subscribe(sync);
+    sync();
+    return unsubscribe;
+  }, [store]);
   const [consumerRef, domProps] = splitRef<HTMLElement, ToastViewportOwnProps>(props);
   const viewportRef = useRef<HTMLElement | null>(null);
   const mergedRef = useMergedRefs(viewportRef, consumerRef);
@@ -112,7 +137,9 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
   return (
     <ToastViewportElement {...domProps} popover="manual" ref={mergedRef}>
       {toasts.map((toast) => (
-        <ToastRoot key={toast.id} toast={toast} />
+        <ViewTransition default={TOAST_TRANSITION} key={toast.id}>
+          <ToastRoot toast={toast} />
+        </ViewTransition>
       ))}
     </ToastViewportElement>
   );

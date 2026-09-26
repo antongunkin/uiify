@@ -15,7 +15,11 @@ function cssSources(directory: string): string[] {
 describe("strict styling contract", () => {
   test("active styles do not require legacy UIify classes", () => {
     for (const path of cssSources(stylesRoot)) {
-      const source = readFileSync(path, "utf8");
+      // `::view-transition-*(.name)` selects a view-transition-class, not a DOM class.
+      const source = readFileSync(path, "utf8").replace(
+        /::view-transition-(?:group|image-pair|old|new)\([^)]*\)/g,
+        "",
+      );
       expect(source, path).not.toMatch(/\.uiify-[a-z0-9_-]+/);
     }
   });

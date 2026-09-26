@@ -60,4 +60,20 @@
     color: var(--foreground);
     font-size: var(--text-sm);
   }
+
+  /* Shared presence fade for the newly current step; the previous one leaves at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-stepper] > [data-part="step"] > [data-part="panel"] {
+      transition: opacity var(--duration-fast) var(--ease-out);
+    }
+
+    @starting-style {
+      [data-uiify-stepper]
+        > [data-part="step"]
+        > [data-part="control"]:checked
+        ~ [data-part="panel"] {
+        opacity: 0;
+      }
+    }
+  }
 }

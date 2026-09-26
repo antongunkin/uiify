@@ -11,4 +11,19 @@ describe("Select skin", () => {
     expect(checkmarkRule?.groups?.body).toContain("inline-size: 1.15rem");
     expect(checkmarkRule?.groups?.body).toContain("block-size: 1.15rem");
   });
+
+  it("draws the checkmark with a mask, not a font glyph that each engine centres differently", () => {
+    const body = css.match(/\[data-uiify-select\] option::checkmark \{(?<body>[^}]*)\}/s)?.groups
+      ?.body;
+
+    expect(body).toContain('content: "";');
+    expect(body).toContain("mask-composite: exclude;");
+    expect(body).not.toContain("\\2713");
+  });
+
+  it("clears Safari's user-agent padding on the picker icon so the chevron stays compact", () => {
+    const body = css.match(/\[data-uiify-select\]::picker-icon \{(?<body>[^}]*)\}/s)?.groups?.body;
+
+    expect(body).toContain("padding: 0;");
+  });
 });

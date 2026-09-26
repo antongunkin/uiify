@@ -63,6 +63,14 @@
       color var(--duration-fast) var(--ease-out),
       background-color var(--duration-fast) var(--ease-out),
       border-color var(--duration-fast) var(--ease-out);
+
+    /* One enter/exit motion for everything that appears: fade plus a slight
+       settle from --presence-scale. display/overlay keep a closing surface
+       rendered (and in the top layer) until the fade ends. */
+    --presence-scale: 0.96;
+    --transition-presence:
+      opacity var(--duration-fast) var(--ease-out), scale var(--duration-fast) var(--ease-out),
+      display var(--duration-fast) allow-discrete, overlay var(--duration-fast) allow-discrete;
   }
 
   [data-theme="basic-light"] {

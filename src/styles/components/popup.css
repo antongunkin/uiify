@@ -50,23 +50,35 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    :where([data-uiify-tooltip])[data-state="open"] {
-      animation: uiify-overlay-in var(--duration-fast) var(--ease-out);
-    }
-
     :where(
       [data-uiify-popover][data-part="surface"],
       [data-uiify-popup][data-part="content"],
-      [data-uiify-hover-card][data-part="content"]
-    ):popover-open {
-      animation: uiify-overlay-in var(--duration-fast) var(--ease-out);
+      [data-uiify-hover-card][data-part="content"],
+      [data-uiify-tooltip]
+    ) {
+      transition: var(--transition-presence);
     }
-  }
 
-  @keyframes uiify-overlay-in {
-    from {
+    :where(
+        [data-uiify-popover][data-part="surface"],
+        [data-uiify-popup][data-part="content"],
+        [data-uiify-hover-card][data-part="content"],
+        [data-uiify-tooltip]
+      )[popover]:not(:popover-open) {
       opacity: 0;
-      scale: 0.96;
+      scale: var(--presence-scale);
+    }
+
+    @starting-style {
+      :where(
+        [data-uiify-popover][data-part="surface"],
+        [data-uiify-popup][data-part="content"],
+        [data-uiify-hover-card][data-part="content"],
+        [data-uiify-tooltip]
+      ):popover-open {
+        opacity: 0;
+        scale: var(--presence-scale);
+      }
     }
   }
 }

@@ -7,8 +7,11 @@ const css = readFileSync(resolve(import.meta.dirname, "components/surface.css"),
   " ",
 );
 
-it("owns surface popover entry motion", () => {
+it("owns surface popover presence motion", () => {
   expect(css).toContain(
-    "@media (prefers-reduced-motion: no-preference) { [data-uiify-surface][popover]:popover-open { animation: uiify-overlay-in var(--duration-fast) var(--ease-out); } }",
+    "@media (prefers-reduced-motion: no-preference) { [data-uiify-surface][popover] { transition: var(--transition-presence); }",
+  );
+  expect(css).toContain(
+    "@starting-style { [data-uiify-surface][popover]:popover-open { opacity: 0; scale: var(--presence-scale); } }",
   );
 });

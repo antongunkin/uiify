@@ -91,4 +91,17 @@
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
   }
+
+  /* Shared presence fade for the newly selected panel; the previous one leaves at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-tabs] > [data-part="item"] > [data-part="panel"] {
+      transition: opacity var(--duration-fast) var(--ease-out);
+    }
+
+    @starting-style {
+      [data-uiify-tabs] > [data-part="item"] > [data-part="control"]:checked ~ [data-part="panel"] {
+        opacity: 0;
+      }
+    }
+  }
 }

@@ -252,8 +252,16 @@
     :where(
       [data-uiify-menu] :is([data-part="content"], [data-part="sub-content"]),
       [data-uiify-menu]:is([data-part="content"], [data-part="sub-content"])
-    ):popover-open {
-      animation: uiify-menu-in var(--duration-fast) var(--ease-out);
+    ) {
+      transition: var(--transition-presence);
+    }
+
+    :where(
+        [data-uiify-menu] :is([data-part="content"], [data-part="sub-content"]),
+        [data-uiify-menu]:is([data-part="content"], [data-part="sub-content"])
+      )[popover]:not(:popover-open) {
+      opacity: 0;
+      scale: var(--presence-scale);
     }
 
     @starting-style {
@@ -262,22 +270,8 @@
         [data-uiify-menu]:is([data-part="content"], [data-part="sub-content"])
       ):popover-open {
         opacity: 0;
-        scale: 0.98;
+        scale: var(--presence-scale);
       }
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-uiify-menu]:popover-open {
-      animation: none;
-      transition: none;
-    }
-  }
-
-  @keyframes uiify-menu-in {
-    from {
-      opacity: 0;
-      scale: 0.98;
     }
   }
 }

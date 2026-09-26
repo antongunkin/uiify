@@ -18,7 +18,7 @@ describe("DropdownMenu skin", () => {
     expect(css).toContain('[data-part="sub-content"]');
     expect(css).toContain(":popover-open");
     expect(css).toContain("@starting-style");
-    expect(css).toContain("prefers-reduced-motion: reduce");
+    expect(css).toContain("prefers-reduced-motion: no-preference");
     expect(css).toContain("max-block-size:");
     expect(css).toContain("overflow-y: auto");
     expect(css.replace(/\s+/g, " ")).toContain(

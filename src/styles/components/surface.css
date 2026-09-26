@@ -19,8 +19,20 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-surface][popover]:popover-open {
-      animation: uiify-overlay-in var(--duration-fast) var(--ease-out);
+    [data-uiify-surface][popover] {
+      transition: var(--transition-presence);
+    }
+
+    [data-uiify-surface][popover]:not(:popover-open) {
+      opacity: 0;
+      scale: var(--presence-scale);
+    }
+
+    @starting-style {
+      [data-uiify-surface][popover]:popover-open {
+        opacity: 0;
+        scale: var(--presence-scale);
+      }
     }
   }
 }

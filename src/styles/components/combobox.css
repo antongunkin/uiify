@@ -82,7 +82,7 @@
     border-radius: var(--radius-md);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--text-sm);
+    font-size: var(--uiify-control-text);
     transition: var(--transition-colors);
   }
 
@@ -164,29 +164,20 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-combobox] [data-part="content"]:popover-open {
-      animation: uiify-combobox-in var(--duration-fast) var(--ease-out);
+    [data-uiify-combobox] [data-part="content"] {
+      transition: var(--transition-presence);
+    }
+
+    [data-uiify-combobox] [data-part="content"][popover]:not(:popover-open) {
+      opacity: 0;
+      scale: var(--presence-scale);
     }
 
     @starting-style {
       [data-uiify-combobox] [data-part="content"]:popover-open {
         opacity: 0;
-        scale: 0.98;
+        scale: var(--presence-scale);
       }
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-uiify-combobox] [data-part="content"]:popover-open {
-      animation: none;
-      transition: none;
-    }
-  }
-
-  @keyframes uiify-combobox-in {
-    from {
-      opacity: 0;
-      scale: 0.98;
     }
   }
 }

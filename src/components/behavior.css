@@ -315,4 +315,25 @@
     inline-size: var(--uiify-row-height, var(--uiify-virtual-scroll-row-height));
     translate: none;
   }
+
+  /*
+   * Toast list changes commit as React view transitions typed "uiify-toast".
+   * Only the toast cards are captured: the page root is not snapshotted and
+   * stays clickable while they move.
+   */
+  :root:active-view-transition-type(uiify-toast) {
+    view-transition-name: none;
+  }
+
+  :root:active-view-transition-type(uiify-toast)::view-transition {
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(.uiify-toast),
+    ::view-transition-old(.uiify-toast),
+    ::view-transition-new(.uiify-toast) {
+      animation: none;
+    }
+  }
 }

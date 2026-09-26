@@ -52,8 +52,23 @@
       [data-uiify-modal][data-part="content"],
       [data-uiify-alert-modal][data-part="content"],
       [data-uiify-drawer][data-part="content"]
-    )[open] {
-      animation: uiify-dialog-in var(--duration-base) var(--ease-out);
+    ),
+    :where(
+      [data-uiify-dialog][data-part="content"],
+      [data-uiify-modal][data-part="content"],
+      [data-uiify-alert-modal][data-part="content"],
+      [data-uiify-drawer][data-part="content"]
+    )::backdrop {
+      transition: var(--transition-presence);
+    }
+
+    :where(
+      [data-uiify-dialog][data-part="content"],
+      [data-uiify-modal][data-part="content"],
+      [data-uiify-alert-modal][data-part="content"]
+    ):not([open]) {
+      opacity: 0;
+      scale: var(--presence-scale);
     }
 
     :where(
@@ -61,22 +76,28 @@
         [data-uiify-modal][data-part="content"],
         [data-uiify-alert-modal][data-part="content"],
         [data-uiify-drawer][data-part="content"]
-      )[open]::backdrop {
-      animation: uiify-fade-in var(--duration-base) var(--ease-out);
-    }
-  }
-
-  @keyframes uiify-dialog-in {
-    from {
+      ):not([open])::backdrop {
       opacity: 0;
-      translate: 0 0.5rem;
-      scale: 0.97;
     }
-  }
 
-  @keyframes uiify-fade-in {
-    from {
-      opacity: 0;
+    @starting-style {
+      :where(
+        [data-uiify-dialog][data-part="content"],
+        [data-uiify-modal][data-part="content"],
+        [data-uiify-alert-modal][data-part="content"]
+      )[open] {
+        opacity: 0;
+        scale: var(--presence-scale);
+      }
+
+      :where(
+          [data-uiify-dialog][data-part="content"],
+          [data-uiify-modal][data-part="content"],
+          [data-uiify-alert-modal][data-part="content"],
+          [data-uiify-drawer][data-part="content"]
+        )[open]::backdrop {
+        opacity: 0;
+      }
     }
   }
 }
