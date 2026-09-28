@@ -92,13 +92,14 @@
       "note": "Static line segments are computed during render and expressed as percentage CSS custom properties; the decorative CSS line has an accessible table fallback."
     },
     "carousel": {
-      "tier": 0,
-      "state": "S1",
+      "tier": 2,
+      "state": "none",
       "element": "section > div[scroll-snap]",
-      "sizeNow": "0 kB client behavior",
-      "sizeTarget": "0 kB",
+      "sizeNow": "n/a",
+      "sizeTarget": "7 kB gzip (client entry)",
       "status": "done",
-      "note": "Server shell: native overflow, CSS Scroll Snap, direct fragment links and finite per-slide navigation without JavaScript. Active dots and autoplay require /client; /fade adds CSS transitions. Generated controls remain a separate site experiment."
+      "clientDoes": "synchronized active dots and arrows, page state, callbacks, autoplay and optional mouse drag",
+      "note": "The documented interactive carousel uses /client and requires hydration for synchronized controls. The base entry remains a native no-JS scroller with CSS Scroll Snap and fragment navigation; /fade adds client-driven CSS transitions."
     },
     "checkbox": {
       "tier": 0,
