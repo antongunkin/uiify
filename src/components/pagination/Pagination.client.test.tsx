@@ -26,7 +26,7 @@ describe("Pagination client", () => {
   it("changes page on click", () => {
     const onChange = vi.fn();
     render(
-      <Pagination.Root count={5} defaultPage={1} onChange={onChange}>
+      <Pagination.Root count={5} defaultPage={1} onPageChange={onChange}>
         <Pagination.List />
       </Pagination.Root>,
     );
@@ -37,7 +37,7 @@ describe("Pagination client", () => {
   it("lets a consumer onClick veto the page change", () => {
     const onChange = vi.fn();
     render(
-      <Pagination.Root count={5} defaultPage={1} onChange={onChange}>
+      <Pagination.Root count={5} defaultPage={1} onPageChange={onChange}>
         <Pagination.Link page={2} onClick={(event) => event.preventDefault()} />
       </Pagination.Root>,
     );

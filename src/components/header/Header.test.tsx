@@ -95,7 +95,7 @@ describe("Header.Root", () => {
     expect(screen.getByTestId("root").getAttribute("data-hidden")).toBe("");
   });
 
-  it("sets data-open when mobile navigation is open", () => {
+  it("sets data-state open when mobile navigation is open", () => {
     render(
       <Header.Root mobileMode="collapse" defaultOpen data-testid="root">
         <Header.Toggle />
@@ -104,7 +104,7 @@ describe("Header.Root", () => {
         </Header.MobileNav>
       </Header.Root>,
     );
-    expect(screen.getByTestId("root").getAttribute("data-open")).toBe("");
+    expect(screen.getByTestId("root").getAttribute("data-state")).toBe("open");
   });
 
   it("forwards consumer HTML attributes", () => {
@@ -420,7 +420,7 @@ describe("Header.Root compound — props ownership", () => {
         data-scrolled="fake"
         data-hidden="fake"
         data-mobile-mode="fake"
-        data-open="fake"
+        data-state="fake"
       >
         <Header.Toggle />
       </Header.Root>,
@@ -431,7 +431,7 @@ describe("Header.Root compound — props ownership", () => {
     expect(root.getAttribute("data-scrolled")).toBe("");
     expect(root.getAttribute("data-hidden")).toBe("");
     expect(root.getAttribute("data-mobile-mode")).toBe("none");
-    expect(root.getAttribute("data-open")).toBeNull();
+    expect(root.getAttribute("data-state")).toBe("closed");
   });
 
   it("owns HeaderRoot's data-lock-scroll even when a consumer tries to override it", () => {
@@ -479,7 +479,7 @@ describe("Header.Toggle compound — props ownership", () => {
 });
 
 describe("Header.MobileNav compound — props ownership", () => {
-  it("owns aria-hidden/hidden/data-mobile-mode/data-open in collapse mode even when a consumer tries to override them", () => {
+  it("owns aria-hidden/hidden/data-mobile-mode/data-state in collapse mode even when a consumer tries to override them", () => {
     render(
       <Header.Root mobileMode="collapse" defaultOpen={false}>
         <Header.Toggle />
@@ -488,7 +488,7 @@ describe("Header.MobileNav compound — props ownership", () => {
           aria-hidden={false}
           hidden={false}
           data-mobile-mode="fake"
-          data-open="fake"
+          data-state="fake"
         >
           <a href="/docs">Docs</a>
         </Header.MobileNav>
@@ -498,21 +498,21 @@ describe("Header.MobileNav compound — props ownership", () => {
     expect(nav.getAttribute("aria-hidden")).toBe("true");
     expect(nav.getAttribute("hidden")).toBe("");
     expect(nav.getAttribute("data-mobile-mode")).toBe("collapse");
-    expect(nav.getAttribute("data-open")).toBeNull();
+    expect(nav.getAttribute("data-state")).toBe("closed");
   });
 
-  it("owns data-mobile-mode/data-open in drawer mode even when a consumer tries to override them", () => {
+  it("owns data-mobile-mode/data-state in drawer mode even when a consumer tries to override them", () => {
     render(
       <Header.Root mobileMode="drawer" defaultOpen>
         <Header.Toggle />
-        <Header.MobileNav data-mobile-mode="fake" data-open="fake">
+        <Header.MobileNav data-mobile-mode="fake" data-state="fake">
           <a href="/docs">Docs</a>
         </Header.MobileNav>
       </Header.Root>,
     );
     const nav = screen.getByRole("navigation", { hidden: true });
     expect(nav.getAttribute("data-mobile-mode")).toBe("drawer");
-    expect(nav.getAttribute("data-open")).toBe("");
+    expect(nav.getAttribute("data-state")).toBe("open");
   });
 });
 

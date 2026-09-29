@@ -47,7 +47,7 @@ export function AlertModalAction<TAs extends ElementType = "button">(
     "request-close",
     target,
     consumerProps as Record<string, unknown>,
-    { button: true, variant: "danger" },
+    { button: true, variant: "destructive" },
   );
 }
 AlertModalAction.displayName = "AlertModalAction";

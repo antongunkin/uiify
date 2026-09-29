@@ -29,7 +29,7 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     siblingCount = 1,
     children,
     defaultPage: _defaultPage,
-    onChange: _onChange,
+    onPageChange: _onPageChange,
     ...consumerProps
   } = props as PaginationRootProps<"nav">;
 

@@ -69,7 +69,7 @@ describe("SegmentedControl", () => {
           { value: "day", label: "Day" },
           { value: "week", label: "Week" },
         ]}
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     );
 

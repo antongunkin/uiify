@@ -41,7 +41,7 @@ export function ChoiceItem(props: ChoiceItemProps): ReactElement {
     labelPart = false,
     labelProps,
     name,
-    onChange,
+    onValueChange,
     panel,
     panelProps,
     part = "item",
@@ -66,7 +66,7 @@ export function ChoiceItem(props: ChoiceItemProps): ReactElement {
         name={groupName}
         type={inputType}
         value={value}
-        {...(onChange ? { onChange: () => onChange(value) } : {})}
+        {...(onValueChange ? { onChange: () => onValueChange(value) } : {})}
       />
       <label
         {...labelProps}

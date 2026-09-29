@@ -5,7 +5,7 @@ export type NativeInvokerCommand = "show-modal" | "request-close";
 
 interface NativeInvokerOptions {
   readonly button?: boolean;
-  readonly variant?: "ghost" | "danger";
+  readonly variant?: "ghost" | "destructive";
 }
 
 /**

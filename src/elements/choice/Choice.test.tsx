@@ -112,11 +112,17 @@ describe("Choice", () => {
     expect(label.closest("[data-part='step']")).not.toBeNull();
   });
 
-  it("calls onChange with the item's value on the native change event", () => {
+  it("calls onValueChange with the item's value on the native change event", () => {
     const onChange = vi.fn();
     render(
       <ChoiceGroup id="plan" kind="single">
-        <ChoiceItem groupId="plan" kind="single" label="Free" onChange={onChange} value="free" />
+        <ChoiceItem
+          groupId="plan"
+          kind="single"
+          label="Free"
+          onValueChange={onChange}
+          value="free"
+        />
       </ChoiceGroup>,
     );
     fireEvent.click(screen.getByRole("radio", { name: "Free" }));

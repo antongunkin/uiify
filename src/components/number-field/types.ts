@@ -28,7 +28,7 @@ export interface NumberFieldRootOwnProps {
   readonly formatOptions?: Intl.NumberFormatOptions;
   readonly max?: number;
   readonly min?: number;
-  readonly onChange?: (value: number | undefined) => void;
+  readonly onValueChange?: (value: number | undefined) => void;
   readonly readOnly?: boolean;
   readonly required?: boolean;
   readonly step?: number;

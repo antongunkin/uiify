@@ -47,7 +47,7 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
     render,
     value: controlledValue,
     defaultValue,
-    onChange,
+    onValueChange,
     min,
     max,
     step = 1,
@@ -65,7 +65,7 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
   const [value, setValue] = useControllableState<number | undefined>({
     value: controlledValue,
     defaultValue,
-    onChange,
+    onChange: onValueChange,
   });
   const [editing, setEditing] = useState(false);
   const [displayValue, setDisplayValue] = useState(() =>

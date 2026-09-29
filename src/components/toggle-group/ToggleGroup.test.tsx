@@ -70,7 +70,7 @@ describe("ToggleGroup", () => {
           { value: "left", label: "Left" },
           { value: "right", label: "Right" },
         ]}
-        onChange={onChange}
+        onValueChange={onChange}
         type="single"
       />,
     );
@@ -91,7 +91,7 @@ describe("ToggleGroup", () => {
           { value: "bold", label: "Bold" },
           { value: "italic", label: "Italic" },
         ]}
-        onChange={onChange}
+        onValueChange={onChange}
         type="multiple"
       />,
     );

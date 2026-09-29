@@ -21,6 +21,19 @@
     transition: var(--transition-colors);
   }
 
+  /* Sizes: md is the default metrics above. */
+  [data-uiify-button][data-size="sm"] {
+    min-block-size: 32px;
+    padding-inline: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  [data-uiify-button][data-size="lg"] {
+    min-block-size: 40px;
+    padding-inline: 1rem;
+    font-size: var(--text-base);
+  }
+
   [data-uiify-button]:hover {
     background-color: color-mix(in oklch, var(--primary), transparent 20%);
   }
@@ -71,17 +84,17 @@
     background-color: color-mix(in oklch, var(--foreground) 14%, transparent);
   }
 
-  /* Danger: destructive actions. */
-  [data-uiify-button][data-variant="danger"] {
+  /* Destructive: irreversible or dangerous actions. */
+  [data-uiify-button][data-variant="destructive"] {
     background-color: var(--destructive);
     color: var(--destructive-foreground);
   }
 
-  [data-uiify-button][data-variant="danger"]:hover {
+  [data-uiify-button][data-variant="destructive"]:hover {
     background-color: color-mix(in oklch, var(--destructive), black 12%);
   }
 
-  [data-uiify-button][data-variant="danger"]:active {
+  [data-uiify-button][data-variant="destructive"]:active {
     background-color: color-mix(in oklch, var(--destructive), black 20%);
   }
 }

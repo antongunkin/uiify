@@ -24,7 +24,7 @@ export interface UsePaginationParams {
   readonly count: number;
   readonly defaultPage?: number;
   readonly disabled?: boolean;
-  readonly onChange?: (page: number) => void;
+  readonly onPageChange?: (page: number) => void;
   readonly page?: number;
   readonly showFirstLast?: boolean;
   readonly siblingCount?: number;

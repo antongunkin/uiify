@@ -12,6 +12,37 @@ describe("Button", () => {
     expect(button.getAttribute("type")).toBe("button");
   });
 
+  it("maps variant to data-variant and omits it by default", () => {
+    render(
+      <>
+        <Button variant="outline">Outlined</Button>
+        <Button>Plain</Button>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Outlined" }).getAttribute("data-variant")).toBe(
+      "outline",
+    );
+    expect(screen.getByRole("button", { name: "Plain" }).hasAttribute("data-variant")).toBe(false);
+  });
+
+  it("keeps a consumer-supplied data-variant when no variant prop is passed", () => {
+    render(<Button data-variant="ghost">Manual</Button>);
+    expect(screen.getByRole("button", { name: "Manual" }).getAttribute("data-variant")).toBe(
+      "ghost",
+    );
+  });
+
+  it("maps size to data-size and omits it by default", () => {
+    render(
+      <>
+        <Button size="sm">Small</Button>
+        <Button>Plain</Button>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Small" }).getAttribute("data-size")).toBe("sm");
+    expect(screen.getByRole("button", { name: "Plain" }).hasAttribute("data-size")).toBe(false);
+  });
+
   it("blocks interaction when disabled", () => {
     const onClick = vi.fn();
     render(

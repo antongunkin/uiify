@@ -1,6 +1,6 @@
 {
   "name": "@gunkin/uiify",
-  "version": "0.0.8-alpha",
+  "version": "0.0.1-alpha",
   "description": "Native-first, accessible React 19 components that work before hydration.",
   "keywords": [
     "accessibility",
@@ -104,6 +104,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "size": "size-limit",
+    "size:update": "node scripts/update-size-limits.mjs",
     "format": "oxfmt src scripts tsup.config.ts vitest.config.ts vitest.setup.ts package.json tsconfig.json tsconfig.build.json .size-limit.json README.md .github",
     "format:check": "npm run format -- --check",
     "lint": "oxlint --config .oxlintrc.json src scripts",

@@ -89,7 +89,7 @@ const demoStyles = `
     transform: translateY(-110%);
     transition: transform 180ms ease;
   }
-  .header-demo [data-root][data-mobile-mode="collapse"] nav[data-open] {
+  .header-demo [data-root][data-mobile-mode="collapse"] nav[data-state="open"] {
     display: flex;
     flex-direction: column;
     gap: 8px;

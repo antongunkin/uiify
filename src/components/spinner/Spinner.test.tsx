@@ -45,10 +45,10 @@ describe("Spinner", () => {
   });
 
   it("exposes the reference loader sizes and alignment without SVG markup", () => {
-    render(<Spinner size="small" align="center" />);
+    render(<Spinner size="sm" align="center" />);
     const status = screen.getByRole("status");
 
-    expect(status.getAttribute("data-size")).toBe("small");
+    expect(status.getAttribute("data-size")).toBe("sm");
     expect(status.getAttribute("data-align")).toBe("center");
     expect(status.querySelector("svg")).toBeNull();
   });
@@ -58,7 +58,7 @@ describe("Spinner", () => {
     const status = screen.getByRole("status");
 
     expect(status.tagName).toBe("SPAN");
-    expect(status.getAttribute("data-size")).toBe("default");
+    expect(status.getAttribute("data-size")).toBe("md");
   });
 
   it("SSR renders without throwing", () => {

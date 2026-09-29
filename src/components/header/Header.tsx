@@ -134,7 +134,7 @@ export function HeaderRoot(props: HeaderRootProps): ReactElement | null {
       "data-hidden": hiddenProp ? "" : undefined,
       "data-lock-scroll": lockScroll && header.open && isDrawerMode(mobileMode) ? "" : undefined,
       "data-mobile-mode": mobileMode,
-      "data-open": header.open ? "" : undefined,
+      "data-state": header.open ? "open" : "closed",
       "data-placement": placement,
       "data-scrolled": scrolledProp ? "" : undefined,
       children,
@@ -230,7 +230,7 @@ export function HeaderMobileNav(props: HeaderMobileNavProps): ReactElement | nul
       ...consumerProps,
       ...getMobileNavProps({
         "data-mobile-mode": mobileMode,
-        "data-open": open ? "" : undefined,
+        "data-state": open ? "open" : "closed",
         onClick,
       }),
       children,
@@ -245,7 +245,7 @@ export function HeaderMobileNav(props: HeaderMobileNavProps): ReactElement | nul
       ...getMobileNavProps({
         "aria-hidden": open ? undefined : true,
         "data-mobile-mode": mobileMode,
-        "data-open": open ? "" : undefined,
+        "data-state": open ? "open" : "closed",
         hidden: open ? undefined : true,
         onClick,
       }),

@@ -29,7 +29,7 @@ export interface OtpInputRootShellOwnProps {
 }
 
 export interface OtpInputRootControlledOwnProps {
-  readonly onChange?: (value: string) => void;
+  readonly onValueChange?: (value: string) => void;
   readonly onComplete?: (value: string) => void;
   readonly value?: string;
 }

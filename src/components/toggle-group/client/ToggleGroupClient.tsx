@@ -19,7 +19,7 @@ export function ToggleGroupClient({
   type = "single",
   value: controlledValue,
   defaultValue,
-  onChange,
+  onValueChange,
   disabled = false,
   orientation = "horizontal",
   className,
@@ -37,7 +37,7 @@ export function ToggleGroupClient({
         disabled={disabled}
         id={id}
         items={items}
-        onChange={onChange}
+        onValueChange={onValueChange}
         orientation={orientation}
       />
     );
@@ -53,7 +53,7 @@ export function ToggleGroupClient({
       disabled={disabled}
       id={id}
       items={items}
-      onChange={onChange}
+      onValueChange={onValueChange}
       orientation={orientation}
     />
   );
@@ -68,7 +68,7 @@ interface ToggleGroupClientBranchProps {
   readonly disabled: boolean;
   readonly id: string;
   readonly items: readonly ToggleGroupItem[];
-  readonly onChange?: ((value: string | readonly string[]) => void) | undefined;
+  readonly onValueChange?: ((value: string | readonly string[]) => void) | undefined;
   readonly orientation: "horizontal" | "vertical";
 }
 
@@ -81,13 +81,13 @@ function SingleToggleGroupClient({
   disabled,
   id,
   items,
-  onChange,
+  onValueChange,
   orientation,
 }: ToggleGroupClientBranchProps): ReactElement {
   const [selectedValue, setSelectedValue] = useControllableState<string | undefined>({
     defaultValue: normalizeSingle(defaultValue),
     onChange: (nextValue) => {
-      if (nextValue !== undefined) onChange?.(nextValue);
+      if (nextValue !== undefined) onValueChange?.(nextValue);
     },
     value: normalizeSingle(controlledValue),
   });
@@ -128,12 +128,12 @@ function MultipleToggleGroupClient({
   disabled,
   id,
   items,
-  onChange,
+  onValueChange,
   orientation,
 }: ToggleGroupClientBranchProps): ReactElement {
   const [selectedValues, setSelectedValues] = useControllableState<readonly string[]>({
     defaultValue: normalizeMultiple(defaultValue),
-    onChange,
+    onChange: onValueChange,
     value: controlledValue === undefined ? undefined : normalizeMultiple(controlledValue),
   });
   const resolvedItems = items.map((item) => ({

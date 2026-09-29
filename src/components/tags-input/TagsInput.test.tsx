@@ -27,7 +27,7 @@ describe("TagsInput", () => {
   it("adds a tag on Enter", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root onChange={onChange}>
+      <TagsInput.Root onValueChange={onChange}>
         <TagsInput.List>
           <TagsInput.Input placeholder="Add tag" />
         </TagsInput.List>
@@ -43,7 +43,7 @@ describe("TagsInput", () => {
   it("removes the last tag on Backspace when input is empty", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root defaultValue={["a", "b"]} onChange={onChange}>
+      <TagsInput.Root defaultValue={["a", "b"]} onValueChange={onChange}>
         <TagsInput.List>
           <TagsInput.Input placeholder="Add tag" />
         </TagsInput.List>
@@ -58,7 +58,7 @@ describe("TagsInput", () => {
   it("dedupes tags by default", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root onChange={onChange}>
+      <TagsInput.Root onValueChange={onChange}>
         <TagsInput.Input placeholder="Add tag" />
       </TagsInput.Root>,
     );
@@ -74,7 +74,7 @@ describe("TagsInput", () => {
   it("respects maxTags", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root maxTags={2} onChange={onChange}>
+      <TagsInput.Root maxTags={2} onValueChange={onChange}>
         <TagsInput.Input placeholder="Add tag" />
       </TagsInput.Root>,
     );
@@ -90,7 +90,7 @@ describe("TagsInput", () => {
   it("rejects invalid tags via validate", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root onChange={onChange} validate={(tag) => tag.length >= 3}>
+      <TagsInput.Root onValueChange={onChange} validate={(tag) => tag.length >= 3}>
         <TagsInput.Input placeholder="Add tag" />
       </TagsInput.Root>,
     );
@@ -104,7 +104,7 @@ describe("TagsInput", () => {
   it("splits pasted text", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root onChange={onChange}>
+      <TagsInput.Root onValueChange={onChange}>
         <TagsInput.Input placeholder="Add tag" />
       </TagsInput.Root>,
     );
@@ -153,7 +153,7 @@ describe("TagsInput", () => {
   it("lets a consumer onKeyDown veto Enter tag-commit without suppressing text entry", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root onChange={onChange}>
+      <TagsInput.Root onValueChange={onChange}>
         <TagsInput.Input
           placeholder="Add tag"
           onKeyDown={(event) => {
@@ -173,7 +173,7 @@ describe("TagsInput", () => {
   it("lets a consumer onKeyDown veto Backspace tag-removal", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root defaultValue={["a", "b"]} onChange={onChange}>
+      <TagsInput.Root defaultValue={["a", "b"]} onValueChange={onChange}>
         <TagsInput.Input
           placeholder="Add tag"
           onKeyDown={(event) => {
@@ -190,7 +190,7 @@ describe("TagsInput", () => {
   it("lets a consumer onPaste veto paste-splitting", () => {
     const onChange = vi.fn();
     render(
-      <TagsInput.Root onChange={onChange}>
+      <TagsInput.Root onValueChange={onChange}>
         <TagsInput.Input placeholder="Add tag" onPaste={(event) => event.preventDefault()} />
       </TagsInput.Root>,
     );
@@ -226,7 +226,7 @@ describe("TagsInput", () => {
   it("lets a consumer onKeyDown veto Backspace/Delete tag removal without suppressing roving-focus arrow navigation (policy #2: roving-focus arrow-nav veto)", () => {
     const onChange = vi.fn();
     const { container } = render(
-      <TagsInput.Root defaultValue={["alpha", "beta"]} onChange={onChange}>
+      <TagsInput.Root defaultValue={["alpha", "beta"]} onValueChange={onChange}>
         <TagsInput.List>
           <TagsInput.Tag
             index={0}

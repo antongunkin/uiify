@@ -51,7 +51,7 @@ describe("AlertModal native parts", () => {
     expect(button.getAttribute("data-uiify-alert-modal")).toBe("");
     expect(button.getAttribute("data-uiify-button")).toBe("");
     expect(button.getAttribute("data-part")).toBe("action");
-    expect(button.getAttribute("data-variant")).toBe("danger");
+    expect(button.getAttribute("data-variant")).toBe("destructive");
     expect(button.getAttribute("type")).toBe("button");
   });
 

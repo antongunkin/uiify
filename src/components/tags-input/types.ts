@@ -45,7 +45,7 @@ export interface TagsInputRootShellOwnProps {
 }
 
 export interface TagsInputRootControlledOwnProps {
-  readonly onChange?: (tags: string[]) => void;
+  readonly onValueChange?: (tags: string[]) => void;
   readonly value?: readonly string[];
 }
 

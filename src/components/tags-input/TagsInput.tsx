@@ -39,7 +39,7 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
     delimiters = [","],
     disabled = false,
     maxTags,
-    onChange,
+    onValueChange,
     validate,
     value: controlledValue,
   } = props;
@@ -50,7 +50,7 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
   const [tags, setTags] = useControllableState<string[]>({
     defaultValue: [...defaultValue],
     ...(controlledValue !== undefined ? { value: [...controlledValue] } : {}),
-    ...(onChange ? { onChange } : {}),
+    ...(onValueChange ? { onChange: onValueChange } : {}),
   });
 
   const storeRef = useRef<TagsInputStore | null>(null);

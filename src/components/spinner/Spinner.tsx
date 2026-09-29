@@ -13,7 +13,7 @@ export function Spinner<TAs extends ElementType = "div">(
     delay = 0,
     label = "Loading",
     showLabel = false,
-    size = "default",
+    size = "md",
     children,
     ...consumerProps
   } = props as PolymorphicProps<"div", SpinnerOwnProps>;

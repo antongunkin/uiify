@@ -56,7 +56,7 @@ describe("FileUpload", () => {
   it("accepts dropped files", () => {
     const onChange = vi.fn();
     render(
-      <ClientFileUpload.Root onChange={onChange}>
+      <ClientFileUpload.Root onValueChange={onChange}>
         <ClientFileUpload.Dropzone>Drop here</ClientFileUpload.Dropzone>
       </ClientFileUpload.Root>,
     );
@@ -71,7 +71,7 @@ describe("FileUpload", () => {
   it("lets a consumer onDrop veto file processing (policy #6: dismiss/drag veto)", () => {
     const onChange = vi.fn();
     render(
-      <ClientFileUpload.Root onChange={onChange}>
+      <ClientFileUpload.Root onValueChange={onChange}>
         <ClientFileUpload.Dropzone onDrop={(event) => event.preventDefault()}>
           Drop here
         </ClientFileUpload.Dropzone>

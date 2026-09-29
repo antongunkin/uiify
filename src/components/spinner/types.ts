@@ -2,7 +2,7 @@ import type { ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export type SpinnerAlign = "center" | "fixed" | "absolute";
-export type SpinnerSize = "small" | "default" | "large";
+export type SpinnerSize = "sm" | "md" | "lg";
 
 export interface SpinnerOwnProps {
   readonly align?: SpinnerAlign;

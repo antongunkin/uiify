@@ -33,7 +33,7 @@ export function FileUploadRootClient(props: FileUploadRootProps): ReactElement |
     maxSize,
     minSize,
     multiple = false,
-    onChange,
+    onValueChange,
     onReject,
     value: controlledValue,
   } = props;
@@ -43,7 +43,7 @@ export function FileUploadRootClient(props: FileUploadRootProps): ReactElement |
   const [files, setFiles] = useControllableState<File[]>({
     defaultValue: [...defaultValue],
     ...(controlledValue !== undefined ? { value: [...controlledValue] } : {}),
-    ...(onChange ? { onChange } : {}),
+    ...(onValueChange ? { onChange: onValueChange } : {}),
   });
 
   const storeRef = useRef<FileUploadStore | null>(null);

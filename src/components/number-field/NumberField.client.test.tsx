@@ -6,7 +6,7 @@ describe("NumberField client", () => {
   it("steps with arrow keys and exposes spinbutton aria values", () => {
     const onChange = vi.fn();
     render(
-      <NumberField.Root defaultValue={5} min={0} max={10} step={1} onChange={onChange}>
+      <NumberField.Root defaultValue={5} min={0} max={10} step={1} onValueChange={onChange}>
         <NumberField.Input aria-label="Amount" />
       </NumberField.Root>,
     );
@@ -26,7 +26,7 @@ describe("NumberField client", () => {
   it("supports PageUp, PageDown, Home, and End", () => {
     const onChange = vi.fn();
     render(
-      <NumberField.Root defaultValue={5} min={0} max={100} step={1} onChange={onChange}>
+      <NumberField.Root defaultValue={5} min={0} max={100} step={1} onValueChange={onChange}>
         <NumberField.Input aria-label="Amount" />
       </NumberField.Root>,
     );
@@ -51,7 +51,7 @@ describe("NumberField client", () => {
       <NumberField.Root
         defaultValue={1234.5}
         formatOptions={{ style: "currency", currency: "USD" }}
-        onChange={onChange}
+        onValueChange={onChange}
       >
         <NumberField.Input aria-label="Price" />
       </NumberField.Root>,
@@ -70,7 +70,7 @@ describe("NumberField client", () => {
   it("clamps on blur when enabled", () => {
     const onChange = vi.fn();
     render(
-      <NumberField.Root defaultValue={5} min={0} max={10} clampValueOnBlur onChange={onChange}>
+      <NumberField.Root defaultValue={5} min={0} max={10} clampValueOnBlur onValueChange={onChange}>
         <NumberField.Input aria-label="Amount" />
       </NumberField.Root>,
     );
@@ -85,7 +85,7 @@ describe("NumberField client", () => {
   it("increments and decrements via buttons", () => {
     const onChange = vi.fn();
     render(
-      <NumberField.Root defaultValue={2} onChange={onChange}>
+      <NumberField.Root defaultValue={2} onValueChange={onChange}>
         <NumberField.Group>
           <NumberField.Decrement aria-label="Decrease" />
           <NumberField.Input aria-label="Amount" />

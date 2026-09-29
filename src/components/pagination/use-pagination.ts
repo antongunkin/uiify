@@ -11,7 +11,7 @@ export function usePagination(params: UsePaginationParams): UsePaginationReturn 
     count,
     defaultPage = 1,
     disabled = false,
-    onChange,
+    onPageChange,
     page: controlledPage,
     showFirstLast = false,
     siblingCount = 1,
@@ -19,7 +19,7 @@ export function usePagination(params: UsePaginationParams): UsePaginationReturn 
 
   const [page, setPageState] = useControllableState({
     defaultValue: defaultPage,
-    onChange,
+    onChange: onPageChange,
     value: controlledPage,
   });
 

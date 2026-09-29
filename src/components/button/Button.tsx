@@ -9,7 +9,15 @@ function isNativeButton(as: ElementType | undefined): boolean {
 export function Button<TAs extends ElementType = "button">(
   props: ButtonProps<TAs>,
 ): ReactElement | null {
-  const { as, render, disabled = false, type, ...consumerProps } = props as ButtonProps<"button">;
+  const {
+    as,
+    render,
+    disabled = false,
+    size,
+    type,
+    variant,
+    ...consumerProps
+  } = props as ButtonProps<"button">;
 
   const nativeButton = isNativeButton(as);
 
@@ -19,6 +27,8 @@ export function Button<TAs extends ElementType = "button">(
     props: {
       ...consumerProps,
       "data-uiify-button": "",
+      ...(size !== undefined ? { "data-size": size } : {}),
+      ...(variant !== undefined ? { "data-variant": variant } : {}),
       ...(nativeButton
         ? { type: type ?? "button", ...(disabled ? { disabled: true } : {}) }
         : disabled

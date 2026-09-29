@@ -10,7 +10,7 @@ export function SegmentedControlClient({
   items,
   value: controlledValue,
   defaultValue,
-  onChange,
+  onValueChange,
   disabled = false,
   orientation = "horizontal",
   fullWidth = false,
@@ -21,7 +21,7 @@ export function SegmentedControlClient({
   const [selectedValue, setSelectedValue] = useControllableState<string | undefined>({
     defaultValue,
     onChange: (nextValue) => {
-      if (nextValue !== undefined) onChange?.(nextValue);
+      if (nextValue !== undefined) onValueChange?.(nextValue);
     },
     value: controlledValue,
   });

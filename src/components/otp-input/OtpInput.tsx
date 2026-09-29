@@ -41,7 +41,7 @@ export function OtpInputRoot<TAs extends ElementType = "div">(
     length = 6,
     value: controlledValue,
     defaultValue = "",
-    onChange,
+    onValueChange,
     onComplete,
     type = "numeric",
     mask = false,
@@ -55,7 +55,7 @@ export function OtpInputRoot<TAs extends ElementType = "div">(
   const [value, setValue] = useControllableState<string>({
     value: controlledValue,
     defaultValue,
-    onChange,
+    onChange: onValueChange,
   });
 
   const updateValue = useCallback(

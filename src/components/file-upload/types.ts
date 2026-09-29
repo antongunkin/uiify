@@ -44,7 +44,7 @@ export interface FileUploadRootOwnProps {
   readonly maxSize?: number;
   readonly minSize?: number;
   readonly multiple?: boolean;
-  readonly onChange?: (files: File[]) => void;
+  readonly onValueChange?: (files: File[]) => void;
   readonly onReject?: (rejections: FileRejection[]) => void;
   readonly value?: readonly File[];
 }

@@ -19,8 +19,8 @@ describe("Spinner styles", () => {
   });
 
   it("defines small, default, and large sizes", () => {
-    expect(css).toContain('[data-size="small"]');
-    expect(css).toContain('[data-size="default"]');
-    expect(css).toContain('[data-size="large"]');
+    expect(css).toContain('[data-size="sm"]');
+    expect(css).toContain('[data-size="md"]');
+    expect(css).toContain('[data-size="lg"]');
   });
 });

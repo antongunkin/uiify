@@ -16,5 +16,5 @@ export interface SegmentedControlProps {
 
 export interface SegmentedControlClientProps extends SegmentedControlProps {
   readonly value?: string;
-  readonly onChange?: (value: string) => void;
+  readonly onValueChange?: (value: string) => void;
 }

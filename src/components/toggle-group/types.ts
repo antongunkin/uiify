@@ -16,5 +16,5 @@ export interface ToggleGroupProps {
 
 export interface ToggleGroupClientProps extends ToggleGroupProps {
   readonly value?: string | readonly string[];
-  readonly onChange?: (value: string | readonly string[]) => void;
+  readonly onValueChange?: (value: string | readonly string[]) => void;
 }

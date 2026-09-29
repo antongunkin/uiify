@@ -59,7 +59,7 @@ export interface ChoiceItemOwnProps {
    * element a client component — the *caller* must already be one. Omitted by every
    * uncontrolled (server) caller, so the server output stays handler-free.
    */
-  readonly onChange?: (value: string) => void;
+  readonly onValueChange?: (value: string) => void;
 }
 
 export type ChoiceItemProps = ChoiceItemOwnProps &
