@@ -50,20 +50,6 @@ function getModal(): HTMLDialogElement {
   return screen.getByRole("dialog", { hidden: true }) as HTMLDialogElement;
 }
 
-function stubDialogBox(dialog: HTMLDialogElement): void {
-  vi.spyOn(dialog, "getBoundingClientRect").mockReturnValue({
-    bottom: 300,
-    height: 200,
-    left: 100,
-    right: 300,
-    top: 100,
-    width: 200,
-    x: 100,
-    y: 100,
-    toJSON: () => ({}),
-  });
-}
-
 function ControlledHarness({ onOpenChange }: { readonly onOpenChange?: (open: boolean) => void }) {
   const [open, setOpen] = useState(false);
   return (
@@ -160,45 +146,224 @@ describe("ModalClientContent", () => {
     expect(getModal().open).toBe(false);
   });
 
-  it("closes on backdrop click only when enabled, after the consumer onClick", () => {
-    const onClick = vi.fn();
+  it("closes dialogs nested inside before it closes itself", () => {
     const { rerender } = render(
-      <ModalClientContent aria-label="Settings" id="settings" onClick={onClick}>
-        <p>Body</p>
+      <ModalClientContent aria-label="Parent" id="parent" open>
+        <dialog data-testid="child" open />
       </ModalClientContent>,
     );
-    fireEvent.click(getModal());
-    expect(onClick).toHaveBeenCalledTimes(1);
-    expect(requestClose).not.toHaveBeenCalled();
+    const parent = document.querySelector<HTMLDialogElement>("dialog[data-uiify-modal]")!;
+    const child = screen.getByTestId("child") as HTMLDialogElement;
+    expect(parent.open).toBe(true);
+    close.mockClear();
 
     rerender(
+      <ModalClientContent aria-label="Parent" id="parent" open={false}>
+        <dialog data-testid="child" open />
+      </ModalClientContent>,
+    );
+
+    expect(close.mock.contexts).toEqual([child, parent]);
+    expect(child.open).toBe(false);
+    expect(parent.open).toBe(false);
+  });
+
+  it("reports completion once the dialog's animations have settled", async () => {
+    const onOpenChangeComplete = vi.fn();
+    render(
       <ModalClientContent
         aria-label="Settings"
-        closeOnBackdropClick
         id="settings"
-        onClick={onClick}
+        onOpenChangeComplete={onOpenChangeComplete}
       >
-        <p>Body</p>
+        Body
       </ModalClientContent>,
     );
     const dialog = getModal();
-    stubDialogBox(dialog);
-    fireEvent.click(dialog, { clientX: 106, clientY: 106 });
-    expect(requestClose).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByText("Body"));
-    expect(requestClose).not.toHaveBeenCalled();
-    fireEvent.click(dialog, { clientX: 50, clientY: 50 });
-    expect(requestClose).toHaveBeenCalledTimes(1);
+    let finish: () => void = () => {};
+    let asked = false;
+    Object.defineProperty(dialog, "getAnimations", {
+      configurable: true,
+      value: () => {
+        asked = true;
+        return [
+          {
+            finished: new Promise<void>((resolve) => {
+              finish = resolve;
+            }),
+          },
+        ];
+      },
+    });
 
-    const veto = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
-    rerender(
-      <ModalClientContent aria-label="Settings" closeOnBackdropClick id="settings" onClick={veto}>
-        <p>Body</p>
+    nativeToggle(dialog, "open");
+    await vi.waitFor(() => expect(asked).toBe(true));
+    expect(onOpenChangeComplete).not.toHaveBeenCalled();
+    finish();
+    await vi.waitFor(() => expect(onOpenChangeComplete).toHaveBeenCalledExactlyOnceWith(true));
+  });
+
+  it("ignores infinite animations (a spinner in the body) when it waits for completion", async () => {
+    const onOpenChangeComplete = vi.fn();
+    render(
+      <ModalClientContent
+        aria-label="Settings"
+        id="settings"
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
+        Body
       </ModalClientContent>,
     );
-    fireEvent.click(dialog, { clientX: 50, clientY: 50 });
-    expect(veto).toHaveBeenCalledTimes(1);
-    expect(requestClose).toHaveBeenCalledTimes(1);
+    const dialog = getModal();
+    let finish: () => void = () => {};
+    let asked = false;
+    Object.defineProperty(dialog, "getAnimations", {
+      configurable: true,
+      value: () => {
+        asked = true;
+        return [
+          {
+            // An `infinite` CSS animation: `finished` never settles.
+            effect: { getComputedTiming: () => ({ endTime: Infinity }) },
+            finished: new Promise<void>(() => {}),
+          },
+          {
+            effect: { getComputedTiming: () => ({ endTime: 200 }) },
+            finished: new Promise<void>((resolve) => {
+              finish = resolve;
+            }),
+          },
+        ];
+      },
+    });
+
+    nativeToggle(dialog, "open");
+    await vi.waitFor(() => expect(asked).toBe(true));
+    expect(onOpenChangeComplete).not.toHaveBeenCalled();
+    finish();
+    await vi.waitFor(() => expect(onOpenChangeComplete).toHaveBeenCalledExactlyOnceWith(true));
+  });
+
+  it("reports a programmatic close as false, once", async () => {
+    const onOpenChange = vi.fn();
+    const onOpenChangeComplete = vi.fn();
+    const { rerender } = render(
+      <ModalClientContent
+        aria-label="Settings"
+        id="settings"
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+        open
+      >
+        Body
+      </ModalClientContent>,
+    );
+    const dialog = getModal();
+    expect(dialog.open).toBe(true);
+    rerender(
+      <ModalClientContent
+        aria-label="Settings"
+        id="settings"
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+        open={false}
+      >
+        Body
+      </ModalClientContent>,
+    );
+    expect(close).toHaveBeenCalledTimes(1);
+    // The close stub does not dispatch `toggle`; a real browser does, as a queued task.
+    nativeToggle(dialog, "closed");
+    await vi.waitFor(() => expect(onOpenChangeComplete).toHaveBeenCalledExactlyOnceWith(false));
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(onOpenChangeComplete).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it("does not report completion after it unmounted mid-transition", async () => {
+    const onOpenChangeComplete = vi.fn();
+    const { unmount } = render(
+      <ModalClientContent
+        aria-label="Settings"
+        id="settings"
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
+        Body
+      </ModalClientContent>,
+    );
+    const dialog = getModal();
+    let finish: () => void = () => {};
+    let asked = false;
+    Object.defineProperty(dialog, "getAnimations", {
+      configurable: true,
+      value: () => {
+        asked = true;
+        return [
+          {
+            finished: new Promise<void>((resolve) => {
+              finish = resolve;
+            }),
+          },
+        ];
+      },
+    });
+
+    nativeToggle(dialog, "open");
+    await vi.waitFor(() => expect(asked).toBe(true));
+    unmount();
+    finish();
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(onOpenChangeComplete).not.toHaveBeenCalled();
+  });
+
+  it("does not report completion before the dialog toggles", async () => {
+    const onOpenChangeComplete = vi.fn();
+    render(
+      <ModalClientContent
+        aria-label="Settings"
+        id="settings"
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
+        Body
+      </ModalClientContent>,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(onOpenChangeComplete).not.toHaveBeenCalled();
+  });
+
+  it("reports completion for the defaultOpen transition after hydration", async () => {
+    const onOpenChange = vi.fn();
+    const onOpenChangeComplete = vi.fn();
+    render(
+      <ModalClientContent
+        aria-label="Settings"
+        defaultOpen
+        id="settings"
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
+        Body
+      </ModalClientContent>,
+    );
+    const dialog = getModal();
+    expect(showModal).toHaveBeenCalledTimes(1);
+    // This file's showModal stub does not dispatch `toggle`; a real browser does,
+    // as a queued task after the mount effect, so dispatch it here.
+    nativeToggle(dialog, "open");
+    await vi.waitFor(() => expect(onOpenChangeComplete).toHaveBeenCalledExactlyOnceWith(true));
+    // The programmatic change already matched the wanted state.
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it("renders the appearance attributes and closedby=any by default", () => {
+    render(
+      <ModalClientContent aria-label="Settings" id="settings" size="lg">
+        Body
+      </ModalClientContent>,
+    );
+    const dialog = getModal();
+    expect(dialog.getAttribute("closedby")).toBe("any");
+    expect(dialog.getAttribute("data-size")).toBe("lg");
   });
 
   describe("pre-hydration reconciliation", () => {

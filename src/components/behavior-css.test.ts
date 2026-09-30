@@ -31,6 +31,12 @@ describe("behavior.css", () => {
     expect(behaviorLayer()).toContain("dialog:not([open]) { display: none; }");
   });
 
+  it("locks page scroll while a modal dialog is open", () => {
+    expect(behaviorLayer()).toContain(
+      ":root:has(dialog:modal) { overflow: hidden; scrollbar-gutter: stable; }",
+    );
+  });
+
   it("positions natively anchored surfaces without optional skins", () => {
     const layer = behaviorLayer();
     expect(layer).toContain(

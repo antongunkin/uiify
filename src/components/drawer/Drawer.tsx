@@ -5,7 +5,6 @@ import type { PointerEvent, ReactElement, SyntheticEvent } from "react";
 import {
   useId,
   useIsomorphicLayoutEffect,
-  useLockBodyScroll,
   useMergedRefs,
   useResizeObserver,
 } from "@gunkin/uiify/hooks";
@@ -64,8 +63,6 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
     ...(onSnapChange ? { onSnapChange } : {}),
   });
   const store = storeRef.current;
-
-  useLockBodyScroll(modal && dialog.open);
 
   useIsomorphicLayoutEffect(() => {
     if (activeSnapPoint !== undefined) store.syncActiveSnapPoint(activeSnapPoint);

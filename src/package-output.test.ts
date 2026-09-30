@@ -43,7 +43,6 @@ it.each([
   "hooks/use-is-mounted.ts",
   "hooks/use-isomorphic-layout-effect.ts",
   "hooks/use-local-storage.ts",
-  "hooks/use-lock-body-scroll.ts",
   "hooks/use-media-query.ts",
   "hooks/use-merged-refs.ts",
   "hooks/use-previous.ts",
@@ -111,6 +110,7 @@ it.each([
 it.each([
   // pure/neutral files the brief calls out directly
   "components/modal/ModalParts.tsx",
+  "components/modal/ModalAnatomy.tsx",
   "components/slider/Slider.tsx",
   "core/render.ts",
   "core/use-render-element.tsx",

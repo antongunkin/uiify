@@ -1,12 +1,35 @@
 "use client";
 
 import { useEffect, useReducer, useRef, useState } from "react";
-import type { MouseEvent, ReactElement } from "react";
+import type { ReactElement } from "react";
 import { useMergedRefs } from "@gunkin/uiify/hooks";
+import { modalAppearanceAttributes } from "../attributes.js";
 import type { ModalClientContentProps } from "../types.js";
 
 function increment(count: number): number {
   return count + 1;
+}
+
+/** A dialog nested in this one would stay open (and invisible) after its parent closes. */
+function closeNestedDialogs(dialog: HTMLDialogElement): void {
+  for (const nested of dialog.querySelectorAll<HTMLDialogElement>("dialog[open]")) {
+    nested.close();
+  }
+}
+
+/**
+ * Runs `done` once the dialog's own transitions have finished; at once when there are none.
+ * An `infinite` animation inside (a Spinner or Skeleton) never finishes, so it is not waited on.
+ */
+function afterMotion(dialog: HTMLDialogElement, done: () => void): void {
+  requestAnimationFrame(() => {
+    const running = dialog.getAnimations?.({ subtree: true }) ?? [];
+    void Promise.allSettled(
+      running.map((animation) =>
+        animation.effect?.getComputedTiming().endTime === Infinity ? 0 : animation.finished,
+      ),
+    ).then(done);
+  });
 }
 
 /**
@@ -20,13 +43,16 @@ function increment(count: number): number {
  */
 export function ModalClientContent(props: ModalClientContentProps): ReactElement {
   const {
+    align,
+    backdrop,
     children,
-    closeOnBackdropClick = false,
     defaultOpen = false,
-    onClick,
+    dismiss,
     onOpenChange,
+    onOpenChangeComplete,
     open,
     ref,
+    size,
     ...dialogProps
   } = props;
 
@@ -44,6 +70,8 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
   wantOpenRef.current = wantOpen;
   const onOpenChangeRef = useRef(onOpenChange);
   onOpenChangeRef.current = onOpenChange;
+  const onOpenChangeCompleteRef = useRef(onOpenChangeComplete);
+  onOpenChangeCompleteRef.current = onOpenChangeComplete;
   // One-shot: has the first-mount reconciliation below already run?
   const reconciledRef = useRef(false);
 
@@ -74,7 +102,10 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
       }
     }
     if (wantOpen && !dialog.open) dialog.showModal();
-    else if (!wantOpen && dialog.open) dialog.close();
+    else if (!wantOpen && dialog.open) {
+      closeNestedDialogs(dialog);
+      dialog.close();
+    }
     // `controlled` is read above (line 66) and must be a dependency; the sibling
     // `toggle`-listener effect below lists it for the same reason.
   }, [nativeVersion, wantOpen, controlled]);
@@ -82,8 +113,12 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
   useEffect(() => {
     const dialog = elementRef.current;
     if (!dialog) return;
+    let disposed = false;
     const onToggle = (event: Event): void => {
       const next = (event as ToggleEvent).newState === "open";
+      afterMotion(dialog, () => {
+        if (!disposed) onOpenChangeCompleteRef.current?.(next);
+      });
       // Programmatic changes already match the desired state; only report
       // changes the browser initiated.
       if (next === wantOpenRef.current) return;
@@ -92,30 +127,18 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
       recordNativeToggle();
     };
     dialog.addEventListener("toggle", onToggle);
-    return () => dialog.removeEventListener("toggle", onToggle);
+    return () => {
+      disposed = true;
+      dialog.removeEventListener("toggle", onToggle);
+    };
   }, [controlled]);
-
-  const handleClick = (event: MouseEvent<HTMLDialogElement>): void => {
-    onClick?.(event);
-    if (event.defaultPrevented || !closeOnBackdropClick) return;
-    if (event.target !== event.currentTarget) return;
-    // A click on dialog padding targets the dialog too; only outside its border box is backdrop.
-    const box = event.currentTarget.getBoundingClientRect(); // banned-read-ok: one read per user click, never per frame
-    const onBackdrop =
-      event.clientX < box.left ||
-      event.clientX > box.right ||
-      event.clientY < box.top ||
-      event.clientY > box.bottom;
-    if (!onBackdrop) return;
-    (event.currentTarget as HTMLDialogElement & { requestClose(): void }).requestClose();
-  };
 
   return (
     <dialog
       {...dialogProps}
+      {...modalAppearanceAttributes({ align, backdrop, dismiss, size })}
       data-part="content"
       data-uiify-modal=""
-      onClick={handleClick}
       ref={mergedRef}
       // SSR markup is always closed, but the browser may have already opened this
       // dialog via a native invoker command before hydration (see the effect above,

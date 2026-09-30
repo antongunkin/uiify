@@ -2,29 +2,29 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "1400 B"
+    "limit": "1420 B"
   },
   {
     "name": "enhance",
     "path": "dist/components/enhance.js",
-    "limit": "1050 B"
+    "limit": "2030 B"
   },
   {
     "name": "modal/client",
     "path": "dist/components/modal/client.js",
-    "limit": "710 B",
+    "limit": "860 B",
     "import": "*"
   },
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "39210 B",
+    "limit": "40380 B",
     "import": "*"
   },
   {
     "name": "root: native modal parts only",
     "path": "dist/index.js",
-    "limit": "250 B",
+    "limit": "360 B",
     "import": "{ ModalTrigger, ModalContent, ModalClose }"
   },
   {
@@ -84,7 +84,7 @@
   {
     "name": "modal",
     "path": "dist/components/modal.js",
-    "limit": "500 B",
+    "limit": "940 B",
     "import": "*"
   },
   {
@@ -120,7 +120,7 @@
   {
     "name": "toast",
     "path": "dist/components/toast.js",
-    "limit": "2320 B",
+    "limit": "2310 B",
     "import": "*"
   },
   {
@@ -192,7 +192,7 @@
   {
     "name": "drawer",
     "path": "dist/components/drawer.js",
-    "limit": "3600 B",
+    "limit": "3430 B",
     "import": "*"
   },
   {
@@ -290,7 +290,7 @@
   {
     "name": "header",
     "path": "dist/components/header.js",
-    "limit": "4820 B",
+    "limit": "4650 B",
     "import": "*"
   },
   {

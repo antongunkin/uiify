@@ -3,7 +3,17 @@ import { createRef } from "react";
 import type { ComponentPropsWithRef, MouseEvent } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import { ModalClose, ModalContent, ModalTrigger } from "./ModalParts.js";
+import {
+  ModalBody,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalGrabber,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+} from "./ModalParts.js";
 
 function FancyButton(props: ComponentPropsWithRef<"button"> & { readonly variant?: string }) {
   const { variant = "solid", ...rest } = props;
@@ -12,6 +22,42 @@ function FancyButton(props: ComponentPropsWithRef<"button"> & { readonly variant
 FancyButton.displayName = "FancyButton";
 
 describe("Modal native parts", () => {
+  it("renders the anatomy parts with modal identity and data-part", () => {
+    const html = renderToStaticMarkup(
+      <>
+        <ModalGrabber />
+        <ModalHeader className="h">
+          <ModalTitle id="t">Title</ModalTitle>
+          <ModalDescription id="d">Description</ModalDescription>
+        </ModalHeader>
+        <ModalBody>Body</ModalBody>
+        <ModalFooter>Footer</ModalFooter>
+      </>,
+    );
+    const root = document.createElement("div");
+    root.innerHTML = html;
+    expect(
+      root.querySelector('div[data-part="grabber"][data-uiify-modal][aria-hidden="true"]'),
+    ).not.toBeNull();
+    expect(root.querySelector('div.h[data-part="header"][data-uiify-modal]')).not.toBeNull();
+    expect(root.querySelector('h2#t[data-part="title"][data-uiify-modal]')?.textContent).toBe(
+      "Title",
+    );
+    expect(root.querySelector('p#d[data-part="description"][data-uiify-modal]')?.textContent).toBe(
+      "Description",
+    );
+    expect(root.querySelector('div[data-part="body"][data-uiify-modal]')?.textContent).toBe("Body");
+    expect(root.querySelector('div[data-part="footer"][data-uiify-modal]')?.textContent).toBe(
+      "Footer",
+    );
+  });
+
+  it("does not let consumers override a part's identity", () => {
+    const html = renderToStaticMarkup(<ModalBody data-part="other" />);
+    expect(html).toContain('data-part="body"');
+    expect(html).not.toContain('data-part="other"');
+  });
+
   it("renders a show-modal invoker, a plain dialog and a request-close invoker without a Root", () => {
     const html = renderToStaticMarkup(
       <>
@@ -106,5 +152,28 @@ describe("Modal native parts", () => {
     expect(dialog).toBe(ref.current);
     expect(dialog.className).toBe("panel");
     expect(dialog.hasAttribute("open")).toBe(false);
+  });
+
+  it("maps appearance props to attributes and omits the defaults", () => {
+    const defaults = renderToStaticMarkup(<ModalContent id="a" />);
+    expect(defaults).toContain('closedby="any"');
+    expect(defaults).not.toContain("data-size");
+    expect(defaults).not.toContain("data-align");
+    expect(defaults).not.toContain("data-backdrop");
+
+    const explicitDefaults = renderToStaticMarkup(
+      <ModalContent align="center" backdrop="opaque" id="a" size="md" />,
+    );
+    expect(explicitDefaults).not.toContain("data-size");
+    expect(explicitDefaults).not.toContain("data-align");
+    expect(explicitDefaults).not.toContain("data-backdrop");
+
+    const custom = renderToStaticMarkup(
+      <ModalContent align="start" backdrop="blur" dismiss="none" id="a" size="lg" />,
+    );
+    expect(custom).toContain('closedby="none"');
+    expect(custom).toContain('data-size="lg"');
+    expect(custom).toContain('data-align="start"');
+    expect(custom).toContain('data-backdrop="blur"');
   });
 });

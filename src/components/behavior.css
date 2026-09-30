@@ -13,6 +13,14 @@
     overscroll-behavior: contain;
   }
 
+  /* Open modal dialogs lock the page scroll, iOS Safari included (checked on iOS 27: a swipe on
+     the backdrop or the dialog leaves scrollY unchanged). The stable gutter keeps a classic
+     scrollbar's width, so the page does not shift when the dialog opens. */
+  :root:has(dialog:modal) {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+  }
+
   /* Closed dialogs stay hidden even when author CSS sets display. */
   dialog:not([open]) {
     display: none;

@@ -1,6 +1,6 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Tabs } from "../tabs/index.js";
 import { attachEnhancers } from "./listeners.js";
 
@@ -18,6 +18,19 @@ function dispatchToggle(target: HTMLElement, newState: "open" | "closed"): void 
 }
 
 describe("attachEnhancers", () => {
+  it("detaches every delegated listener on teardown", () => {
+    const add = vi.spyOn(document, "addEventListener");
+    const remove = vi.spyOn(document, "removeEventListener");
+    attachEnhancers()();
+    const added = add.mock.calls.map(([type]) => type).sort();
+    const removed = remove.mock.calls.map(([type]) => type).sort();
+    add.mockRestore();
+    remove.mockRestore();
+    expect(removed).toEqual(added);
+    expect(added).toContain("pointermove");
+    expect(added).toContain("pointercancel");
+  });
+
   it("syncs aria-expanded from a non-bubbling toggle event", () => {
     document.body.innerHTML = `
       <button id="trigger" command="toggle-popover" commandfor="menu" aria-expanded="false"></button>

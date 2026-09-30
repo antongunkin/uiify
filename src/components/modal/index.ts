@@ -1,11 +1,32 @@
 export { Modal } from "./Modal.js";
-export { ModalClose, ModalContent, ModalTrigger } from "./ModalParts.js";
+export {
+  ModalBody,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalGrabber,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+} from "./ModalParts.js";
 export type {
+  ModalAlign,
+  ModalAppearanceProps,
+  ModalBackdrop,
+  ModalBodyProps,
   ModalCloseOwnProps,
   ModalCloseProps,
   ModalContentOwnProps,
   ModalContentProps,
+  ModalDescriptionProps,
+  ModalDismiss,
+  ModalFooterProps,
+  ModalGrabberProps,
+  ModalHeaderProps,
   ModalProps,
+  ModalSize,
+  ModalTitleProps,
   ModalTriggerOwnProps,
   ModalTriggerProps,
 } from "./types.js";

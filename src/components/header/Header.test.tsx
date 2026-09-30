@@ -27,7 +27,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   patchDialogElements();
-  document.documentElement.style.overflow = "";
 });
 
 function renderHeader(
@@ -118,13 +117,18 @@ describe("Header.Root", () => {
   });
 
   it("defaults modal to true for drawer modes", () => {
+    const showModal = vi.spyOn(HTMLDialogElement.prototype, "showModal");
     renderHeader("drawer", { defaultOpen: true });
-    expect(document.documentElement.style.overflow).toBe("hidden");
+    // Page scroll lock is CSS (`:root:has(dialog:modal)`); a modal drawer must open via showModal().
+    expect(showModal).toHaveBeenCalled();
+    showModal.mockRestore();
   });
 
   it("respects modal=false for drawer modes", () => {
+    const showModal = vi.spyOn(HTMLDialogElement.prototype, "showModal");
     renderHeader("drawer", { defaultOpen: true, modal: false });
-    expect(document.documentElement.style.overflow).toBe("");
+    expect(showModal).not.toHaveBeenCalled();
+    showModal.mockRestore();
   });
 
   it("respects lockScroll=false via data-lock-scroll attribute", () => {
@@ -368,8 +372,10 @@ describe("Header interactions", () => {
   });
 
   it("does not lock scroll in collapse mode", () => {
+    const showModal = vi.spyOn(HTMLDialogElement.prototype, "showModal");
     renderHeader("collapse", { defaultOpen: true });
-    expect(document.documentElement.style.overflow).toBe("");
+    expect(showModal).not.toHaveBeenCalled();
+    showModal.mockRestore();
   });
 
   it("closes drawer on Escape and restores focus to toggle", async () => {

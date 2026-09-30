@@ -1,6 +1,16 @@
 import type { ElementType, ReactElement } from "react";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
+import { modalAppearanceAttributes } from "./attributes.js";
 import type { ModalCloseProps, ModalContentProps, ModalTriggerProps } from "./types.js";
+
+export {
+  ModalBody,
+  ModalDescription,
+  ModalFooter,
+  ModalGrabber,
+  ModalHeader,
+  ModalTitle,
+} from "./ModalAnatomy.js";
 
 /** Native modal invoker with modal identity and trigger anatomy. */
 export function ModalTrigger<TAs extends ElementType = "button">(
@@ -21,9 +31,14 @@ ModalTrigger.displayName = "ModalTrigger";
 
 /** Native modal dialog content with modal identity and content anatomy. */
 export function ModalContent(props: ModalContentProps): ReactElement {
-  const { children, ...dialogProps } = props;
+  const { align, backdrop, children, dismiss, size, ...dialogProps } = props;
   return (
-    <dialog {...dialogProps} data-part="content" data-uiify-modal="">
+    <dialog
+      {...dialogProps}
+      {...modalAppearanceAttributes({ align, backdrop, dismiss, size })}
+      data-part="content"
+      data-uiify-modal=""
+    >
       {children}
     </dialog>
   );

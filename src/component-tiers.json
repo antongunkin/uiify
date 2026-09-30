@@ -53,7 +53,7 @@
       "tier": 0,
       "state": "S1",
       "element": "dialog[role=alertdialog] + command=show-modal",
-      "sizeNow": "0.52 kB",
+      "sizeNow": "0.56 kB",
       "sizeTarget": "0 kB",
       "status": "done",
       "note": "Native modal alertdialog via show-modal; Cancel/Action are request-close invokers. Baseline Chrome 139 / Firefox 147 / Safari 26.2; below it UIEnhance's invoker fallback runs the command after hydration."
@@ -124,10 +124,10 @@
       "tier": 0,
       "state": "S1",
       "element": "dialog + command=show-modal",
-      "sizeNow": "0.57 kB",
+      "sizeNow": "0.92 kB",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "True modal via show-modal/request-close; the browser owns inertness, Escape and focus return. Controlled/initially open state lives in @gunkin/uiify/components/modal/client. Trigger/Close built on @gunkin/uiify/elements/dialog."
+      "note": "True modal via show-modal/request-close; the browser owns inertness, Escape and focus return. Controlled/initially open state lives in @gunkin/uiify/components/modal/client. Trigger/Close built on @gunkin/uiify/elements/dialog. Backdrop tap and swipe-down are optional UIEnhance improvements; without them the modal still closes by icon, Escape and (Chrome/Firefox) backdrop tap."
     },
     "drawer": {
       "tier": 0,

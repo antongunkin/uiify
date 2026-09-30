@@ -46,4 +46,73 @@ describe("Modal", () => {
     expect(markup).not.toContain("<form");
     expect(markup).not.toContain("popover=");
   });
+
+  it("renders header (title, description, close icon), body and footer in order", () => {
+    render(
+      <Modal
+        closeLabel="Dismiss"
+        description="Update"
+        footer={<span>Actions</span>}
+        id="settings"
+        title="Settings"
+        trigger="Open"
+      >
+        <p>Body copy</p>
+      </Modal>,
+    );
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog.querySelector('[data-part="grabber"]')).not.toBeNull();
+    const header = dialog.querySelector('[data-part="header"]');
+    expect(header?.querySelector('h2[data-part="title"]')?.id).toBe("settings-title");
+    expect(header?.querySelector('p[data-part="description"]')?.id).toBe("settings-description");
+    const close = header?.querySelector('button[data-part="close"]');
+    expect(close?.getAttribute("aria-label")).toBe("Dismiss");
+    expect(close?.getAttribute("command")).toBe("request-close");
+    expect(close?.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    expect(dialog.querySelector('[data-part="body"]')?.textContent).toBe("Body copy");
+    expect(dialog.querySelector('[data-part="footer"]')?.textContent).toBe("Actions");
+    const order = [...dialog.children].map((child) => child.getAttribute("data-part"));
+    expect(order).toEqual(["grabber", "header", "body", "footer"]);
+  });
+
+  it("omits the description, body and footer when they are not provided", () => {
+    render(<Modal id="settings" title="Settings" trigger="Open" />);
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog.querySelector('[data-part="description"]')).toBeNull();
+    expect(dialog.querySelector('[data-part="body"]')).toBeNull();
+    expect(dialog.querySelector('[data-part="footer"]')).toBeNull();
+    expect(dialog.hasAttribute("aria-describedby")).toBe(false);
+  });
+
+  it("treats null description, body and footer like missing ones", () => {
+    render(
+      <Modal description={null} footer={null} id="settings" title="Settings" trigger="Open">
+        {null}
+      </Modal>,
+    );
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog.querySelector('[data-part="description"]')).toBeNull();
+    expect(dialog.querySelector('[data-part="body"]')).toBeNull();
+    expect(dialog.querySelector('[data-part="footer"]')).toBeNull();
+    expect(dialog.hasAttribute("aria-describedby")).toBe(false);
+  });
+
+  it("forwards appearance props to the dialog", () => {
+    render(
+      <Modal
+        align="start"
+        backdrop="none"
+        dismiss="closerequest"
+        id="settings"
+        size="full"
+        title="Settings"
+        trigger="Open"
+      />,
+    );
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog.getAttribute("data-size")).toBe("full");
+    expect(dialog.getAttribute("data-align")).toBe("start");
+    expect(dialog.getAttribute("data-backdrop")).toBe("none");
+    expect(dialog.getAttribute("closedby")).toBe("closerequest");
+  });
 });

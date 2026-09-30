@@ -43,4 +43,3 @@ export { useFocusWithin } from "./use-focus-within.js";
 export type { UseFocusWithinProps, UseFocusWithinResult } from "./use-focus-within.js";
 export { useHover } from "./use-hover.js";
 export type { UseHoverResult } from "./use-hover.js";
-export { useLockBodyScroll } from "./use-lock-body-scroll.js";

@@ -1,4 +1,6 @@
+import { attachBackdropClose } from "./dialog-dismiss.js";
 import { attachInvokerFallback } from "./invoker-fallback.js";
+import { attachSheetSwipe } from "./sheet-swipe.js";
 import { syncPopoverTriggers, syncTabs } from "./sync.js";
 
 /**
@@ -13,6 +15,8 @@ import { syncPopoverTriggers, syncTabs } from "./sync.js";
  *
  * The invoker fallback attaches only on engines without `command`/`commandfor`
  * (see invoker-fallback.ts); on the baseline it is a no-op.
+ * The backdrop-tap fallback attaches only on engines without `closedBy`.
+ * The sheet swipe is delegated pointer handling for the mobile modal sheet.
  */
 export function attachEnhancers(doc: Document = document): () => void {
   const onToggle = (event: Event): void => {
@@ -36,10 +40,14 @@ export function attachEnhancers(doc: Document = document): () => void {
   doc.addEventListener("toggle", onToggle, true);
   doc.addEventListener("change", onChange);
   const detachInvokerFallback = attachInvokerFallback(doc);
+  const detachBackdropClose = attachBackdropClose(doc);
+  const detachSheetSwipe = attachSheetSwipe(doc);
 
   return () => {
     doc.removeEventListener("toggle", onToggle, true);
     doc.removeEventListener("change", onChange);
     detachInvokerFallback();
+    detachBackdropClose();
+    detachSheetSwipe();
   };
 }

@@ -1,3 +1,5 @@
+import { requestCloseDialog } from "./dialog-dismiss.js";
+
 /**
  * Delegated fallback for `command`/`commandfor` on engines below the library
  * baseline (Chrome < 135, Firefox < 144, Safari < 26.2), e.g. Firefox ESR 140
@@ -25,14 +27,9 @@ function runDialogCommand(dialog: HTMLDialogElement, command: string, value: str
     case "close":
       if (dialog.open) dialog.close(value);
       return true;
-    case "request-close": {
-      if (!dialog.open) return true;
-      const requestClose = (dialog as HTMLDialogElement & { requestClose?: (v?: string) => void })
-        .requestClose;
-      if (typeof requestClose === "function") requestClose.call(dialog, value);
-      else dialog.close(value);
+    case "request-close":
+      if (dialog.open) requestCloseDialog(dialog, value);
       return true;
-    }
     default:
       return false;
   }

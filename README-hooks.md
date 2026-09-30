@@ -19,7 +19,7 @@ npm install @gunkin/uiify/hooks
 **Sensors:** `useEventListener`, `useMediaQuery`, `useResizeObserver`,
 `useIntersectionObserver`, `useWindowSize`
 
-**UI:** `useClickOutside`, `useFocusWithin`, `useHover`, `useLockBodyScroll`
+**UI:** `useClickOutside`, `useFocusWithin`, `useHover`
 
 **Substrate:** `useIsomorphicLayoutEffect`, `useEventCallback`, `useIsMounted`,
 `useUnmount`, `useMergedRefs`, `useId`
