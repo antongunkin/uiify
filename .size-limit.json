@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "40380 B",
+    "limit": "40390 B",
     "import": "*"
   },
   {

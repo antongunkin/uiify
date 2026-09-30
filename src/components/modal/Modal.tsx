@@ -17,12 +17,12 @@ const CLOSE_ICON = (
     aria-hidden="true"
     fill="none"
     focusable="false"
-    height="16"
+    height="14"
     stroke="currentColor"
     strokeLinecap="round"
-    strokeWidth="2"
+    strokeWidth="1.75"
     viewBox="0 0 16 16"
-    width="16"
+    width="14"
   >
     <path d="M3 3l10 10M13 3L3 13" />
   </svg>

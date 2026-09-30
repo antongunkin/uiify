@@ -155,6 +155,22 @@
     padding-inline-end: 2.5rem;
   }
 
+  /* Every close button shares one soft look: a filled, borderless surface that steps up on
+     hover and press. The header icon is a circle; text closers (footer, body) keep the pill. */
+  [data-uiify-modal][data-part="close"][data-uiify-button] {
+    border-color: transparent;
+    background-color: color-mix(in oklch, var(--foreground) 8%, transparent);
+    color: var(--foreground);
+  }
+
+  [data-uiify-modal][data-part="close"][data-uiify-button]:hover {
+    background-color: color-mix(in oklch, var(--foreground) 14%, transparent);
+  }
+
+  [data-uiify-modal][data-part="close"][data-uiify-button]:active {
+    background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  }
+
   [data-uiify-modal][data-part="header"] > [data-part="close"] {
     position: absolute;
     inset-block-start: 0;
@@ -163,7 +179,9 @@
     place-items: center;
     inline-size: 2rem;
     block-size: 2rem;
+    min-block-size: 0;
     padding: 0;
+    border-radius: 999px;
   }
 
   [data-uiify-modal][data-part="body"] {
@@ -197,7 +215,7 @@
   }
 
   /* Mobile sheet below 40rem (keep in sync with SHEET_QUERY in enhance/sheet-swipe.ts):
-     content-sized, at most 80dvh, so the top 20% of the viewport is always backdrop. */
+     at least 50dvh and at most 80dvh, so the top 20% of the viewport is always backdrop. */
   [data-uiify-modal][data-part="grabber"] {
     display: none;
     flex: none;
@@ -220,6 +238,7 @@
     [data-uiify-modal][data-part="content"]:not([data-size="full"]) {
       inline-size: 100%;
       max-inline-size: 100%;
+      min-block-size: 50dvh;
       max-block-size: 80dvh;
       margin: auto 0 0;
       padding-block-end: calc(var(--space-xl) + env(safe-area-inset-bottom));

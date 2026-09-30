@@ -77,10 +77,28 @@ describe("Modal skin: anatomy", () => {
   });
 });
 
+describe("Modal skin: close buttons", () => {
+  it("gives every close button one soft, borderless look that steps up on hover", () => {
+    expect(css).toContain(
+      '[data-uiify-modal][data-part="close"][data-uiify-button] { border-color: transparent; background-color: color-mix(in oklch, var(--foreground) 8%, transparent);',
+    );
+    expect(css).toContain(
+      '[data-uiify-modal][data-part="close"][data-uiify-button]:hover { background-color: color-mix(in oklch, var(--foreground) 14%, transparent); }',
+    );
+  });
+
+  it("draws the header close as a circle", () => {
+    expect(css).toMatch(
+      /\[data-part="header"\] > \[data-part="close"\] \{[^}]*border-radius: 999px;/,
+    );
+  });
+});
+
 describe("Modal skin: mobile sheet", () => {
-  it("becomes a content-sized bottom sheet capped at 80dvh below 40rem", () => {
+  it("becomes a bottom sheet between 50dvh and 80dvh below 40rem", () => {
     expect(css).toContain("@media (width < 40rem) {");
     expect(css).toContain('[data-uiify-modal][data-part="content"]:not([data-size="full"]) {');
+    expect(css).toContain("min-block-size: 50dvh;");
     expect(css).toContain("max-block-size: 80dvh;");
     expect(css).toContain("margin: auto 0 0;");
     expect(css).toContain("env(safe-area-inset-bottom)");
