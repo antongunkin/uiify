@@ -2,7 +2,7 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "1420 B"
+    "limit": "1520 B"
   },
   {
     "name": "enhance",
@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "40390 B",
+    "limit": "39070 B",
     "import": "*"
   },
   {
@@ -288,9 +288,15 @@
     "import": "*"
   },
   {
+    "name": "header/client",
+    "path": "dist/components/header/client.js",
+    "limit": "950 B",
+    "import": "*"
+  },
+  {
     "name": "header",
     "path": "dist/components/header.js",
-    "limit": "4650 B",
+    "limit": "150 B",
     "import": "*"
   },
   {

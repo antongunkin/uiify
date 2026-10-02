@@ -1,22 +1,7 @@
-export {
-  Header,
-  HeaderClose,
-  HeaderMobileNav,
-  HeaderRoot,
-  HeaderToggle,
-  useHeaderScrollState,
-} from "./Header.js";
-export { useHeader } from "./use-header.js";
+export { Header, HeaderRoot } from "./Header.js";
 export type {
-  HeaderBehavior,
-  HeaderCloseProps,
-  HeaderMobileNavProps,
-  HeaderMobileMode,
+  HeaderClientProps,
+  HeaderClientState,
   HeaderPlacement,
   HeaderRootProps,
-  HeaderToggleProps,
-  UseHeaderOptions,
-  UseHeaderReturn,
-  UseHeaderScrollStateOptions,
-  UseHeaderScrollStateReturn,
 } from "./types.js";

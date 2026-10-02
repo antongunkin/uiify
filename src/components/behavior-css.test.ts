@@ -27,6 +27,27 @@ export function behaviorLayer(): string {
 }
 
 describe("behavior.css", () => {
+  it("provides sticky Header positioning without optional skins", () => {
+    expect(behaviorLayer()).toContain(
+      '[data-uiify-header][data-placement="sticky"] { position: sticky; inset-block-start: 0; }',
+    );
+  });
+
+  it("conceals only enhanced hidden sticky Headers without removing their flow slot", () => {
+    const layer = behaviorLayer().replace(/\(\s+/g, "(").replace(/\s+\)/g, ")");
+    expect(layer).toContain(
+      '[data-uiify-header][data-placement="sticky"][data-state="hidden"]:not(:focus-within, :has(dialog[open], details[open], :popover-open)) { translate: 0 -100%; }',
+    );
+    const headerRules = layer.match(/\[data-uiify-header\][^{]*\{[^}]*\}/g) ?? [];
+    expect(headerRules.join(" ")).not.toMatch(/display:|visibility:|position: fixed|block-size: 0/);
+  });
+
+  it("animates enhanced Header translation only when motion is allowed", () => {
+    expect(behaviorLayer()).toContain(
+      '@media (prefers-reduced-motion: no-preference) { [data-uiify-header][data-placement="sticky"][data-state] { transition: translate 200ms ease-out; } }',
+    );
+  });
+
   it("hides closed dialogs even when author CSS sets display", () => {
     expect(behaviorLayer()).toContain("dialog:not([open]) { display: none; }");
   });

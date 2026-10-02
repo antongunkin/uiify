@@ -71,6 +71,8 @@ it.each([
   "core/use-anchor-position.ts",
   // Component modules
   "components/carousel/client/CarouselClient.tsx",
+  "components/header/client/HeaderClient.tsx",
+  "components/header/client/index.ts",
   "components/carousel/fade/FadeCarouselClient.tsx",
   "components/slider/client/SliderClient.tsx",
   "components/checkbox/Checkbox.tsx",
@@ -80,9 +82,6 @@ it.each([
   "components/drawer/Drawer.tsx",
   "components/dropdown-menu/DropdownMenu.tsx",
   "components/file-upload/FileUpload.tsx",
-  "components/header/Header.tsx",
-  "components/header/use-header-scroll-state.ts",
-  "components/header/use-header.ts",
   "components/hover-card/HoverCard.tsx",
   "components/number-field/NumberField.tsx",
   "components/number-field/use-press-repeat.ts",
@@ -127,6 +126,9 @@ it.each([
   // lives in the separate components/rating/client/RatingClient.tsx entry
   "components/rating/Rating.tsx",
   "components/rating/rating-items.tsx",
+  // Header is a semantic Tier 0 root with no client boundary.
+  "components/header/Header.tsx",
+  "components/header/index.ts",
   // Framework-agnostic DOM command listener, no hooks, no React
   // dependency at all — importable from client or server modules alike.
   "components/carousel/commands.ts",
@@ -144,6 +146,8 @@ it("emits a neutral root and canonical implementation modules", () => {
   expect(hasClientDirective(dist("components/color-picker/ColorPicker.js"))).toBe(true);
   expect(hasClientDirective(dist("components/slider/Slider.js"))).toBe(false);
   expect(hasClientDirective(dist("components/number-field/NumberField.js"))).toBe(true);
+  expect(dist("components/header/client.js").trim()).toBe('export * from "./client/index.js";');
+  expect(dist("components/header/client.d.ts").trim()).toBe('export * from "./client/index.js";');
   expect(dist("components/modal.js").trim()).toBe('export * from "./modal/index.js";');
   expect(dist("components/modal/client.js").trim()).toBe('export * from "./client/index.js";');
   expect(dist("components/candle-chart/client.js").trim()).toBe(

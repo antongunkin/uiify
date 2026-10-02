@@ -352,13 +352,13 @@
       "clientDoes": "drag-and-drop, preview"
     },
     "header": {
-      "tier": 1,
+      "tier": 0,
       "state": "S1",
       "element": "header",
-      "sizeNow": "14 kB",
-      "sizeTarget": "1 kB",
+      "sizeNow": "0.14 kB",
+      "sizeTarget": "0 kB",
       "status": "done",
-      "clientDoes": "composite — audit against the sub-parts it composes"
+      "note": "Semantic header root; compose native navigation with Modal. Full functionality without JavaScript; optional header/client adds scroll hide/reveal."
     },
     "tabs": {
       "tier": 0,

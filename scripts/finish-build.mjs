@@ -43,6 +43,7 @@ await writePublicWrappers("components", [
   ...Object.keys(tierManifest.components),
   "enhance",
   "modal/client",
+  "header/client",
   "rating/client",
   "candle-chart/client",
   "line-chart/client",

@@ -4,6 +4,24 @@
 @layer ui.reset, ui.behavior, ui.tokens, ui.theme, app;
 
 @layer ui.behavior {
+  [data-uiify-header][data-placement="sticky"] {
+    position: sticky;
+    inset-block-start: 0;
+  }
+
+  [data-uiify-header][data-placement="sticky"][data-state="hidden"]:not(
+      :focus-within,
+      :has(dialog[open], details[open], :popover-open)
+    ) {
+    translate: 0 -100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-header][data-placement="sticky"][data-state] {
+      transition: translate 200ms ease-out;
+    }
+  }
+
   [popover]:not(:popover-open) {
     display: none;
   }
