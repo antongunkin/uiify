@@ -42,7 +42,9 @@ export function Input<TAs extends ElementType = "input">(
       "data-invalid": invalid ? "" : undefined,
       disabled: disabled || undefined,
       readOnly: readOnly || undefined,
-      onChange: composeEventHandlers(consumerOnChange, handleChange),
+      onChange: onValueChange
+        ? composeEventHandlers(consumerOnChange, handleChange)
+        : consumerOnChange,
       ...(isControlled ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
     },
     render,

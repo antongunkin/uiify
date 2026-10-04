@@ -104,6 +104,7 @@ export interface CarouselPage {
 }
 
 export interface CarouselSnapshot {
+  readonly settledIndex: number;
   readonly ready: boolean;
   readonly index: number;
   readonly requestedIndex: number | null;
@@ -154,6 +155,7 @@ export interface CarouselObservation {
 }
 
 export interface CarouselObserver {
+  readonly watch: (receive: (index: number, visible: readonly number[]) => void) => void;
   readonly measure: (receive: (value: CarouselObservation) => void) => void;
   readonly destroy: () => void;
 }

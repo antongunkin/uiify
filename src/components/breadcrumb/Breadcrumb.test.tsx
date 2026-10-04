@@ -4,6 +4,24 @@ import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { Breadcrumb } from "./Breadcrumb.js";
 
 describe("Breadcrumb", () => {
+  it("preserves custom navigation labels and owns styling parts", () => {
+    render(
+      <Breadcrumb.Root aria-label="Location" data-uiify-breadcrumb="override">
+        <Breadcrumb.List data-part="override">
+          <Breadcrumb.Item>
+            <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+            <Breadcrumb.Separator />
+          </Breadcrumb.Item>
+        </Breadcrumb.List>
+      </Breadcrumb.Root>,
+    );
+    expect(
+      screen.getByRole("navigation", { name: "Location" })?.getAttribute("data-uiify-breadcrumb"),
+    ).toBe("");
+    expect(screen.getByRole("list")?.getAttribute("data-part")).toBe("list");
+    expect(screen.getByRole("link")?.getAttribute("data-part")).toBe("link");
+  });
+
   it("renders nav > ol > li structure", () => {
     render(
       <Breadcrumb.Root>

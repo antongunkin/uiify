@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export type SortDirection = "ascending" | "descending";
@@ -55,21 +55,20 @@ export interface TableStore {
 }
 
 export interface TableContextValue {
+  readonly inBody: boolean;
   readonly interactive: boolean;
+  readonly instanceId: string;
+  readonly expandedKeys: Set<string>;
+  readonly toggleExpanded: (id: string) => void;
   readonly store: TableStore;
 }
 
 export interface TableRootOwnProps {
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
-  readonly defaultSelectedKeys?: Iterable<string>;
-  readonly defaultSortDescriptor?: SortDescriptor | null;
-  readonly onSelectionChange?: (selectedKeys: Set<string>) => void;
-  readonly onSortChange?: (descriptor: SortDescriptor | null) => void;
-  readonly selectedKeys?: Iterable<string>;
-  readonly selectionBehavior?: SelectionBehavior;
-  readonly selectionMode?: SelectionMode;
-  readonly sortDescriptor?: SortDescriptor | null;
+  readonly layout?: "auto" | "fixed";
+  readonly size?: "sm" | "md" | "lg";
+  readonly variant?: "solid" | "outline" | "ghost";
 }
 
 export interface TableInteractiveRootOwnProps {
@@ -90,7 +89,7 @@ export type TableRootProps<TAs extends ElementType = "table"> = RenderableProps<
 
 export type TableHeaderProps<TAs extends ElementType = "thead"> = RenderableProps<
   TAs,
-  object,
+  TableStickySectionOwnProps,
   Record<string, never>,
   HTMLTableSectionElement
 >;
@@ -102,7 +101,7 @@ export type TableBodyProps<TAs extends ElementType = "tbody"> = RenderableProps<
   HTMLTableSectionElement
 >;
 
-export interface TableRowOwnProps {
+export interface TableRowOwnProps extends TableStickySectionOwnProps {
   readonly disabled?: boolean;
   readonly id: string;
   readonly selected?: boolean;
@@ -115,7 +114,7 @@ export type TableRowProps<TAs extends ElementType = "tr"> = RenderableProps<
   HTMLTableRowElement
 >;
 
-export interface TableColumnHeaderOwnProps {
+export interface TableColumnHeaderOwnProps extends TableStickyCellOwnProps {
   readonly allowsSorting?: boolean;
   readonly children?: ReactNode;
   readonly id: string;
@@ -136,7 +135,7 @@ export type TableColumnHeaderProps<TAs extends ElementType = "th"> = RenderableP
 
 export type TableCellProps<TAs extends ElementType = "td"> = RenderableProps<
   TAs,
-  { readonly children?: ReactNode },
+  TableStickyCellOwnProps,
   Record<string, never>,
   HTMLTableCellElement
 >;
@@ -147,3 +146,52 @@ export type TableCaptionProps<TAs extends ElementType = "caption"> = RenderableP
   Record<string, never>,
   HTMLTableCaptionElement
 >;
+
+export interface TableClientRootOwnProps extends TableRootOwnProps {
+  readonly defaultSelectedKeys?: Iterable<string>;
+  readonly defaultSortDescriptor?: SortDescriptor | null;
+  readonly onSelectionChange?: (selectedKeys: Set<string>) => void;
+  readonly onSortChange?: (descriptor: SortDescriptor | null) => void;
+  readonly selectedKeys?: Iterable<string>;
+  readonly selectionBehavior?: SelectionBehavior;
+  readonly selectionMode?: SelectionMode;
+  readonly sortDescriptor?: SortDescriptor | null;
+  readonly expandedKeys?: Iterable<string>;
+  readonly defaultExpandedKeys?: Iterable<string>;
+  readonly onExpandedChange?: (keys: Set<string>) => void;
+}
+export type TableClientRootProps<TAs extends ElementType = "table"> = RenderableProps<
+  TAs,
+  TableClientRootOwnProps,
+  Record<string, never>,
+  HTMLTableElement
+>;
+export interface TableStickySectionOwnProps {
+  readonly sticky?: boolean;
+}
+export interface TableStickyCellOwnProps {
+  readonly align?: "start" | "center" | "end";
+  readonly sticky?: "start" | "end";
+  readonly children?: ReactNode;
+}
+export type TableFooterProps<TAs extends ElementType = "tfoot"> = RenderableProps<
+  TAs,
+  TableStickySectionOwnProps,
+  Record<string, never>,
+  HTMLTableSectionElement
+>;
+export type TableRowHeaderProps<TAs extends ElementType = "th"> = RenderableProps<
+  TAs,
+  TableStickyCellOwnProps,
+  Record<string, never>,
+  HTMLTableCellElement
+>;
+export interface TableExpandTriggerProps extends Omit<
+  ComponentPropsWithRef<"button">,
+  "aria-expanded" | "aria-controls"
+> {
+  readonly rowId: string;
+}
+export interface TableExpandedRowProps extends Omit<ComponentPropsWithRef<"tr">, "hidden" | "id"> {
+  readonly rowId: string;
+}

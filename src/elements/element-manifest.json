@@ -46,14 +46,7 @@
       "sizeTarget": "0.8 kB",
       "fixture": "element-choice",
       "docs": "/elements/choice",
-      "consumers": [
-        "radio-group",
-        "tabs",
-        "toggle-group",
-        "segmented-control",
-        "stepper",
-        "rating"
-      ],
+      "consumers": ["radio-group", "tabs", "toggle-group", "segmented-control", "rating"],
       "cssRules": []
     }
   }

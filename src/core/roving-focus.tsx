@@ -66,6 +66,7 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
 RovingFocusRoot.displayName = "RovingFocusRoot";
 
 export interface RovingFocusItemOwnProps {
+  readonly ref?: Ref<HTMLElement>;
   readonly disabled?: boolean;
   readonly id?: string;
   readonly textValue?: string;

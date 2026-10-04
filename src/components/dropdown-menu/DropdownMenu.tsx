@@ -190,6 +190,7 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
       ...triggerProps,
       ...anchorProps,
       ref: mergedRef,
+      ...(nativeButton ? { "data-uiify-button": "" } : {}),
       "aria-haspopup": "menu",
       "data-part": "trigger",
       "data-state": open ? "open" : "closed",

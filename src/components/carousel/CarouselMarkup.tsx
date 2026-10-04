@@ -18,6 +18,7 @@ export function CarouselMarkup({
   // the controller reports `ready` — SSR/pre-hydration markup still claims nothing.
   const showActiveDot = enhanced || presentation?.mounted === true;
   const activeIndex = presentation?.snapshot.index;
+  const announcedIndex = presentation?.snapshot.settledIndex;
   const fade = enhanced && presentation.mode === "fade";
   const presentedIndex = fade ? (presentation.snapshot.requestedIndex ?? activeIndex) : activeIndex;
   const dotIndices =
@@ -133,8 +134,8 @@ export function CarouselMarkup({
           aria-atomic="true"
           data-part="status"
         >
-          {enhanced && activeIndex !== undefined
-            ? `${items[activeIndex]?.label ?? ""}, ${activeIndex + 1} ${labels.of} ${items.length}`
+          {enhanced && announcedIndex !== undefined
+            ? `${items[announcedIndex]?.label ?? ""}, ${announcedIndex + 1} ${labels.of} ${items.length}`
             : null}
         </div>
       ) : null}

@@ -258,8 +258,8 @@
       "sizeNow": "6 kB",
       "sizeTarget": "6 kB",
       "status": "done",
-      "clientDefault": true,
-      "note": "Sorting is out of scope — DOM mutation cannot be CSS."
+      "clientDefault": false,
+      "note": "Native semantic Table parts; selection, sorting and expansion use the explicit /client entry."
     },
     "textarea": {
       "tier": 0,
@@ -332,15 +332,6 @@
       "sizeTarget": "1 kB",
       "status": "done",
       "clientDoes": "roving tabindex"
-    },
-    "stepper": {
-      "tier": 0,
-      "state": "S1",
-      "element": "input[type=radio]",
-      "sizeNow": "1.59 kB",
-      "sizeTarget": "0 kB",
-      "status": "done",
-      "note": "Data-driven native radio flow; validation gating is out of scope. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
     },
     "file-upload": {
       "tier": 1,

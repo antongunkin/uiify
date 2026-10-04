@@ -4,6 +4,14 @@
 @layer ui.reset, ui.behavior, ui.tokens, ui.theme, app;
 
 @layer ui.behavior {
+  [data-uiify-file-upload] > [data-part="input"] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
+  }
   [data-uiify-header][data-placement="sticky"] {
     position: sticky;
     inset-block-start: 0;
@@ -176,14 +184,6 @@
     display: block;
   }
 
-  [data-uiify-stepper] > [data-part="step"] > [data-part="panel"] {
-    display: none;
-  }
-
-  [data-uiify-stepper] > [data-part="step"] > [data-part="control"]:checked ~ [data-part="panel"] {
-    display: block;
-  }
-
   [data-uiify-tabs] [data-part="trigger"][data-disabled] {
     cursor: not-allowed;
     pointer-events: none;
@@ -237,6 +237,7 @@
     min-inline-size: 0;
     min-block-size: 0;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   [data-uiify-carousel] > [data-part="viewport"]:focus-visible,

@@ -4,8 +4,10 @@
 
 @layer components {
   :where([data-uiify-accordion]) {
+    inline-size: 100%;
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
+    corner-shape: squircle;
     overflow: hidden;
   }
 
@@ -45,36 +47,38 @@
 
   /* Chevron. */
   [data-uiify-accordion] [data-part="trigger"]::after {
-    content: "";
-    inline-size: 0.5rem;
-    block-size: 0.5rem;
-    border-inline-end: 2px solid var(--muted-foreground);
-    border-block-end: 2px solid var(--muted-foreground);
-    rotate: 45deg;
+    content: "+";
+    display: grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    flex: 0 0 1.5rem;
+    color: var(--muted-foreground);
+    font:
+      1.25rem/1 ui-monospace,
+      monospace;
     transition: rotate var(--duration-fast) var(--ease-out);
   }
 
   [data-uiify-accordion] [data-part="item"][open] > [data-part="trigger"]::after {
-    rotate: 225deg;
+    content: "−";
   }
 
   [data-uiify-accordion] [data-part="item"][open] > [data-part="trigger"] {
     color: var(--primary);
   }
 
-  @supports (interpolate-size: allow-keywords) {
-    :root {
-      interpolate-size: allow-keywords;
-    }
+  [data-uiify-accordion] {
+    interpolate-size: allow-keywords;
+  }
 
-    [data-uiify-accordion] > [data-part="item"]::details-content {
-      block-size: 0;
-      overflow: clip;
-    }
+  [data-uiify-accordion] > [data-part="item"]::details-content {
+    block-size: 0;
+    overflow: clip;
+  }
 
-    [data-uiify-accordion] > [data-part="item"][open]::details-content {
-      block-size: auto;
-    }
+  [data-uiify-accordion] > [data-part="item"][open]::details-content {
+    block-size: auto;
   }
 
   /* Shared presence timing; block-size only interpolates where the block above applies. */

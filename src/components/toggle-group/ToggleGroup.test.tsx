@@ -4,6 +4,46 @@ import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { ToggleGroup } from "./ToggleGroup.js";
 
 describe("ToggleGroup", () => {
+  it.each(["single", "multiple"] as const)(
+    "does not warn for a controlled %s group",
+    async (type) => {
+      const { ToggleGroupClient } = await import("./client/ToggleGroupClient.js");
+      const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+      const onValueChange = vi.fn();
+      try {
+        const { rerender } = render(
+          <ToggleGroupClient
+            id="controlled"
+            type={type}
+            value={type === "single" ? "one" : ["one"]}
+            onValueChange={onValueChange}
+            items={[
+              { value: "one", label: "One" },
+              { value: "two", label: "Two" },
+            ]}
+          />,
+        );
+        fireEvent.click(screen.getByLabelText("Two"));
+        expect(onValueChange).toHaveBeenCalledWith(type === "single" ? "two" : ["one", "two"]);
+        rerender(
+          <ToggleGroupClient
+            id="controlled"
+            type={type}
+            value={type === "single" ? "two" : ["two"]}
+            onValueChange={onValueChange}
+            items={[
+              { value: "one", label: "One" },
+              { value: "two", label: "Two" },
+            ]}
+          />,
+        );
+        expect((screen.getByLabelText("Two") as HTMLInputElement).checked).toBe(true);
+        expect(errors.mock.calls.flat().join(" ")).not.toContain("checked");
+      } finally {
+        errors.mockRestore();
+      }
+    },
+  );
   it("renders native controls for each item", () => {
     render(
       <ToggleGroup

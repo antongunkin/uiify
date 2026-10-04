@@ -25,6 +25,75 @@ describe("file-upload-store", () => {
 });
 
 describe("FileUpload", () => {
+  it("keeps controlled files authoritative and follows external replacements", () => {
+    const first = createFile("one.txt", "text/plain", 10);
+    const second = createFile("two.txt", "text/plain", 20);
+    const onValueChange = vi.fn();
+    const ui = (files: File[]) => (
+      <ClientFileUpload.Root value={files} onValueChange={onValueChange}>
+        <ClientFileUpload.Dropzone>Drop</ClientFileUpload.Dropzone>
+        <ClientFileUpload.List>
+          <ClientFileUpload.Item index={0} />
+        </ClientFileUpload.List>
+      </ClientFileUpload.Root>
+    );
+    ui.displayName = "FileUploadControlledExample";
+    const { rerender } = render(ui([first]));
+    fireEvent.drop(screen.getByRole("region"), { dataTransfer: { files: [second] } });
+    expect(screen.getByRole("listitem").textContent).toBe("one.txt");
+    expect(onValueChange).toHaveBeenCalledWith([second]);
+    rerender(ui([second]));
+    expect(screen.getByRole("listitem").textContent).toBe("two.txt");
+    rerender(ui([]));
+    expect(screen.queryByRole("listitem")).toBeNull();
+  });
+
+  it("limits the total files across separate additions", () => {
+    const onReject = vi.fn();
+    render(
+      <ClientFileUpload.Root multiple maxFiles={1} onReject={onReject}>
+        <ClientFileUpload.Dropzone>Drop</ClientFileUpload.Dropzone>
+        <ClientFileUpload.List>
+          <ClientFileUpload.Item index={0} />
+          <ClientFileUpload.Item index={1} />
+        </ClientFileUpload.List>
+      </ClientFileUpload.Root>,
+    );
+    fireEvent.drop(screen.getByRole("region"), {
+      dataTransfer: { files: [createFile("one.txt", "text/plain", 10)] },
+    });
+    fireEvent.drop(screen.getByRole("region"), {
+      dataTransfer: { files: [createFile("two.txt", "text/plain", 10)] },
+    });
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
+    expect(onReject.mock.calls[0]?.[0]?.[0]?.reason).toBe("max-files");
+  });
+
+  it("renders selected files through List children and removes them", () => {
+    render(
+      <ClientFileUpload.Root>
+        <ClientFileUpload.HiddenInput name="attachment" data-testid="picker" />
+        <ClientFileUpload.List>
+          {(files) =>
+            files.map((file, index) => (
+              <ClientFileUpload.Item key={file.name} index={index}>
+                <span>{file.name}</span>
+                <ClientFileUpload.ItemRemove index={index} aria-label={`Remove ${file.name}`}>
+                  ×
+                </ClientFileUpload.ItemRemove>
+              </ClientFileUpload.Item>
+            ))
+          }
+        </ClientFileUpload.List>
+      </ClientFileUpload.Root>,
+    );
+    fireEvent.change(screen.getByTestId("picker"), {
+      target: { files: [createFile("notes.txt", "text/plain", 12)] },
+    });
+    expect(screen.getByRole("listitem").textContent).toContain("notes.txt");
+    fireEvent.click(screen.getByRole("button", { name: "Remove notes.txt" }));
+    expect(screen.queryByRole("listitem")).toBeNull();
+  });
   it("renders a native picker contract before hydration", () => {
     const markup = renderToStaticMarkup(
       <ServerFileUpload.Root>
@@ -175,4 +244,21 @@ describe("FileUpload", () => {
     fireEvent.change(input);
     expect(onReject).toHaveBeenCalled();
   });
+});
+
+it("preserves a removal button's native disabled flag", () => {
+  render(
+    <ClientFileUpload.Root defaultValue={[createFile("keep.txt", "text/plain", 5)]}>
+      <ClientFileUpload.List>
+        <ClientFileUpload.Item index={0} />
+        <ClientFileUpload.ItemRemove index={0} disabled>
+          Remove
+        </ClientFileUpload.ItemRemove>
+      </ClientFileUpload.List>
+    </ClientFileUpload.Root>,
+  );
+  const button = screen.getByRole("button", { name: "Remove file" });
+  expect((button as HTMLButtonElement).disabled).toBe(true);
+  fireEvent.click(button);
+  expect(screen.getByRole("listitem").textContent).toBe("keep.txt");
 });

@@ -10,6 +10,30 @@ function Wrapper({ children }: { children: ReactNode }) {
 Wrapper.displayName = "Wrapper";
 
 describe("Field", () => {
+  it("applies native required validation and excludes disabled controls from FormData", () => {
+    const { container } = render(
+      <form>
+        <Field.Control
+          as="input"
+          fieldId="required"
+          name="required"
+          aria-label="Required"
+          required
+        />
+        <Field.Control
+          as="input"
+          fieldId="disabled"
+          name="disabled"
+          aria-label="Disabled"
+          disabled
+          defaultValue="ignored"
+        />
+      </form>,
+    );
+    expect((screen.getByLabelText("Required") as HTMLInputElement).checkValidity()).toBe(false);
+    expect((screen.getByLabelText("Disabled") as HTMLInputElement).disabled).toBe(true);
+    expect(new FormData(container.querySelector("form")!).has("disabled")).toBe(false);
+  });
   it("wires label htmlFor to control id", () => {
     render(
       <Field.Root id="name-field">

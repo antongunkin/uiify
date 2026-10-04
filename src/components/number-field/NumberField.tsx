@@ -16,7 +16,14 @@ import { useControllableState, useId } from "@gunkin/uiify/hooks";
 import { createPartContext } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement, type PolymorphicProps } from "@gunkin/uiify/core/render";
-import { clampNumber, createFormatter, formatNumber, parseNumber, stepNumber } from "./format.js";
+import {
+  clampNumber,
+  createFormatter,
+  formatNumber,
+  isNumberInput,
+  parseNumber,
+  stepNumber,
+} from "./format.js";
 import { usePressRepeat } from "./use-press-repeat.js";
 import type {
   NumberFieldContextValue,
@@ -200,6 +207,7 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
     decrement,
     disabled,
     displayValue,
+    formatter,
     increment,
     inputId,
     inputRef,
@@ -271,7 +279,8 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
       onChange: composeEventHandlers(
         consumerProps.onChange,
         (event: SyntheticEvent<HTMLInputElement>) => {
-          setDisplayValue(event.currentTarget.value);
+          if (isNumberInput(event.currentTarget.value, formatter))
+            setDisplayValue(event.currentTarget.value);
         },
       ),
       onKeyDown: composeEventHandlers(consumerProps.onKeyDown, onKeyDown),

@@ -88,7 +88,7 @@ it.each([
   "components/otp-input/OtpInput.tsx",
   "components/pagination/Pagination.tsx",
   "components/pagination/use-pagination.ts",
-  "components/table/Table.tsx",
+  "components/table/client/Table.tsx",
   "components/tags-input/TagsInput.tsx",
   "components/toast/Toast.tsx",
   "components/toolbar/Toolbar.tsx",

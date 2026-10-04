@@ -35,7 +35,8 @@
     gap: var(--space-xs);
     padding: var(--space-md) var(--space-lg);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
+    corner-shape: squircle;
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-popover);

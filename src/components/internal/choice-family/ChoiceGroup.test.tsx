@@ -238,7 +238,7 @@ describe("ChoiceGroup", () => {
         id="group"
         items={items}
         kind="single"
-        namespace="stepper"
+        namespace="custom-choice"
         orientation="horizontal"
         isChecked={() => false}
       />,

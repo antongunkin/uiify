@@ -14,7 +14,11 @@ const adapters = vi.hoisted(() => ({
   attachDrag: vi.fn(),
 }));
 vi.mock("./carousel-observer.js", () => ({
-  observeCarousel: () => ({ measure: () => {}, destroy: () => {} }),
+  observeCarousel: () => ({
+    watch: () => {},
+    measure: () => {},
+    destroy: () => {},
+  }),
 }));
 vi.mock("./carousel-autoplay.js", () => ({
   createCarouselAutoplay: () => ({

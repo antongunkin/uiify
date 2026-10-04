@@ -9,6 +9,7 @@ export function PopupTrigger<TAs extends ElementType = "button">(
   const { as, target, ...consumerProps } = props as PopupTriggerProps<"button">;
   return createElement(as ?? "button", {
     ...consumerProps,
+    "data-uiify-button": "",
     "data-part": "trigger",
     "data-uiify-popup": "",
     popoverTarget: target,
@@ -44,6 +45,7 @@ export function PopupClose<TAs extends ElementType = "button">(
   const { as, target, ...consumerProps } = props as PopupCloseProps<"button">;
   return createElement(as ?? "button", {
     ...consumerProps,
+    "data-uiify-button": "",
     "data-part": "close",
     "data-uiify-popup": "",
     popoverTarget: target,

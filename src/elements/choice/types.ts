@@ -44,7 +44,7 @@ export interface ChoiceItemOwnProps {
   /** Controlled checked state for client-enhanced choice groups. */
   readonly checked?: boolean;
   readonly disabled?: boolean;
-  /** Wrapper `data-part`. Defaults to `"item"` (stepper-shaped consumers use `"step"`). */
+  /** Wrapper `data-part`. Defaults to `"item"`. */
   readonly part?: string;
   /** Adds `data-part="label"` to the `<label>`. */
   readonly labelPart?: boolean;

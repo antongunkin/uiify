@@ -7,7 +7,8 @@
     gap: var(--space-xs);
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
+    corner-shape: squircle;
     background-color: var(--background);
   }
 
@@ -23,7 +24,8 @@
     overscroll-behavior: contain;
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
+    corner-shape: squircle;
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-popover);
@@ -49,7 +51,8 @@
     column-gap: var(--space-md);
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
-    border-radius: var(--radius-sm);
+    border-radius: calc(var(--radius-lg) - var(--space-xs));
+    corner-shape: squircle;
     cursor: pointer;
     user-select: none;
     inline-size: 100%;
@@ -130,7 +133,8 @@
 
   [data-uiify-menu] [data-part="item-indicator"] {
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-xs);
+    corner-shape: squircle;
     color: transparent;
   }
 
@@ -273,5 +277,14 @@
         scale: var(--presence-scale);
       }
     }
+  }
+}
+
+@layer components {
+  :is([data-uiify-dropdown-menu], [data-uiify-context-menu])
+    [role="menuitemradio"]
+    [data-part="item-indicator"] {
+    border-radius: 50%;
+    corner-shape: round;
   }
 }

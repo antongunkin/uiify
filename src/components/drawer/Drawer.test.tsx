@@ -7,6 +7,26 @@ import { Drawer } from "./Drawer.js";
 import { DrawerPanel } from "./DrawerNative.js";
 
 describe("DrawerPanel (native shell)", () => {
+  it("provides native dismissal, size and complete dialog anatomy", () => {
+    const { container } = render(
+      <DrawerPanel
+        id="anatomy"
+        trigger="Open"
+        title="Settings"
+        size="lg"
+        dismiss="any"
+        footer={<span>Actions</span>}
+      >
+        <p>Content</p>
+      </DrawerPanel>,
+    );
+    const dialog = container.querySelector("dialog");
+    expect(dialog?.getAttribute("closedby")).toBe("any");
+    expect(dialog?.getAttribute("data-size")).toBe("lg");
+    for (const part of ["header", "title", "body", "footer", "grabber", "close"])
+      expect(dialog?.querySelector(`[data-part="${part}"]`)).toBeTruthy();
+    expect(dialog?.querySelector('[data-part="close"]')?.getAttribute("aria-label")).toBe("Close");
+  });
   it("renders a show-modal trigger and a request-close invoker", () => {
     render(<DrawerPanel id="settings" side="right" trigger="Open" title="Settings" />);
 
@@ -63,6 +83,14 @@ const requestClose = vi.fn(function (this: HTMLDialogElement) {
 });
 
 beforeAll(() => {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: vi.fn(() => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  });
   Object.defineProperty(HTMLDialogElement.prototype, "showModal", {
     configurable: true,
     value: showModal,

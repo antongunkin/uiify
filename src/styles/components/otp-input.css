@@ -5,6 +5,7 @@
     position: relative;
     display: inline-flex;
     gap: var(--space-sm);
+    cursor: text;
   }
 
   [data-uiify-otp-input] [data-part="slot"] {
@@ -15,6 +16,7 @@
     block-size: 2.5rem;
     border: var(--border-width) solid var(--input);
     border-radius: var(--radius-md);
+    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     font-size: var(--text-lg);
@@ -55,5 +57,11 @@
   [data-uiify-otp-input][data-disabled] [data-part="slot"] {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+@layer components {
+  [data-uiify-otp-input]:not([data-disabled]) {
+    cursor: text;
   }
 }

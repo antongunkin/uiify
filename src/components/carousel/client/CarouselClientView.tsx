@@ -16,6 +16,7 @@ export const emptyCarouselSnapshot: CarouselSnapshot = {
   index: 0,
   requestedIndex: null,
   settledChange: null,
+  settledIndex: 0,
   pages: [],
   visibleIndices: [],
   atStart: true,

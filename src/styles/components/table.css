@@ -1,41 +1,105 @@
 @layer components {
-  table[role="grid"],
-  table {
+  [data-uiify-table] {
     inline-size: 100%;
-    border-collapse: collapse;
-  }
-
-  table th,
-  table td {
-    padding: 0.5rem 0.75rem;
-    text-align: start;
-    border-block-end: 1px solid var(--border);
-  }
-
-  table thead th {
-    position: sticky;
-    inset-block-start: 0;
+    border-collapse: separate;
+    border-spacing: 0;
     background: var(--card);
+    color: var(--card-foreground);
+    font-size: var(--text-sm);
+  }
+  [data-uiify-table][data-layout="fixed"] {
+    table-layout: fixed;
+  }
+  [data-uiify-table] :is(th, td) {
+    padding-block: 0.75rem;
+    padding-inline: 1rem;
+    text-align: start;
+    vertical-align: middle;
+    border-block-end: 1px solid var(--border);
+    background: inherit;
+  }
+  [data-uiify-table] :is(th, td)[data-align="center"] {
+    text-align: center;
+  }
+  [data-uiify-table] :is(th, td)[data-align="end"] {
+    text-align: end;
+  }
+  [data-uiify-table] :is(thead, tfoot) {
+    background: var(--secondary);
     font-weight: 600;
   }
-
-  table tbody tr:nth-child(even) {
+  [data-uiify-table] tbody tr {
+    background: var(--card);
+  }
+  [data-uiify-table] tbody tr:hover {
     background: var(--secondary);
   }
-
-  table tbody tr[data-selected] {
+  [data-uiify-table] tbody tr[data-selected] {
     background: var(--accent);
   }
-
-  table th[aria-sort]:not([aria-sort="none"]) {
+  [data-uiify-table] caption {
+    padding-block: 0.75rem;
+    text-align: start;
+    color: var(--muted-foreground);
+  }
+  [data-uiify-table][data-size="sm"] :is(th, td) {
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+  }
+  [data-uiify-table][data-size="lg"] :is(th, td) {
+    padding-block: 1rem;
+    padding-inline: 1.25rem;
+  }
+  [data-uiify-table][data-variant="outline"] {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  [data-uiify-table][data-variant="ghost"] {
+    background: transparent;
+  }
+  [data-uiify-table] :is(thead, tfoot, tr)[data-sticky] {
+    position: sticky;
+    inset-block-start: var(--uiify-table-sticky-offset, 0);
+    z-index: 2;
+  }
+  [data-uiify-table] tfoot[data-sticky] {
+    inset-block: auto var(--uiify-table-sticky-offset, 0);
+  }
+  [data-uiify-table] :is(th, td)[data-sticky] {
+    position: sticky;
+    z-index: 1;
+  }
+  [data-uiify-table] :is(th, td)[data-sticky="start"] {
+    inset-inline-start: var(--uiify-table-sticky-offset, 0);
+  }
+  [data-uiify-table] :is(th, td)[data-sticky="end"] {
+    inset-inline-end: var(--uiify-table-sticky-offset, 0);
+  }
+  [data-uiify-table] :is(thead, tfoot)[data-sticky] :is(th, td)[data-sticky] {
+    z-index: 3;
+  }
+  [data-uiify-table] th > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
   }
-
-  table th[aria-sort="ascending"]::after {
-    content: " ↑";
+  [data-uiify-table] th[aria-sort="ascending"] > button::after {
+    content: "↑" / "";
   }
-
-  table th[aria-sort="descending"]::after {
-    content: " ↓";
+  [data-uiify-table] th[aria-sort="descending"] > button::after {
+    content: "↓" / "";
+  }
+  [data-uiify-table] [data-part="expanded-row"] {
+    background: var(--secondary);
+  }
+  [data-uiify-table] :is(button, tr):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
   }
 }

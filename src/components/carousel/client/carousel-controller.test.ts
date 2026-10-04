@@ -3,10 +3,14 @@ import type { CarouselObservation } from "../types.js";
 import { createCarouselController } from "./carousel-controller.js";
 
 const observations = vi.hoisted(() => ({
+  live: null as null | ((index: number, visible: readonly number[]) => void),
   receive: undefined as ((value: CarouselObservation) => void) | undefined,
 }));
 vi.mock("./carousel-observer.js", () => ({
   observeCarousel: () => ({
+    watch: (receive: (index: number, visible: readonly number[]) => void) => {
+      observations.live = receive;
+    },
     measure: (receive: (value: CarouselObservation) => void) => {
       observations.receive = receive;
     },
@@ -167,28 +171,43 @@ describe("native carousel controller", () => {
     expect(beforeChange).not.toHaveBeenCalled();
     controller.destroy();
   });
-  it("ignores superseded requests and rapidly advances from the requested page", () => {
+  it("bounds repeated next requests to one page until settlement", () => {
     const { root, viewport } = fixture();
     const controller = createCarouselController(root, { defaultValue: 0, rewind: false });
     deliver(0);
     controller.next("next");
-    const stale = observations.receive;
     controller.next("next");
-    stale?.({
-      geometry: {
-        physicalAxis: "x",
-        sign: 1,
-        viewportSize: 640,
-        currentOffset: 0,
-        itemStarts: [0, 640, 1280],
-        itemSizes: [640, 640, 640],
-      },
-      visibleIndices: [0],
-    });
-    expect(viewport.scrollBy).not.toHaveBeenCalled();
+    controller.next("next");
     deliver(0);
-    expect(viewport.scrollBy).toHaveBeenCalledWith({ left: 1280, behavior: "auto" });
-    expect(controller.getSnapshot().index).toBe(0);
+    expect(viewport.scrollBy).toHaveBeenCalledOnce();
+    expect(viewport.scrollBy).toHaveBeenCalledWith({ left: 640, behavior: "auto" });
+    expect(controller.getSnapshot().requestedIndex).toBe(1);
+    viewport.dispatchEvent(new Event("scrollend"));
+    deliver(640);
+    controller.next("next");
+    deliver(640);
+    expect(viewport.scrollBy).toHaveBeenLastCalledWith({ left: 640, behavior: "auto" });
+    controller.destroy();
+  });
+  it("updates visual dots during scrolling and reports settlement exactly once", () => {
+    const { root, viewport } = fixture();
+    const afterChange = vi.fn();
+    const controller = createCarouselController(root, {
+      defaultValue: 0,
+      rewind: false,
+      afterChange,
+    });
+    deliver(0);
+    viewport.dispatchEvent(new Event("scroll"));
+    observations.live?.(1, [0, 1]);
+    expect(controller.getSnapshot().index).toBe(1);
+    expect(afterChange).not.toHaveBeenCalled();
+    viewport.dispatchEvent(new Event("scrollend"));
+    deliver(640);
+    expect(afterChange).toHaveBeenCalledWith({ previousIndex: 0, index: 1, reason: "scroll" });
+    viewport.dispatchEvent(new Event("scrollend"));
+    deliver(640);
+    expect(afterChange).toHaveBeenCalledOnce();
     controller.destroy();
   });
   it("reports only actual settlement when interrupted and ignores duplicate completion", () => {
@@ -309,3 +328,31 @@ describe("native carousel controller", () => {
     controller.destroy();
   });
 });
+
+it.each(["scroll", "dot"] as const)(
+  "keeps controlled %s navigation until settled, with live dots",
+  (reason) => {
+    const { root, viewport } = fixture();
+    const onSelect = vi.fn();
+    const options = { defaultValue: 0, value: 0, rewind: false, onSelect };
+    const controller = createCarouselController(root, options);
+    deliver(0);
+    if (reason === "dot") {
+      controller.goTo(1, "dot");
+      deliver(0);
+    }
+    viewport.dispatchEvent(new Event("scroll"));
+    observations.live?.(1, [0, 1]);
+    expect(controller.getSnapshot().index).toBe(1);
+    expect(controller.getSnapshot().settledIndex).toBe(0);
+    const request = controller.getSnapshot().requestedIndex;
+    controller.update(options);
+    expect(controller.getSnapshot().requestedIndex).toBe(request);
+    expect(onSelect).not.toHaveBeenCalled();
+    viewport.dispatchEvent(new Event("scrollend"));
+    deliver(640);
+    expect(controller.getSnapshot().settledIndex).toBe(1);
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    controller.destroy();
+  },
+);

@@ -27,13 +27,13 @@ export interface ChoiceGroupProps<TItem extends ChoiceItem = ChoiceItem> {
   readonly name?: string;
   readonly orientation: ChoiceOrientation;
   readonly className?: string;
-  /** Part name for each item's wrapper div. Defaults to "item" (Stepper uses "step"). */
+  /** Part name for each item's wrapper div. Defaults to "item". */
   readonly itemPart?: string;
   /** Adds `data-part="label"` to the label. */
   readonly labelPart?: boolean;
   /** Extra attributes spread onto the root, e.g. `data-full-width`, `aria-label`. */
   readonly rootAttributes?: Record<string, string | undefined>;
-  /** Extra attributes spread onto each item's wrapper div, e.g. Stepper's `data-complete`. */
+  /** Extra attributes spread onto each item's wrapper div, such as consumer state markers. */
   readonly itemWrapperAttributes?: (item: TItem) => Record<string, string | undefined>;
   /** Per-item `className` hook for the input, e.g. RadioGroup's `item.className`. */
   readonly itemInputClassName?: (item: TItem) => string | undefined;
@@ -42,7 +42,7 @@ export interface ChoiceGroupProps<TItem extends ChoiceItem = ChoiceItem> {
   readonly onItemChange?: (item: TItem) => void;
   /** Renders the panel content and its wrapper when given; omitted entirely otherwise. */
   readonly renderPanel?: (item: TItem) => ReactNode;
-  /** Overrides the default `item.label` content, e.g. Stepper's label + description. */
+  /** Overrides the default `item.label` content, such as a label with a description. */
   readonly renderLabel?: (item: TItem) => ReactNode;
   /** Trailing content rendered inside the root after the mapped items, e.g. Tabs' `append`. */
   readonly append?: ReactNode;

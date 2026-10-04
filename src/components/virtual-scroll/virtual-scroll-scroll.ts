@@ -14,7 +14,6 @@ export interface VirtualScrollScrollMetrics {
 export function resolveScrollBehavior(
   behavior: VirtualScrollScrollBehavior | undefined,
 ): ScrollBehavior {
-  if (behavior === "instant") return "auto";
   return behavior ?? "auto";
 }
 

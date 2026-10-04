@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
-import { Table } from "./Table.js";
+import { Table } from "./client/Table.js";
 
 describe("Table", () => {
   it("renders semantic table structure", () => {

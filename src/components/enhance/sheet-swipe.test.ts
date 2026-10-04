@@ -7,10 +7,14 @@ const requestClose = vi.fn(function (this: HTMLDialogElement) {
 const keepOpen = vi.fn();
 
 let detach: (() => void) | undefined;
+let deferBoxes = false;
+let pendingBoxes: (() => void)[] = [];
 let clock = 0;
 let sheetMatches = true;
 
 beforeEach(() => {
+  deferBoxes = false;
+  pendingBoxes = [];
   clock = 0;
   sheetMatches = true;
   Object.defineProperty(HTMLDialogElement.prototype, "requestClose", {
@@ -26,6 +30,28 @@ beforeEach(() => {
     configurable: true,
     value: vi.fn(),
   });
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class {
+      constructor(private readonly callback: IntersectionObserverCallback) {}
+      observe(target: Element) {
+        const deliver = () =>
+          this.callback(
+            [
+              {
+                target,
+                boundingClientRect: { left: 0, right: 400, top: 200, bottom: 800, height: 600 },
+              } as IntersectionObserverEntry,
+            ],
+            this as unknown as IntersectionObserver,
+          );
+        if (deferBoxes) pendingBoxes.push(deliver);
+        else deliver();
+      }
+      unobserve() {}
+      disconnect() {}
+    },
+  );
   requestClose.mockClear();
   keepOpen.mockClear();
 });
@@ -33,6 +59,7 @@ beforeEach(() => {
 afterEach(() => {
   detach?.();
   detach = undefined;
+  vi.unstubAllGlobals();
   document.body.innerHTML = "";
 });
 
@@ -83,6 +110,46 @@ const offset = (dialog: HTMLElement): string =>
   dialog.style.getPropertyValue("--uiify-sheet-offset");
 
 describe("attachSheetSwipe", () => {
+  it("keeps a fast fling that finishes before geometry arrives", () => {
+    deferBoxes = true;
+    const dialog = mountSheet();
+    detach = attachSheetSwipe();
+    const title = document.getElementById("title")!;
+    pointer("pointerdown", title, 300, 0);
+    pointer("pointermove", title, 340, 10);
+    pointer("pointerup", title, 350, 11);
+    expect(dialog.open).toBe(true);
+    pendingBoxes.forEach((deliver) => deliver());
+    expect(dialog.open).toBe(false);
+  });
+
+  it("keeps a cancelled gesture open before geometry arrives", () => {
+    deferBoxes = true;
+    const dialog = mountSheet();
+    detach = attachSheetSwipe();
+    const title = document.getElementById("title")!;
+    pointer("pointerdown", title, 300, 0);
+    pointer("pointermove", title, 600, 10);
+    pointer("pointercancel", title, 600, 11);
+    pendingBoxes.forEach((deliver) => deliver());
+    expect(dialog.open).toBe(true);
+    expect(dialog.hasAttribute("data-dragging")).toBe(false);
+  });
+
+  it("dismisses a drawer through the same handle gesture", () => {
+    const dialog = mountSheet();
+    for (const el of [dialog, ...dialog.querySelectorAll("[data-uiify-modal]")]) {
+      el.removeAttribute("data-uiify-modal");
+      el.setAttribute("data-uiify-drawer", "");
+    }
+    detach = attachSheetSwipe();
+    const handle = document.getElementById("grabber")!;
+    pointer("pointerdown", handle, 200, 0);
+    pointer("pointermove", handle, 400, 100);
+    pointer("pointerup", handle, 420, 120);
+    expect(requestClose).toHaveBeenCalledOnce();
+  });
+
   it("follows the finger from the header and closes past a quarter of the sheet height", () => {
     const dialog = mountSheet();
     detach = attachSheetSwipe();
@@ -351,7 +418,7 @@ describe("attachSheetSwipe", () => {
     expect(dialog.hasAttribute("data-dragging")).toBe(false);
   });
 
-  it("does not read the dialog's box for a press in the body", () => {
+  it("never synchronously measures the dialog, including a handle press", () => {
     const dialog = mountSheet();
     const read = vi.spyOn(dialog, "getBoundingClientRect");
     detach = attachSheetSwipe();
@@ -361,7 +428,7 @@ describe("attachSheetSwipe", () => {
 
     pointer("pointerup", document.getElementById("body")!, 500, 100);
     pointer("pointerdown", document.getElementById("title")!, 300, 200);
-    expect(read).toHaveBeenCalledTimes(1);
+    expect(read).not.toHaveBeenCalled();
   });
 
   it("stops listening after teardown", () => {

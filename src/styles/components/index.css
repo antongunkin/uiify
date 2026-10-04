@@ -7,6 +7,7 @@
 @import url("./slider.css");
 @import url("./toggle.css");
 @import url("./modal.css");
+@import url("./alert-modal.css");
 @import url("./popup.css");
 @import url("./menu.css");
 @import url("./select.css");
@@ -25,7 +26,6 @@
 @import url("./line-chart.css");
 @import url("./drawer.css");
 @import url("./segmented-control.css");
-@import url("./stepper.css");
 @import url("./rating.css");
 @import url("./otp-input.css");
 @import url("./tags-input.css");

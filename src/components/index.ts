@@ -38,7 +38,6 @@ export * from "./form/index.js";
 export * from "./tags-input/index.js";
 export * from "./file-upload/index.js";
 export * from "./color-picker/index.js";
-export * from "./stepper/index.js";
 export * from "./carousel/index.js";
 export * from "./candle-chart/index.js";
 export * from "./line-chart/index.js";

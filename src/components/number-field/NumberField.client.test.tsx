@@ -3,6 +3,37 @@ import { describe, expect, it, vi } from "vitest";
 import { NumberField } from "./NumberField.js";
 
 describe("NumberField client", () => {
+  it.each(["abc", "12abc"])("rejects %s without replacing the committed value", (text) => {
+    const onValueChange = vi.fn();
+    render(
+      <NumberField.Root defaultValue={5} onValueChange={onValueChange}>
+        <NumberField.Input aria-label="Amount" />
+      </NumberField.Root>,
+    );
+    const input = screen.getByRole("spinbutton", { name: "Amount" }) as HTMLInputElement;
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: text } });
+    expect(input.value).toBe("5");
+    fireEvent.blur(input);
+    expect(input.value).toBe("5");
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it("preserves partial numeric edits until a number is committed", () => {
+    render(
+      <NumberField.Root defaultValue={5}>
+        <NumberField.Input aria-label="Amount" />
+      </NumberField.Root>,
+    );
+    const input = screen.getByRole("spinbutton", { name: "Amount" }) as HTMLInputElement;
+    fireEvent.focus(input);
+    for (const value of ["", "-", "1.", "1.5"]) {
+      fireEvent.change(input, { target: { value } });
+      expect(input.value).toBe(value);
+    }
+    fireEvent.blur(input);
+    expect(input.value).toBe("1.5");
+  });
   it("steps with arrow keys and exposes spinbutton aria values", () => {
     const onChange = vi.fn();
     render(
@@ -121,4 +152,23 @@ describe("NumberField client", () => {
       "7",
     );
   });
+});
+
+it("edits formatted percentages using the formatter scale", () => {
+  const change = vi.fn();
+  render(
+    <NumberField.Root
+      defaultValue={0.5}
+      formatOptions={{ style: "percent" }}
+      onValueChange={change}
+    >
+      <NumberField.Input aria-label="Percentage" />
+    </NumberField.Root>,
+  );
+  const input = screen.getByRole("spinbutton", { name: "Percentage" });
+  fireEvent.focus(input);
+  fireEvent.change(input, { target: { value: "75%" } });
+  fireEvent.blur(input);
+  expect(change).toHaveBeenCalledWith(0.75);
+  expect((input as HTMLInputElement).value).toBe("75%");
 });

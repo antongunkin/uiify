@@ -19,7 +19,8 @@
     inline-size: 24px;
     block-size: 24px;
     margin-block: auto;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg);
+    corner-shape: squircle;
     content: "";
     z-index: 1;
     pointer-events: none;

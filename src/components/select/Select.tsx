@@ -46,7 +46,9 @@ export function SelectRoot<TAs extends ElementType = "select">(
       "data-disabled": disabled ? "" : undefined,
       disabled: disabled || undefined,
       name,
-      onChange: composeEventHandlers(consumerOnChange, handleChange),
+      onChange: onValueChange
+        ? composeEventHandlers(consumerOnChange, handleChange)
+        : consumerOnChange,
       ...(isControlled ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
     },
     render,

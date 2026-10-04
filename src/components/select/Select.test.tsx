@@ -4,6 +4,11 @@ import { createRenderCounter } from "../test-utils/RenderCounter.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Select } from "./Select.js";
 
+it("does not create a change handler for a native server render", () => {
+  const element = Select.Root({ defaultValue: "native" });
+  expect(element?.props).not.toHaveProperty("onChange", expect.any(Function));
+});
+
 describe("Select", () => {
   it("fires onValueChange when the selection changes", () => {
     const onValueChange = vi.fn();

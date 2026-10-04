@@ -2,12 +2,12 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "1520 B"
+    "limit": "1530 B"
   },
   {
     "name": "enhance",
     "path": "dist/components/enhance.js",
-    "limit": "2030 B"
+    "limit": "2340 B"
   },
   {
     "name": "modal/client",
@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "39070 B",
+    "limit": "38750 B",
     "import": "*"
   },
   {
@@ -54,7 +54,7 @@
   {
     "name": "radio-group",
     "path": "dist/components/radio-group.js",
-    "limit": "970 B",
+    "limit": "980 B",
     "import": "*"
   },
   {
@@ -90,7 +90,7 @@
   {
     "name": "popup",
     "path": "dist/components/popup.js",
-    "limit": "900 B",
+    "limit": "910 B",
     "import": "*"
   },
   {
@@ -102,7 +102,7 @@
   {
     "name": "dropdown-menu",
     "path": "dist/components/dropdown-menu.js",
-    "limit": "6370 B",
+    "limit": "6410 B",
     "import": "*"
   },
   {
@@ -126,13 +126,13 @@
   {
     "name": "select",
     "path": "dist/components/select.js",
-    "limit": "530 B",
+    "limit": "490 B",
     "import": "*"
   },
   {
     "name": "combobox",
     "path": "dist/components/combobox.js",
-    "limit": "5130 B",
+    "limit": "5150 B",
     "import": "*"
   },
   {
@@ -144,7 +144,7 @@
   {
     "name": "skeleton",
     "path": "dist/components/skeleton.js",
-    "limit": "350 B",
+    "limit": "330 B",
     "import": "*"
   },
   {
@@ -156,7 +156,7 @@
   {
     "name": "breadcrumb",
     "path": "dist/components/breadcrumb.js",
-    "limit": "1070 B",
+    "limit": "1090 B",
     "import": "*"
   },
   {
@@ -168,7 +168,7 @@
   {
     "name": "table",
     "path": "dist/components/table.js",
-    "limit": "4230 B",
+    "limit": "630 B",
     "import": "*"
   },
   {
@@ -192,13 +192,13 @@
   {
     "name": "drawer",
     "path": "dist/components/drawer.js",
-    "limit": "3430 B",
+    "limit": "4060 B",
     "import": "*"
   },
   {
     "name": "context-menu",
     "path": "dist/components/context-menu.js",
-    "limit": "4800 B",
+    "limit": "4810 B",
     "import": "*"
   },
   {
@@ -210,45 +210,39 @@
   {
     "name": "file-upload",
     "path": "dist/components/file-upload.js",
-    "limit": "2070 B",
+    "limit": "2120 B",
     "import": "*"
   },
   {
     "name": "color-picker",
     "path": "dist/components/color-picker.js",
-    "limit": "1200 B",
-    "import": "*"
-  },
-  {
-    "name": "stepper",
-    "path": "dist/components/stepper.js",
-    "limit": "990 B",
+    "limit": "1240 B",
     "import": "*"
   },
   {
     "name": "carousel",
     "path": "dist/components/carousel.js",
-    "limit": "1210 B",
+    "limit": "1220 B",
     "import": "*"
   },
   {
     "name": "carousel/client",
     "path": "dist/components/carousel/client.js",
-    "limit": "6880 B",
+    "limit": "7140 B",
     "gzip": true,
     "import": "*"
   },
   {
     "name": "carousel/fade",
     "path": "dist/components/carousel/fade.js",
-    "limit": "5870 B",
+    "limit": "5880 B",
     "gzip": true,
     "import": "*"
   },
   {
     "name": "number-field",
     "path": "dist/components/number-field.js",
-    "limit": "2070 B",
+    "limit": "2220 B",
     "import": "*"
   },
   {
@@ -266,25 +260,25 @@
   {
     "name": "rating",
     "path": "dist/components/rating.js",
-    "limit": "1260 B",
+    "limit": "1250 B",
     "import": "*"
   },
   {
     "name": "rating/client",
     "path": "dist/components/rating/client.js",
-    "limit": "1510 B",
+    "limit": "1520 B",
     "import": "*"
   },
   {
     "name": "field",
     "path": "dist/components/field.js",
-    "limit": "640 B",
+    "limit": "690 B",
     "import": "*"
   },
   {
     "name": "form",
     "path": "dist/components/form.js",
-    "limit": "190 B",
+    "limit": "200 B",
     "import": "*"
   },
   {
@@ -302,7 +296,7 @@
   {
     "name": "virtual-scroll",
     "path": "dist/components/virtual-scroll.js",
-    "limit": "4190 B",
+    "limit": "4250 B",
     "import": "*"
   },
   {
@@ -339,6 +333,12 @@
     "name": "elements barrel",
     "path": "dist/elements/index.js",
     "limit": "1300 B",
+    "import": "*"
+  },
+  {
+    "name": "table/client",
+    "path": "dist/components/table/client.js",
+    "limit": "5060 B",
     "import": "*"
   }
 ]

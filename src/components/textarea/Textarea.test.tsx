@@ -6,6 +6,11 @@ import { createRenderCounter } from "../test-utils/RenderCounter.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Textarea } from "./Textarea.js";
 
+it("does not create an event handler for a native server render", () => {
+  const element = Textarea({ defaultValue: "Native" });
+  expect(element?.props).not.toHaveProperty("onChange", expect.any(Function));
+});
+
 describe("Textarea", () => {
   it("sets data-autosize without reading scrollHeight", () => {
     render(<Textarea autoSize aria-label="Notes" />);

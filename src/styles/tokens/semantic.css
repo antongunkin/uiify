@@ -48,10 +48,11 @@
 
     /* Structural aliases (theme-independent). */
     --radius: var(--radius-3);
-    --radius-sm: var(--radius-1);
-    --radius-md: var(--radius-2);
-    --radius-lg: var(--radius);
-    --radius-xl: var(--radius-4);
+    --radius-xs: calc(var(--radius) * 0.4);
+    --radius-sm: calc(var(--radius) * 0.8);
+    --radius-md: var(--radius);
+    --radius-lg: calc(var(--radius) * 1.2);
+    --radius-xl: calc(var(--radius) * 1.6);
     --space-xs: var(--size-1);
     --space-sm: var(--size-2);
     --space-md: var(--size-3);

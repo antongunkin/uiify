@@ -1,60 +1,168 @@
-/* Drawer — edge-attached dialog sheet with optional snap drag. */
-
 @layer components {
   [data-uiify-drawer][data-part="content"] {
+    --uiify-drawer-inline-size: 32rem;
+
     margin: 0;
     inline-size: 100%;
     max-inline-size: 100%;
+    max-block-size: 100dvh;
     padding: var(--space-xl);
     border: var(--border-width) solid var(--border);
-    background-color: var(--popover);
+    background: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-modal);
+    flex-direction: column;
+    gap: var(--space-md);
   }
-
+  [data-uiify-drawer][data-part="content"][open] {
+    display: flex;
+  }
+  [data-uiify-drawer][data-size="sm"] {
+    --uiify-drawer-inline-size: 24rem;
+  }
+  [data-uiify-drawer][data-size="lg"] {
+    --uiify-drawer-inline-size: 40rem;
+  }
+  [data-uiify-drawer][data-size="full"] {
+    --uiify-drawer-inline-size: 100%;
+  }
   [data-uiify-drawer][data-part="content"]::backdrop {
-    background-color: rgb(0 0 0 / 45%);
+    background: rgb(0 0 0 / 45%);
   }
-
+  [data-uiify-drawer][data-backdrop="transparent"]::backdrop {
+    background: transparent;
+  }
   [data-uiify-drawer][data-part="content"][data-side="bottom"] {
     margin-block-start: auto;
-    max-block-size: 85vh;
-    border-block-end: none;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    translate: 0 var(--uiify-drawer-transform, 0);
+    block-size: min(var(--uiify-drawer-inline-size), 80dvh);
+    max-block-size: 80dvh;
+    border-start-start-radius: var(--radius-xl);
+    border-start-end-radius: var(--radius-xl);
+    transform: var(--uiify-drawer-transform, none);
   }
-
   [data-uiify-drawer][data-part="content"][data-side="top"] {
     margin-block-end: auto;
-    max-block-size: 85vh;
-    border-block-start: none;
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
-    translate: 0 var(--uiify-drawer-transform, 0);
+    block-size: min(var(--uiify-drawer-inline-size), 80dvh);
+    max-block-size: 80dvh;
+    border-end-start-radius: var(--radius-xl);
+    border-end-end-radius: var(--radius-xl);
+    transform: var(--uiify-drawer-transform, none);
   }
-
-  [data-uiify-drawer][data-part="content"][data-side="left"] {
+  [data-uiify-drawer][data-part="content"]:is([data-side="left"], [data-side="right"]) {
+    inline-size: min(var(--uiify-drawer-inline-size), 100%);
+    block-size: 100dvh;
+    transform: var(--uiify-drawer-transform, none);
+  }
+  [data-uiify-drawer][data-side="left"] {
     margin-inline-end: auto;
-    max-inline-size: min(24rem, 100vw);
-    block-size: 100%;
-    max-block-size: 100%;
-    border-inline-start: none;
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    translate: var(--uiify-drawer-transform, 0) 0;
   }
-
-  [data-uiify-drawer][data-part="content"][data-side="right"] {
+  [data-uiify-drawer][data-side="right"] {
     margin-inline-start: auto;
-    max-inline-size: min(24rem, 100vw);
-    block-size: 100%;
-    max-block-size: 100%;
-    border-inline-end: none;
-    border-radius: var(--radius-md) 0 0 var(--radius-md);
-    translate: var(--uiify-drawer-transform, 0) 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+  [data-uiify-drawer][data-part="content"][data-size="full"] {
+    inline-size: 100dvi;
+    max-inline-size: 100dvi;
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+  }
+  [data-uiify-drawer] [data-part="header"] {
+    position: relative;
+    flex: none;
+    padding-inline-end: 2.75rem;
+  }
+  [data-uiify-drawer] [data-part="body"] {
+    min-block-size: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+  [data-uiify-drawer] [data-part="footer"] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+  }
+  [data-uiify-drawer] [data-part="close"] {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    corner-shape: round;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+  [data-uiify-drawer] [data-part="header"] > [data-part="close"] {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+  }
+  [data-uiify-drawer] :is([data-part="grabber"], [data-part="handle"]) {
+    display: none;
+    flex: none;
+    block-size: 1.5rem;
+    touch-action: none;
+  }
+  [data-uiify-drawer] :is([data-part="grabber"], [data-part="handle"])::after {
+    content: "";
+    display: block;
+    inline-size: 2.25rem;
+    block-size: 0.25rem;
+    margin-block: 0.5rem 0;
+    margin-inline: auto;
+    border-radius: 999px;
+    background: var(--border);
+  }
+  [data-uiify-drawer][data-snap-enabled] [data-part="handle"] {
+    display: block;
   }
 
-  /* Presence fades without the shared scale: the sheet is attached to an edge,
-     and its translate is owned by the drag. Backdrop motion lives in modal.css. */
+  @media (width < 40rem) {
+    [data-uiify-drawer][data-part="content"][data-side] {
+      inline-size: 100dvi;
+      max-inline-size: 100dvi;
+      block-size: auto;
+      min-block-size: 50dvh;
+      max-block-size: 80dvh;
+      margin-block: auto 0;
+      margin-inline: 0;
+      border-start-start-radius: var(--radius-xl);
+      border-start-end-radius: var(--radius-xl);
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
+      transform: var(--uiify-drawer-transform, none);
+      translate: 0 var(--uiify-sheet-offset, 0);
+      padding-block-end: calc(var(--space-xl) + env(safe-area-inset-bottom));
+    }
+    [data-uiify-drawer][data-part="content"][data-size="full"] {
+      block-size: 100dvh;
+      max-block-size: 100dvh;
+      border-radius: 0;
+    }
+    [data-uiify-drawer] :is([data-part="grabber"], [data-part="handle"]) {
+      display: block;
+    }
+    [data-uiify-drawer] [data-part="header"] {
+      touch-action: none;
+    }
+    [data-uiify-drawer][data-dragging] {
+      transition: none;
+    }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
+    [data-uiify-drawer][data-part="content"] {
+      transition:
+        opacity 180ms ease,
+        translate 220ms ease,
+        transform 220ms ease,
+        display 220ms allow-discrete,
+        overlay 220ms allow-discrete;
+    }
     [data-uiify-drawer][data-part="content"]:not([open]) {
       opacity: 0;
     }

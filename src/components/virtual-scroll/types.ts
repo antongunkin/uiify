@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from "react";
+import type { ComponentPropsWithoutRef, ReactNode, Ref } from "react";
 
 /** Fixed row height — default for scroll math when `estimateRowHeight` is omitted. */
 export const VIRTUAL_SCROLL_ROW_HEIGHT = 64;
@@ -57,7 +57,10 @@ export interface VirtualScrollHandle {
   scrollToEnd(options?: VirtualScrollScrollBehaviorOptions): void;
 }
 
-export interface VirtualScrollOwnProps<T extends VirtualScrollItem> {
+export interface VirtualScrollOwnProps<T extends VirtualScrollItem> extends Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children" | "role"
+> {
   readonly items: readonly T[];
   /** Scrollport height; also the viewport extent used before the first resize measurement. */
   readonly height?: number;

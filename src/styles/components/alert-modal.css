@@ -1,0 +1,16 @@
+@layer components {
+  [data-uiify-alert-modal][data-part="content"] {
+    gap: var(--space-md);
+    display: none;
+  }
+  [data-uiify-alert-modal][data-part="content"][open] {
+    display: grid;
+  }
+  [data-uiify-alert-modal] [data-part="footer"] {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    padding-block-start: var(--space-md);
+    border-block-start: 1px solid var(--border);
+  }
+}

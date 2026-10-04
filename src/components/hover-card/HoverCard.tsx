@@ -93,7 +93,7 @@ export function HoverCardTrigger<TAs extends ElementType = "button">(
       ...(consumerStyle ? { style: consumerStyle } : {}),
       "aria-controls": contentId,
       "aria-expanded": open,
-      ...(nativeButton ? { type: "button" } : {}),
+      ...(nativeButton ? { type: "button", "data-uiify-button": "" } : {}),
       ...(className ? { className } : {}),
       onBlur: composeEventHandlers(consumerOnBlur, (event: FocusEvent<HTMLElement>) => {
         if (!event.currentTarget.contains(event.relatedTarget)) closeCard();

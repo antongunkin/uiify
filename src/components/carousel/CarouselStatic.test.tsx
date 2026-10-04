@@ -18,6 +18,7 @@ const readyPresentation: CarouselPresentation = {
     index: 1,
     requestedIndex: null,
     settledChange: null,
+    settledIndex: 1,
     pages: [
       { index: 0, offset: 0 },
       { index: 1, offset: 100 },

@@ -1,21 +1,50 @@
 import type { ReactElement } from "react";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
-import type { DrawerProps } from "./types.js";
+import type { DrawerProps, DrawerNativeContentProps, DrawerNativeInvokerProps } from "./types.js";
 
-/**
- * Monolithic native shell: a `command="show-modal"` trigger opens a plain,
- * initially closed `<dialog>`; a `command="request-close"` invoker closes it.
- * Works before hydration, matching Modal and AlertModal's native shell — all
- * three are built on `@gunkin/uiify/elements/dialog`. Always a true modal — controlled
- * or initially open state needs a client adapter, which this Tier 0 shell does
- * not have.
- *
- * `title` is required, so `aria-labelledby={titleId}` always satisfies
- * `Dialog.Content`'s accessible-name requirement here — unlike `ModalContent`/
- * `AlertModalContent`, which are exported as generic parts in their own right
- * and so keep a looser prop type (see ModalParts.tsx), this shell has no
- * public "DrawerContent" part to keep loose.
- */
+export function DrawerNativeTrigger({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
+  return renderNativeInvoker(
+    "button",
+    "data-uiify-drawer",
+    "trigger",
+    "show-modal",
+    target,
+    props,
+    { button: true },
+  );
+}
+export function DrawerNativeClose({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
+  return renderNativeInvoker(
+    "button",
+    "data-uiify-drawer",
+    "close",
+    "request-close",
+    target,
+    props,
+    { button: true, variant: "ghost" },
+  );
+}
+export function DrawerNativeContent({
+  size,
+  dismiss = "any",
+  backdrop,
+  side = "bottom",
+  ...props
+}: DrawerNativeContentProps): ReactElement {
+  return (
+    <dialog
+      {...props}
+      closedby={dismiss}
+      data-side={side}
+      data-size={size}
+      data-backdrop={backdrop}
+      data-part="content"
+      data-uiify-drawer=""
+    />
+  );
+}
+DrawerNativeContent.displayName = "DrawerNativeContent";
+
 export function DrawerPanel({
   id,
   trigger,
@@ -25,47 +54,62 @@ export function DrawerPanel({
   closeLabel = "Close",
   side = "bottom",
   className,
+  footer,
+  size,
+  dismiss,
+  backdrop,
 }: DrawerProps): ReactElement {
-  const titleId = `${id}-title`;
-  const descriptionId = `${id}-description`;
-
   return (
     <div data-part="root" data-side={side} data-uiify-drawer="">
-      {renderNativeInvoker(
-        "button",
-        "data-uiify-drawer",
-        "trigger",
-        "show-modal",
-        id,
-        {
-          children: trigger,
-        },
-        { button: true },
-      )}
-      <dialog
-        aria-describedby={description === undefined ? undefined : descriptionId}
-        aria-labelledby={titleId}
+      <DrawerNativeTrigger target={id}>{trigger}</DrawerNativeTrigger>
+      <DrawerNativeContent
+        aria-describedby={
+          description === null || description === undefined ? undefined : `${id}-description`
+        }
+        aria-labelledby={`${id}-title`}
         className={className}
-        data-part="content"
-        data-side={side}
-        data-uiify-drawer=""
+        side={side}
         id={id}
+        {...(size ? { size } : {})}
+        {...(dismiss ? { dismiss } : {})}
+        {...(backdrop ? { backdrop } : {})}
       >
-        <h2 id={titleId}>{title}</h2>
-        {description === undefined ? null : <p id={descriptionId}>{description}</p>}
-        {children}
-        {renderNativeInvoker(
-          "button",
-          "data-uiify-drawer",
-          "close",
-          "request-close",
-          id,
-          {
-            children: closeLabel,
-          },
-          { button: true, variant: "ghost" },
+        <div data-part="grabber" data-uiify-drawer="" aria-hidden="true" />
+        <div data-part="header" data-uiify-drawer="">
+          <h2 data-part="title" id={`${id}-title`}>
+            {title}
+          </h2>
+          {description === null || description === undefined ? null : (
+            <p data-part="description" id={`${id}-description`}>
+              {description}
+            </p>
+          )}
+          <DrawerNativeClose target={id} aria-label={closeLabel}>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+            >
+              <path d="M3 3l10 10M13 3L3 13" />
+            </svg>
+          </DrawerNativeClose>
+        </div>
+        {children === null || children === undefined ? null : (
+          <div data-part="body" data-uiify-drawer="">
+            {children}
+          </div>
         )}
-      </dialog>
+        {footer === null || footer === undefined ? null : (
+          <div data-part="footer" data-uiify-drawer="">
+            {footer}
+          </div>
+        )}
+      </DrawerNativeContent>
     </div>
   );
 }

@@ -1,63 +1,49 @@
 @layer components {
-  nav[aria-label="Pagination"] ol {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
   [data-uiify-pagination] ol {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     gap: 0.25rem;
     list-style: none;
     padding: 0;
     margin: 0;
   }
-
-  [data-uiify-pagination] a,
-  [data-uiify-pagination] span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-inline-size: 2rem;
-    block-size: 2rem;
-    padding: 0 0.5rem;
+  [data-uiify-pagination] li {
+    display: grid;
+    place-items: center;
+  }
+  [data-uiify-pagination] [data-type] {
+    display: inline-grid;
+    place-items: center;
+    min-inline-size: 2.25rem;
+    block-size: 2.25rem;
+    padding-inline: 0.625rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--card);
     color: var(--foreground);
+    font: var(--text-sm)/1 var(--font-sans);
     text-decoration: none;
   }
-
-  [data-uiify-pagination] a {
+  [data-uiify-pagination] :is(a, button):hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+  [data-uiify-pagination] :is(a, button) {
     cursor: pointer;
   }
-
-  nav[aria-label="Pagination"] button,
-  nav[aria-label="Pagination"] a,
-  nav[aria-label="Pagination"] span {
-    min-inline-size: 2rem;
-    block-size: 2rem;
-    padding: 0 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--card);
-    cursor: pointer;
-  }
-
-  [data-uiify-pagination] a[data-selected],
-  nav[aria-label="Pagination"] button[data-selected] {
+  [data-uiify-pagination] [data-selected] {
     background: var(--primary);
     color: var(--primary-foreground);
     border-color: transparent;
   }
-
-  nav[aria-label="Pagination"] button:disabled,
-  [data-uiify-pagination] span[aria-disabled="true"] {
+  [data-uiify-pagination] :is(:disabled, [aria-disabled="true"]) {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  [data-uiify-pagination] svg {
+    inline-size: 1rem;
+    block-size: 1rem;
   }
 }

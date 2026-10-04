@@ -12,6 +12,7 @@ const observation = vi.hoisted(() => ({
 }));
 vi.mock("./carousel-observer.js", () => ({
   observeCarousel: () => ({
+    watch: () => {},
     measure: (receive: (value: CarouselObservation) => void) => {
       observation.receive = receive;
     },

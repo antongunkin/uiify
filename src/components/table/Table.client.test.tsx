@@ -2,7 +2,7 @@ import type { KeyboardEvent } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createTableStore } from "./table-store.js";
-import { Table } from "./Table.js";
+import { Table } from "./client/Table.js";
 
 describe("createTableStore", () => {
   it("toggles single selection", () => {
@@ -462,4 +462,31 @@ describe("Table client", () => {
     fireEvent.click(screen.getAllByRole("checkbox", { name: "Select row" })[0]!);
     expect(renders.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(3);
   });
+});
+
+it("keeps header and footer rows outside body selection and roving focus", () => {
+  const onSelectionChange = vi.fn();
+  render(
+    <Table.Root selectionMode="multiple" onSelectionChange={onSelectionChange}>
+      <Table.Header>
+        <Table.Row id="header">
+          <Table.ColumnHeader id="select">
+            <Table.SelectAll />
+          </Table.ColumnHeader>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        <Table.Row id="member">
+          <Table.Cell>Member</Table.Cell>
+        </Table.Row>
+      </Table.Body>
+      <Table.Footer>
+        <Table.Row id="footer">
+          <Table.Cell>Total</Table.Cell>
+        </Table.Row>
+      </Table.Footer>
+    </Table.Root>,
+  );
+  fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
+  expect(onSelectionChange).toHaveBeenCalledWith(new Set(["member"]));
 });

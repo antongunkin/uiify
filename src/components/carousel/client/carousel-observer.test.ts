@@ -122,3 +122,35 @@ it("audits actual observer and controller source for banned synchronous reads", 
     expect(findBannedReads(file, readFileSync(new URL(file, import.meta.url), "utf8"))).toEqual([]);
   expect(files.length).toBeGreaterThan(0);
 });
+
+it("reports the most visible slide during motion and ignores obsolete live observers", () => {
+  const observer = observeCarousel(document.querySelector("section")!);
+  const receive = vi.fn();
+  observer.watch(receive);
+  const old = instances.at(-1)!;
+  const deliver = (instance: IntersectionObserverMock, ratios: number[]) => {
+    instance.callback(
+      instance.nodes.map((target, index) => ({
+        target,
+        boundingClientRect: new DOMRect(),
+        rootBounds: new DOMRect(),
+        intersectionRatio: ratios[index]!,
+        isIntersecting: ratios[index]! > 0,
+        intersectionRect: new DOMRect(),
+        time: 0,
+      })),
+      instance as unknown as IntersectionObserver,
+    );
+  };
+  deliver(old, [0.4, 0.6, 0]);
+  expect(receive).toHaveBeenLastCalledWith(1, [0, 1]);
+  observer.measure(vi.fn());
+  deliver(old, [0, 0, 1]);
+  expect(receive).toHaveBeenCalledTimes(1);
+  const live = instances.at(-2)!;
+  deliver(live, [0, 0.3, 0.7]);
+  expect(receive).toHaveBeenLastCalledWith(2, [1, 2]);
+  observer.destroy();
+  deliver(live, [1, 0, 0]);
+  expect(receive).toHaveBeenCalledTimes(2);
+});

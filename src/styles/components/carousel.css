@@ -7,7 +7,7 @@
     align-items: center;
     gap: var(--space-sm);
     inline-size: 100%;
-    max-inline-size: 24rem;
+    max-inline-size: 40rem;
   }
 
   /* Full-width rows: an optional rotation button, the viewport, and the status text. */
@@ -33,11 +33,14 @@
     > [data-part="slide"]
     > [data-part="slide-content"] {
     display: flex;
+    container-type: inline-size;
+    min-block-size: 18rem;
     aspect-ratio: 1;
     align-items: center;
     justify-content: center;
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
+    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     font-size: 2.25rem;
@@ -105,14 +108,81 @@
     inline-size: 2.75rem;
     block-size: 2.75rem;
     border-radius: var(--radius-full);
-    background-color: var(--input);
-    color: var(--foreground);
+    background-color: transparent;
+    color: var(--muted-foreground);
     text-decoration: none;
     transition: var(--transition-colors);
+    font-size: 0;
+  }
+  [data-uiify-carousel] > [data-part="dots"] > a::after {
+    content: "";
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: 50%;
+    background: var(--input);
+  }
+  [data-uiify-carousel] > [data-part="dots"] > a[aria-current="true"]::after {
+    background: var(--primary);
+  }
+}
+
+@layer components {
+  [data-uiify-carousel] [data-part="story"] {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    inline-size: 100%;
+    block-size: 100%;
+    min-inline-size: 0;
+    min-block-size: 0;
+    padding: clamp(0.875rem, 4cqi, 1.5rem);
+    text-align: start;
   }
 
-  [data-uiify-carousel] > [data-part="dots"] > a[aria-current="true"] {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+  [data-uiify-carousel] [data-part="story-topline"],
+  [data-uiify-carousel] [data-part="story-footer"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: var(--muted-foreground);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  [data-uiify-carousel] [data-part="story-body"] {
+    display: grid;
+    align-content: center;
+    gap: 0.75rem;
+    min-inline-size: 0;
+    padding-block: 1rem;
+  }
+
+  [data-uiify-carousel] [data-part="story-eyebrow"] {
+    color: var(--primary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+
+  [data-uiify-carousel] [data-part="story-body"] > h3 {
+    max-inline-size: 12ch;
+    margin: 0;
+    color: var(--foreground);
+    font-size: clamp(1.25rem, 6cqi, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+    white-space: pre-line;
+  }
+
+  [data-uiify-carousel] [data-part="story-body"] > p {
+    max-inline-size: 30ch;
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.55;
   }
 }

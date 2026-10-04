@@ -2,6 +2,8 @@ import type { ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 
 import type {
+  TableFooterProps,
+  TableRowHeaderProps,
   TableBodyProps,
   TableCaptionProps,
   TableCellProps,
@@ -21,8 +23,9 @@ export function TableRoot<TAs extends ElementType = "table">(
     render,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
-    defaultSortDescriptor: _defaultSortDescriptor,
-    sortDescriptor: _sortDescriptor,
+    layout,
+    size,
+    variant,
     ...consumerProps
   } = props as TableRootProps<"table">;
 
@@ -34,6 +37,9 @@ export function TableRoot<TAs extends ElementType = "table">(
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
       "data-uiify-table": "",
+      ...(layout ? { "data-layout": layout } : {}),
+      ...(size ? { "data-size": size } : {}),
+      ...(variant ? { "data-variant": variant } : {}),
     },
     render,
     state: {},
@@ -43,8 +49,14 @@ export function TableRoot<TAs extends ElementType = "table">(
 export function TableHeader<TAs extends ElementType = "thead">(
   props: TableHeaderProps<TAs>,
 ): ReactElement | null {
-  const { as, render, ...consumerProps } = props as TableHeaderProps<"thead">;
-  return useRenderElement({ as, defaultTag: "thead", props: consumerProps, render, state: {} });
+  const { as, render, sticky, ...consumerProps } = props as TableHeaderProps<"thead">;
+  return useRenderElement({
+    as,
+    defaultTag: "thead",
+    props: { ...consumerProps, "data-part": "header", "data-sticky": sticky ? "" : undefined },
+    render,
+    state: {},
+  });
 }
 
 export function TableBody<TAs extends ElementType = "tbody">(
@@ -54,7 +66,7 @@ export function TableBody<TAs extends ElementType = "tbody">(
   return useRenderElement({
     as,
     defaultTag: "tbody",
-    props: { ...consumerProps, children },
+    props: { ...consumerProps, children, "data-part": "body" },
     render,
     state: {},
   });
@@ -69,6 +81,7 @@ export function TableRow<TAs extends ElementType = "tr">(
     disabled = false,
     id,
     selected = false,
+    sticky,
     ...consumerProps
   } = props as TableRowProps<"tr">;
 
@@ -77,6 +90,8 @@ export function TableRow<TAs extends ElementType = "tr">(
     defaultTag: "tr",
     props: {
       ...consumerProps,
+      "data-part": "row",
+      "data-sticky": sticky ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-selected": selected ? "" : undefined,
       "data-state": selected ? "selected" : undefined,
@@ -98,6 +113,8 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
     id,
     onClick,
     sortDirection,
+    align,
+    sticky,
     ...consumerProps
   } = props as TableColumnHeaderProps<"th">;
 
@@ -109,6 +126,9 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
       "aria-sort": allowsSorting ? (sortDirection ?? "none") : undefined,
       onClick,
       scope: "col",
+      "data-part": "column-header",
+      ...(align ? { "data-align": align } : {}),
+      "data-sticky": sticky,
       children,
       id,
     },
@@ -120,11 +140,17 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
 export function TableCell<TAs extends ElementType = "td">(
   props: TableCellProps<TAs>,
 ): ReactElement | null {
-  const { as, render, children, ...consumerProps } = props as TableCellProps<"td">;
+  const { as, render, children, sticky, align, ...consumerProps } = props as TableCellProps<"td">;
   return useRenderElement({
     as,
     defaultTag: "td",
-    props: { ...consumerProps, children },
+    props: {
+      ...consumerProps,
+      children,
+      "data-part": "cell",
+      ...(align ? { "data-align": align } : {}),
+      "data-sticky": sticky,
+    },
     render,
     state: {},
   });
@@ -143,7 +169,40 @@ export function TableCaption<TAs extends ElementType = "caption">(
   });
 }
 
+export function TableFooter<TAs extends ElementType = "tfoot">(
+  props: TableFooterProps<TAs>,
+): ReactElement | null {
+  const { as, render, sticky, ...consumerProps } = props as TableFooterProps<"tfoot">;
+  return useRenderElement({
+    as,
+    defaultTag: "tfoot",
+    props: { ...consumerProps, "data-part": "footer", "data-sticky": sticky ? "" : undefined },
+    render,
+    state: {},
+  });
+}
+export function TableRowHeader<TAs extends ElementType = "th">(
+  props: TableRowHeaderProps<TAs>,
+): ReactElement | null {
+  const { as, render, sticky, align, ...consumerProps } = props as TableRowHeaderProps<"th">;
+  return useRenderElement({
+    as,
+    defaultTag: "th",
+    props: {
+      ...consumerProps,
+      "data-part": "row-header",
+      ...(align ? { "data-align": align } : {}),
+      "data-sticky": sticky,
+      scope: "row",
+    },
+    render,
+    state: {},
+  });
+}
+
 export const Table = {
+  Footer: TableFooter,
+  RowHeader: TableRowHeader,
   Body: TableBody,
   Caption: TableCaption,
   Cell: TableCell,

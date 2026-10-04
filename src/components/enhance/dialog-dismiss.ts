@@ -1,7 +1,8 @@
-import { readBox } from "./internal/read-box.js";
+import { createBoxObserver } from "./internal/box-observer.js";
 
 /** The modal dialog surface `ModalContent` renders. */
-export const MODAL_DIALOG = 'dialog[data-uiify-modal][data-part="content"]';
+export const SHEET_DIALOG =
+  'dialog:is([data-uiify-modal], [data-uiify-drawer])[data-part="content"]';
 
 interface Box {
   readonly left: number;
@@ -38,25 +39,37 @@ export function supportsClosedBy(view: Window = window): boolean {
 export function attachBackdropClose(doc: Document = document): () => void {
   if (supportsClosedBy(doc.defaultView ?? window)) return () => {};
 
-  let pressed: HTMLDialogElement | null = null;
+  const boxes = createBoxObserver(doc);
+  let pressed: { dialog: HTMLDialogElement; outside: boolean | null } | null = null;
 
   const backdropTarget = (event: MouseEvent): HTMLDialogElement | null => {
     const dialog = event.target;
-    if (!(dialog instanceof HTMLDialogElement) || !dialog.matches(MODAL_DIALOG)) return null;
-    if (dialog.getAttribute("closedby") !== "any") return null;
-    const box = readBox(dialog);
-    return isOutside(box, event.clientX, event.clientY) ? dialog : null;
+    return dialog instanceof HTMLDialogElement &&
+      dialog.matches(SHEET_DIALOG) &&
+      dialog.getAttribute("closedby") === "any"
+      ? dialog
+      : null;
   };
 
   const onPointerDown = (event: PointerEvent): void => {
-    pressed = backdropTarget(event);
+    const dialog = backdropTarget(event);
+    pressed = dialog ? { dialog, outside: null } : null;
+    const start = pressed;
+    if (start)
+      boxes.read(start.dialog, (box) => {
+        start.outside = isOutside(box, event.clientX, event.clientY);
+      });
   };
 
   const onClick = (event: MouseEvent): void => {
     const start = pressed;
     pressed = null;
-    if (event.defaultPrevented || !start || backdropTarget(event) !== start) return;
-    requestCloseDialog(start);
+    if (event.defaultPrevented || !start || backdropTarget(event) !== start.dialog) return;
+    boxes.read(start.dialog, (box) => {
+      if (start.dialog.open && start.outside && isOutside(box, event.clientX, event.clientY)) {
+        requestCloseDialog(start.dialog);
+      }
+    });
   };
 
   doc.addEventListener("pointerdown", onPointerDown);
@@ -64,5 +77,6 @@ export function attachBackdropClose(doc: Document = document): () => void {
   return () => {
     doc.removeEventListener("pointerdown", onPointerDown);
     doc.removeEventListener("click", onClick);
+    boxes.disconnect();
   };
 }

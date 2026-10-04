@@ -47,13 +47,18 @@
     --size-7: 3rem;
     --size-8: 4rem;
 
-    /* Radii — 2a/2b handoff scale (design_handoff_uiify_redesign/uiify Components Kit.dc.html):
-       small (menu items/tags) 7px, control (36-38px buttons/inputs) 9px,
-       popover/floating panels 10px, cards/containers 12px, full = pill. */
-    --radius-1: 7px;
-    --radius-2: 9px;
-    --radius-3: 10px;
-    --radius-4: 12px;
+    /* Radii — scaled to element size and drawn with corner-shape: squircle.
+       --radius-3 is the base (36–40px controls); the semantic steps derive
+       from --radius, so changing it rescales every corner. These raw values
+       mirror the derived steps at the default base:
+       1: ≤24px parts (chips, indicators, kbd), 2: 28–32px rows (menu items,
+       small buttons), 3: 36–40px controls, 4: popovers and large controls,
+       5: cards, panels, dialogs. */
+    --radius-1: 8px;
+    --radius-2: 16px;
+    --radius-3: 20px;
+    --radius-4: 24px;
+    --radius-5: 32px;
     --radius-full: 9999px;
 
     /* Typography. */

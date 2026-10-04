@@ -77,6 +77,8 @@ function assertNoBannedHooksInServerShell(name: string, bannedHooks: readonly st
     }
     const path = join(dir, file);
     const source = readFileSync(path, "utf8");
+    // Explicit client islands are checked separately from the default native entry.
+    if (/^[\s]*["']use client["'];/.test(source)) continue;
     expect(source, path).not.toMatch(hookPattern);
   }
 }

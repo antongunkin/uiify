@@ -4,6 +4,29 @@ import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { Skeleton } from "./Skeleton.js";
 
 describe("Skeleton", () => {
+  it("retains the same public wrapper, ref and geometry after loading", () => {
+    const ref = { current: null as HTMLDivElement | null };
+    const { rerender } = render(
+      <Skeleton ref={ref} width={240} variant="none" data-testid="stable">
+        <span>Ready</span>
+      </Skeleton>,
+    );
+    const wrapper = ref.current;
+    expect(wrapper?.getAttribute("data-uiify-skeleton")).toBe("");
+    expect(wrapper?.getAttribute("data-variant")).toBe("none");
+    expect(screen.queryByText("Ready")).toBeNull();
+    rerender(
+      <Skeleton ref={ref} width={240} variant="none" loading={false} data-testid="stable">
+        <span>Ready</span>
+      </Skeleton>,
+    );
+    expect(ref.current).toBe(wrapper);
+    expect(wrapper?.getAttribute("data-state")).toBe("loaded");
+    expect(wrapper?.hasAttribute("aria-hidden")).toBe(false);
+    expect(wrapper?.style.getPropertyValue("--uiify-skeleton-w")).toBe("240px");
+    expect(screen.getByText("Ready")).toBeTruthy();
+  });
+
   it("renders placeholder with aria-hidden when loading", () => {
     const { container } = render(<Skeleton loading data-testid="skel" />);
     const el = container.querySelector("[data-testid='skel']");
@@ -23,8 +46,8 @@ describe("Skeleton", () => {
   it("applies width and height as CSS custom properties", () => {
     const { container } = render(<Skeleton width={200} height="1rem" data-testid="skel" />);
     const el = container.querySelector("[data-testid='skel']") as HTMLElement;
-    expect(el.style.getPropertyValue("--skeleton-w")).toBe("200px");
-    expect(el.style.getPropertyValue("--skeleton-h")).toBe("1rem");
+    expect(el.style.getPropertyValue("--uiify-skeleton-w")).toBe("200px");
+    expect(el.style.getPropertyValue("--uiify-skeleton-h")).toBe("1rem");
   });
 
   it("sets circle shape data attribute", () => {
@@ -61,7 +84,7 @@ describe("Skeleton", () => {
     );
     const el = container.querySelector("[data-testid='skel']") as HTMLElement;
     expect(el.style.color).toBe("red");
-    expect(el.style.getPropertyValue("--skeleton-w")).toBe("200px");
-    expect(el.style.getPropertyValue("--skeleton-h")).toBe("1rem");
+    expect(el.style.getPropertyValue("--uiify-skeleton-w")).toBe("200px");
+    expect(el.style.getPropertyValue("--uiify-skeleton-h")).toBe("1rem");
   });
 });

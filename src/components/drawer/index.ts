@@ -8,7 +8,12 @@ export {
   DrawerTitle,
   DrawerTrigger,
 } from "./Drawer.js";
-export { DrawerPanel } from "./DrawerNative.js";
+export {
+  DrawerPanel,
+  DrawerNativeTrigger,
+  DrawerNativeClose,
+  DrawerNativeContent,
+} from "./DrawerNative.js";
 export type {
   DrawerCloseOwnProps,
   DrawerCloseProps,
@@ -21,5 +26,11 @@ export type {
   DrawerTitleOwnProps,
   DrawerTriggerOwnProps,
   DrawerTriggerProps,
-} from "./client-types.js";
-export type { DrawerProps, DrawerSide } from "./types.js";
+} from "./types.js";
+export type {
+  DrawerProps,
+  DrawerSide,
+  DrawerAppearanceProps,
+  DrawerNativeContentProps,
+  DrawerNativeInvokerProps,
+} from "./types.js";

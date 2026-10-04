@@ -8,7 +8,8 @@
     max-inline-size: min(28rem, calc(100vw - 2 * var(--space-lg)));
     padding: var(--space-lg);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
+    corner-shape: squircle;
     background-color: var(--card);
     color: var(--card-foreground);
     box-shadow: var(--shadow-popover);

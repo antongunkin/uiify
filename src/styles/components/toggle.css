@@ -10,6 +10,7 @@
     padding-inline: var(--space-md);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-md);
+    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     font-size: var(--text-sm);
@@ -94,6 +95,7 @@
     padding-inline: var(--space-md);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-md);
+    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     font-size: var(--text-sm);

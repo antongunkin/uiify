@@ -95,6 +95,11 @@ export function FieldControl<TAs extends ElementType = "div">(
     props: {
       ...consumerProps,
       ...controlIdentity,
+      ...(as === "input" || as === "textarea" || as === "select"
+        ? { disabled: disabled || undefined, required: required || undefined }
+        : (as !== undefined && typeof as !== "string") || render
+          ? { disabled, required }
+          : {}),
       id: controlId,
       "data-part": "control",
       "aria-labelledby": labelId,

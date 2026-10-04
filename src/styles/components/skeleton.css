@@ -1,31 +1,54 @@
 @layer components {
-  [data-state="loading"][data-shape="rect"],
-  [data-state="loading"][data-shape="circle"] {
-    inline-size: var(--skeleton-w, 100%);
-    block-size: var(--skeleton-h, 1rem);
-    background: linear-gradient(90deg, var(--muted) 0%, var(--secondary) 50%, var(--muted) 100%);
-    background-size: 200% 100%;
-    animation: uiify-skeleton-shimmer 1.5s ease-in-out infinite;
+  [data-uiify-skeleton] {
+    inline-size: var(--uiify-skeleton-w, 100%);
+    min-block-size: var(--uiify-skeleton-h, 1rem);
     border-radius: var(--radius-sm);
   }
-
-  [data-state="loading"][data-shape="circle"] {
+  [data-uiify-skeleton][data-state="loading"] {
+    block-size: var(--uiify-skeleton-h, 1rem);
+    background: var(--muted);
+    animation: uiify-skeleton-pulse 1.8s ease-in-out infinite;
+  }
+  [data-uiify-skeleton][data-shape="circle"] {
     border-radius: 50%;
+    corner-shape: round;
+  }
+  [data-uiify-skeleton][data-variant="shimmer"][data-state="loading"] {
+    background: linear-gradient(90deg, var(--muted), var(--secondary), var(--muted));
+    background-size: 200% 100%;
+    animation: uiify-skeleton-shimmer 1.5s linear infinite;
+  }
+  [data-uiify-skeleton][data-variant="none"] {
+    animation: none;
+  }
+  [data-uiify-skeleton][data-state="loaded"] {
+    animation: uiify-skeleton-reveal 200ms ease-out;
+  }
+
+  @keyframes uiify-skeleton-pulse {
+    50% {
+      opacity: 0.45;
+    }
   }
 
   @keyframes uiify-skeleton-shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
+    to {
       background-position: -200% 0;
     }
   }
 
+  @keyframes uiify-skeleton-reveal {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    [data-state="loading"] {
+    [data-uiify-skeleton] {
       animation: none;
-      opacity: 0.7;
     }
   }
 }

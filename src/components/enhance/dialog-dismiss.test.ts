@@ -14,13 +14,39 @@ const close = vi.fn(function (this: HTMLDialogElement) {
 });
 
 let detach: (() => void) | undefined;
+let deferBoxes = false;
+let pendingBoxes: (() => void)[] = [];
 
 beforeEach(() => {
+  deferBoxes = false;
+  pendingBoxes = [];
   Object.defineProperty(HTMLDialogElement.prototype, "requestClose", {
     configurable: true,
     value: requestClose,
   });
   Object.defineProperty(HTMLDialogElement.prototype, "close", { configurable: true, value: close });
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class {
+      constructor(private readonly callback: IntersectionObserverCallback) {}
+      observe(target: Element) {
+        const deliver = () =>
+          this.callback(
+            [
+              {
+                target,
+                boundingClientRect: { left: 100, right: 300, top: 100, bottom: 300, height: 200 },
+              } as IntersectionObserverEntry,
+            ],
+            this as unknown as IntersectionObserver,
+          );
+        if (deferBoxes) pendingBoxes.push(deliver);
+        else deliver();
+      }
+      unobserve() {}
+      disconnect() {}
+    },
+  );
   requestClose.mockClear();
   close.mockClear();
 });
@@ -28,6 +54,7 @@ beforeEach(() => {
 afterEach(() => {
   detach?.();
   detach = undefined;
+  vi.unstubAllGlobals();
   document.body.innerHTML = "";
   delete (HTMLDialogElement.prototype as { closedBy?: unknown }).closedBy;
 });
@@ -99,11 +126,45 @@ describe("requestCloseDialog", () => {
 });
 
 describe("attachBackdropClose", () => {
-  it("closes a closedby=any modal when a press and click land on its backdrop", () => {
+  it("waits for browser geometry when down and click arrive before delivery", () => {
+    deferBoxes = true;
     const dialog = mount();
     detach = attachBackdropClose();
     press(dialog, [10, 10]);
+    expect(dialog.open).toBe(true);
+    pendingBoxes.forEach((deliver) => deliver());
+    expect(dialog.open).toBe(false);
+  });
+
+  it("discards pending geometry after teardown", () => {
+    deferBoxes = true;
+    const dialog = mount();
+    const cleanup = attachBackdropClose();
+    press(dialog, [10, 10]);
+    cleanup();
+    pendingBoxes.forEach((deliver) => deliver());
+    expect(dialog.open).toBe(true);
+  });
+
+  it("also closes drawers when both presses land on their backdrop", () => {
+    const dialog = mount();
+    dialog.removeAttribute("data-uiify-modal");
+    dialog.setAttribute("data-uiify-drawer", "");
+    detach = attachBackdropClose();
+    dialog.dispatchEvent(
+      new MouseEvent("pointerdown", { bubbles: true, clientX: 900, clientY: 900 }),
+    );
+    dialog.dispatchEvent(new MouseEvent("click", { bubbles: true, clientX: 900, clientY: 900 }));
+    expect(requestClose).toHaveBeenCalledOnce();
+  });
+
+  it("closes a backdrop press without synchronously measuring the dialog", () => {
+    const dialog = mount();
+    detach = attachBackdropClose();
+    const read = vi.spyOn(dialog, "getBoundingClientRect");
+    press(dialog, [10, 10]);
     expect(requestClose).toHaveBeenCalledTimes(1);
+    expect(read).not.toHaveBeenCalled();
   });
 
   it("ignores clicks inside the dialog box and on its children", () => {

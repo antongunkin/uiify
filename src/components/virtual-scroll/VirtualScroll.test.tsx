@@ -150,6 +150,23 @@ function stubResizeObserver(initialHeight = 600): {
 }
 
 describe("computeVirtualScrollSlotCount", () => {
+  it("honors container geometry and forwards native props", () => {
+    const { container } = render(
+      <VirtualScroll
+        items={createSongs(20)}
+        renderRow={(song) => song.title}
+        style={{ blockSize: "100%", inlineSize: "100%" }}
+        aria-label="Songs"
+        data-owner="consumer"
+      />,
+    );
+    const viewport = getViewport(container);
+    expect(viewport.style.blockSize).toBe("100%");
+    expect(viewport.style.height).toBe("");
+    expect(viewport.getAttribute("aria-label")).toBe("Songs");
+    expect(viewport.getAttribute("data-owner")).toBe("consumer");
+  });
+
   it("matches visible rows plus overscan buffer", () => {
     expect(computeVirtualScrollSlotCount(600, 64, 5)).toBe(
       Math.ceil(600 / 64) + VIRTUAL_SCROLL_OVERSCAN * 2,
@@ -217,12 +234,12 @@ describe("VirtualScroll", () => {
     expect(getSpacer(container).style.getPropertyValue("--uiify-range-start")).toBe("495");
   });
 
-  it("updates visible rows immediately after scrollToIndex", async () => {
+  it("updates visible rows immediately after scrollToIndex without reading after DOM writes", async () => {
     const handle = {
       current: null as import("./types.js").VirtualScrollHandle | null,
     };
     const items = createSongs(10_000);
-    render(
+    const { container } = render(
       <VirtualScroll
         height={600}
         items={items}
@@ -231,12 +248,79 @@ describe("VirtualScroll", () => {
       />,
     );
 
+    const read = vi.spyOn(getViewport(container), "scrollTop", "get");
     await act(async () => {
       handle.current?.scrollToIndex(500, { align: "start", behavior: "instant" });
     });
 
     expect(screen.getByTestId("title-501")).toBeTruthy();
     expect(screen.queryByTestId("title-1")).toBeNull();
+    expect(read).not.toHaveBeenCalled();
+  });
+
+  it("updates the reported range when ResizeObserver replaces the SSR height", async () => {
+    const observer = stubResizeObserver(128);
+    const onRangeChange = vi.fn();
+    const { container } = render(
+      <VirtualScroll
+        height={600}
+        items={createSongs(1000)}
+        rowHeight={64}
+        overscan={0}
+        onRangeChange={onRangeChange}
+        renderRow={(song) => <span>{song.title}</span>}
+      />,
+    );
+    await act(async () => observer.trigger(getViewport(container), 128));
+    await flushScrollSync();
+    expect(container.querySelectorAll('[data-part="row"]')).toHaveLength(2);
+    expect(onRangeChange).toHaveBeenLastCalledWith({
+      startIndex: 0,
+      endIndex: 1,
+      overscanStart: 0,
+      overscanEnd: 1,
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it("lets native scroll events drive auto behavior when CSS smooths the scroll", async () => {
+    const handle = { current: null as import("./types.js").VirtualScrollHandle | null };
+    const { container } = render(
+      <VirtualScroll
+        height={600}
+        items={createSongs(1000)}
+        scrollRef={handle}
+        renderRow={(song) => <span data-testid={`title-${song.id}`}>{song.title}</span>}
+      />,
+    );
+    const viewport = getViewport(container);
+    viewport.scrollTo = () => {};
+    await act(async () => handle.current?.scrollToIndex(500));
+    expect(screen.getByTestId("title-1")).toBeTruthy();
+    expect(screen.queryByTestId("title-501")).toBeNull();
+    await scrollViewport(viewport, 64 * 20);
+    expect(screen.getByTestId("title-21")).toBeTruthy();
+  });
+
+  it("verifies an external scroll coalesced with an imperative scroll", async () => {
+    const handle = { current: null as import("./types.js").VirtualScrollHandle | null };
+    const { container } = render(
+      <VirtualScroll
+        height={600}
+        items={createSongs(1000)}
+        scrollRef={handle}
+        renderRow={(song) => <span data-testid={`title-${song.id}`}>{song.title}</span>}
+      />,
+    );
+    await act(async () => {
+      handle.current?.scrollToIndex(500, { behavior: "instant" });
+      const viewport = getViewport(container);
+      viewport.scrollTop = 64 * 20;
+      fireEvent.scroll(viewport);
+    });
+    await flushScrollSync();
+    expect(screen.getByTestId("title-21")).toBeTruthy();
+    expect(screen.queryByTestId("title-501")).toBeNull();
   });
 
   it("keeps --uiify-slot-index stable and updates --uiify-range-start when the range changes", async () => {

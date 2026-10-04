@@ -7,6 +7,7 @@ import {
   useIsomorphicLayoutEffect,
   useMergedRefs,
   useResizeObserver,
+  useMediaQuery,
 } from "@gunkin/uiify/hooks";
 import { createPartContext } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
@@ -23,13 +24,14 @@ import type {
   DrawerDescriptionOwnProps,
   DrawerCloseProps,
   DrawerHandleOwnProps,
-} from "./client-types.js";
+} from "./types.js";
 
 const [DrawerProvider, useDrawerContext] = createPartContext<DrawerContextValue>("Drawer");
 
 export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
   const {
     activeSnapPoint,
+    closeOnOverlayClick = true,
     children,
     defaultActiveSnapPoint,
     defaultOpen,
@@ -41,6 +43,8 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
     side = "bottom",
     snapPoints,
   } = props;
+  const mobile = useMediaQuery("(width < 40rem)");
+  const effectiveSide = mobile ? "bottom" : side;
   const contentId = useId();
   const dialog = useDialog({
     modal,
@@ -54,7 +58,7 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
   const wasOpenRef = useRef(dialog.open);
   const storeRef = useRef<DrawerStore | null>(null);
   storeRef.current ??= createDrawerStore({
-    side,
+    side: effectiveSide,
     dismissible,
     onDismiss: () => dialog.close(),
     ...(snapPoints ? { snapPoints } : {}),
@@ -75,6 +79,8 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
     wasOpenRef.current = dialog.open;
   }, [dialog.open]);
 
+  useIsomorphicLayoutEffect(() => store.setSide(effectiveSide), [effectiveSide, store]);
+
   const snapEnabled = Boolean(snapPoints && snapPoints.length > 0);
 
   const contextValue = useMemo<DrawerContextValue>(
@@ -85,13 +91,14 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
       dialogProps: dialog.dialogProps,
       dialogRef: dialog.dialogRef,
       dismissible,
+      closeOnOverlayClick,
       labelId,
       modal,
       open: dialog.open,
       openDialog: dialog.openDialog,
       setDescriptionId,
       setLabelId,
-      side,
+      side: effectiveSide,
       snapEnabled,
       store,
       triggerRef,
@@ -105,9 +112,10 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
       dialog.open,
       dialog.openDialog,
       dismissible,
+      closeOnOverlayClick,
       labelId,
       modal,
-      side,
+      effectiveSide,
       snapEnabled,
       store,
     ],
@@ -143,12 +151,23 @@ export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
 }
 
 export function DrawerContent(props: DrawerContentProps): ReactElement | null {
-  const { children, className, ref, style: consumerStyle, ...consumerProps } = props;
+  const {
+    children,
+    className,
+    ref,
+    style: consumerStyle,
+    size: drawerSize,
+    dismiss,
+    backdrop,
+    ...consumerProps
+  } = props;
   const {
     contentId,
     descriptionId,
     dialogProps,
     dialogRef,
+    dismissible,
+    closeOnOverlayClick,
     labelId,
     modal,
     open,
@@ -193,6 +212,9 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
       "aria-describedby": descriptionId,
       "aria-labelledby": labelId,
       "aria-modal": modal ? true : undefined,
+      "data-size": drawerSize,
+      "data-backdrop": backdrop,
+      closedby: dismiss ?? (dismissible ? (closeOnOverlayClick ? "any" : "closerequest") : "none"),
       "data-part": "content",
       "data-side": side,
       "data-state": open ? "open" : "closed",
@@ -221,7 +243,7 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
 }
 
 export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
-  const { children, className } = props;
+  const { children, className, ...consumerProps } = props;
   const id = useId();
   const { setLabelId } = useDrawerContext("Title");
 
@@ -233,6 +255,7 @@ export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
   return useRenderElement({
     defaultTag: "h2",
     props: {
+      ...consumerProps,
       id,
       "data-part": "title",
       "data-uiify-drawer": "",
@@ -244,7 +267,7 @@ export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
 }
 
 export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElement | null {
-  const { children, className } = props;
+  const { children, className, ...consumerProps } = props;
   const id = useId();
   const { setDescriptionId } = useDrawerContext("Description");
 
@@ -256,6 +279,7 @@ export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElemen
   return useRenderElement({
     defaultTag: "p",
     props: {
+      ...consumerProps,
       id,
       "data-part": "description",
       "data-uiify-drawer": "",
@@ -290,7 +314,14 @@ export function DrawerClose(props: DrawerCloseProps): ReactElement | null {
 }
 
 export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
-  const { className, onPointerCancel, onPointerDown, onPointerMove, onPointerUp } = props;
+  const {
+    className,
+    onPointerCancel,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    ...consumerProps
+  } = props;
   const { side, snapEnabled, store } = useDrawerContext("Handle");
   const dragging = useSyncExternalStore(
     (listener) => store.subscribe(listener),
@@ -304,6 +335,7 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
     defaultTag: "div",
     props: snapEnabled
       ? {
+          ...consumerProps,
           "aria-hidden": true,
           "data-part": "handle",
           "data-uiify-drawer": "",
@@ -340,7 +372,13 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
             },
           ),
         }
-      : { "aria-hidden": true, hidden: true },
+      : {
+          ...consumerProps,
+          "aria-hidden": true,
+          "data-part": "handle",
+          "data-uiify-drawer": "",
+          ...(className ? { className } : {}),
+        },
     state: { dragging },
   });
 }

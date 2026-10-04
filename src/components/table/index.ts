@@ -1,5 +1,7 @@
 export {
   Table,
+  TableFooter,
+  TableRowHeader,
   TableBody,
   TableCaption,
   TableCell,
@@ -7,10 +9,12 @@ export {
   TableHeader,
   TableRoot,
   TableRow,
-  TableSelectAll as SelectAll,
-  TableRowSelect as RowSelect,
-} from "./Table.js";
+} from "./TableShell.js";
 export type {
+  TableFooterProps,
+  TableRowHeaderProps,
+  TableStickySectionOwnProps,
+  TableStickyCellOwnProps,
   TableBodyProps,
   TableCaptionProps,
   TableCellProps,

@@ -86,7 +86,14 @@ export function usePopover({
     "aria-controls": id,
     "aria-expanded": open,
     onClick(event: ReactMouseEvent<HTMLButtonElement>) {
-      if (!isNative) requestChange(!open, "trigger-press", event.nativeEvent);
+      const accepted = requestChange(
+        !open,
+        isNative ? "native-toggle" : "trigger-press",
+        event.nativeEvent,
+      );
+      // Commit the React state first, then open from the layout effect. Letting
+      // the invoker open it first exposes the surface before its state/styles settle.
+      if (isNative || !accepted) event.preventDefault();
     },
     type: "button",
     ...(isNative ? { command: "toggle-popover", commandfor: id } : {}),

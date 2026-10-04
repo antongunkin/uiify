@@ -22,6 +22,7 @@ export function Form<TAs extends ElementType = "form">(props: FormProps<TAs>): R
       ...consumerProps,
       noValidate: validationBehavior === "aria" ? true : noValidate,
       "data-validation-behavior": validationBehavior,
+      "data-uiify-form": "",
     },
     render,
     state: { validationBehavior },

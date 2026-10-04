@@ -26,6 +26,7 @@ export function createFadeController(
     index: 0,
     requestedIndex: null,
     settledChange: null,
+    settledIndex: 0,
     pages: [],
     visibleIndices: [],
     atStart: true,
@@ -84,6 +85,7 @@ export function createFadeController(
         publish({
           ...snapshot,
           index: target,
+          settledIndex: target,
           requestedIndex: null,
           moving: false,
           visibleIndices: [target],
@@ -147,6 +149,7 @@ export function createFadeController(
       ...snapshot,
       ready: slides.length > 0,
       index: target,
+      settledIndex: target,
       requestedIndex: null,
       moving: false,
       pages: slides.map((_, index) => ({ index, offset: index })),

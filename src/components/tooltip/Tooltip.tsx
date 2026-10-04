@@ -135,7 +135,7 @@ export function TooltipTrigger<TAs extends ElementType = "button">(
       ...consumerProps,
       ...anchorProps,
       "aria-describedby": open ? contentId : undefined,
-      ...(nativeButton ? { type: "button" } : {}),
+      ...(nativeButton ? { type: "button", "data-uiify-button": "" } : {}),
       ...(className ? { className } : {}),
       onBlur: composeEventHandlers(consumerOnBlur, () => {
         closeTooltip();

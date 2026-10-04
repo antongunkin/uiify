@@ -4,6 +4,11 @@ import { createRenderCounter } from "../test-utils/RenderCounter.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Input } from "./Input.js";
 
+it("does not create an event handler for a native server render", () => {
+  const element = Input({ defaultValue: "Native" });
+  expect(element?.props).not.toHaveProperty("onChange", expect.any(Function));
+});
+
 describe("Input", () => {
   it("updates the DOM in uncontrolled mode without rerendering the owner", () => {
     const onValueChange = vi.fn();

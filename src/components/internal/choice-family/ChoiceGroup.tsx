@@ -65,7 +65,7 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
             labelPart={false}
             labelProps={{ "data-part": labelPart ? "trigger" : "label" }}
             name={groupName}
-            {...(onItemChange ? { onChange: () => onItemChange(item) } : {})}
+            {...(onItemChange ? { onValueChange: () => onItemChange(item) } : {})}
             panelProps={{ "data-part": "panel" }}
             part={itemPart}
             value={item.value}

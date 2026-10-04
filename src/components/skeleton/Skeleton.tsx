@@ -1,9 +1,8 @@
 import type { CSSProperties, ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import type { SkeletonProps, SkeletonLoadingProps } from "./types.js";
+import type { SkeletonProps } from "./types.js";
 
 function toCssSize(value: number | string | undefined): string | undefined {
-  if (value === undefined) return undefined;
   return typeof value === "number" ? `${value}px` : value;
 }
 
@@ -17,52 +16,30 @@ export function Skeleton<TAs extends ElementType = "div">(
     height,
     loading = true,
     width,
+    variant,
     children,
     ...consumerProps
   } = props as SkeletonProps<"div">;
-
-  if (!loading) {
-    return children as ReactElement | null;
-  }
-
-  return (
-    <SkeletonLoading
-      as={as}
-      circle={circle}
-      elementProps={consumerProps}
-      height={height}
-      render={render}
-      width={width}
-    />
-  );
-}
-Skeleton.displayName = "Skeleton";
-
-function SkeletonLoading({
-  as,
-  circle,
-  elementProps,
-  height,
-  render,
-  width,
-}: SkeletonLoadingProps): ReactElement | null {
-  const { style: consumerStyle, ...rest } = elementProps;
-
+  const style = (consumerProps as { style?: CSSProperties }).style;
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
-      ...rest,
-      "aria-hidden": true,
+      ...consumerProps,
+      "aria-hidden": loading ? true : undefined,
+      "data-uiify-skeleton": "",
       "data-shape": circle ? "circle" : "rect",
-      "data-state": "loading",
+      "data-state": loading ? "loading" : "loaded",
+      ...(variant !== undefined ? { "data-variant": variant } : {}),
       style: {
-        ...(consumerStyle as CSSProperties | undefined),
-        "--skeleton-h": toCssSize(height) ?? "",
-        "--skeleton-w": toCssSize(width) ?? "",
+        ...style,
+        ...(width !== undefined ? { "--uiify-skeleton-w": toCssSize(width) } : {}),
+        ...(height !== undefined ? { "--uiify-skeleton-h": toCssSize(height) } : {}),
       } as CSSProperties,
+      children: loading ? undefined : children,
     },
     render,
-    state: { loading: true },
+    state: { loading },
   });
 }
+Skeleton.displayName = "Skeleton";

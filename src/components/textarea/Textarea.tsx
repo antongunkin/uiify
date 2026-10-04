@@ -44,7 +44,9 @@ export function Textarea<TAs extends ElementType = "textarea">(
       "data-invalid": invalid ? "" : undefined,
       disabled: disabled || undefined,
       readOnly: readOnly || undefined,
-      onChange: composeEventHandlers(consumerOnChange, handleChange),
+      onChange: onValueChange
+        ? composeEventHandlers(consumerOnChange, handleChange)
+        : consumerOnChange,
       ...(isControlled ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
     },
     render,

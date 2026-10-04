@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode, RefObject } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode, RefObject } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export interface FileRejection {
@@ -32,7 +32,8 @@ export interface FileUploadContextValue {
   readonly openPicker: () => void;
   readonly processFiles: (list: FileList | readonly File[]) => void;
   readonly removeAt: (index: number) => void;
-  readonly store: FileUploadStore;
+  readonly reset: () => void;
+  readonly files: readonly File[];
 }
 
 export interface FileUploadRootOwnProps {
@@ -49,13 +50,17 @@ export interface FileUploadRootOwnProps {
   readonly value?: readonly File[];
 }
 
-export interface FileUploadRootProps extends FileUploadRootOwnProps {
+export interface FileUploadRootProps
+  extends
+    FileUploadRootOwnProps,
+    Omit<ComponentPropsWithRef<"div">, keyof FileUploadRootOwnProps | "defaultValue"> {
   readonly children?: ReactNode;
 }
 
-export interface FileUploadHiddenInputOwnProps {
-  readonly className?: string;
-}
+export interface FileUploadHiddenInputOwnProps extends Omit<
+  ComponentPropsWithRef<"input">,
+  "type" | "value" | "defaultValue" | "accept" | "multiple" | "disabled"
+> {}
 
 export interface FileUploadTriggerOwnProps {
   readonly children?: ReactNode;
@@ -81,9 +86,8 @@ export type FileUploadDropzoneProps<TAs extends ElementType = "div"> = Renderabl
   HTMLElement
 >;
 
-export interface FileUploadListOwnProps {
-  readonly children?: ReactNode;
-  readonly className?: string;
+export interface FileUploadListOwnProps extends Omit<ComponentPropsWithRef<"ul">, "children"> {
+  readonly children?: ReactNode | ((files: readonly File[]) => ReactNode);
 }
 
 export interface FileUploadItemOwnProps {
@@ -99,7 +103,6 @@ export type FileUploadItemProps<TAs extends ElementType = "li"> = RenderableProp
   HTMLElement
 >;
 
-export interface FileUploadItemRemoveOwnProps {
-  readonly className?: string;
+export interface FileUploadItemRemoveOwnProps extends ComponentPropsWithRef<"button"> {
   readonly index: number;
 }

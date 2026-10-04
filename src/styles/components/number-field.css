@@ -6,6 +6,7 @@
     align-items: stretch;
     border: var(--border-width) solid var(--input);
     border-radius: var(--radius-md);
+    corner-shape: squircle;
     background-color: var(--card);
     overflow: hidden;
   }
@@ -22,9 +23,13 @@
     outline: none;
   }
 
-  [data-uiify-number-field] > [role="spinbutton"]:focus-visible {
+  [data-uiify-number-field]:focus-within {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  [data-uiify-number-field] :focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 
   [data-uiify-number-field] > button {

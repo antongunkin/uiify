@@ -15,7 +15,8 @@
     /* One-off: the modal is the highest-elevation surface in the 2a/2b
        handoff (uiify Components Kit.dc.html), rounder than the --radius-lg
        card scale (12px) that every other bordered container uses. */
-    border-radius: 14px;
+    border-radius: var(--radius-xl);
+    corner-shape: squircle;
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-modal);

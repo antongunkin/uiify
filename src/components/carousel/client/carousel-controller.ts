@@ -20,11 +20,13 @@ export function createCarouselController(
   const listeners = new Set<() => void>();
   let options = initialOptions;
   let geometry: CarouselGeometry | undefined;
+  let settledIndex = 0;
   let snapshot: CarouselSnapshot = {
     ready: false,
     index: 0,
     requestedIndex: null,
     settledChange: null,
+    settledIndex: 0,
     pages: [],
     visibleIndices: [],
     atStart: true,
@@ -53,7 +55,7 @@ export function createCarouselController(
     const pages = createCarouselPages(geometry);
     const page = findCarouselPage(pages, geometry.currentOffset);
     if (!page || geometry.viewportSize <= 0) return;
-    const previousIndex = snapshot.index;
+    const previousIndex = settledIndex;
     const changed = snapshot.ready && previousIndex !== page.index;
     const detail =
       changed && settle && !silent ? { previousIndex, index: page.index, reason } : null;
@@ -62,14 +64,20 @@ export function createCarouselController(
       ready: true,
       pages,
       visibleIndices: value.visibleIndices,
-      index: settle ? page.index : snapshot.index,
+      index: page.index,
       atStart: page.index === pages[0]?.index,
       atEnd: page.index === pages.at(-1)?.index,
       ...(settle
-        ? { moving: false, requestedIndex: null, settledChange: detail ?? snapshot.settledChange }
+        ? {
+            moving: false,
+            requestedIndex: null,
+            settledIndex: page.index,
+            settledChange: detail ?? snapshot.settledChange,
+          }
         : {}),
     });
     if (settle) {
+      settledIndex = page.index;
       activeId = slides()[page.index]?.id;
       if (detail) {
         if (reason !== "controlled") options.onSelect?.(page.index, detail);
@@ -116,6 +124,7 @@ export function createCarouselController(
     });
   }
   function step(direction: 1 | -1, why: CarouselReason) {
+    if (snapshot.moving) return;
     const pages = snapshot.pages;
     const position = pages.findIndex(
       (page) => page.index === (snapshot.requestedIndex ?? snapshot.index),
@@ -164,6 +173,18 @@ export function createCarouselController(
       else request(target, wasReady ? "items" : "controlled", !wasReady);
     });
   }
+  observer.watch((index, visibleIndices) => {
+    if (!snapshot.ready) return;
+    const page = snapshot.pages.filter((candidate) => candidate.index <= index).at(-1);
+    if (page)
+      publish({
+        ...snapshot,
+        index: page.index,
+        visibleIndices,
+        atStart: page === snapshot.pages[0],
+        atEnd: page === snapshot.pages.at(-1),
+      });
+  });
   const scroll = () => {
     if (touchActive) touch = true;
     if (!snapshot.moving) publish({ ...snapshot, moving: true });
@@ -217,7 +238,7 @@ export function createCarouselController(
     },
     update(next) {
       options = next;
-      if (snapshot.ready && next.value !== undefined && next.value !== snapshot.index)
+      if (snapshot.ready && next.value !== undefined && next.value !== snapshot.settledIndex)
         request(next.value, "controlled");
     },
     refresh,

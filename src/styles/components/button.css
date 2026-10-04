@@ -11,6 +11,7 @@
     padding-inline: 0.625rem;
     border: var(--border-width) solid transparent;
     border-radius: var(--radius-md);
+    corner-shape: squircle;
     background-color: var(--primary);
     background-clip: padding-box;
     color: var(--primary-foreground);
@@ -24,12 +25,16 @@
   /* Sizes: md is the default metrics above. */
   [data-uiify-button][data-size="sm"] {
     min-block-size: 32px;
+    border-radius: var(--radius-sm);
+    corner-shape: squircle;
     padding-inline: 0.5rem;
     gap: 0.25rem;
   }
 
   [data-uiify-button][data-size="lg"] {
     min-block-size: 40px;
+    border-radius: var(--radius-lg);
+    corner-shape: squircle;
     padding-inline: 1rem;
     font-size: var(--text-base);
   }
@@ -96,5 +101,22 @@
 
   [data-uiify-button][data-variant="destructive"]:active {
     background-color: color-mix(in oklch, var(--destructive), black 20%);
+  }
+}
+
+@layer components {
+  a[data-uiify-button],
+  a[data-uiify-button]:is(:hover, :active) {
+    padding-inline: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  a[data-uiify-button]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
   }
 }

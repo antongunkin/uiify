@@ -25,7 +25,7 @@ export function BreadcrumbRoot<TAs extends ElementType = "nav">(
   return useRenderElement({
     as,
     defaultTag: "nav",
-    props: { ...consumerProps, "aria-label": ariaLabel },
+    props: { ...consumerProps, "aria-label": ariaLabel, "data-uiify-breadcrumb": "" },
     render,
     state: {},
   });
@@ -95,7 +95,7 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
   return useRenderElement({
     as,
     defaultTag: "ol",
-    props: { ...consumerProps, children: content },
+    props: { ...consumerProps, children: content, "data-part": "list" },
     render,
     state: {},
   });
@@ -110,7 +110,7 @@ export function BreadcrumbItem<TAs extends ElementType = "li">(
   return useRenderElement({
     as,
     defaultTag: "li",
-    props: { ...consumerProps, children },
+    props: { ...consumerProps, children, "data-part": "item" },
     render,
     state: {},
   });
@@ -133,6 +133,7 @@ export function BreadcrumbLink<TAs extends ElementType = "a">(
     defaultTag: "a",
     props: {
       ...consumerProps,
+      "data-part": "link",
       "aria-current": current ? "page" : undefined,
       "data-current": current ? "" : undefined,
       href,
@@ -156,7 +157,7 @@ export function BreadcrumbSeparator<TAs extends ElementType = "span">(
   return useRenderElement({
     as,
     defaultTag: "span",
-    props: { ...consumerProps, "aria-hidden": true, children },
+    props: { ...consumerProps, "aria-hidden": true, children, "data-part": "separator" },
     render,
     state: {},
   });

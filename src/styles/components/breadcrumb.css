@@ -1,34 +1,34 @@
 @layer components {
-  nav[aria-label="Breadcrumb"] ol {
+  [data-uiify-breadcrumb] [data-part="list"] {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
-  nav[aria-label="Breadcrumb"] li {
+  [data-uiify-breadcrumb] [data-part="item"] {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
-  nav[aria-label="Breadcrumb"] a {
+  [data-uiify-breadcrumb] [data-part="link"] {
     color: var(--primary);
     text-decoration: none;
   }
 
-  nav[aria-label="Breadcrumb"] a:hover {
+  [data-uiify-breadcrumb] [data-part="link"]:hover {
     text-decoration: underline;
   }
 
-  nav[aria-label="Breadcrumb"] [aria-hidden="true"] {
+  [data-uiify-breadcrumb] [aria-hidden="true"] {
     color: var(--muted-foreground);
   }
 
-  nav[aria-label="Breadcrumb"] [data-current] {
+  [data-uiify-breadcrumb] [data-current] {
     color: var(--foreground);
     font-weight: 600;
   }

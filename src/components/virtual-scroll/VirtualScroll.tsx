@@ -36,7 +36,6 @@ import {
 import {
   clampScrollOffset,
   computeScrollOffsetForIndex,
-  isSmoothScrollActive,
   normalizeScrollBehaviorOptions,
   normalizeScrollToIndexOptions,
   resolveScrollBehavior,
@@ -82,7 +81,8 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 ): ReactElement {
   const {
     items,
-    height = 600,
+    height: suppliedHeight,
+    style: consumerStyle,
     rowHeight = VIRTUAL_SCROLL_ROW_HEIGHT,
     orientation = "vertical",
     overscan = VIRTUAL_SCROLL_OVERSCAN,
@@ -97,15 +97,17 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     followAppend = false,
     onScrollStateChange,
     isScrollingResetDelay = VIRTUAL_SCROLL_SCROLL_RESET_DELAY,
+    ...consumerProps
   } = props;
 
+  const height = suppliedHeight ?? 600;
   const dynamicLayout = estimateRowHeight !== undefined;
   const horizontal = orientation === "horizontal";
   const ref = useRef<HTMLDivElement>(null);
   const scrollOffsetRef = useRef(0);
+  const programmaticScrollRef = useRef(false);
   const itemsRef = useRef(items);
   itemsRef.current = items;
-  const smoothRafRef = useRef(0);
   const lastRangeChangeRef = useRef<string>("");
   const measuredHeightsRef = useRef(new Map<string, number>());
   const anchorSnapshotRef = useRef({
@@ -193,13 +195,13 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     callback(payload);
   };
 
-  const syncRangeFromScrollRef = useRef(() => {});
+  const syncRangeFromScrollRef = useRef((_offset?: number) => {});
 
-  syncRangeFromScrollRef.current = () => {
+  syncRangeFromScrollRef.current = (offset?: number) => {
     const element = ref.current;
     if (!element) return;
 
-    const scrollOffset = readScrollOffset(element, scrollOptionsRef.current.orientation);
+    const scrollOffset = offset ?? readScrollOffset(element, scrollOptionsRef.current.orientation);
     const previousRange = computeRange();
     scrollOffsetRef.current = scrollOffset;
 
@@ -247,8 +249,10 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     if (!element || delta === 0) return;
     // Preserve the viewport while rows resize.
     const { orientation } = scrollOptionsRef.current;
-    writeScrollOffset(element, orientation, readScrollOffset(element, orientation) + delta, "auto");
-    syncRangeFromScrollRef.current();
+    const next = scrollOffsetRef.current + delta;
+    programmaticScrollRef.current = true;
+    writeScrollOffset(element, orientation, next, "auto");
+    syncRangeFromScrollRef.current(next);
   };
 
   const applyScrollOffset = (
@@ -261,26 +265,10 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     const store = measurementStoreRef.current;
     const totalSize = dynamicLayout ? store.getTotalSize() : items.length * rowHeight;
     const clamped = clampScrollOffset(offset, totalSize, viewportSize);
+    const current = scrollOffsetRef.current;
+    programmaticScrollRef.current = behavior === "instant";
     writeScrollOffset(element, orientation, clamped, resolveScrollBehavior(behavior));
-    syncRangeFromScrollRef.current();
-
-    if (isSmoothScrollActive(behavior ?? "auto", readScrollOffset(element, orientation), clamped)) {
-      if (smoothRafRef.current !== 0) cancelAnimationFrame(smoothRafRef.current);
-      const tick = (): void => {
-        syncRangeFromScrollRef.current();
-        const node = ref.current;
-        if (!node) {
-          smoothRafRef.current = 0;
-          return;
-        }
-        if (isSmoothScrollActive("smooth", readScrollOffset(node, orientation), clamped)) {
-          smoothRafRef.current = requestAnimationFrame(tick);
-          return;
-        }
-        smoothRafRef.current = 0;
-      };
-      smoothRafRef.current = requestAnimationFrame(tick);
-    }
+    syncRangeFromScrollRef.current(behavior === "instant" ? clamped : current);
   };
 
   const applyScrollOffsetRef = useRef(
@@ -331,7 +319,15 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     void rangeVersion;
     void measurementVersion;
     return computeRange();
-  }, [rangeVersion, measurementVersion]);
+  }, [
+    rangeVersion,
+    measurementVersion,
+    dynamicLayout,
+    items.length,
+    overscan,
+    rowHeight,
+    viewportSize,
+  ]);
 
   const totalSize = useMemo(() => {
     void measurementVersion;
@@ -427,16 +423,35 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     const ios = iosControllerRef.current;
     const onTouchStart = (): void => ios.onTouchStart();
     const onTouchEnd = (): void => ios.onTouchEnd();
+    let verifyFrame = 0;
+    let verifyTimer = 0;
+    const syncNativeScroll = (): void => {
+      if (!programmaticScrollRef.current) {
+        syncRangeFromScrollRef.current();
+        return;
+      }
+      // The imperative path already rendered its range. Verify the browser's
+      // actual offset after layout, including coalesced external scroll writes.
+      if (verifyFrame !== 0) return;
+      verifyFrame = requestAnimationFrame(() => {
+        verifyTimer = window.setTimeout(() => {
+          verifyFrame = 0;
+          verifyTimer = 0;
+          programmaticScrollRef.current = false;
+          syncRangeFromScrollRef.current();
+        }, 0);
+      });
+    };
 
     onScroll = () => {
+      syncNativeScroll();
       scrollState.notifyScroll();
-      syncRangeFromScrollRef.current();
     };
     element.addEventListener("scroll", onScroll, { passive: true });
     if (supportsScrollEndEvent()) {
       onScrollEnd = () => {
+        syncNativeScroll();
         scrollState.notifyScrollEnd();
-        syncRangeFromScrollRef.current();
       };
       element.addEventListener("scrollend", onScrollEnd, { passive: true });
     }
@@ -444,7 +459,8 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     element.addEventListener("touchend", onTouchEnd, { passive: true });
 
     return () => {
-      if (smoothRafRef.current !== 0) cancelAnimationFrame(smoothRafRef.current);
+      if (verifyFrame !== 0) cancelAnimationFrame(verifyFrame);
+      if (verifyTimer !== 0) window.clearTimeout(verifyTimer);
       if (onScroll) element.removeEventListener("scroll", onScroll);
       if (onScrollEnd) element.removeEventListener("scrollend", onScrollEnd);
       element.removeEventListener("touchstart", onTouchStart);
@@ -476,8 +492,11 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
     if (adjustment && element) {
       // Retain the anchored viewport.
+      programmaticScrollRef.current = true;
       writeScrollOffset(element, orientation, scrollOffset + adjustment.delta, adjustment.behavior);
-      syncRangeFromScrollRef.current();
+      syncRangeFromScrollRef.current(
+        adjustment.behavior === "smooth" ? scrollOffset : scrollOffset + adjustment.delta,
+      );
     }
 
     anchorSnapshotRef.current = nextSnapshot;
@@ -488,7 +507,10 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   }, [range]);
 
   const scrollportStyle = {
-    height,
+    ...(suppliedHeight !== undefined || (!consumerStyle?.blockSize && !consumerStyle?.height)
+      ? { blockSize: height }
+      : {}),
+    ...consumerStyle,
     overflowX: horizontal ? "auto" : undefined,
     overflowY: horizontal ? "hidden" : "auto",
     "--uiify-virtual-scroll-count": items.length,
@@ -504,8 +526,9 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
   return (
     <div
+      {...consumerProps}
       ref={ref}
-      data-testid={testId}
+      data-testid={testId ?? consumerProps["data-testid" as keyof typeof consumerProps]}
       data-uiify-virtual-scroll=""
       data-dynamic-layout={dynamicLayout ? "" : undefined}
       data-orientation={orientation}

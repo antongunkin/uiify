@@ -1,5 +1,5 @@
 import type { DrawerSide } from "./types.js";
-import type { DrawerStoreOptions, DrawerStore } from "./client-types.js";
+import type { DrawerStoreOptions, DrawerStore } from "./types.js";
 
 function isVerticalSide(side: DrawerSide): boolean {
   return side === "top" || side === "bottom";
@@ -34,8 +34,7 @@ function snapToNearest(
 export function createDrawerStore(options: DrawerStoreOptions): DrawerStore {
   const snapPoints = options.snapPoints ?? [];
   const dismissible = options.dismissible ?? true;
-  const side = options.side;
-  const vertical = isVerticalSide(side);
+  let side = options.side;
 
   let activeSnapPoint =
     options.activeSnapPoint ??
@@ -87,7 +86,7 @@ export function createDrawerStore(options: DrawerStoreOptions): DrawerStore {
       const delta = openPx - dragOffset;
       const closedPx = containerSize;
       const offset = closedPx - delta;
-      if (vertical) {
+      if (isVerticalSide(side)) {
         const sign = side === "bottom" ? 1 : -1;
         return `translate${side === "bottom" || side === "top" ? "Y" : "X"}(${sign * offset}px)`;
       }
@@ -100,6 +99,11 @@ export function createDrawerStore(options: DrawerStoreOptions): DrawerStore {
       const delta = clientCoord - pointerStart;
       const signedDelta = side === "top" || side === "left" ? -delta : delta;
       dragOffset = Math.max(0, dragStartOffset + signedDelta);
+      emit();
+    },
+    setSide(nextSide) {
+      if (side === nextSide) return;
+      side = nextSide;
       emit();
     },
     setContainerSize(size) {

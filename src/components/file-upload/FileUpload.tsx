@@ -1,149 +1,19 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import type { ElementType, DragEvent, ReactElement, SyntheticEvent } from "react";
-import { useControllableState, useId } from "@gunkin/uiify/hooks";
-import { createPartContext } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { createFileUploadStore, validateFiles } from "./file-upload-store.js";
+import { FileUploadRoot, FileUploadRootClient } from "./FileUploadRoot.js";
+import { FileUploadHiddenInput } from "./FileUploadInput.js";
+import { useFileUploadContext } from "./file-upload-context.js";
 import type {
-  FileUploadStore,
-  FileUploadContextValue,
-  FileUploadRootProps,
-  FileUploadHiddenInputOwnProps,
   FileUploadTriggerProps,
   FileUploadDropzoneProps,
   FileUploadListOwnProps,
   FileUploadItemProps,
   FileUploadItemRemoveOwnProps,
 } from "./types.js";
-
-const [FileUploadProvider, useFileUploadContext] =
-  createPartContext<FileUploadContextValue>("FileUpload");
-
-export function FileUploadRootClient(props: FileUploadRootProps): ReactElement | null {
-  const {
-    accept = [],
-    className,
-    children,
-    defaultValue = [],
-    disabled = false,
-    maxFiles,
-    maxSize,
-    minSize,
-    multiple = false,
-    onValueChange,
-    onReject,
-    value: controlledValue,
-  } = props;
-
-  const inputId = useId();
-  const hiddenInputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useControllableState<File[]>({
-    defaultValue: [...defaultValue],
-    ...(controlledValue !== undefined ? { value: [...controlledValue] } : {}),
-    ...(onValueChange ? { onChange: onValueChange } : {}),
-  });
-
-  const storeRef = useRef<FileUploadStore | null>(null);
-  storeRef.current ??= createFileUploadStore(files);
-  const store = storeRef.current;
-
-  const processFiles = useCallback(
-    (list: FileList | readonly File[]) => {
-      if (disabled) return;
-      const incoming = Array.from(list);
-      const { accepted, rejected } = validateFiles(incoming, {
-        accept,
-        multiple,
-        ...(maxFiles !== undefined ? { maxFiles } : {}),
-        ...(maxSize !== undefined ? { maxSize } : {}),
-        ...(minSize !== undefined ? { minSize } : {}),
-      });
-      if (rejected.length > 0) onReject?.(rejected);
-      if (accepted.length === 0) return;
-      const next = multiple ? [...store.getFiles(), ...accepted] : accepted;
-      store.setFiles(next);
-      setFiles(next);
-    },
-    [accept, disabled, maxFiles, maxSize, minSize, multiple, onReject, setFiles, store],
-  );
-
-  const openPicker = useCallback(() => {
-    hiddenInputRef.current?.click();
-  }, []);
-
-  const removeAt = useCallback(
-    (index: number) => {
-      store.removeAt(index);
-      setFiles(store.getFiles());
-    },
-    [setFiles, store],
-  );
-
-  const contextValue = useMemo(
-    () => ({
-      accept,
-      disabled,
-      hiddenInputRef,
-      inputId,
-      multiple,
-      openPicker,
-      processFiles,
-      removeAt,
-      store,
-    }),
-    [accept, disabled, inputId, multiple, openPicker, processFiles, removeAt, store],
-  );
-
-  return (
-    <div className={className} data-uiify-file-upload="">
-      <FileUploadProvider value={contextValue}>{children}</FileUploadProvider>
-    </div>
-  );
-}
-FileUploadRootClient.displayName = "FileUploadRootClient";
-
-export const FileUploadRoot = FileUploadRootClient;
-
-export function FileUploadHiddenInput(props: FileUploadHiddenInputOwnProps): ReactElement | null {
-  const { className } = props;
-  const { accept, disabled, hiddenInputRef, inputId, multiple, processFiles } =
-    useFileUploadContext("HiddenInput");
-
-  return useRenderElement({
-    defaultTag: "input",
-    props: {
-      ref: hiddenInputRef,
-      id: inputId,
-      type: "file",
-      "data-part": "input",
-      tabIndex: -1,
-      accept: accept.length > 0 ? accept.join(",") : undefined,
-      multiple: multiple || undefined,
-      style: {
-        border: 0,
-        clip: "rect(0 0 0 0)",
-        height: "1px",
-        margin: "-1px",
-        overflow: "hidden",
-        padding: 0,
-        position: "absolute",
-        whiteSpace: "nowrap",
-        width: "1px",
-      },
-      disabled: disabled || undefined,
-      ...(className ? { className } : {}),
-      onChange(event: SyntheticEvent<HTMLInputElement>) {
-        const list = event.currentTarget.files;
-        if (list) processFiles(list);
-        event.currentTarget.value = "";
-      },
-    },
-    state: { disabled },
-  });
-}
+export { FileUploadRoot, FileUploadRootClient, FileUploadHiddenInput };
 
 export function FileUploadTrigger<TAs extends ElementType = "label">(
   props: FileUploadTriggerProps<TAs>,
@@ -159,6 +29,7 @@ export function FileUploadTrigger<TAs extends ElementType = "label">(
     tag === "button"
       ? {
           type: "button" as const,
+          "data-uiify-button": "",
           "aria-controls": inputId,
           disabled: disabled || undefined,
           onClick: composeEventHandlers(consumerOnClick, openPicker),
@@ -220,10 +91,16 @@ export function FileUploadDropzone<TAs extends ElementType = "div">(
 }
 
 export function FileUploadList(props: FileUploadListOwnProps): ReactElement | null {
-  const { children, className } = props;
+  const { children, ...consumerProps } = props;
+  const { files } = useFileUploadContext("List");
   return useRenderElement({
     defaultTag: "ul",
-    props: { role: "list", "data-part": "list", ...(className ? { className } : {}), children },
+    props: {
+      ...consumerProps,
+      role: "list",
+      "data-part": "list",
+      children: typeof children === "function" ? children(files) : children,
+    },
     state: {},
   });
 }
@@ -233,8 +110,7 @@ export function FileUploadItem<TAs extends ElementType = "li">(
 ): ReactElement | null {
   const { as, render, children, className, index, ...consumerProps } =
     props as FileUploadItemProps<"li">;
-  const { store } = useFileUploadContext("Item");
-  const files = useSyncExternalStore(store.subscribe, store.getFiles, store.getFiles);
+  const { files } = useFileUploadContext("Item");
   const file = files[index];
 
   const element = useRenderElement({
@@ -257,18 +133,28 @@ export function FileUploadItem<TAs extends ElementType = "li">(
 }
 
 export function FileUploadItemRemove(props: FileUploadItemRemoveOwnProps): ReactElement | null {
-  const { className, index } = props;
-  const { disabled, removeAt } = useFileUploadContext("ItemRemove");
+  const {
+    index,
+    onClick,
+    disabled: consumerDisabled = false,
+    children = "×",
+    ...consumerProps
+  } = props;
+  const { disabled: rootDisabled, removeAt } = useFileUploadContext("ItemRemove");
 
+  const disabled = rootDisabled || consumerDisabled;
   return useRenderElement({
     defaultTag: "button",
     props: {
       type: "button",
-      "aria-label": "Remove file",
+      ...consumerProps,
+      "aria-label": consumerProps["aria-label"] ?? "Remove file",
+      children,
       "data-part": "remove",
       disabled: disabled || undefined,
-      ...(className ? { className } : {}),
-      onClick: () => removeAt(index),
+      onClick: composeEventHandlers(onClick, () => {
+        if (!disabled) removeAt(index);
+      }),
     },
     state: { disabled },
   });

@@ -18,17 +18,22 @@
   }
 
   [data-uiify-checkbox] {
+    --uiify-checkbox-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.6l3 3L12.4 4.8' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 100% 100% no-repeat;
+
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
     cursor: pointer;
+    user-select: none;
     color: var(--foreground);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
   }
 
   [data-uiify-checkbox] > input {
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-xs);
+    corner-shape: squircle;
   }
 
   [data-uiify-radio] {
@@ -54,12 +59,12 @@
   /* Checkmark. */
   [data-uiify-checkbox] > input::before {
     content: "";
-    inline-size: 0.65rem;
-    block-size: 0.65rem;
+    inline-size: 1rem;
+    block-size: 1rem;
     transform: scale(0);
     transition: transform var(--duration-fast) var(--ease-out);
     background-color: var(--primary-foreground);
-    clip-path: polygon(14% 44%, 0 65%, 38% 100%, 100% 22%, 84% 6%, 38% 68%);
+    mask: var(--uiify-checkbox-mask);
   }
 
   [data-uiify-checkbox] > input:checked::before,
@@ -77,6 +82,7 @@
   [data-uiify-checkbox] > input:indeterminate::before,
   [data-uiify-checkbox] > input[data-state="indeterminate"]::before {
     transform: scale(1);
+    mask: none;
     clip-path: inset(42% 12% 42% 12%);
   }
 
@@ -139,5 +145,13 @@
   [data-uiify-switch][data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+@layer components {
+  label:has([data-uiify-radio]),
+  [data-uiify-radio-group] label {
+    user-select: none;
+    cursor: pointer;
   }
 }
