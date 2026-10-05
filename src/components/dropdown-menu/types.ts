@@ -64,6 +64,7 @@ export type DropdownMenuRootControlledOwnProps = Pick<
 export type DropdownMenuRootShellProps = DropdownMenuRootOwnProps;
 
 export interface DropdownMenuTriggerOwnProps {
+  readonly shape?: "square" | "circle";
   readonly children?: ReactNode;
   readonly className?: string;
   readonly openOnHover?: boolean;

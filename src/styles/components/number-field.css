@@ -13,7 +13,9 @@
 
   [data-uiify-number-field] > [role="spinbutton"] {
     inline-size: 4rem;
-    padding-block: var(--space-sm);
+    min-block-size: 36px;
+    line-height: 1.25rem;
+    padding-block: 0;
     padding-inline: var(--space-md);
     border: none;
     background: none;
@@ -36,7 +38,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 2.25rem;
+    flex: none;
+    inline-size: 36px;
+    block-size: 36px;
     padding: 0;
     border: none;
     border-inline-start: var(--border-width) solid var(--border);

@@ -35,11 +35,12 @@ export function ToolbarRoot(props: ToolbarRootProps): ReactElement | null {
 ToolbarRoot.displayName = "ToolbarRoot";
 
 export function ToolbarButton(props: ToolbarButtonProps): ReactElement | null {
-  const { children, className, disabled = false, ...consumerProps } = props;
+  const { children, className, disabled = false, shape, ...consumerProps } = props;
 
   return (
     <button
       {...consumerProps}
+      {...(shape !== undefined ? { "data-shape": shape } : {})}
       aria-disabled={disabled || undefined}
       data-part="item"
       data-uiify-toolbar=""

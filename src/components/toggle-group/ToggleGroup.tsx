@@ -24,6 +24,7 @@ export function ToggleGroup({
       {...(className !== undefined ? { className } : {})}
       id={id}
       items={resolvedItems}
+      itemWrapperAttributes={(item) => ({ "data-shape": item.shape })}
       isChecked={(item) => values.includes(item.value)}
       kind={type}
       namespace="toggle-group"

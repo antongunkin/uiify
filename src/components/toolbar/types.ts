@@ -13,6 +13,7 @@ export interface ToolbarRootProps
   extends ToolbarRootOwnProps, Omit<HTMLAttributes<HTMLDivElement>, keyof ToolbarRootOwnProps> {}
 
 export interface ToolbarButtonOwnProps {
+  readonly shape?: "square" | "circle";
   readonly children?: ReactNode;
   readonly className?: string;
   readonly disabled?: boolean;

@@ -101,6 +101,7 @@ function SingleToggleGroupClient({
       {...(className !== undefined ? { className } : {})}
       id={id}
       items={resolvedItems}
+      itemWrapperAttributes={(item) => ({ "data-shape": item.shape })}
       isChecked={(item) => item.value === selectedValue}
       isControlled={controlledValue !== undefined}
       kind="single"
@@ -146,6 +147,7 @@ function MultipleToggleGroupClient({
       {...(className !== undefined ? { className } : {})}
       id={id}
       items={resolvedItems}
+      itemWrapperAttributes={(item) => ({ "data-shape": item.shape })}
       isChecked={(item) => selectedValues.includes(item.value)}
       isControlled={controlledValue !== undefined}
       kind="multiple"

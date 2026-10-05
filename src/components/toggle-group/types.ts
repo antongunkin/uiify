@@ -1,6 +1,8 @@
 import type { ChoiceItem, ChoiceOrientation } from "../internal/choice-family/types.js";
 
-export interface ToggleGroupItem extends ChoiceItem {}
+export interface ToggleGroupItem extends ChoiceItem {
+  readonly shape?: "square" | "circle";
+}
 
 export interface ToggleGroupProps {
   readonly id: string;

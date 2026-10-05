@@ -43,6 +43,26 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Plain" }).hasAttribute("data-size")).toBe(false);
   });
 
+  it("serializes icon shapes independently of variant and size", () => {
+    const markup = renderToStaticMarkup(
+      <Button shape="circle" size="sm" variant="ghost" aria-label="Settings">
+        <svg aria-hidden="true" />
+      </Button>,
+    );
+    expect(markup).toContain('data-shape="circle"');
+    expect(markup).toContain('data-size="sm"');
+    expect(markup).toContain('data-variant="ghost"');
+    expect(markup).not.toMatch(/\sshape=/);
+    expect(renderToStaticMarkup(<Button>Save</Button>)).not.toContain("data-shape");
+  });
+
+  it("owns an explicit shape and preserves a consumer shape when omitted", () => {
+    expect(renderToStaticMarkup(<Button shape="square" data-shape="circle" />)).toContain(
+      'data-shape="square"',
+    );
+    expect(renderToStaticMarkup(<Button data-shape="circle" />)).toContain('data-shape="circle"');
+  });
+
   it("blocks interaction when disabled", () => {
     const onClick = vi.fn();
     render(

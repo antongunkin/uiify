@@ -13,6 +13,7 @@ export function Button<TAs extends ElementType = "button">(
     as,
     render,
     disabled = false,
+    shape,
     size,
     type,
     variant,
@@ -27,6 +28,7 @@ export function Button<TAs extends ElementType = "button">(
     props: {
       ...consumerProps,
       "data-uiify-button": "",
+      ...(shape !== undefined ? { "data-shape": shape } : {}),
       ...(size !== undefined ? { "data-size": size } : {}),
       ...(variant !== undefined ? { "data-variant": variant } : {}),
       ...(nativeButton

@@ -120,3 +120,40 @@
     outline-offset: 3px;
   }
 }
+
+@layer components {
+  :where(
+    [data-uiify-button],
+    [data-uiify-toolbar][data-part="item"],
+    [data-uiify-toggle-group] [data-uiify-choice][data-part="item"]
+  )[data-shape] {
+    --uiify-button-size: 36px;
+  }
+
+  [data-uiify-button][data-shape][data-size="sm"] {
+    --uiify-button-size: 32px;
+  }
+
+  [data-uiify-button][data-shape][data-size="lg"] {
+    --uiify-button-size: 40px;
+  }
+
+  [data-uiify-button][data-shape],
+  [data-uiify-toolbar][data-part="item"][data-shape],
+  [data-uiify-toggle-group] [data-uiify-choice][data-part="item"][data-shape] > label {
+    box-sizing: border-box;
+    flex: none;
+    inline-size: var(--uiify-button-size);
+    block-size: var(--uiify-button-size);
+    min-inline-size: var(--uiify-button-size);
+    min-block-size: var(--uiify-button-size);
+    padding: 0;
+  }
+
+  [data-uiify-button][data-shape="circle"],
+  [data-uiify-toolbar][data-part="item"][data-shape="circle"],
+  [data-uiify-toggle-group] [data-uiify-choice][data-part="item"][data-shape="circle"] > label {
+    border-radius: var(--radius-full);
+    corner-shape: round;
+  }
+}
