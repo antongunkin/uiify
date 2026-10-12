@@ -129,7 +129,6 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
     render,
     className,
     openOnHover = false,
-    shape,
     ...consumerProps
   } = props as DropdownMenuTriggerProps<"button"> & { openOnHover?: boolean };
   const {
@@ -194,7 +193,6 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
       ...(nativeButton ? { "data-uiify-button": "" } : {}),
       "aria-haspopup": "menu",
       "data-part": "trigger",
-      ...(shape !== undefined ? { "data-shape": shape } : {}),
       "data-state": open ? "open" : "closed",
       "data-disabled": disabled ? "" : undefined,
       disabled: nativeButton && disabled ? true : undefined,

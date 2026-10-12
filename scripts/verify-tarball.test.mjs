@@ -4,7 +4,15 @@ import { assertNoSecrets, assertPackFiles } from "./verify-tarball.mjs";
 
 test("accepts the public tarball allowlist", () => {
   assert.doesNotThrow(() =>
-    assertPackFiles(["README.md", "LICENSE", "package.json", "dist/index.js", "dist/index.d.ts"]),
+    assertPackFiles([
+      "README.md",
+      "LICENSE",
+      "package.json",
+      "dist/index.js",
+      "dist/index.d.ts",
+      "agents/index.md",
+      "agents/reference/components/button.md",
+    ]),
   );
 });
 

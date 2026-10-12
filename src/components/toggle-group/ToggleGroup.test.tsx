@@ -18,13 +18,10 @@ describe("ToggleGroup", () => {
             value={type === "single" ? "one" : ["one"]}
             onValueChange={onValueChange}
             items={[
-              { value: "one", label: "One", shape: "circle" },
+              { value: "one", label: "One" },
               { value: "two", label: "Two" },
             ]}
           />,
-        );
-        expect(screen.getByLabelText("One").parentElement?.getAttribute("data-shape")).toBe(
-          "circle",
         );
         fireEvent.click(screen.getByLabelText("Two"));
         expect(onValueChange).toHaveBeenCalledWith(type === "single" ? "two" : ["one", "two"]);
@@ -35,7 +32,7 @@ describe("ToggleGroup", () => {
             value={type === "single" ? "two" : ["two"]}
             onValueChange={onValueChange}
             items={[
-              { value: "one", label: "One", shape: "circle" },
+              { value: "one", label: "One" },
               { value: "two", label: "Two" },
             ]}
           />,

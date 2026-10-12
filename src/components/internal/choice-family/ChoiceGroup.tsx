@@ -27,7 +27,7 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
     itemPart = "item",
     labelPart = false,
     rootAttributes,
-    itemWrapperAttributes,
+    labelAttributes,
     itemInputClassName,
     onItemChange,
     renderPanel,
@@ -49,7 +49,6 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
         const panel = renderPanel ? renderPanel(item) : undefined;
         return (
           <ElementChoiceItem
-            {...itemWrapperAttributes?.(item)}
             {...(panel === undefined ? {} : { panel })}
             {...(isControlled ? { checked: isChecked(item) } : { defaultChecked: isChecked(item) })}
             disabled={item.disabled ?? false}
@@ -63,7 +62,7 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
             kind={kind}
             label={renderLabel ? renderLabel(item) : item.label}
             labelPart={false}
-            labelProps={{ "data-part": labelPart ? "trigger" : "label" }}
+            labelProps={{ ...labelAttributes, "data-part": labelPart ? "trigger" : "label" }}
             name={groupName}
             {...(onItemChange ? { onValueChange: () => onItemChange(item) } : {})}
             panelProps={{ "data-part": "panel" }}

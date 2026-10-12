@@ -13,7 +13,7 @@ export function Button<TAs extends ElementType = "button">(
     as,
     render,
     disabled = false,
-    shape,
+    selected,
     size,
     type,
     variant,
@@ -21,6 +21,12 @@ export function Button<TAs extends ElementType = "button">(
   } = props as ButtonProps<"button">;
 
   const nativeButton = isNativeButton(as);
+  // A toggle button reports its state through aria-pressed; anything that already names the
+  // relation itself (current page, selected tab) keeps its own attribute.
+  const ownsAria =
+    "aria-pressed" in consumerProps ||
+    "aria-current" in consumerProps ||
+    "aria-selected" in consumerProps;
 
   return useRenderElement({
     as,
@@ -28,9 +34,10 @@ export function Button<TAs extends ElementType = "button">(
     props: {
       ...consumerProps,
       "data-uiify-button": "",
-      ...(shape !== undefined ? { "data-shape": shape } : {}),
       ...(size !== undefined ? { "data-size": size } : {}),
       ...(variant !== undefined ? { "data-variant": variant } : {}),
+      ...(selected ? { "data-selected": "" } : {}),
+      ...(selected !== undefined && nativeButton && !ownsAria ? { "aria-pressed": selected } : {}),
       ...(nativeButton
         ? { type: type ?? "button", ...(disabled ? { disabled: true } : {}) }
         : disabled
@@ -45,6 +52,6 @@ export function Button<TAs extends ElementType = "button">(
       ...(disabled ? { "data-disabled": "" } : {}),
     },
     render,
-    state: { disabled },
+    state: { disabled, selected: selected ?? false },
   });
 }

@@ -45,6 +45,8 @@ export function CarouselMarkup({
           type="button"
           data-part="controls"
           data-carousel-action="rotation"
+          data-uiify-button=""
+          data-variant="outline"
           hidden={!enhanced}
         >
           {presentation.autoplay.requested ? labels.stop : labels.start}
@@ -87,6 +89,9 @@ export function CarouselMarkup({
           aria-label={labels.previous}
           data-part="controls"
           data-carousel-action="previous"
+          data-size="icon"
+          data-uiify-button=""
+          data-variant="outline"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atStart : undefined}
         >
@@ -121,6 +126,9 @@ export function CarouselMarkup({
           aria-label={labels.next}
           data-part="controls"
           data-carousel-action="next"
+          data-size="icon"
+          data-uiify-button=""
+          data-variant="outline"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atEnd : undefined}
         >

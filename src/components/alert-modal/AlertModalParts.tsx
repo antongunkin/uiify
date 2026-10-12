@@ -64,7 +64,7 @@ export function AlertModalCancel<TAs extends ElementType = "button">(
     "request-close",
     target,
     consumerProps as Record<string, unknown>,
-    { button: true, variant: "ghost" },
+    { button: true, variant: "secondary" },
   );
 }
 AlertModalCancel.displayName = "AlertModalCancel";

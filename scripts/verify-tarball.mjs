@@ -10,7 +10,7 @@ const execFileAsync = promisify(execFile);
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".mjs", ".ts"]);
 
-const allowedPath = /^(?:README\.md|LICENSE|package\.json|dist(?:\/|$))/;
+const allowedPath = /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)(?:\/|$))/;
 const credentialLike = [
   /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
   /\bnpm_[A-Za-z0-9]{8,}\b/,

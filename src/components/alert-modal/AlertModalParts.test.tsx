@@ -63,6 +63,6 @@ describe("AlertModal native parts", () => {
     );
     const button = screen.getByRole("button", { name: "Cancel" });
     expect(button.getAttribute("data-uiify-button")).toBe("");
-    expect(button.getAttribute("data-variant")).toBe("ghost");
+    expect(button.getAttribute("data-variant")).toBe("secondary");
   });
 });

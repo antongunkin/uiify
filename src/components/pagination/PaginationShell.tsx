@@ -195,8 +195,12 @@ export function PaginationLink<TAs extends ElementType = "a">(
       "aria-current": selected ? "page" : undefined,
       "aria-label": `Page ${page}`,
       "aria-disabled": disabled ? true : undefined,
+      "data-disabled": disabled ? "" : undefined,
       "data-selected": selected ? "" : undefined,
+      "data-size": "icon",
       "data-type": "page",
+      "data-uiify-button": "",
+      "data-variant": "ghost",
       href,
       children: page,
     },
@@ -231,11 +235,24 @@ function PaginationNavControl({
   return (
     <PaginationItemPart>
       {href ? (
-        <a aria-label={label} data-type={type} href={href}>
+        <a
+          aria-label={label}
+          data-type={type}
+          data-uiify-button=""
+          data-variant="ghost"
+          href={href}
+        >
           {labelText}
         </a>
       ) : (
-        <span aria-disabled={disabled ? true : undefined} aria-label={label} data-type={type}>
+        <span
+          aria-disabled={disabled ? true : undefined}
+          aria-label={label}
+          data-disabled={disabled ? "" : undefined}
+          data-type={type}
+          data-uiify-button=""
+          data-variant="ghost"
+        >
           {labelText}
         </span>
       )}

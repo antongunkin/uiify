@@ -22,6 +22,7 @@ export function ToggleGroupClient({
   onValueChange,
   disabled = false,
   orientation = "horizontal",
+  size,
   className,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
@@ -39,6 +40,7 @@ export function ToggleGroupClient({
         items={items}
         onValueChange={onValueChange}
         orientation={orientation}
+        size={size}
       />
     );
   }
@@ -55,6 +57,7 @@ export function ToggleGroupClient({
       items={items}
       onValueChange={onValueChange}
       orientation={orientation}
+      size={size}
     />
   );
 }
@@ -70,6 +73,7 @@ interface ToggleGroupClientBranchProps {
   readonly items: readonly ToggleGroupItem[];
   readonly onValueChange?: ((value: string | readonly string[]) => void) | undefined;
   readonly orientation: "horizontal" | "vertical";
+  readonly size?: ToggleGroupClientProps["size"];
 }
 
 function SingleToggleGroupClient({
@@ -83,6 +87,7 @@ function SingleToggleGroupClient({
   items,
   onValueChange,
   orientation,
+  size,
 }: ToggleGroupClientBranchProps): ReactElement {
   const [selectedValue, setSelectedValue] = useControllableState<string | undefined>({
     defaultValue: normalizeSingle(defaultValue),
@@ -101,11 +106,15 @@ function SingleToggleGroupClient({
       {...(className !== undefined ? { className } : {})}
       id={id}
       items={resolvedItems}
-      itemWrapperAttributes={(item) => ({ "data-shape": item.shape })}
       isChecked={(item) => item.value === selectedValue}
       isControlled={controlledValue !== undefined}
       kind="single"
       namespace="toggle-group"
+      labelAttributes={{
+        "data-uiify-button": "",
+        "data-variant": "outline",
+        ...(size !== undefined ? { "data-size": size } : {}),
+      }}
       onItemChange={(item) => setSelectedValue(item.value)}
       orientation={orientation}
       rootAttributes={{
@@ -131,6 +140,7 @@ function MultipleToggleGroupClient({
   items,
   onValueChange,
   orientation,
+  size,
 }: ToggleGroupClientBranchProps): ReactElement {
   const [selectedValues, setSelectedValues] = useControllableState<readonly string[]>({
     defaultValue: normalizeMultiple(defaultValue),
@@ -147,11 +157,15 @@ function MultipleToggleGroupClient({
       {...(className !== undefined ? { className } : {})}
       id={id}
       items={resolvedItems}
-      itemWrapperAttributes={(item) => ({ "data-shape": item.shape })}
       isChecked={(item) => selectedValues.includes(item.value)}
       isControlled={controlledValue !== undefined}
       kind="multiple"
       namespace="toggle-group"
+      labelAttributes={{
+        "data-uiify-button": "",
+        "data-variant": "outline",
+        ...(size !== undefined ? { "data-size": size } : {}),
+      }}
       onItemChange={(item) =>
         setSelectedValues((currentValues) =>
           currentValues.includes(item.value)

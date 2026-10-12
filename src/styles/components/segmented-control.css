@@ -6,8 +6,7 @@
     display: inline-flex;
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-lg);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
     background-color: var(--muted);
   }
 
@@ -37,44 +36,14 @@
     white-space: nowrap;
   }
 
+  /* The segments are Button-skinned labels (`ghost`, `sm`); only their place in the track
+     is set here. */
   [data-uiify-segmented-control] [data-part="item"] > label {
-    position: relative;
     z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-inline-size: 4rem;
-    padding-block: var(--space-xs);
-    padding-inline: var(--space-md);
-    border-radius: calc(var(--radius-lg) - var(--space-xs));
-    corner-shape: squircle;
-    color: var(--muted-foreground);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
-    cursor: pointer;
   }
 
   [data-uiify-segmented-control][data-full-width] [data-part="item"] > label {
     inline-size: 100%;
-  }
-
-  [data-uiify-segmented-control] [data-part="item"] > label:hover {
-    color: var(--foreground);
-  }
-
-  [data-uiify-segmented-control] [data-part="item"]:has(> input:checked) > label {
-    color: var(--foreground);
-    background-color: var(--card);
-    box-shadow: var(--shadow-1);
-  }
-
-  [data-uiify-segmented-control] [data-part="item"]:has(> input:disabled) > label {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  [data-uiify-segmented-control] [data-part="item"] > input:focus-visible + label {
-    outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 }

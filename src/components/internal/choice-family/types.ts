@@ -33,8 +33,8 @@ export interface ChoiceGroupProps<TItem extends ChoiceItem = ChoiceItem> {
   readonly labelPart?: boolean;
   /** Extra attributes spread onto the root, e.g. `data-full-width`, `aria-label`. */
   readonly rootAttributes?: Record<string, string | undefined>;
-  /** Extra attributes spread onto each item's wrapper div, such as consumer state markers. */
-  readonly itemWrapperAttributes?: (item: TItem) => Record<string, string | undefined>;
+  /** Extra attributes for each item's label, e.g. the Button skin markers. */
+  readonly labelAttributes?: Record<string, string>;
   /** Per-item `className` hook for the input, e.g. RadioGroup's `item.className`. */
   readonly itemInputClassName?: (item: TItem) => string | undefined;
   /** Fires on the input's native `change` event, e.g. a client wrapper syncing

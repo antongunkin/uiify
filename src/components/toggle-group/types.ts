@@ -1,8 +1,6 @@
 import type { ChoiceItem, ChoiceOrientation } from "../internal/choice-family/types.js";
 
-export interface ToggleGroupItem extends ChoiceItem {
-  readonly shape?: "square" | "circle";
-}
+export type ToggleGroupItem = ChoiceItem;
 
 export interface ToggleGroupProps {
   readonly id: string;
@@ -11,6 +9,8 @@ export interface ToggleGroupProps {
   readonly defaultValue?: string | readonly string[];
   readonly disabled?: boolean;
   readonly orientation?: ChoiceOrientation;
+  /** Button size of each item; `md` metrics when omitted. */
+  readonly size?: "sm" | "md" | "lg";
   readonly className?: string;
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;

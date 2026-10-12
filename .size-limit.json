@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "38820 B",
+    "limit": "38880 B",
     "import": "*"
   },
   {
@@ -30,7 +30,7 @@
   {
     "name": "button",
     "path": "dist/components/button.js",
-    "limit": "300 B",
+    "limit": "350 B",
     "import": "*"
   },
   {
@@ -54,7 +54,7 @@
   {
     "name": "radio-group",
     "path": "dist/components/radio-group.js",
-    "limit": "980 B",
+    "limit": "970 B",
     "import": "*"
   },
   {
@@ -66,13 +66,13 @@
   {
     "name": "toggle",
     "path": "dist/components/toggle.js",
-    "limit": "290 B",
+    "limit": "310 B",
     "import": "*"
   },
   {
     "name": "toggle-group",
     "path": "dist/components/toggle-group.js",
-    "limit": "1020 B",
+    "limit": "1030 B",
     "import": "*"
   },
   {
@@ -162,7 +162,7 @@
   {
     "name": "pagination",
     "path": "dist/components/pagination.js",
-    "limit": "2220 B",
+    "limit": "2280 B",
     "import": "*"
   },
   {
@@ -174,7 +174,7 @@
   {
     "name": "alert-modal",
     "path": "dist/components/alert-modal.js",
-    "limit": "580 B",
+    "limit": "570 B",
     "import": "*"
   },
   {
@@ -186,7 +186,7 @@
   {
     "name": "toolbar",
     "path": "dist/components/toolbar.js",
-    "limit": "1900 B",
+    "limit": "1940 B",
     "import": "*"
   },
   {
@@ -228,14 +228,14 @@
   {
     "name": "carousel/client",
     "path": "dist/components/carousel/client.js",
-    "limit": "7140 B",
+    "limit": "7170 B",
     "gzip": true,
     "import": "*"
   },
   {
     "name": "carousel/fade",
     "path": "dist/components/carousel/fade.js",
-    "limit": "5880 B",
+    "limit": "5900 B",
     "gzip": true,
     "import": "*"
   },
@@ -254,7 +254,7 @@
   {
     "name": "segmented-control",
     "path": "dist/components/segmented-control.js",
-    "limit": "990 B",
+    "limit": "1020 B",
     "import": "*"
   },
   {
@@ -266,7 +266,7 @@
   {
     "name": "rating/client",
     "path": "dist/components/rating/client.js",
-    "limit": "1520 B",
+    "limit": "1510 B",
     "import": "*"
   },
   {

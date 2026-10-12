@@ -1,0 +1,215 @@
+<!-- Generated from the package source. Do not edit by hand. -->
+# drawer
+
+- Import: `@gunkin/uiify/components/drawer`
+- Tier 0 (RSC — zero client JavaScript); state source S1; native element `dialog + command=show-modal`
+- Without JavaScript: full
+- Types file: `dist/components/drawer.d.ts`
+- Note: DrawerPanel native shell + compound Drawer.* client API; snap-point drag on client entry.
+
+## Exports
+
+- Runtime: `Drawer`, `DrawerClose`, `DrawerContent`, `DrawerDescription`, `DrawerHandle`, `DrawerRoot`, `DrawerTitle`, `DrawerTrigger`, `DrawerPanel`, `DrawerNativeTrigger`, `DrawerNativeClose`, `DrawerNativeContent`
+- Types: `DrawerCloseOwnProps`, `DrawerCloseProps`, `DrawerContentOwnProps`, `DrawerContentProps`, `DrawerDescriptionOwnProps`, `DrawerHandleOwnProps`, `DrawerRootOwnProps`, `DrawerRootProps`, `DrawerTitleOwnProps`, `DrawerTriggerOwnProps`, `DrawerTriggerProps`, `DrawerProps`, `DrawerSide`, `DrawerAppearanceProps`, `DrawerNativeContentProps`, `DrawerNativeInvokerProps`
+
+## Values
+
+- `DrawerSide`: `"top" | "right" | "bottom" | "left"`
+
+## Props and shapes
+
+### DrawerAppearanceProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `size` | `"sm" \| "md" \| "lg" \| "full"` | no |  |
+| `dismiss` | `"any" \| "closerequest" \| "none"` | no |  |
+| `backdrop` | `"opaque" \| "transparent"` | no |  |
+
+### DrawerProps
+
+Extends: `DrawerAppearanceProps`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | yes |  |
+| `trigger` | `ReactNode` | yes |  |
+| `title` | `ReactNode` | yes |  |
+| `description` | `ReactNode` | no |  |
+| `children` | `ReactNode` | no |  |
+| `closeLabel` | `string` | no |  |
+| `footer` | `ReactNode` | no |  |
+| `side` | `DrawerSide` | no |  |
+| `className` | `string` | no |  |
+
+### DrawerNativeContentProps
+
+Extends: `Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "closedby">`, `DrawerAppearanceProps`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | yes |  |
+| `side` | `DrawerSide` | no |  |
+
+### DrawerNativeInvokerProps
+
+Extends: `Omit<ComponentPropsWithRef<"button">, "command" | "commandFor">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `target` | `string` | yes |  |
+
+### DrawerStoreOptions
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `activeSnapPoint` | `number` | no |  |
+| `defaultActiveSnapPoint` | `number` | no |  |
+| `dismissible` | `boolean` | no |  |
+| `onDismiss` | `() => void` | no |  |
+| `onSnapChange` | `(snap: number) => void` | no |  |
+| `side` | `DrawerSide` | yes |  |
+| `snapPoints` | `readonly number[]` | no |  |
+
+### DrawerStore
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `endDrag` | `() => void` | yes |  |
+| `getActiveSnapPoint` | `() => number` | yes |  |
+| `getDragOffset` | `() => number` | yes |  |
+| `getTransform` | `() => string` | yes |  |
+| `isDragging` | `() => boolean` | yes |  |
+| `moveDrag` | `(clientCoord: number) => void` | yes |  |
+| `setSide` | `(side: DrawerSide) => void` | yes |  |
+| `setContainerSize` | `(size: number) => void` | yes |  |
+| `startDrag` | `(clientCoord: number) => void` | yes |  |
+| `subscribe` | `(listener: () => void) => () => void` | yes |  |
+| `syncActiveSnapPoint` | `(snap: number) => void` | yes |  |
+
+### DrawerContextValue
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `close` | `(returnValue?: string) => void` | yes |  |
+| `contentId` | `string` | yes |  |
+| `descriptionId` | `string \| undefined` | yes |  |
+| `dialogProps` | `UseDialogReturn["dialogProps"]` | yes |  |
+| `dialogRef` | `UseDialogReturn["dialogRef"]` | yes |  |
+| `dismissible` | `boolean` | yes |  |
+| `closeOnOverlayClick` | `boolean` | yes |  |
+| `labelId` | `string \| undefined` | yes |  |
+| `modal` | `boolean` | yes |  |
+| `open` | `boolean` | yes |  |
+| `openDialog` | `() => void` | yes |  |
+| `setDescriptionId` | `(id: string \| undefined) => void` | yes |  |
+| `setLabelId` | `(id: string \| undefined) => void` | yes |  |
+| `side` | `DrawerSide` | yes |  |
+| `snapEnabled` | `boolean` | yes |  |
+| `store` | `DrawerStore` | yes |  |
+| `triggerRef` | `RefObject<HTMLButtonElement \| null>` | yes |  |
+
+### DrawerRootOwnProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `activeSnapPoint` | `number` | no |  |
+| `closeOnOverlayClick` | `boolean` | no |  |
+| `defaultActiveSnapPoint` | `number` | no |  |
+| `defaultOpen` | `boolean` | no |  |
+| `dismissible` | `boolean` | no |  |
+| `modal` | `boolean` | no |  |
+| `onOpenChange` | `DialogChangeHandler` | no |  |
+| `onSnapChange` | `(snap: number) => void` | no |  |
+| `open` | `boolean` | no |  |
+| `side` | `DrawerSide` | no |  |
+| `snapPoints` | `readonly number[]` | no |  |
+
+### DrawerRootProps
+
+Extends: `DrawerRootOwnProps`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
+
+### DrawerTriggerOwnProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
+| `className` | `string` | no |  |
+
+### DrawerTriggerProps
+
+Extends: `DrawerTriggerOwnProps`, `Omit<ComponentPropsWithRef<"button">, "type" | keyof DrawerTriggerOwnProps>`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `onClick` | `(event: MouseEvent<HTMLButtonElement>) => void` | no |  |
+| `ref` | `Ref<HTMLButtonElement>` | no |  |
+
+### DrawerContentOwnProps
+
+Extends: `DrawerAppearanceProps`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
+| `className` | `string` | no |  |
+| `style` | `CSSProperties` | no |  |
+
+### DrawerContentProps
+
+Extends: `DrawerContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "id" | "open" | "closedby" | keyof DrawerContentOwnProps>`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `onCancel` | `DrawerContextValue["dialogProps"]["onCancel"]` | no |  |
+| `onClose` | `DrawerContextValue["dialogProps"]["onClose"]` | no |  |
+| `ref` | `Ref<HTMLDialogElement>` | no |  |
+
+### DrawerTitleOwnProps
+
+Extends: `Omit<ComponentPropsWithRef<"h2">, "id">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
+| `className` | `string` | no |  |
+
+### DrawerDescriptionOwnProps
+
+Extends: `Omit<ComponentPropsWithRef<"p">, "id">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
+| `className` | `string` | no |  |
+
+### DrawerCloseOwnProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
+| `className` | `string` | no |  |
+
+### DrawerCloseProps
+
+Extends: `DrawerCloseOwnProps`, `Omit<ComponentPropsWithRef<"button">, "type" | keyof DrawerCloseOwnProps>`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `onClick` | `(event: MouseEvent<HTMLButtonElement>) => void` | no |  |
+
+### DrawerHandleOwnProps
+
+Extends: `ComponentPropsWithRef<"div">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | no |  |
+| `onPointerCancel` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |
+| `onPointerDown` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |
+| `onPointerMove` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |
+| `onPointerUp` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |

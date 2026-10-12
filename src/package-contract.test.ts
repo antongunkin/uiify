@@ -50,7 +50,7 @@ test("declares public alpha release metadata", () => {
     },
     homepage: "https://uiify.gunkin.dev/",
     bugs: { url: "https://github.com/antongunkin/uiify/issues" },
-    files: ["dist"],
+    files: ["dist", "agents"],
     publishConfig: { access: "public", tag: "alpha" },
   });
   expect(manifest.description).toBeTruthy();

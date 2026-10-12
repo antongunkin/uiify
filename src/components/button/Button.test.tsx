@@ -43,24 +43,37 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Plain" }).hasAttribute("data-size")).toBe(false);
   });
 
-  it("serializes icon shapes independently of variant and size", () => {
+  it("serializes icon sizes independently of variant", () => {
     const markup = renderToStaticMarkup(
-      <Button shape="circle" size="sm" variant="ghost" aria-label="Settings">
+      <Button size="icon-sm" variant="ghost" aria-label="Settings">
         <svg aria-hidden="true" />
       </Button>,
     );
-    expect(markup).toContain('data-shape="circle"');
-    expect(markup).toContain('data-size="sm"');
+    expect(markup).toContain('data-size="icon-sm"');
     expect(markup).toContain('data-variant="ghost"');
-    expect(markup).not.toMatch(/\sshape=/);
-    expect(renderToStaticMarkup(<Button>Save</Button>)).not.toContain("data-shape");
   });
 
-  it("owns an explicit shape and preserves a consumer shape when omitted", () => {
-    expect(renderToStaticMarkup(<Button shape="square" data-shape="circle" />)).toContain(
-      'data-shape="square"',
+  it("marks a selected button and reports a native one as pressed", () => {
+    const on = renderToStaticMarkup(<Button selected>Bold</Button>);
+    expect(on).toContain('data-selected=""');
+    expect(on).toContain('aria-pressed="true"');
+    const off = renderToStaticMarkup(<Button selected={false}>Bold</Button>);
+    expect(off).not.toContain("data-selected");
+    expect(off).toContain('aria-pressed="false"');
+    expect(renderToStaticMarkup(<Button>Save</Button>)).not.toContain("aria-pressed");
+  });
+
+  it("leaves the relation to the consumer on a link or an explicit aria attribute", () => {
+    const link = renderToStaticMarkup(
+      <Button as="a" href="/2" selected aria-current="page">
+        2
+      </Button>,
     );
-    expect(renderToStaticMarkup(<Button data-shape="circle" />)).toContain('data-shape="circle"');
+    expect(link).toContain('data-selected=""');
+    expect(link).not.toContain("aria-pressed");
+    expect(renderToStaticMarkup(<Button as="a" href="/2" selected />)).not.toContain(
+      "aria-pressed",
+    );
   });
 
   it("blocks interaction when disabled", () => {

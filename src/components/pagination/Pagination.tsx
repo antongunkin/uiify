@@ -155,7 +155,10 @@ export function PaginationLink<TAs extends ElementType = "button">(
       "aria-current": selected ? "page" : undefined,
       "aria-label": `Page ${page}`,
       "data-selected": selected ? "" : undefined,
+      "data-size": "icon",
       "data-type": "page",
+      "data-uiify-button": "",
+      "data-variant": "ghost",
       disabled: disabled || undefined,
       onClick: composeEventHandlers(onClick, () => setPage(page)),
       type: "button",
@@ -173,6 +176,8 @@ function PaginationPrevious({ disabled }: { readonly disabled: boolean }): React
       <button
         aria-label="Previous page"
         data-type="previous"
+        data-uiify-button=""
+        data-variant="ghost"
         disabled={disabled}
         onClick={() => setPage(page - 1)}
         type="button"
@@ -191,6 +196,8 @@ function PaginationNext({ disabled }: { readonly disabled: boolean }): ReactElem
       <button
         aria-label="Next page"
         data-type="next"
+        data-uiify-button=""
+        data-variant="ghost"
         disabled={disabled}
         onClick={() => setPage(page + 1)}
         type="button"
@@ -209,6 +216,8 @@ function PaginationFirst({ disabled }: { readonly disabled: boolean }): ReactEle
       <button
         aria-label="First page"
         data-type="first"
+        data-uiify-button=""
+        data-variant="ghost"
         disabled={disabled}
         onClick={() => setPage(1)}
         type="button"
@@ -227,6 +236,8 @@ function PaginationLast({ disabled }: { readonly disabled: boolean }): ReactElem
       <button
         aria-label="Last page"
         data-type="last"
+        data-uiify-button=""
+        data-variant="ghost"
         disabled={disabled}
         onClick={() => setPage(count)}
         type="button"

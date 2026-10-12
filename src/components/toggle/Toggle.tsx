@@ -27,7 +27,14 @@ export function Toggle({
         id={id}
         type="checkbox"
       />
-      <label className={className} data-part="label" htmlFor={id} id={labelId}>
+      <label
+        className={className}
+        data-part="label"
+        data-uiify-button=""
+        data-variant="outline"
+        htmlFor={id}
+        id={labelId}
+      >
         {label}
       </label>
     </div>

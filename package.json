@@ -1,6 +1,6 @@
 {
   "name": "@gunkin/uiify",
-  "version": "0.0.14-alpha",
+  "version": "0.0.1-alpha",
   "description": "Native-first, accessible React 19 components that work before hydration.",
   "keywords": [
     "accessibility",
@@ -21,7 +21,8 @@
     "url": "git+https://github.com/antongunkin/uiify.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "agents"
   ],
   "type": "module",
   "sideEffects": [

@@ -32,6 +32,18 @@ export function SaveButton() {
 Use focused `@gunkin/uiify/components/*`, `@gunkin/uiify/elements/*`, `@gunkin/uiify/core/*`, or `@gunkin/uiify/hooks` imports in
 Server Components so client boundaries remain explicit.
 
+## AI coding agents
+
+`@gunkin/uiify` ships rules, a component index and per-component references that match the
+installed version. Add one line to your project's `AGENTS.md`, or to `CLAUDE.md` for Claude Code
+(it does not read `AGENTS.md`):
+
+```text
+For @gunkin/uiify, read node_modules/@gunkin/uiify/agents/index.md
+```
+
+In a monorepo with hoisted dependencies, point to the nearest `node_modules/@gunkin/uiify`.
+
 Documentation: https://uiify.gunkin.dev/
 
 MIT © Anton Gunkin

@@ -1,50 +1,99 @@
-/* Button — solid by default, with a ghost modifier used by close/dismiss buttons. */
+/* Button — pill-shaped and monochrome: a filled foreground action by default, secondary for
+   the tonal one, outline for the bordered one, ghost for a surface that only appears on
+   hover, link for inline text actions.
+
+   Filled variants are lit from above by two layers that sit between the fill and the label:
+   - `::before`, the wash: a blurred copy of the shape raised by half its height, so only its
+     soft lower edge glows inside the upper half. `filter` runs before `clip-path`, which lets
+     one box blur itself and still be cut back to the button outline.
+   - `::after`, the rim: a half-pixel ring whose colour fades out towards the bottom. A
+     box-shadow cannot take a gradient and `border-image` ignores the radius, so the ring is
+     a gradient box with its content box masked out. */
 
 @layer components {
   :where([data-uiify-button]) {
+    --uiify-button-rim: rgb(255 255 255 / 20%);
+    --uiify-button-wash: light-dark(rgb(255 255 255 / 15%), rgb(255 255 255 / 30%));
+
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.375rem;
-    min-block-size: 36px;
+    min-block-size: 44px;
+
+    /* Never narrower than tall: an icon size only has to drop the padding to be a circle. */
+    min-inline-size: 44px;
     padding-block: 0;
-    padding-inline: 0.625rem;
+    padding-inline: 1.125rem;
     border: var(--border-width) solid transparent;
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
-    background-color: var(--primary);
+    border-radius: var(--radius-full);
+    background-color: var(--foreground);
     background-clip: padding-box;
-    color: var(--primary-foreground);
-    font-size: var(--text-sm);
+    color: var(--background);
+    font-size: var(--text-base);
     font-weight: var(--weight-medium);
-    line-height: 1.25rem;
+    line-height: 1.5rem;
+    text-decoration: none;
     cursor: pointer;
     transition: var(--transition-colors);
   }
 
+  :where([data-uiify-button])::before,
+  :where([data-uiify-button])::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  :where([data-uiify-button])::before {
+    background-color: var(--uiify-button-wash);
+    filter: blur(10px);
+    translate: 0 -50%;
+    clip-path: inset(50% 0 -50% 0 round var(--radius-full));
+  }
+
+  :where([data-uiify-button])::after {
+    padding: 0.5px;
+    background-image: linear-gradient(to bottom, var(--uiify-button-rim), transparent 75%);
+    mask:
+      linear-gradient(#fff 0 0) content-box exclude,
+      linear-gradient(#fff 0 0);
+  }
+
   /* Sizes: md is the default metrics above. */
-  [data-uiify-button][data-size="sm"] {
+  [data-uiify-button]:is([data-size="sm"], [data-size="icon-sm"]) {
     min-block-size: 32px;
-    border-radius: var(--radius-sm);
-    corner-shape: squircle;
-    padding-inline: 0.5rem;
+    min-inline-size: 32px;
+    padding-inline: 0.75rem;
     gap: 0.25rem;
+    font-size: var(--text-sm);
+    line-height: 1.25rem;
   }
 
-  [data-uiify-button][data-size="lg"] {
-    min-block-size: 40px;
-    border-radius: var(--radius-lg);
-    corner-shape: squircle;
-    padding-inline: 1rem;
-    font-size: var(--text-base);
+  [data-uiify-button]:is([data-size="lg"], [data-size="icon-lg"]) {
+    min-block-size: 56px;
+    min-inline-size: 56px;
+    padding-inline: 1.75rem;
+    font-size: var(--text-lg);
+    line-height: 1.75rem;
   }
 
-  [data-uiify-button]:hover {
-    background-color: color-mix(in oklch, var(--primary), transparent 20%);
+  /* Icon sizes: the same three heights with no padding, for a single icon. */
+  [data-uiify-button][data-size^="icon"] {
+    padding-inline: 0;
   }
 
-  [data-uiify-button]:active {
-    background-color: color-mix(in oklch, var(--primary), var(--primary-foreground) 20%);
+  [data-uiify-button]:hover:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 90%, var(--background));
+  }
+
+  [data-uiify-button]:active:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 80%, var(--background));
   }
 
   [data-uiify-button]:disabled,
@@ -53,60 +102,129 @@
     cursor: not-allowed;
   }
 
-  /* Ghost: low-emphasis, for dismiss/close actions. */
+  /* Secondary: tonal low-emphasis fill. */
+  [data-uiify-button][data-variant="secondary"] {
+    --uiify-button-rim: light-dark(rgb(0 0 0 / 5%), rgb(255 255 255 / 10%));
+    --uiify-button-wash: light-dark(rgb(255 255 255 / 20%), rgb(255 255 255 / 5%));
+
+    background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
+    color: var(--foreground);
+  }
+
+  /* Outline: no fill and no wash, a hairline border in the text colour. Its rim is a full
+     border-width ring laid over that border, so the top edge reads slightly stronger and
+     fades into the plain border below. */
+  [data-uiify-button][data-variant="outline"] {
+    --uiify-button-rim: color-mix(in oklch, var(--foreground) 25%, transparent);
+
+    border-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+    background-color: transparent;
+    color: var(--foreground);
+  }
+
+  [data-uiify-button][data-variant="outline"]::before {
+    content: none;
+  }
+
+  [data-uiify-button][data-variant="outline"]::after {
+    inset: calc(-1 * var(--border-width));
+    padding: var(--border-width);
+  }
+
+  [data-uiify-button][data-variant="outline"]:hover:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
+  }
+
+  [data-uiify-button][data-variant="outline"]:active:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
+  }
+
+  /* Ghost: text only; the tonal surface appears on hover. Flat, so no light layers. */
   [data-uiify-button][data-variant="ghost"] {
     background-color: transparent;
     color: var(--foreground);
-    border-color: var(--border);
   }
 
-  /* Outline and solid names mirror the component-kit vocabulary while the
-     unmodified button remains the primary action. */
-  [data-uiify-button][data-variant="outline"] {
-    border-color: var(--input);
-    background-color: var(--card);
-    color: var(--foreground);
+  [data-uiify-button][data-variant="ghost"]::before,
+  [data-uiify-button][data-variant="ghost"]::after {
+    content: none;
   }
 
-  [data-uiify-button][data-variant="outline"]:hover {
-    background-color: var(--secondary);
+  [data-uiify-button][data-variant="ghost"]:hover:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
   }
 
-  [data-uiify-button][data-variant="solid"] {
-    background-color: var(--foreground);
-    color: var(--background);
+  [data-uiify-button][data-variant="ghost"]:active:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
   }
 
-  [data-uiify-button][data-variant="solid"]:hover {
-    background-color: var(--muted-foreground);
+  [data-uiify-button][data-variant="secondary"]:hover:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
   }
 
-  [data-uiify-button][data-variant="ghost"]:hover {
-    background-color: color-mix(in oklch, var(--foreground) 8%, transparent);
-  }
-
-  [data-uiify-button][data-variant="ghost"]:active {
-    background-color: color-mix(in oklch, var(--foreground) 14%, transparent);
+  [data-uiify-button][data-variant="secondary"]:active:not(:disabled, [data-disabled]) {
+    background-color: color-mix(in oklch, var(--foreground) 26%, transparent);
   }
 
   /* Destructive: irreversible or dangerous actions. */
   [data-uiify-button][data-variant="destructive"] {
+    --uiify-button-wash: rgb(255 255 255 / 15%);
+
     background-color: var(--destructive);
     color: var(--destructive-foreground);
   }
 
-  [data-uiify-button][data-variant="destructive"]:hover {
+  [data-uiify-button][data-variant="destructive"]:hover:not(:disabled, [data-disabled]) {
     background-color: color-mix(in oklch, var(--destructive), black 12%);
   }
 
-  [data-uiify-button][data-variant="destructive"]:active {
+  [data-uiify-button][data-variant="destructive"]:active:not(:disabled, [data-disabled]) {
     background-color: color-mix(in oklch, var(--destructive), black 20%);
   }
 }
 
 @layer components {
-  a[data-uiify-button],
-  a[data-uiify-button]:is(:hover, :active) {
+  /* Selected: the chosen item of a set or a toggle that is on, filled with the brand colour.
+     The state is read from whatever already carries it: the `selected` prop, a pressed toggle,
+     the current page, or — for a label styled as a button — the checked native control right
+     before it, so a toggle works with no JavaScript. */
+  [data-uiify-button]:is([data-selected], [aria-pressed="true"], [aria-current="page"]),
+  :checked + [data-uiify-button] {
+    --uiify-button-rim: rgb(255 255 255 / 20%);
+    --uiify-button-wash: rgb(255 255 255 / 15%);
+
+    border-color: transparent;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  [data-uiify-button]:is([data-selected], [aria-pressed="true"], [aria-current="page"]):hover:not(
+      :disabled,
+      [data-disabled]
+    ),
+  :checked:not(:disabled) + [data-uiify-button]:hover {
+    background-color: color-mix(in oklch, var(--primary) 88%, var(--primary-foreground));
+  }
+
+  /* A label styled as a button follows the native control it belongs to. */
+  :disabled + [data-uiify-button] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  :focus-visible + [data-uiify-button] {
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+  }
+
+  [data-uiify-button][hidden] {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Link: an inline text action with no surface, on a button or an anchor alike. */
+  [data-uiify-button][data-variant="link"],
+  [data-uiify-button][data-variant="link"]:is(:hover, :active) {
     padding-inline: 0;
     border: 0;
     border-radius: 0;
@@ -115,45 +233,17 @@
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
-  a[data-uiify-button]:focus-visible {
+  [data-uiify-button][data-variant="link"] {
+    min-inline-size: 0;
+  }
+
+  [data-uiify-button][data-variant="link"]::before,
+  [data-uiify-button][data-variant="link"]::after {
+    content: none;
+  }
+
+  [data-uiify-button][data-variant="link"]:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 3px;
-  }
-}
-
-@layer components {
-  :where(
-    [data-uiify-button],
-    [data-uiify-toolbar][data-part="item"],
-    [data-uiify-toggle-group] [data-uiify-choice][data-part="item"]
-  )[data-shape] {
-    --uiify-button-size: 36px;
-  }
-
-  [data-uiify-button][data-shape][data-size="sm"] {
-    --uiify-button-size: 32px;
-  }
-
-  [data-uiify-button][data-shape][data-size="lg"] {
-    --uiify-button-size: 40px;
-  }
-
-  [data-uiify-button][data-shape],
-  [data-uiify-toolbar][data-part="item"][data-shape],
-  [data-uiify-toggle-group] [data-uiify-choice][data-part="item"][data-shape] > label {
-    box-sizing: border-box;
-    flex: none;
-    inline-size: var(--uiify-button-size);
-    block-size: var(--uiify-button-size);
-    min-inline-size: var(--uiify-button-size);
-    min-block-size: var(--uiify-button-size);
-    padding: 0;
-  }
-
-  [data-uiify-button][data-shape="circle"],
-  [data-uiify-toolbar][data-part="item"][data-shape="circle"],
-  [data-uiify-toggle-group] [data-uiify-choice][data-part="item"][data-shape="circle"] > label {
-    border-radius: var(--radius-full);
-    corner-shape: round;
   }
 }

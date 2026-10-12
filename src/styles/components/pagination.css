@@ -13,34 +13,17 @@
     display: grid;
     place-items: center;
   }
-  [data-uiify-pagination] [data-type] {
+
+  /* Page links and the previous/next controls are Button-skinned (`ghost`); the current
+     page is the selected one. Links stay links, so only the pointer is restored here. */
+  [data-uiify-pagination] [data-type="ellipsis"] {
     display: inline-grid;
     place-items: center;
-    min-inline-size: 2.25rem;
-    block-size: 2.25rem;
-    padding-inline: 0.625rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--card);
-    color: var(--foreground);
-    font: var(--text-sm)/1 var(--font-sans);
-    text-decoration: none;
+    min-inline-size: 2.75rem;
+    color: var(--muted-foreground);
   }
-  [data-uiify-pagination] :is(a, button):hover {
-    background: var(--accent);
-    color: var(--accent-foreground);
-  }
-  [data-uiify-pagination] :is(a, button) {
-    cursor: pointer;
-  }
-  [data-uiify-pagination] [data-selected] {
-    background: var(--primary);
-    color: var(--primary-foreground);
-    border-color: transparent;
-  }
-  [data-uiify-pagination] :is(:disabled, [aria-disabled="true"]) {
-    opacity: 0.5;
-    cursor: not-allowed;
+  [data-uiify-pagination] span[data-uiify-button]:not([data-disabled]) {
+    cursor: default;
   }
   [data-uiify-pagination] svg {
     inline-size: 1rem;

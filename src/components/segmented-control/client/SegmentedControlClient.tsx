@@ -39,6 +39,7 @@ export function SegmentedControlClient({
       isControlled={controlledValue !== undefined}
       kind="single"
       namespace="segmented-control"
+      labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost", "data-size": "sm" }}
       onItemChange={(item) => setSelectedValue(item.value)}
       orientation={orientation}
       rootAttributes={{

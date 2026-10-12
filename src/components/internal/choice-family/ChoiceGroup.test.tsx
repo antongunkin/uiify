@@ -120,24 +120,6 @@ describe("ChoiceGroup", () => {
     expect(markup).not.toContain('data-part="item"');
   });
 
-  it("spreads per-item wrapper attributes from itemWrapperAttributes", () => {
-    const markup = renderToStaticMarkup(
-      <ChoiceGroup
-        id="group"
-        items={items}
-        itemWrapperAttributes={(item) => ({
-          "data-complete": item.value === "a" ? "true" : undefined,
-        })}
-        kind="single"
-        namespace="test"
-        orientation="horizontal"
-        isChecked={() => false}
-      />,
-    );
-    const aIndex = markup.indexOf('data-complete="true"');
-    expect(markup.slice(aIndex, aIndex + 300)).toContain('data-complete="true"');
-  });
-
   it("applies itemInputClassName per item", () => {
     const markup = renderToStaticMarkup(
       <ChoiceGroup

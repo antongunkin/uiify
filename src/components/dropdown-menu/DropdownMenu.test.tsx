@@ -9,9 +9,7 @@ describe("DropdownMenu", () => {
     const onSelect = vi.fn();
     render(
       <DropdownMenu.Root>
-        <DropdownMenu.Trigger shape="square" data-shape="circle">
-          Menu
-        </DropdownMenu.Trigger>
+        <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Item onSelect={onSelect}>Cut</DropdownMenu.Item>
           <DropdownMenu.Item>Copy</DropdownMenu.Item>
@@ -19,7 +17,6 @@ describe("DropdownMenu", () => {
       </DropdownMenu.Root>,
     );
 
-    expect(screen.getByRole("button", { name: "Menu" }).getAttribute("data-shape")).toBe("square");
     fireEvent.click(screen.getByRole("button", { name: "Menu" }));
     fireEvent.click(screen.getByRole("menuitem", { name: "Cut" }));
     expect(onSelect).toHaveBeenCalledOnce();

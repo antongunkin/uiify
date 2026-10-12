@@ -9,6 +9,7 @@ export function ToggleGroup({
   defaultValue,
   disabled = false,
   orientation = "horizontal",
+  size,
   className,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
@@ -24,10 +25,14 @@ export function ToggleGroup({
       {...(className !== undefined ? { className } : {})}
       id={id}
       items={resolvedItems}
-      itemWrapperAttributes={(item) => ({ "data-shape": item.shape })}
       isChecked={(item) => values.includes(item.value)}
       kind={type}
       namespace="toggle-group"
+      labelAttributes={{
+        "data-uiify-button": "",
+        "data-variant": "outline",
+        ...(size !== undefined ? { "data-size": size } : {}),
+      }}
       orientation={orientation}
       rootAttributes={{
         role: type === "single" ? "radiogroup" : "group",

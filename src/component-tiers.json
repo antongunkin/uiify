@@ -190,7 +190,7 @@
       "sizeNow": "6 kB",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Data-driven native radio group; browser owns selection. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+      "note": "Data-driven native radio group; browser owns selection. Built on @gunkin/uiify/elements/choice."
     },
     "rating": {
       "tier": 0,
@@ -199,7 +199,7 @@
       "sizeNow": "1 kB",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Native radio group; hover preview and persisted selection are pure CSS (:checked/:hover sibling rules), no JS. Controlled value/onValueChange lives in the separate rating/client entry. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+      "note": "Native radio group; hover preview and persisted selection are pure CSS (:checked/:hover sibling rules), no JS. Controlled value/onValueChange lives in the separate rating/client entry. Built on @gunkin/uiify/elements/choice."
     },
     "segmented-control": {
       "tier": 0,
@@ -208,7 +208,7 @@
       "sizeNow": "1.46 kB",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+      "note": "Built on @gunkin/uiify/elements/choice."
     },
     "select": {
       "tier": 0,
@@ -286,7 +286,7 @@
       "sizeNow": "1.42 kB",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+      "note": "Built on @gunkin/uiify/elements/choice."
     },
     "tooltip": {
       "tier": 1,
@@ -358,7 +358,7 @@
       "sizeNow": "1.45 kB",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Data-driven native radio switcher; CSS-only panels. Built on @gunkin/uiify/elements/choice (Phase 7 T6)."
+      "note": "Data-driven native radio switcher; CSS-only panels. Built on @gunkin/uiify/elements/choice."
     },
     "dropdown-menu": {
       "tier": 2,

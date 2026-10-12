@@ -13,7 +13,8 @@ export interface ToolbarRootProps
   extends ToolbarRootOwnProps, Omit<HTMLAttributes<HTMLDivElement>, keyof ToolbarRootOwnProps> {}
 
 export interface ToolbarButtonOwnProps {
-  readonly shape?: "square" | "circle";
+  /** Toggle state of the button: reported as aria-pressed and styled as selected. */
+  readonly selected?: boolean;
   readonly children?: ReactNode;
   readonly className?: string;
   readonly disabled?: boolean;
