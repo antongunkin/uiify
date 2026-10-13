@@ -7,7 +7,7 @@ Native-first, accessible React 19 components that work before hydration.
 ## Install
 
 ```bash
-npm install @gunkin/uiify@alpha react react-dom
+npm install @gunkin/uiify react react-dom
 ```
 
 ## Use
