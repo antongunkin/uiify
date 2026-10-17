@@ -11,7 +11,7 @@ const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".md", ".mjs", ".ts"]);
 
 const allowedPath =
-  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|scripts\/[^/]+\.mjs))$/;
+  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|scripts\/(?:lint|static)\.mjs|references\/(?:elements|laws|compositions)\/[a-z0-9-]+\.md))$/;
 const credentialLike = [
   /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
   /\bnpm_[A-Za-z0-9]{8,}\b/,
@@ -163,6 +163,20 @@ async function main() {
       { cwd: consumerDirectory },
     );
 
+    const lintFixture = join(consumerDirectory, "lint-fixture.tsx");
+    await writeFile(
+      lintFixture,
+      'export function Save() { return <button type="button">Save</button>; }\n',
+    );
+    const lintScript = join(
+      consumerDirectory,
+      "node_modules/@gunkin/uiify/skills/uiify/scripts/lint.mjs",
+    );
+    const lintResult = await execFileAsync(process.execPath, [lintScript, consumerDirectory], {
+      cwd: consumerDirectory,
+    });
+    assert.match(lintResult.stdout, /0 findings \(2 accepted static checks\)\./);
+
     console.log(
       JSON.stringify(
         {
@@ -174,6 +188,7 @@ async function main() {
           files: packed.files?.length ?? 0,
           imports: "root, components/button, elements/dialog, core/render, hooks",
           css: "behavior.css, styles, styles/tokens, styles/reset",
+          skillLint: "runs with the consumer's installed TypeScript parser",
           secrets: "none detected",
         },
         null,

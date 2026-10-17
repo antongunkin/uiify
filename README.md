@@ -46,11 +46,19 @@ In a monorepo with hoisted dependencies, point to the nearest `node_modules/@gun
 
 ### `/uiify` page-building skill
 
-The package also includes the `/uiify` AI skill. Use it when an agent is creating or improving a
-web page with UIify: it maps the brief to available components, plans the page in `DESIGN.md`,
-implements the page in `src/App.tsx` when that file exists, and reports the checks it could run.
-It uses the installed package's component references and follows UIify's public styling and
-accessibility contracts. Invoke it explicitly so it runs only for page-building work.
+The package also includes the `/uiify` AI skill. Invoke it explicitly when creating or improving a
+web page with UIify. It adds component and UX knowledge to your request while preserving the agent's
+normal workflow: no staged approvals, routine questions or special status output. It follows the
+requested framework route and existing workspace conventions, reads version-matched component
+references and supports custom UI for components UIify does not provide. Existing design decisions
+are reused; invoking the skill does not require creating `DESIGN.md`.
+
+The skill ships a compact index plus individually retrievable element, UX-law and composition
+references under `skills/uiify/references/`. During planning it reads recipes for the requested
+elements and relationships between them, then reads the public component docs for matched UIify
+components. It does not load the whole catalog into the prompt. The private harness catalog is the
+source for reviewed knowledge; the package contains only its curated public projection. Knowledge
+is delivered as files, so this workflow does not require an MCP server.
 
 Install the skill into the directory your agent reads:
 
@@ -64,10 +72,15 @@ mkdir -p .claude/skills/uiify
 cp -R node_modules/@gunkin/uiify/skills/uiify/. .claude/skills/uiify/
 ```
 
-Then invoke `/uiify <page brief>` in Claude Code, or use the explicit skill invocation supported by
-your agent. Add `--auto` to run all stages without confirmation gates. Interactive runs pause at
-each stage so you can stop before implementation. The skill writes its design state to `DESIGN.md`
-and page code under `src/`; it does not create a page when `src/App.tsx` is absent.
+Claude Code uses `/uiify <page brief>`; other agents use their documented explicit skill invocation.
+No special execution flag is needed. The repository's manual smoke harness exercises Claude Code
+only; activation syntax and token measurements do not establish behavior for other clients.
+
+For verification, the skill reuses project tooling. If missing Playwright or axe-core tooling or
+browser binaries are needed, the agent briefly explains what it will install and why before
+installation. This is a notice, not a routine confirmation question. Installation follows project
+rules, uses development dependencies and includes only what is needed. Unavailable checks are
+reported as not run.
 
 ### Keeping the skill current when developing UIify
 
@@ -76,6 +89,18 @@ usage changes, and update the harness catalog when its coverage or gap status ch
 `npm run checks:fix` from the repository root. This regenerates the consumer AI docs and `/uiify`
 skill, then checks their tests and freshness. Review and commit generated changes with the component
 change. `npm run check:ai-harness` runs the focused tests and freshness checks without rewriting files.
+
+For new design knowledge, inspect the component API and examples; record sourced evidence in the
+private catalog; write a concise `release_body`; review the public projection for privacy and
+usefulness; regenerate the skill; and run package-link and hygiene tests. Private evidence and owner
+rationale stay in the harness source; changing private notes alone does not change what consumers
+receive.
+
+The optional paid eval runner records each agent and judge call separately. An unknown cost reserves
+that call's configured cap and blocks later paid calls. `results.json` is atomically checkpointed
+before and after calls and throughout page verification; an existing non-empty output directory is
+not reused. This protects recorded progress but does not measure whether one skill produces better
+designs than another.
 
 Documentation: https://uiify.gunkin.dev/
 

@@ -18,13 +18,19 @@ test("accepts the public tarball allowlist", () => {
   );
 });
 
-test("rejects per-element references: elements ship as index-only seeds", () => {
+test("accepts only the three curated knowledge reference directories", () => {
+  assert.doesNotThrow(() =>
+    assertPackFiles([
+      "skills/uiify/references/elements/button.md",
+      "skills/uiify/references/laws/accessibility.md",
+      "skills/uiify/references/compositions/hero-actions.md",
+    ]),
+  );
   for (const path of [
-    "skills/uiify/references/elements/button.md",
     "skills/uiify/references/other/x.md",
-    "skills/uiify/references/compositions/index.md",
-    "skills/uiify/references/compositions/card-rhythm.md",
-    "skills/uiify/references/laws/proximity.md",
+    "skills/uiify/references/elements/nested/button.md",
+    "skills/uiify/references/nested/x.md",
+    "skills/uiify/references/eval/results.json",
   ]) {
     assert.throws(() => assertPackFiles(["README.md", path, "dist/index.js"]), /unexpected/i);
   }

@@ -8,160 +8,138 @@ disable-model-invocation: true
 
 # /uiify
 
-Brief and flags: $ARGUMENTS
+Page request: $ARGUMENTS
 
-This skill writes only DESIGN.md and files under src/.
+Add UIify component and UX knowledge to the user's request. Follow the agent's normal workflow and the project's instructions; this skill is a reference, not a separate interaction protocol. Do not add approval gates, fixed stages, routine questions or pauses. Use ordinary language in the user's language for useful progress and results, without internal stage names or machine-readable status markers. Proceed with authorized work autonomously; handle genuine missing requirements through the agent's normal workflow.
 
-## Stage chain
+## Project context
 
-Run the stages R0 to R4 in order and never skip or reorder one. Each stage has a marker line, a result and, except R4, a gate line after it. Every marker, state and gate line is exact and alone on its own line. The first gate, for example, is `UIIFY:GATE R0>R1 auto`. How you output them depends on the flags above.
+Use the explicit request in the conversation if the client does not substitute `$ARGUMENTS`. Read repository instructions, the relevant package manifest and framework config, and a route example as needed. Resolve `@gunkin/uiify` from the selected workspace, including hoisted dependencies in parent workspaces. Follow the requested framework's route conventions and RSC/client boundaries. Create the requested route rather than replacing the home page; `src/App.tsx` is a destination only when it matches the request.
 
-**Interactive (no `--auto`).** Follow this protocol for every stage:
+Reuse existing design decisions, tokens and conventions, including `DESIGN.md` when present. Do not create `DESIGN.md` or a managed state block merely because this skill was invoked. Create or update planning files only when the user or project workflow calls for them, preserving unrelated content. Keep changes within the requested page and necessary source files; setup and dependency changes follow the user's request and project rules.
 
-1. Output the stage marker as plain text before you call any tool for that stage.
-2. Do the stage's work; tools are allowed.
-3. Output the stage's result.
-4. Run the gate: ask once with AskUserQuestion ("Continue to the next stage?" with the options Continue and Stop). On Continue print `UIIFY:GATE <from>><to> asked` and go on. On Stop print `UIIFY:STOPPED` and end the run.
+## Select knowledge for the page
 
-Do not call any tool for a later stage until the current stage's gate line is output. A stage whose marker was not output did not happen.
+Match the needed elements to the Index by name or alias. Use the listed component binding; never invent a binding. A `gap` or an unlisted element needs custom UI, not a guessed UIify API.
 
-**Auto (`--auto`).** Ask nothing. Do all tool work first without commentary: read the project (R0) and create `DESIGN.md` when R2 says to. Then output the whole chain in one final message, in stage order: each stage's marker and result, with `UIIFY:GATE <from>><to> auto` between stages, ending as R4 says. Output nothing else before that message.
+For each selected element with a fourth-column reference path, read that file once. A blank path means no curated recipe is available. From the Composition index, read only relationships where both elements are needed on the page. Read each selected reference and linked law once, including the related laws named by element recipes. Do not load the complete catalog or unrelated component references.
 
-### R0 activate
+For mapped components, read the resolved package's `agents/index.md` once and the relevant `agents/reference/components/<name>.md`, then adapt a documented example. Import from `@gunkin/uiify/components/<name>`. Inspect Runtime exports and the Types/declaration file before rendering: use the explicit `NameRoot` export when available. A namespace export is not itself a JSX component; use its `.Root` or an explicit root export. Prefer these version-matched references over memory. Use UIify wherever its documented API covers the interaction; for gaps, use semantic native HTML or custom components following UIify's public styling and accessibility contracts.
 
-Marker `UIIFY:R0 activate`. Work: read the project. Does `package.json` list `@gunkin/uiify` under `dependencies` or `devDependencies`, and does `DESIGN.md` exist at the project root? Result: `UIIFY:STATE uiify=<yes|no> design=<found|missing>`.
+## Design guidance
 
-### R1 coverage
+Consult `frontend-design` when available for design direction; if absent, use the built-in guidance below. Consult `vercel-react-best-practices` for relevant React performance decisions and `web-design-guidelines` for reviews. These skills are optional references. UIify's public component and styling contracts take precedence over conflicting advice.
 
-Marker `UIIFY:R1 coverage`. Work: split the brief into the page elements it needs and match each one to the index below by name or alias. Result: one line per element, `UIIFY:ELEMENT <name>|<binding>`. For an element the index lists, use its index name and its uiify column as the binding (a uiify component name or `gap`). For an element the index does not list, use a kebab-case name and the binding `unknown`.
+Ground the visual direction in the subject, audience and primary job. Plan clear typography, hierarchy, grouping, purposeful copy and responsive layout using existing semantic color roles. Choose one signature detail appropriate to the subject and keep the rest restrained. Avoid defaulting to a gradient hero, repeated equal cards or decorative numbering without a reason. Preserve visible focus, keyboard-sized targets and reduced-motion behavior.
 
-### R2 design
+For a settings page, group fields by the decision the person makes, keep labels and validation close to controls, and give one `Button` the save action. Use documented anatomy:
 
-Marker `UIIFY:R2 design`. Work:
-
-1. Read `DESIGN.md` and reuse its recorded decisions. If missing, create exactly the skeleton below. Preserve the YAML `tokens` and every byte outside the managed block. If its structure or existing managed block is malformed, report the problem and leave it unchanged.
-2. Use the R1 bindings as the coverage map. The skill package intentionally contains no private element, law or composition catalog files; do not search for `references/elements/`, `references/laws/` or `references/compositions/` under the skill directory. R3 reads UIify's public component documentation when implementing mapped elements.
-3. Consult the `frontend-design` skill when it is available for design direction. Use `web-design-guidelines` only when the task asks for a review, and consult `vercel-react-best-practices` only for a relevant performance decision. These optional skills are references, not dependencies; if absent, use the built-in guidance below. UIify's public component and styling contracts take precedence over any conflicting advice.
-4. Ground the page in its actual subject, audience and primary job. Choose a visual direction that follows the brief and is specific to that subject. Plan a clear typography hierarchy, palette using the project's existing semantic roles, responsive layout, purposeful copy and one memorable signature detail. Use restraint around that signature; don't default to a gradient hero, repeated equal cards or decorative numbering without a reason. Preserve visible focus, keyboard-sized targets and reduced-motion behavior.
-5. Example: for a settings page, group fields by the decision the person is making, keep labels and validation close to each control, and give one `Button` the save action. Use the package's documented anatomy:
-
-   ```tsx
-   <Field.Root id="email" invalid={invalid} required>
-     <Field.Label fieldId="email" required>Email</Field.Label>
-     <Field.Control as="input" fieldId="email" type="email" invalid={invalid} required />
-     <Field.Error fieldId="email" invalid={invalid}>Enter a valid email address</Field.Error>
-   </Field.Root>
-   <Button type="submit">Save changes</Button>
-   ```
-
-   Don't add an unrelated marketing hero or make every field group an equally prominent card.
-6. Keep existing decisions and plan the page's element order, hierarchy, grouping, actions and visual direction as a decision with id `page-plan`, a concrete `decision`, `why` and `references`. Reuse an existing plan unless the brief requires an explicit revision; retain other decisions. Research only unresolved gaps or open decisions in a subagent, if both delegation and primary-source retrieval tools are available. Request a short summary with dated primary-source links. If those tools are unavailable, report unresolved gaps and keep them `proposed`. Record dates alongside the source URLs in `sources`. Only explicit owner approval can make a gap `accepted`; `--auto` never grants approval. Follow owner prose and report conflicts with the brief; interactive mode can clarify at the normal gate, while `--auto` preserves recorded choices.
-7. Store state only in one JSON block beneath `## Decisions`, delimited by an opening `<!-- uiify:state -->` line and a closing `<!-- /uiify:state -->` line. Its exact shape is `{ "version": 1, "elements": ["R1-name"], "decisions": [{ "id": "page-plan", "decision": "concrete page plan and visual direction", "why": "reason", "references": ["public UIify docs or dated source URLs"] }], "gaps": [{ "element": "gap-name", "status": "proposed", "sources": [] }] }`. Empty lists are allowed; IDs and elements are unique; strings are nonempty. Do not put prose or fences inside the JSON block. Reject duplicate, unclosed, misplaced or invalid blocks. Insert the block immediately after the Decisions heading's newline, without changing surrounding bytes; replace only an existing block and its following newline. If state is unchanged, leave the whole file byte-identical. Keep existing gap acceptance and sources; do not infer approval from research.
-
-Result: summarize the stored page plan, reused decisions and unresolved gaps, including research limitations.
-
-```markdown
----
-tokens: {}
----
-
-# Design
-
-## Decisions
-
-## Gaps
+```tsx
+<Field.Root id="email" invalid={invalid} required>
+  <Field.Label fieldId="email" required>Email</Field.Label>
+  <Field.Control as="input" fieldId="email" type="email" invalid={invalid} required />
+  <Field.Error fieldId="email" invalid={invalid}>Enter a valid email address</Field.Error>
+</Field.Root>
+<Button type="submit">Save changes</Button>
 ```
 
-### R3 build
+Do not add an unrelated marketing hero or make every field group an equally prominent card. For unresolved gaps, explain material limitations in plain language; research only when it helps the request. Research does not grant approval to change the library's public API or mark a catalog gap accepted.
 
-Marker `UIIFY:R3 build`. Work: if `src/App.tsx` exists, write the page into it (new components go under `src/`), following the R1 table and the stored `page-plan` in `DESIGN.md`. Read `node_modules/@gunkin/uiify/agents/index.md` once and adapt a relevant documented example when it matches the page; for each mapped component, read `node_modules/@gunkin/uiify/agents/reference/components/<name>.md`, then import it from `@gunkin/uiify/components/<name>`. Before rendering an export, inspect its Runtime exports and the Types/declaration file for component shape; use the explicit `NameRoot` export when available. A namespace export is not itself a JSX component; use its `.Root` or the explicit root export. For a `gap` or `unknown` element, use semantic native HTML and UIify's public styling contract, and consult public design-system or platform guidance for unresolved behavior when retrieval is available. Write no file outside `src/` and leave `DESIGN.md` as it is. If `src/App.tsx` does not exist, write nothing. Result: one sentence naming what you wrote and where, or where the page would go.
+## Verification guidance
 
-### R4 verify
+Use applicable project build, typecheck and test commands when permitted. The optional `node <resolved-skill-directory>/scripts/lint.mjs <project-root>` checks only the static subset enabled by accepted laws in existing design state. No enabled checks is not proof of accessibility. Missing parsers or execution failures mean unavailable, never a pass.
 
-Marker `UIIFY:R4 verify`. Work: when commands are permitted and an execution tool is available, run `node <this-skill-directory>/scripts/lint.mjs <project-root>` and report its actual output. The script runs only the static subset enabled by accepted laws; no enabled checks is not proof of accessibility. Missing TypeScript/parser or another execution failure is unavailable, never a pass. If the consuming task prohibits commands, report "lint not run" with that reason; if no execution tool is available, report that limitation. When a browser tool is available and permitted, inspect the page and requested interactions without creating screenshot artifacts; otherwise report that browser verification was not run. Repair findings only under `src/` in at most two rounds, rerunning available checks after each. Do not edit DESIGN.md during repairs. Result: report executed checks, unavailable checks with reasons, repairs and remaining issues; never claim a check passed without running it. Then print `UIIFY:DONE` and stop.
+Reuse existing browser and accessibility tooling to inspect responsive layouts, keyboard access and requested interactions. When missing tools are needed for quality verification, use Playwright for browser checks and axe-core (or the project's axe integration) for accessibility checks. Before installing missing Playwright or axe-core packages or downloading browser binaries, notify the user briefly in their language, explaining what will be installed and why. For example: “I'll install Playwright and axe-core as development tools to check the page in a browser and catch accessibility issues.” This is a notification, not a confirmation question; continue within existing authorization and respect project installation rules. Use the project's package manager and development dependencies, reuse existing integrations, and install only what is needed.
 
-## Hard rules
-
-- Prefer published UIify component documentation over memory when implementing a mapped element.
-- Use a uiify component whenever the index names one for the element.
-- Ground visual choices in the brief and subject; don't impose one preferred palette or page template.
-- Apply optional frontend skills only when available and relevant; UIify's public contracts override generic advice.
-- Match elements only against the index: never invent a binding and never use an alias as the element name.
-- Run every stage in this conversation and never use context: fork.
-- Write only `DESIGN.md` and files under `src/`; R2 changes only its managed state block, R4 repairs only `src/` in at most two rounds.
+Repair findings within the task's scope and rerun the affected checks. If commands, installation or browser execution are unavailable or prohibited, report those checks as not run and explain the limitation. Report actual checks and remaining issues in ordinary language; never claim a check passed without running it.
 
 ## Index
 
-One line per element: `element|aliases|uiify component or gap|` (the final field is reserved and empty).
+One line per element: `element|aliases|uiify component or gap|reference path`. A blank final field means no curated reference.
 
 ```text
 accordion|faq-accordion,disclosure|accordion|
-alert-modal|confirmation-dialog,alert-dialog|alert-modal|
-avatar|profile-picture|gap|
-badge|chip,tag|gap|
-bar-chart|column-chart|gap|
+alert-modal|confirmation-dialog,alert-dialog|alert-modal|references/elements/alert-modal.md
+avatar|profile-picture|gap|references/elements/avatar.md
+badge|chip,tag|gap|references/elements/badge.md
+bar-chart|column-chart|gap|references/elements/bar-chart.md
 breadcrumb|breadcrumbs|breadcrumb|
-button|cta-button,icon-button,primary-button|button|
+button|cta-button,icon-button,primary-button|button|references/elements/button.md
 candle-chart|candlestick-chart|candle-chart|
-card|content-card|gap|
+card|content-card|gap|references/elements/card.md
 carousel|testimonial-carousel,image-slider|carousel|
 checkbox||checkbox|
-code-block|code-snippet|gap|
+code-block|code-snippet|gap|references/elements/code-block.md
 collapsible|expandable-section|collapsible|
 color-picker||color-picker|
 combobox|autocomplete,typeahead|combobox|
-command-palette|spotlight-search|gap|
+command-palette|spotlight-search|gap|references/elements/command-palette.md
 context-menu|right-click-menu|context-menu|
-cookie-banner|cookie-consent|gap|
-date-picker|calendar-picker|gap|
-divider|separator|gap|
+cookie-banner|cookie-consent|gap|references/elements/cookie-banner.md
+date-picker|calendar-picker|gap|references/elements/date-picker.md
+divider|separator|gap|references/elements/divider.md
 drawer|sheet,off-canvas-menu|drawer|
 dropdown-menu|menu|dropdown-menu|
-empty-state|no-results|gap|
-feature-grid|feature-cards,feature-list|gap|
-field|form-field|field|
+empty-state|no-results|gap|references/elements/empty-state.md
+feature-grid|feature-cards,feature-list|gap|references/elements/feature-grid.md
+field|form-field|field|references/elements/field.md
 file-upload|file-input,dropzone|file-upload|
-footer|site-footer|gap|
-form||form|
-header|navbar,top-nav|header|
-hero|hero-section,hero-banner|gap|
+footer|site-footer|gap|references/elements/footer.md
+form||form|references/elements/form.md
+header|navbar,top-nav|header|references/elements/header.md
+hero|hero-section,hero-banner|gap|references/elements/hero.md
 hover-card||hover-card|
-image-gallery|gallery,lightbox|gap|
-inline-alert|banner-alert,callout|gap|
-input|text-input|input|
+image-gallery|gallery,lightbox|gap|references/elements/image-gallery.md
+inline-alert|banner-alert,callout|gap|references/elements/inline-alert.md
+input|text-input|input|references/elements/input.md
 line-chart|sparkline|line-chart|
-logo-wall|logo-cloud,customer-logos|gap|
+logo-wall|logo-cloud,customer-logos|gap|references/elements/logo-wall.md
 modal|dialog|modal|
 number-field|number-input|number-field|
 otp-input|pin-input|otp-input|
-pagination||pagination|
-password-input|show-hide-password|gap|
+pagination||pagination|references/elements/pagination.md
+password-input|show-hide-password|gap|references/elements/password-input.md
 popup|popover|popup|
-pricing-table|pricing,plan-cards,pricing-plans|gap|
-progress-bar|progress,linear-progress|gap|
+pricing-table|pricing,plan-cards,pricing-plans|gap|references/elements/pricing-table.md
+progress-bar|progress,linear-progress|gap|references/elements/progress-bar.md
 radio-group|radio|radio-group|
 rating|star-rating|rating|
-search-input|search-box|gap|
+search-input|search-box|gap|references/elements/search-input.md
 segmented-control||segmented-control|
-select|native-select|select|
-sidebar|sidebar-nav,side-nav|gap|
+select|native-select|select|references/elements/select.md
+sidebar|sidebar-nav,side-nav|gap|references/elements/sidebar.md
 skeleton|skeleton-loader|skeleton|
 slider|range-slider|slider|
 spinner|loading-indicator|spinner|
-stats-bar|stat-card,metrics|gap|
-stepper|step-indicator,wizard-steps|gap|
-switch|toggle-switch|switch|
-table|data-table,comparison-table|table|
+stats-bar|stat-card,metrics|gap|references/elements/stats-bar.md
+stepper|step-indicator,wizard-steps|gap|references/elements/stepper.md
+switch|toggle-switch|switch|references/elements/switch.md
+table|data-table,comparison-table|table|references/elements/table.md
 table-of-contents|toc,in-page-nav|table-of-contents|
 tabs|tab-navigation|tabs|
 tags-input|token-input|tags-input|
-testimonial|testimonials,quote-card|gap|
-textarea||textarea|
-timeline||gap|
-toast|snackbar,toast-notification|toast|
+testimonial|testimonials,quote-card|gap|references/elements/testimonial.md
+textarea||textarea|references/elements/textarea.md
+timeline||gap|references/elements/timeline.md
+toast|snackbar,toast-notification|toast|references/elements/toast.md
 toggle|toggle-button|toggle|
 toggle-group|button-group|toggle-group|
 toolbar||toolbar|
 tooltip||tooltip|
 virtual-scroll|virtualized-list|virtual-scroll|
+```
+
+## Composition index
+
+One line per accepted relationship: `name|element,element|reference path`.
+
+```text
+card-rhythm|feature-grid,card|references/compositions/card-rhythm.md
+destructive-confirmation|alert-modal,button|references/compositions/destructive-confirmation.md
+form-grouping|form,field|references/compositions/form-grouping.md
+hero-actions|hero,button|references/compositions/hero-actions.md
+page-frame|header,footer|references/compositions/page-frame.md
+pricing-actions|pricing-table,button|references/compositions/pricing-actions.md
+save-feedback|button,toast|references/compositions/save-feedback.md
+table-controls|table,pagination|references/compositions/table-controls.md
 ```
