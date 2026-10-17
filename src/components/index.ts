@@ -45,3 +45,5 @@ export * from "./drawer/index.js";
 export * from "./context-menu/index.js";
 export * from "./header/index.js";
 export * from "./virtual-scroll/index.js";
+
+export * from "./table-of-contents/index.js";

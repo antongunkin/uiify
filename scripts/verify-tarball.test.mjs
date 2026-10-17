@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertNoSecrets, assertPackFiles } from "./verify-tarball.mjs";
+import { assertNoOwnerMaterial, assertNoSecrets, assertPackFiles } from "./verify-tarball.mjs";
 
 test("accepts the public tarball allowlist", () => {
   assert.doesNotThrow(() =>
@@ -12,6 +12,52 @@ test("accepts the public tarball allowlist", () => {
       "dist/index.d.ts",
       "agents/index.md",
       "agents/reference/components/button.md",
+      "skills/uiify/SKILL.md",
+      "skills/uiify/scripts/lint.mjs",
+    ]),
+  );
+});
+
+test("rejects per-element references: elements ship as index-only seeds", () => {
+  for (const path of [
+    "skills/uiify/references/elements/button.md",
+    "skills/uiify/references/other/x.md",
+    "skills/uiify/references/compositions/index.md",
+    "skills/uiify/references/compositions/card-rhythm.md",
+    "skills/uiify/references/laws/proximity.md",
+  ]) {
+    assert.throws(() => assertPackFiles(["README.md", path, "dist/index.js"]), /unexpected/i);
+  }
+});
+
+test("rejects owner calibration material inside the shipped skill", () => {
+  for (const text of [
+    "see /tmp/uiify-phase3/pair-01-A-desktop.png",
+    "Owner reason: more space",
+    "calibration_pair: pair-03",
+    "why: more space",
+    "decision: Selected A",
+    "более просторно",
+  ]) {
+    assert.throws(
+      () => assertNoOwnerMaterial([{ path: "skills/uiify/references/compositions/x.md", text }]),
+      /owner calibration material/,
+      text,
+    );
+  }
+});
+
+test("accepts a curated rule and ignores files outside the skill", () => {
+  assert.doesNotThrow(() =>
+    assertNoOwnerMaterial([
+      {
+        path: "skills/uiify/references/compositions/x.md",
+        text: "Separate cards with a 24px gap.",
+      },
+      {
+        path: "agents/index.md",
+        text: "Owner reason is a phrase this check only guards inside skills/.",
+      },
     ]),
   );
 });

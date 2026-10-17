@@ -2,7 +2,7 @@
   "$comment": "Source of truth for the RSC/CSS-first architecture and component verification. clientDefault: true means the Tier 0 server shell exists but the default entry ships the client island.",
   "tiers": {
     "0": {
-      "name": "RSC — zero client JavaScript",
+      "name": "RSC \u2014 zero client JavaScript",
       "sizeTarget": "0 kB",
       "bannedHooks": [
         "useContext",
@@ -27,7 +27,7 @@
       "note": "Native element owns state; JS only syncs ARIA or adds a small behavior (hover intent, auto-dismiss)."
     },
     "2": {
-      "name": "Client component — pre-hydration SSR",
+      "name": "Client component \u2014 pre-hydration SSR",
       "sizeTarget": "n/a",
       "bannedHooks": [],
       "noJsContract": "pre-hydration-only",
@@ -35,8 +35,8 @@
     }
   },
   "stateSources": {
-    "S1": "Native element state — browser owns it and updates the accessibility tree itself",
-    "S2": "Hidden input + :has() propagation — CSS-readable, ARIA needs a client island",
+    "S1": "Native element state \u2014 browser owns it and updates the accessibility tree itself",
+    "S2": "Hidden input + :has() propagation \u2014 CSS-readable, ARIA needs a client island",
     "none": "Stateless markup"
   },
   "components": {
@@ -295,7 +295,7 @@
       "sizeNow": "10 kB",
       "sizeTarget": "0.5 kB",
       "status": "done",
-      "clientDoes": "hover/focus intent delay — interestfor + popover=hint are Chrome/Firefox only, no Safari"
+      "clientDoes": "hover/focus intent delay \u2014 interestfor + popover=hint are Chrome/Firefox only, no Safari"
     },
     "hover-card": {
       "tier": 1,
@@ -313,7 +313,7 @@
       "sizeNow": "12 kB",
       "sizeTarget": "1 kB",
       "status": "done",
-      "clientDoes": "auto-dismiss timer, live-region announcement — CSS has no timers for logic"
+      "clientDoes": "auto-dismiss timer, live-region announcement \u2014 CSS has no timers for logic"
     },
     "number-field": {
       "tier": 1,
@@ -378,7 +378,7 @@
       "sizeTarget": "3 kB",
       "status": "done",
       "clientDoes": "filtering, aria-activedescendant",
-      "ariaGap": "filtering is impossible in CSS — pre-hydration shows the unfiltered list"
+      "ariaGap": "filtering is impossible in CSS \u2014 pre-hydration shows the unfiltered list"
     },
     "context-menu": {
       "tier": 2,
@@ -387,7 +387,7 @@
       "sizeNow": "14 kB",
       "sizeTarget": "3 kB",
       "status": "done",
-      "clientDoes": "contextmenu event — no CSS hook exists at all"
+      "clientDoes": "contextmenu event \u2014 no CSS hook exists at all"
     },
     "tags-input": {
       "tier": 2,
@@ -424,6 +424,16 @@
       "sizeTarget": "3 kB",
       "status": "done",
       "clientDoes": "windowed rendering for long fixed-height lists"
+    },
+    "table-of-contents": {
+      "tier": 2,
+      "state": "S1",
+      "element": "nav + button[popovertarget] + [popover] + a[href]",
+      "status": "done",
+      "sizeTarget": "4230 B compressed (client entry)",
+      "clientDoes": "scrollspy, hover/pinning, controlled selection/open, proximity highlighting and mouse line navigation",
+      "note": "Base entry is a server-pure native navigation shell; /client adds enhancements. Native links and popover invocation/dismissal work without JavaScript.",
+      "sizeNow": "4.14 kB compressed (client entry)"
     }
   }
 }

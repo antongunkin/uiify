@@ -1,0 +1,27 @@
+export {
+  TableOfContents,
+  TableOfContentsRoot,
+  TableOfContentsTrigger,
+  TableOfContentsRail,
+  TableOfContentsIndicator,
+  TableOfContentsContent,
+  TableOfContentsList,
+  TableOfContentsLink,
+} from "./TableOfContents.js";
+export type {
+  TableOfContentsLevel,
+  TableOfContentsRootOwnProps,
+  TableOfContentsRootProps,
+  TableOfContentsTriggerOwnProps,
+  TableOfContentsTriggerProps,
+  TableOfContentsRailOwnProps,
+  TableOfContentsRailProps,
+  TableOfContentsIndicatorOwnProps,
+  TableOfContentsIndicatorProps,
+  TableOfContentsContentOwnProps,
+  TableOfContentsContentProps,
+  TableOfContentsListOwnProps,
+  TableOfContentsListProps,
+  TableOfContentsLinkOwnProps,
+  TableOfContentsLinkProps,
+} from "./types.js";

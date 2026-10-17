@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "38880 B",
+    "limit": "39270 B",
     "import": "*"
   },
   {
@@ -339,6 +339,18 @@
     "name": "table/client",
     "path": "dist/components/table/client.js",
     "limit": "5060 B",
+    "import": "*"
+  },
+  {
+    "name": "table-of-contents",
+    "path": "dist/components/table-of-contents.js",
+    "limit": "700 B",
+    "import": "*"
+  },
+  {
+    "name": "table-of-contents/client",
+    "path": "dist/components/table-of-contents/client.js",
+    "limit": "4230 B",
     "import": "*"
   }
 ]

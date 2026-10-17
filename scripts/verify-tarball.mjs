@@ -8,9 +8,10 @@ import { fileURLToPath } from "node:url";
 
 const execFileAsync = promisify(execFile);
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".mjs", ".ts"]);
+const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".md", ".mjs", ".ts"]);
 
-const allowedPath = /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)(?:\/|$))/;
+const allowedPath =
+  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|scripts\/[^/]+\.mjs))$/;
 const credentialLike = [
   /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
   /\bnpm_[A-Za-z0-9]{8,}\b/,
@@ -24,6 +25,24 @@ export function assertPackFiles(files) {
     return typeof path !== "string" || !allowedPath.test(path.replace(/^package\//, ""));
   });
   assert.equal(unexpected.length, 0, `unexpected files in npm tarball: ${unexpected.join(", ")}`);
+}
+
+// The shipped skill carries curated rules only; the owner's reasons, decisions and examples stay inside the harness.
+const ownerMaterial = [
+  /\/tmp\//,
+  /[\u0400-\u04ff]/,
+  /Owner reason/i,
+  /calibration_pair/,
+  /\bpair-\d+\b/,
+  /^(?:why|decision):/m,
+];
+
+export function assertNoOwnerMaterial(entries) {
+  for (const entry of entries) {
+    if (!entry.path.replaceAll("\\", "/").startsWith("skills/")) continue;
+    const match = ownerMaterial.find((pattern) => pattern.test(entry.text));
+    assert.equal(match, undefined, `owner calibration material in ${entry.path}`);
+  }
 }
 
 export function assertNoSecrets(entries) {
@@ -78,7 +97,9 @@ async function main() {
     const tarball = join(packDirectory, packed.filename);
     await run("tar", ["-xzf", tarball, "-C", extractDirectory]);
     const packageDirectory = join(extractDirectory, "package");
-    assertNoSecrets(await collectTextFiles(packageDirectory));
+    const textFiles = await collectTextFiles(packageDirectory);
+    assertNoSecrets(textFiles);
+    assertNoOwnerMaterial(textFiles);
 
     await run(
       "npm",

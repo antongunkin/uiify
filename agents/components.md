@@ -67,6 +67,7 @@ its exports, props and shapes; exact types are in the `.d.ts` file listed in the
 | [otp-input](./reference/components/otp-input.md) | `@gunkin/uiify/components/otp-input` | 2 | none | `input` | `dist/components/otp-input.d.ts` |  |
 | [color-picker](./reference/components/color-picker.md) | `@gunkin/uiify/components/color-picker` | 1 | S1 | `input[type=color]` | `dist/components/color-picker.d.ts` |  |
 | [virtual-scroll](./reference/components/virtual-scroll.md) | `@gunkin/uiify/components/virtual-scroll` | 2 | none | `div[overflow]` | `dist/components/virtual-scroll.d.ts` |  |
+| [table-of-contents](./reference/components/table-of-contents.md) | `@gunkin/uiify/components/table-of-contents` | 2 | S1 | `nav + button[popovertarget] + [popover] + a[href]` | `dist/components/table-of-contents.d.ts` | Base entry is a server-pure native navigation shell; /client adds enhancements. Native links and popover invocation/dismissal work without JavaScript. |
 
 ## Elements
 

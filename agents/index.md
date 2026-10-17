@@ -74,7 +74,7 @@ export function BillingLink() {
 }
 ```
 
-Parts do not share React context. Each part names its root with an id you choose:
+Native server parts do not share React context. Each part names its root with an id you choose:
 
 ```tsx
 import { Field } from "@gunkin/uiify/components/field";
@@ -171,3 +171,9 @@ Check a component's tier in `components.md` before importing it into a Server Co
 
 Some components also have sub-entries such as `@gunkin/uiify/components/modal/client` for
 controlled state. They are listed under **Sub-entries** in the component's reference file.
+
+TableOfContents has a server-pure base entry for native popover buttons and fragment links.
+Import `@gunkin/uiify/components/table-of-contents/client` for scrollspy, hover opening,
+pinning and controlled `value`/`open`. Provide unique `Content.id` and matching `Trigger.target`,
+label the navigation and trigger, and match each `Indicator.value` to a target heading ID.
+The client Root owns context for its parts. A permanent list omits Trigger and Content.

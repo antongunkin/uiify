@@ -44,6 +44,7 @@ await writePublicWrappers("components", [
   "enhance",
   "modal/client",
   "header/client",
+  "table-of-contents/client",
   "rating/client",
   "candle-chart/client",
   "line-chart/client",
