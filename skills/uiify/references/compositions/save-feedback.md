@@ -6,9 +6,7 @@ Law: references/laws/feedback.md
 
 ## Rule
 
-## Rule
-
-Place save feedback near the action it describes and announce the update as a status message. Keep the message understandable without color or motion.
+Place save feedback near the action it describes and announce the update as a status message. Preserve valid field values when validation fails; allow correction and a successful save. Keep the message understandable without color or motion.
 
 ## Sources
 

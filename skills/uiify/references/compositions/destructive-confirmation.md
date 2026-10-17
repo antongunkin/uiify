@@ -6,9 +6,7 @@ Law: references/laws/error-prevention.md
 
 ## Rule
 
-## Rule
-
-State the consequence in the dialog title or message. Name both the destructive action and the safe way to cancel, identify the dialog, and follow the modal-dialog focus and keyboard pattern.
+State the consequence in the dialog title or message. Name both the destructive action and the safe way to cancel. Put initial focus on the safe action; Cancel and Escape preserve the item and return focus. After confirmation removes the item, move focus to a connected element. Identify the dialog and follow the modal-dialog keyboard pattern.
 
 ## Sources
 

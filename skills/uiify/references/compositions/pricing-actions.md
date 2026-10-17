@@ -6,8 +6,6 @@ Law: references/laws/proximity.md
 
 ## Rule
 
-## Rule
-
 Keep each plan action associated with the plan name, price and included features. Let the page stack plans at narrow widths without changing their reading order.
 
 ## Sources

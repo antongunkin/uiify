@@ -6,8 +6,6 @@ Law: references/laws/proximity.md
 
 ## Rule
 
-## Rule
-
 Keep cards in one group only when the items share a purpose and hierarchy. Preserve readable separation and source order as the layout becomes a single column.
 
 ## Sources

@@ -6,11 +6,9 @@ Law: references/laws/von-restorff.md
 
 ## Rule
 
-## Rule
-
-Make the primary action easy to identify and keep the secondary action visually quieter. Use concrete action labels and retain visible keyboard focus.
+Place the main action beside the hero message it advances, give it the clearest emphasis and an outcome-specific label, then place any secondary action after it with quieter treatment. Preserve that reading order when actions stack.
 
 ## Sources
 
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) (verified 2026-10-16)
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-16)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) (verified 2026-10-17)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-17)

@@ -44,7 +44,7 @@ async function lint() {
       }
     }
   }
-  console.log(`${count} findings (${checks.length} accepted static checks).`);
+  console.log(`${count} findings (${checks.length} accepted static checks: ${checks.map((check) => check.id).join(", ") || "none"}).`);
   process.exitCode = count > 0 ? 1 : 0;
 }
 

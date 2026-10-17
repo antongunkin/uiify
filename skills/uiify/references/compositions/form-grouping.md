@@ -6,8 +6,6 @@ Law: references/laws/proximity.md
 
 ## Rule
 
-## Rule
-
 Group related controls with a fieldset and legend. Keep each control labelled and present groups in the order people complete them.
 
 ## Sources

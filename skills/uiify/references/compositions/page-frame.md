@@ -6,8 +6,6 @@ Law: references/laws/readability.md
 
 ## Rule
 
-## Rule
-
 Use consistent page landmarks and repeated navigation order. Align header, main content and footer to one responsive content measure without clipping narrow screens.
 
 ## Sources

@@ -18,18 +18,21 @@ test("accepts the public tarball allowlist", () => {
   );
 });
 
-test("accepts only the three curated knowledge reference directories", () => {
+test("accepts only the curated knowledge and example reference directories", () => {
   assert.doesNotThrow(() =>
     assertPackFiles([
       "skills/uiify/references/elements/button.md",
       "skills/uiify/references/laws/accessibility.md",
       "skills/uiify/references/compositions/hero-actions.md",
+      "skills/uiify/references/guides/surface.md",
+      "skills/uiify/references/examples/field-validation.md",
     ]),
   );
   for (const path of [
     "skills/uiify/references/other/x.md",
     "skills/uiify/references/elements/nested/button.md",
     "skills/uiify/references/nested/x.md",
+    "skills/uiify/references/guides/nested/x.md",
     "skills/uiify/references/eval/results.json",
   ]) {
     assert.throws(() => assertPackFiles(["README.md", path, "dist/index.js"]), /unexpected/i);

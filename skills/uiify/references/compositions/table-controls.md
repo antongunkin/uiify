@@ -6,9 +6,7 @@ Law: references/laws/proximity.md
 
 ## Rule
 
-## Rule
-
-Keep labeled search and filters associated with the table they change. Identify the current page and preserve a clear sequence from controls to rows to pagination.
+Keep labeled search and filters associated with the table they change. Applying a filter returns to a valid page with matching rows; Reset restores the original result set and first page. Identify the current page and preserve a clear sequence from controls to rows to pagination.
 
 ## Sources
 

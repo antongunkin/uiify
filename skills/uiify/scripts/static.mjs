@@ -41,6 +41,62 @@ function positiveLiteral(attribute, typescript) {
   );
 }
 
+const UIIFY_MODULE = /^@gunkin\/uiify\/(?:components|elements)(?:\/[a-z0-9-]+)?$/;
+
+function uiifyBindings(tree, typescript) {
+  const bindings = new Set();
+  for (const statement of tree.statements) {
+    if (
+      !typescript.isImportDeclaration(statement) ||
+      !typescript.isStringLiteral(statement.moduleSpecifier) ||
+      !UIIFY_MODULE.test(statement.moduleSpecifier.text)
+    ) continue;
+    const clause = statement.importClause;
+    if (!clause || clause.isTypeOnly) continue;
+    if (clause.name) bindings.add(clause.name.text);
+    const namedBindings = clause.namedBindings;
+    if (namedBindings && typescript.isNamespaceImport(namedBindings)) {
+      bindings.add(namedBindings.name.text);
+    } else if (namedBindings && typescript.isNamedImports(namedBindings)) {
+      for (const specifier of namedBindings.elements) {
+        if (!specifier.isTypeOnly) bindings.add(specifier.name.text);
+      }
+    }
+  }
+
+  const shadowable = new Set([
+    typescript.SyntaxKind.VariableDeclaration,
+    typescript.SyntaxKind.BindingElement,
+    typescript.SyntaxKind.Parameter,
+    typescript.SyntaxKind.FunctionDeclaration,
+    typescript.SyntaxKind.FunctionExpression,
+    typescript.SyntaxKind.ClassDeclaration,
+    typescript.SyntaxKind.ClassExpression,
+  ]);
+  const visit = (node) => {
+    if (shadowable.has(node.kind) && node.name && typescript.isIdentifier(node.name)) {
+      bindings.delete(node.name.text);
+    }
+    typescript.forEachChild(node, visit);
+  };
+  visit(tree);
+  return bindings;
+}
+
+function jsxTarget(tagName, bindings, typescript) {
+  if (typescript.isIdentifier(tagName)) {
+    if (/^[a-z][a-z0-9-]*$/.test(tagName.text)) return { kind: "intrinsic", tag: tagName.text };
+    if (bindings.has(tagName.text)) return { kind: "uiify", name: tagName.text };
+    return null;
+  }
+  if (!typescript.isPropertyAccessExpression(tagName)) return null;
+  let root = tagName.expression;
+  while (typescript.isPropertyAccessExpression(root)) root = root.expression;
+  return typescript.isIdentifier(root) && bindings.has(root.text)
+    ? { kind: "uiify", name: tagName.getText() }
+    : null;
+}
+
 function sourceCheck(id, law, message, violates) {
   return {
     id,
@@ -49,20 +105,19 @@ function sourceCheck(id, law, message, violates) {
     run(input) {
       const tree = parse(input);
       const { file, typescript } = input;
+      const bindings = uiifyBindings(tree, typescript);
       const findings = [];
       const visit = (node) => {
-        if (
-          (typescript.isJsxOpeningElement(node) || typescript.isJsxSelfClosingElement(node)) &&
-          typescript.isIdentifier(node.tagName) &&
-          /^[a-z][a-z0-9-]*$/.test(node.tagName.text) &&
-          violates(node.tagName.text, attributes(node, typescript), typescript)
-        ) {
-          findings.push({
-            file,
-            line: tree.getLineAndCharacterOfPosition(node.getStart(tree)).line + 1,
-            rule: id,
-            message,
-          });
+        if (typescript.isJsxOpeningElement(node) || typescript.isJsxSelfClosingElement(node)) {
+          const target = jsxTarget(node.tagName, bindings, typescript);
+          if (target && violates(target, attributes(node, typescript), typescript)) {
+            findings.push({
+              file,
+              line: tree.getLineAndCharacterOfPosition(node.getStart(tree)).line + 1,
+              rule: id,
+              message,
+            });
+          }
         }
         typescript.forEachChild(node, visit);
       };
@@ -84,12 +139,14 @@ export const staticChecks = [
     "button-type",
     "error-prevention",
     "Give the intrinsic button an explicit type.",
-    (tag, attrs) => tag === "button" && !attrs.some((attr) => attr.name.text === "type"),
+    (target, attrs) =>
+      target.kind === "intrinsic" && target.tag === "button" && !attrs.some((attr) => attr.name.text === "type"),
   ),
   sourceCheck(
     "image-alt",
     "accessibility",
     "Give the intrinsic image an alt attribute (empty for decoration).",
-    (tag, attrs) => tag === "img" && !attrs.some((attr) => attr.name.text === "alt"),
+    (target, attrs) =>
+      target.kind === "intrinsic" && target.tag === "img" && !attrs.some((attr) => attr.name.text === "alt"),
   ),
 ];

@@ -4,7 +4,35 @@ Binding: select
 
 Choose one value from a fixed list.
 
-Use a visible label and choose a native select for a finite list of options unless the task needs a different interaction. Preserve the selected value when validation fails.
+## Use when
+
+Choose one value from a finite list, especially when the form benefits from a native control.
+
+## Avoid when
+
+Avoid a select when users must compare several options at once or when the task needs a richer search or selection interaction.
+
+## Structure
+
+Associate a visible label with the select. Group related options with `optgroup` and provide an empty prompt only when the value is genuinely optional.
+
+## Responsive
+
+Keep the native control usable at narrow widths and browser zoom; do not depend on a fixed-width option label.
+
+## States
+
+Preserve the selected value after validation errors. Use native disabled, required, and invalid form semantics.
+
+## Verify
+
+Confirm the label is announced, options can be selected by keyboard, and the chosen value survives an invalid submission.
+
+## Common mistake
+
+Replacing a native select with a custom popup without a clear interaction need.
+
+Example: `references/examples/select-basic.md`.
 
 Related laws: references/laws/proximity.md, references/laws/accessibility.md
 
