@@ -175,7 +175,10 @@ async function main() {
     const lintResult = await execFileAsync(process.execPath, [lintScript, consumerDirectory], {
       cwd: consumerDirectory,
     });
-    assert.match(lintResult.stdout, /0 findings \(2 accepted static checks\)\./);
+    assert.match(
+      lintResult.stdout,
+      /0 findings \(2 accepted static checks: no-positive-tabindex, button-type\)\./,
+    );
 
     console.log(
       JSON.stringify(
