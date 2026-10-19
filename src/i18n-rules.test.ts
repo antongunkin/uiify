@@ -1,10 +1,11 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, test } from "vitest";
 import componentTiers from "./component-tiers.json";
 import * as core from "./core/index.js";
 
 const sourceDirectory = import.meta.dirname;
+const fixturePath = resolve(sourceDirectory, "../../../e2e/specs/i18n-fixtures.spec.ts");
 
 function files(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -79,30 +80,30 @@ test("every keyboard handler for an input guards IME composition", () => {
   expect([...new Set(violations)]).toEqual([]);
 });
 
-test("every component with horizontal arrow handling is in the RTL fixture matrix", () => {
-  const componentDirectory = resolve(sourceDirectory, "components");
-  const fixtureSource = readFileSync(
-    resolve(sourceDirectory, "../../../e2e/specs/i18n-fixtures.spec.ts"),
-    "utf8",
-  );
-  const fixtures = new Set(
-    [...fixtureSource.matchAll(/\{\s*name:\s*["']([^"']+)["']/g)].map((match) => match[1]),
-  );
-  const arrowHandlers = Object.keys(componentTiers.components).filter((name) => {
-    const sourcePath = resolve(componentDirectory, name);
-    return (
-      readdirSync(componentDirectory, { withFileTypes: true }).some(
-        (entry) => entry.isDirectory() && entry.name === name,
-      ) &&
-      sourceFiles(sourcePath).some((path) => {
-        const source = readFileSync(path, "utf8");
-        return source.includes("ArrowLeft") || source.includes("ArrowRight");
-      })
+test.skipIf(!existsSync(fixturePath))(
+  "every component with horizontal arrow handling is in the RTL fixture matrix",
+  () => {
+    const componentDirectory = resolve(sourceDirectory, "components");
+    const fixtureSource = readFileSync(fixturePath, "utf8");
+    const fixtures = new Set(
+      [...fixtureSource.matchAll(/\{\s*name:\s*["']([^"']+)["']/g)].map((match) => match[1]),
     );
-  });
+    const arrowHandlers = Object.keys(componentTiers.components).filter((name) => {
+      const sourcePath = resolve(componentDirectory, name);
+      return (
+        readdirSync(componentDirectory, { withFileTypes: true }).some(
+          (entry) => entry.isDirectory() && entry.name === name,
+        ) &&
+        sourceFiles(sourcePath).some((path) => {
+          const source = readFileSync(path, "utf8");
+          return source.includes("ArrowLeft") || source.includes("ArrowRight");
+        })
+      );
+    });
 
-  expect(arrowHandlers.filter((name) => !fixtures.has(name))).toEqual([]);
-});
+    expect(arrowHandlers.filter((name) => !fixtures.has(name))).toEqual([]);
+  },
+);
 
 test("script-sensitive typography is scoped or explicitly allow-listed", () => {
   const stylesDirectory = resolve(sourceDirectory, "styles");

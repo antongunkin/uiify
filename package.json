@@ -139,6 +139,7 @@
     "size-limit": "^12.1.0",
     "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
+    "stylelint-plugin-logical-css": "^2.1.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.8"

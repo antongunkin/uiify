@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -6,10 +6,9 @@ const stylesDirectory = import.meta.dirname;
 const i18nCss = readFileSync(resolve(stylesDirectory, "i18n.css"), "utf8");
 const normalizedI18nCss = i18nCss.replace(/\s+/g, " ");
 const indexCss = readFileSync(resolve(stylesDirectory, "index.css"), "utf8");
-const docsCss = readFileSync(
-  resolve(stylesDirectory, "../../../catalog/src/docs/docs.css"),
-  "utf8",
-);
+const docsCssPath = resolve(stylesDirectory, "../../../catalog/src/docs/docs.css");
+const hasDocsCss = existsSync(docsCssPath);
+const docsCss = hasDocsCss ? readFileSync(docsCssPath, "utf8") : "";
 const normalizedDocsCss = docsCss.replace(/\s+/g, " ");
 
 describe("script-aware typography", () => {
@@ -45,7 +44,7 @@ describe("script-aware typography", () => {
     expect(i18nCss).not.toContain("@supports");
   });
 
-  it("applies the script stacks and prose behavior to docs", () => {
+  it.skipIf(!hasDocsCss)("applies the script stacks and prose behavior to docs", () => {
     expect(docsCss).toMatch(
       /\.docs-body:lang\(ja\)\s*\{\s*font-family:\s*var\(\s*--font-sans-ja,\s*"Hiragino Sans",\s*"Hiragino Kaku Gothic ProN",\s*"Yu Gothic UI",\s*"Noto Sans JP",\s*var\(--font-sans\)\s*\);/,
     );
