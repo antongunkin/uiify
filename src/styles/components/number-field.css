@@ -11,7 +11,8 @@
     overflow: hidden;
   }
 
-  [data-uiify-number-field] > [role="spinbutton"] {
+  [data-uiify-number-field] > [role="spinbutton"],
+  [data-uiify-number-field] > [data-part="group"] > [role="spinbutton"] {
     inline-size: 4rem;
     min-block-size: 36px;
     line-height: 1.25rem;
@@ -34,7 +35,10 @@
     outline: none;
   }
 
-  [data-uiify-number-field] > button {
+  [data-uiify-number-field] > button,
+  [data-uiify-number-field] > [data-part="group"] > button,
+  [data-uiify-number-field] > [data-part="group"] > [data-part="increment"],
+  [data-uiify-number-field] > [data-part="group"] > [data-part="decrement"] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -52,29 +56,60 @@
     transition: var(--transition-colors);
   }
 
-  [data-uiify-number-field] > button:empty::before {
+  [data-uiify-number-field] > button:empty::before,
+  [data-uiify-number-field] > [data-part="group"] > button:empty::before,
+  [data-uiify-number-field] > [data-part="group"] > [data-part="increment"]:empty::before,
+  [data-uiify-number-field] > [data-part="group"] > [data-part="decrement"]:empty::before {
     display: block;
   }
 
-  [data-uiify-number-field] > button:first-child:empty::before {
-    content: "←";
+  [data-uiify-number-field] > button:first-child:empty::before,
+  [data-uiify-number-field] > [data-part="group"] > button:first-child:empty::before,
+  [data-uiify-number-field]
+    > [data-part="group"]
+    > [data-part="decrement"]:first-child:empty::before {
+    content: "←" / "";
   }
 
-  [data-uiify-number-field] > button:last-child:empty::before {
-    content: "→";
+  [data-uiify-number-field] > button:last-child:empty::before,
+  [data-uiify-number-field] > [data-part="group"] > button:last-child:empty::before,
+  [data-uiify-number-field]
+    > [data-part="group"]
+    > [data-part="increment"]:last-child:empty::before {
+    content: "→" / "";
   }
 
-  [data-uiify-number-field] > button:first-child {
+  [data-uiify-number-field]:dir(rtl) > button:empty::before,
+  [data-uiify-number-field]:dir(rtl) > [data-part="group"] > button:empty::before,
+  [data-uiify-number-field]:dir(rtl) > [data-part="group"] > [data-part="increment"]:empty::before,
+  [data-uiify-number-field]:dir(rtl) > [data-part="group"] > [data-part="decrement"]:empty::before {
+    scale: -1 1;
+  }
+
+  [data-uiify-number-field] > button:first-child,
+  [data-uiify-number-field] > [data-part="group"] > button:first-child,
+  [data-uiify-number-field] > [data-part="group"] > [data-part="decrement"]:first-child {
     border-inline-start: none;
     border-inline-end: var(--border-width) solid var(--border);
   }
 
-  [data-uiify-number-field] > button:hover {
+  [data-uiify-number-field] > button:hover,
+  [data-uiify-number-field] > [data-part="group"] > button:hover,
+  [data-uiify-number-field] > [data-part="group"] > [data-part="increment"]:hover,
+  [data-uiify-number-field] > [data-part="group"] > [data-part="decrement"]:hover {
     background-color: color-mix(in oklch, var(--foreground) 8%, transparent);
   }
 
-  [data-uiify-number-field] > button[data-disabled] {
+  [data-uiify-number-field] > button[data-disabled],
+  [data-uiify-number-field] > [data-part="group"] > button[data-disabled],
+  [data-uiify-number-field] > [data-part="group"] > [data-part="increment"][data-disabled],
+  [data-uiify-number-field] > [data-part="group"] > [data-part="decrement"][data-disabled] {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  [data-uiify-number-field] > [data-part="group"] {
+    display: inline-flex;
+    align-items: stretch;
   }
 }

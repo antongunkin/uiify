@@ -22,11 +22,11 @@ export interface CarouselItem {
 export interface CarouselLabels {
   readonly previous: string;
   readonly next: string;
-  readonly goTo: string;
+  readonly goToSlide: string;
   readonly navigation: string;
   readonly start: string;
   readonly stop: string;
-  readonly of: string;
+  readonly slide: string;
 }
 
 /**
@@ -51,6 +51,7 @@ export interface CarouselProps {
   readonly "aria-label": string;
   readonly axis?: CarouselAxis;
   readonly dir?: "ltr" | "rtl";
+  readonly locale?: string;
   readonly navigation?: boolean;
   readonly pagination?: boolean;
   readonly className?: string;

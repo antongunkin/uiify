@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type {
   AnchorAlign,
   AnchorSide,
@@ -67,13 +67,12 @@ export interface ComboboxContextValue {
   readonly value?: string | readonly string[] | undefined;
 }
 
-export interface ComboboxRootShellOwnProps {
+export interface ComboboxRootShellOwnProps extends Omit<ComponentPropsWithRef<"div">, "children"> {
   readonly className?: string;
   readonly defaultInputValue?: string;
   readonly defaultOpen?: boolean;
   readonly defaultValue?: string;
   readonly filterFn?: ComboboxFilterFn;
-  readonly id?: string;
   readonly items: readonly ComboboxItemData[];
 }
 

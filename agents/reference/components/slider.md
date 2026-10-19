@@ -9,7 +9,7 @@
 ## Exports
 
 - Runtime: `Slider`
-- Types: `SliderOwnProps`, `SliderProps`
+- Types: `SliderLabels`, `SliderOwnProps`, `SliderProps`
 
 ## Props and shapes
 
@@ -45,9 +45,17 @@
 | `disabled` | `boolean` | no |  |
 | `orientation` | `"horizontal" \| "vertical"` | no |  |
 | `marks` | `readonly SliderMark[]` | no |  |
+| `labels` | `Partial<SliderLabels>` | no |  |
 | `thumbLabels` | `readonly [string, string]` | no |  |
 | `"aria-label"` | `string` | no |  |
 | `"aria-labelledby"` | `string` | no |  |
+
+### SliderLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `minimum` | `string` | yes |  |
+| `maximum` | `string` | yes |  |
 
 ### SliderClientRenderState
 

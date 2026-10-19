@@ -32,3 +32,28 @@ describe("Slider skin", () => {
     expect(css).toContain("[data-uiify-slider-client][data-disabled]");
   });
 });
+
+describe("Slider skin direction", () => {
+  const uncommented = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  /** Selector text of every rule (text before each `{`). */
+  const selectors = [...uncommented.matchAll(/([^{}]+)\{/g)].map((match) => match[1]!.trim());
+
+  it("never mixes WebKit and Gecko pseudo-elements in one selector list", () => {
+    for (const selector of selectors) {
+      expect(selector.includes("::-webkit-") && selector.includes("::-moz-"), selector).toBe(false);
+    }
+  });
+
+  it("styles the rtl track fill in separate engine rules via :dir()", () => {
+    const webkit = selectors.filter(
+      (s) => s === "[data-uiify-slider]:dir(rtl)::-webkit-slider-runnable-track",
+    );
+    const moz = selectors.filter((s) => s === "[data-uiify-slider]:dir(rtl)::-moz-range-track");
+    expect(webkit).toHaveLength(1);
+    expect(moz).toHaveLength(1);
+  });
+
+  it("does not depend on a [dir] attribute selector", () => {
+    expect(uncommented).not.toContain("[dir=");
+  });
+});

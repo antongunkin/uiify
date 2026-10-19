@@ -1,3 +1,4 @@
+import { isComposingKeyEvent } from "./ime.js";
 import type { OpenChangeReason } from "./open-change-details.js";
 import { getEventPath, isEventInsideLayer } from "./platform.js";
 
@@ -33,7 +34,8 @@ function createRegistry(document: Document): Registry {
   document.addEventListener(
     "keydown",
     (event) => {
-      if (event.key === "Escape") dispatch(document, "escape-key", event);
+      if (event.key === "Escape" && !isComposingKeyEvent(event))
+        dispatch(document, "escape-key", event);
     },
     options,
   );

@@ -254,4 +254,48 @@ describe("TagsInput", () => {
     const betaTag = container.querySelector("[data-testid='tag-beta']");
     expect(document.activeElement).toBe(betaTag);
   });
+
+  describe("IME composition", () => {
+    function setup(defaultValue?: string[]) {
+      const onChange = vi.fn();
+      render(
+        <TagsInput.Root {...(defaultValue ? { defaultValue } : {})} onValueChange={onChange}>
+          <TagsInput.List>
+            <TagsInput.Input placeholder="Add tag" />
+          </TagsInput.List>
+        </TagsInput.Root>,
+      );
+      return { input: screen.getByPlaceholderText("Add tag"), onChange };
+    }
+
+    it("does not add a tag on Enter while composing", () => {
+      const { input, onChange } = setup();
+      fireEvent.change(input, { target: { value: "とうきょう" } });
+      fireEvent.keyDown(input, { key: "Enter", isComposing: true });
+      fireEvent.keyDown(input, { key: "Enter", keyCode: 229 });
+      expect(onChange).not.toHaveBeenCalled();
+      fireEvent.keyDown(input, { key: "Enter" });
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(["とうきょう"]);
+    });
+
+    it("does not remove a tag on Backspace while composing", () => {
+      const { input, onChange } = setup(["a", "b"]);
+      fireEvent.keyDown(input, { key: "Backspace", isComposing: true });
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it("still shows composing keys to a consumer onKeyDown", () => {
+      const onKeyDown = vi.fn();
+      render(
+        <TagsInput.Root>
+          <TagsInput.List>
+            <TagsInput.Input placeholder="Add tag" onKeyDown={onKeyDown} />
+          </TagsInput.List>
+        </TagsInput.Root>,
+      );
+      fireEvent.keyDown(screen.getByPlaceholderText("Add tag"), { key: "a", isComposing: true });
+      expect(onKeyDown).toHaveBeenCalledTimes(1);
+    });
+  });
 });

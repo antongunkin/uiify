@@ -13,6 +13,7 @@ import type { ElementType, KeyboardEvent, ReactElement, SyntheticEvent } from "r
 import { useControllableState, useId, useIsomorphicLayoutEffect } from "@gunkin/uiify/hooks";
 import { createPartContext } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
+import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { createTagsInputStore, splitTags } from "./tags-input-store.js";
@@ -164,6 +165,7 @@ export function TagsInputInput<TAs extends ElementType = "input">(
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (isComposingKeyEvent(event)) return;
     if (event.key === "Enter" || delimiters.includes(event.key)) {
       event.preventDefault();
       commitInput();

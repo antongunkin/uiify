@@ -2,14 +2,14 @@
 # number-field
 
 - Import: `@gunkin/uiify/components/number-field`
-- Tier 1 (RSC shell + thin client island); state source S1; native element `input[type=number]`
+- Tier 1 (RSC shell + thin client island); state source S1; native element `input[type=text][role=spinbutton]`
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/number-field.d.ts`
 
 ## Exports
 
 - Runtime: `NumberField`, `NumberFieldDecrement`, `NumberFieldGroup`, `NumberFieldIncrement`, `NumberFieldInput`, `NumberFieldRoot`
-- Types: `NumberFieldDecrementProps`, `NumberFieldGroupProps`, `NumberFieldIncrementProps`, `NumberFieldInputProps`, `NumberFieldRootOwnProps`, `NumberFieldRootProps`
+- Types: `NumberFieldDecrementProps`, `NumberFieldGroupProps`, `NumberFieldIncrementProps`, `NumberFieldInputOwnProps`, `NumberFieldInputProps`, `NumberFieldRootOwnProps`, `NumberFieldRootProps`
 
 ## Props and shapes
 
@@ -43,6 +43,7 @@
 | `defaultValue` | `number` | no |  |
 | `disabled` | `boolean` | no |  |
 | `formatOptions` | `Intl.NumberFormatOptions` | no |  |
+| `locale` | `string` | no | BCP 47 locale used to format and parse the value. Defaults to `"en-US"`. |
 | `max` | `number` | no |  |
 | `min` | `number` | no |  |
 | `onValueChange` | `(value: number \| undefined) => void` | no |  |
@@ -51,10 +52,20 @@
 | `step` | `number` | no |  |
 | `value` | `number` | no |  |
 
+### NumberFieldInputOwnProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | no |  |
+| `onBlur` | `FocusEventHandler<HTMLInputElement>` | no |  |
+| `onChange` | `ChangeEventHandler<HTMLInputElement>` | no |  |
+| `onFocus` | `FocusEventHandler<HTMLInputElement>` | no |  |
+| `onKeyDown` | `KeyboardEventHandler<HTMLInputElement>` | no |  |
+
 ## Other types
 
 - `NumberFieldRootProps<TAs>`: `RenderableProps<TAs, NumberFieldRootOwnProps, NumberFieldRootOwnProps, HTMLElement>`
 - `NumberFieldGroupProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, { disabled: boolean }, HTMLElement>`
-- `NumberFieldInputProps<TAs>`: `RenderableProps<TAs, Record<string, never>, { disabled: boolean; readOnly: boolean; required: boolean }, HTMLInputElement>`
+- `NumberFieldInputProps<TAs>`: `RenderableProps<TAs, NumberFieldInputOwnProps, { disabled: boolean; readOnly: boolean; required: boolean }, HTMLInputElement>`
 - `NumberFieldIncrementProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, { disabled: boolean }, HTMLButtonElement>`
 - `NumberFieldDecrementProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, { disabled: boolean }, HTMLButtonElement>`

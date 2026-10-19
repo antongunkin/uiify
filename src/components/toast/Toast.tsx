@@ -32,6 +32,7 @@ import type {
   ToastRootOwnProps,
   ToastActionProps,
   ToastCloseProps,
+  ToastLabels,
 } from "./types.js";
 
 export type {
@@ -39,6 +40,7 @@ export type {
   ToastCloseProps,
   ToastDescriptionOwnProps,
   ToastInput,
+  ToastLabels,
   ToastPriority,
   ToastProviderOwnProps,
   ToastRecord,
@@ -48,7 +50,11 @@ export type {
   ToastViewportOwnProps,
 } from "./types.js";
 
-const SWIPE_DISMISS_THRESHOLD = 80;
+const DEFAULT_TOAST_LABELS: ToastLabels = {
+  region: "Notifications",
+  notification: "Notification",
+  close: "Close",
+};
 
 /** Transition type and view-transition-class shared with behavior.css and styles/toast.css. */
 const TOAST_TRANSITION = "uiify-toast";
@@ -61,7 +67,8 @@ const [ToastStoreProvider, useToastStoreContext] = createPartContext<ToastContex
 export { ToastDescription, ToastTitle };
 
 export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null {
-  const { children, limit = 3 } = props;
+  const { children, limit = 3, labels } = props;
+  const resolvedLabels = useMemo(() => ({ ...DEFAULT_TOAST_LABELS, ...labels }), [labels]);
   const storeRef = useRef<ToastStore | null>(null);
   storeRef.current ??= createToastStore({ limit });
   const store = storeRef.current;
@@ -81,8 +88,8 @@ export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null
     () => "",
   );
   const contextValue = useMemo(
-    () => ({ dismiss, pause, resume, store }),
-    [dismiss, pause, resume, store],
+    () => ({ dismiss, pause, resume, store, labels: resolvedLabels }),
+    [dismiss, pause, resume, store, resolvedLabels],
   );
 
   return (
@@ -115,6 +122,8 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
     return unsubscribe;
   }, [store]);
   const [consumerRef, domProps] = splitRef<HTMLElement, ToastViewportOwnProps>(props);
+  const { labels } = useToastStoreContext("Viewport");
+  const resolvedLabels = { ...labels, ...props.labels };
   const viewportRef = useRef<HTMLElement | null>(null);
   const mergedRef = useMergedRefs(viewportRef, consumerRef);
   const hasToasts = toasts.length > 0;
@@ -135,7 +144,7 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
   }, [hasToasts]);
 
   return (
-    <ToastViewportElement {...domProps} popover="manual" ref={mergedRef}>
+    <ToastViewportElement {...domProps} labels={resolvedLabels} popover="manual" ref={mergedRef}>
       {toasts.map((toast) => (
         <ViewTransition default={TOAST_TRANSITION} key={toast.id}>
           <ToastRoot toast={toast} />
@@ -147,16 +156,18 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
 ToastViewport.displayName = "ToastViewport";
 
 export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
-  const { toast } = props;
-  const { dismiss, pause, resume } = useToastStoreContext("Root");
-  const startXRef = useRef(0);
-  const startYRef = useRef(0);
-  const swipingRef = useRef(false);
+  const { toast, labels: labelOverrides } = props;
+  const { dismiss, pause, resume, labels: providerLabels } = useToastStoreContext("Root");
+  const labels = { ...providerLabels, ...labelOverrides };
+  const swipeRef = useRef<PointerEvent<HTMLDivElement> | null>(null);
+  const endSwipe = (event: PointerEvent<HTMLDivElement>) => {
+    if (swipeRef.current?.pointerId === event.pointerId) swipeRef.current = null;
+  };
 
   /* oxlint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/prefer-tag-over-role -- pause/swipe on toast card */
   return (
     <div
-      aria-label={typeof toast.title === "string" ? toast.title : "Notification"}
+      aria-label={typeof toast.title === "string" ? toast.title : labels.notification}
       data-state="open"
       data-part="item"
       data-uiify-toast=""
@@ -164,7 +175,7 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
       tabIndex={0}
       onFocus={() => pause(toast.id)}
       onBlur={(event: FocusEvent<HTMLDivElement>) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) resume(toast.id);
+        if (!event.currentTarget.matches(":hover, :focus-within")) resume(toast.id);
       }}
       onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "Escape") {
@@ -173,27 +184,22 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
         }
       }}
       onPointerEnter={() => pause(toast.id)}
-      onPointerLeave={() => resume(toast.id)}
-      onPointerCancel={() => {
-        swipingRef.current = false;
+      onPointerLeave={(event: PointerEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.matches(":focus-within")) resume(toast.id);
       }}
+      onPointerCancel={endSwipe}
       onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-        startXRef.current = event.clientX;
-        startYRef.current = event.clientY;
-        swipingRef.current = true;
+        if (!swipeRef.current && event.isPrimary) swipeRef.current = event;
       }}
       onPointerMove={(event: PointerEvent<HTMLDivElement>) => {
-        if (!swipingRef.current) return;
-        const deltaX = event.clientX - startXRef.current;
-        const deltaY = event.clientY - startYRef.current;
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_DISMISS_THRESHOLD) {
-          swipingRef.current = false;
-          dismiss(toast.id);
-        }
+        const swipe = swipeRef.current;
+        if (swipe?.pointerId !== event.pointerId) return;
+        const deltaX = event.clientX - swipe.clientX;
+        const deltaY = event.clientY - swipe.clientY;
+        if (Math.abs(deltaX) <= 80 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+        dismiss(toast.id);
       }}
-      onPointerUp={() => {
-        swipingRef.current = false;
-      }}
+      onPointerUp={endSwipe}
     >
       {toast.title ? <ToastTitle>{toast.title}</ToastTitle> : null}
       {toast.description ? <ToastDescription>{toast.description}</ToastDescription> : null}
@@ -207,7 +213,7 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
           {toast.action.label}
         </ToastAction>
       ) : null}
-      <ToastClose onClick={() => dismiss(toast.id)} />
+      <ToastClose labels={labels} onClick={() => dismiss(toast.id)} />
     </div>
   );
   /* oxlint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/prefer-tag-over-role */

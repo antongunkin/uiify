@@ -1,8 +1,14 @@
 import type { ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
+export interface BreadcrumbLabels {
+  readonly root: string;
+  readonly showCollapsed: string;
+}
+
 export interface BreadcrumbRootOwnProps {
   readonly "aria-label"?: string;
+  readonly labels?: Partial<BreadcrumbLabels>;
 }
 
 export type BreadcrumbRootProps<TAs extends ElementType = "nav"> = RenderableProps<
@@ -24,6 +30,7 @@ export interface BreadcrumbItemData {
 
 export interface BreadcrumbListOwnProps {
   readonly children?: ReactNode;
+  readonly labels?: Partial<BreadcrumbLabels>;
   /**
    * Data-driven items, required to use `maxItems`. Filtering children by
    * element type (`isValidElement` + a type check) can't see through a
@@ -79,5 +86,6 @@ export type BreadcrumbSeparatorProps<TAs extends ElementType = "span"> = Rendera
 
 export interface BreadcrumbEllipsisProps {
   readonly hiddenItems: readonly BreadcrumbItemData[];
+  readonly labels: BreadcrumbLabels;
   readonly separator?: ReactNode;
 }

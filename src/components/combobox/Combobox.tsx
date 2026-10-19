@@ -23,6 +23,7 @@ import {
 } from "@gunkin/uiify/core/collection";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { DismissableLayer } from "@gunkin/uiify/core/dismissable-layer";
+import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { usePopover } from "@gunkin/uiify/core/popover";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import {
@@ -41,6 +42,7 @@ import type {
   ComboboxItemData,
   ComboboxContextValue,
   ComboboxRootProps,
+  ComboboxMultiValueOptions,
   ComboboxTagsProps,
   ComboboxInputProps,
   ComboboxTriggerProps,
@@ -60,39 +62,53 @@ function getEnabledIds(collection: ReturnType<typeof useCollection<ComboboxItemD
 }
 
 export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
-  const multiple = props.multiple === true;
+  const rootProps = props as ComboboxRootProps & ComboboxMultiValueOptions;
+  const {
+    addOnPaste: configuredAddOnPaste,
+    allowCustomValue: configuredAllowCustomValue,
+    children,
+    className,
+    defaultInputValue,
+    defaultOpen,
+    defaultValue,
+    delimiters: configuredDelimiters,
+    filterFn = defaultComboboxFilter,
+    id,
+    inputValue: controlledInputValue,
+    items,
+    maxValues: configuredMaxValues,
+    multiple: multipleMode,
+    onInputValueChange,
+    onOpenChange,
+    onValueChange,
+    open: controlledOpen,
+    validateValue: configuredValidateValue,
+    value: controlledValue,
+    ...consumerProps
+  } = rootProps;
+  const multiple = multipleMode === true;
   let multiDefaultValue: readonly string[] = [];
   let multiValue: readonly string[] | undefined;
   let multiOnValueChange: ((value: string[]) => void) | undefined;
   let singleOnValueChange: ((value: string) => void) | undefined;
   let singleValue: string | undefined;
 
-  if (props.multiple === true) {
-    multiDefaultValue = props.defaultValue ?? [];
-    multiValue = props.value;
-    multiOnValueChange = props.onValueChange;
+  if (multipleMode === true) {
+    multiDefaultValue = (defaultValue as readonly string[] | undefined) ?? [];
+    multiValue = controlledValue as readonly string[] | undefined;
+    multiOnValueChange = onValueChange as ((value: string[]) => void) | undefined;
   } else {
-    singleOnValueChange = props.onValueChange;
-    singleValue = props.value ?? props.defaultValue;
+    singleOnValueChange = onValueChange as ((value: string) => void) | undefined;
+    singleValue = (controlledValue as string | undefined) ?? (defaultValue as string | undefined);
   }
 
-  const {
-    className,
-    children,
-    defaultInputValue,
-    defaultOpen,
-    filterFn = defaultComboboxFilter,
-    inputValue: controlledInputValue,
-    items,
-    onInputValueChange,
-    onOpenChange,
-    open: controlledOpen,
-  } = props;
-  const addOnPaste = multiple ? (props.addOnPaste ?? true) : false;
-  const allowCustomValue = multiple ? (props.allowCustomValue ?? false) : false;
-  const delimiters = multiple ? (props.delimiters ?? DEFAULT_MULTI_DELIMITERS) : EMPTY_DELIMITERS;
-  const maxValues = multiple ? props.maxValues : undefined;
-  const validateValue = multiple ? props.validateValue : undefined;
+  const addOnPaste = multiple ? (configuredAddOnPaste ?? true) : false;
+  const allowCustomValue = multiple ? (configuredAllowCustomValue ?? false) : false;
+  const delimiters = multiple
+    ? (configuredDelimiters ?? DEFAULT_MULTI_DELIMITERS)
+    : EMPTY_DELIMITERS;
+  const maxValues = multiple ? configuredMaxValues : undefined;
+  const validateValue = multiple ? configuredValidateValue : undefined;
 
   const listboxId = useId();
   const activeStoreRef = useRef<ComboboxActiveStore | null>(null);
@@ -297,7 +313,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
   );
 
   return (
-    <div className={className} data-uiify-combobox="">
+    <div {...consumerProps} id={id} className={className} data-uiify-combobox="">
       <CollectionProvider>
         <ComboboxProvider value={contextValue}>{children}</ComboboxProvider>
       </CollectionProvider>
@@ -431,6 +447,7 @@ export function ComboboxInput<TAs extends ElementType = "input">(
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (isComposingKeyEvent(event)) return;
     const isDelimiterKey = event.key.length === 1 && delimiters.includes(event.key);
     if (event.key === "ArrowDown") {
       event.preventDefault();

@@ -1,4 +1,11 @@
-import type { ElementType, ReactNode, RefObject } from "react";
+import type {
+  ChangeEventHandler,
+  ElementType,
+  FocusEventHandler,
+  KeyboardEventHandler,
+  ReactNode,
+  RefObject,
+} from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export interface NumberFieldContextValue {
@@ -26,6 +33,8 @@ export interface NumberFieldRootOwnProps {
   readonly defaultValue?: number;
   readonly disabled?: boolean;
   readonly formatOptions?: Intl.NumberFormatOptions;
+  /** BCP 47 locale used to format and parse the value. Defaults to `"en-US"`. */
+  readonly locale?: string;
   readonly max?: number;
   readonly min?: number;
   readonly onValueChange?: (value: number | undefined) => void;
@@ -33,6 +42,14 @@ export interface NumberFieldRootOwnProps {
   readonly required?: boolean;
   readonly step?: number;
   readonly value?: number;
+}
+
+export interface NumberFieldInputOwnProps {
+  readonly id?: string;
+  readonly onBlur?: FocusEventHandler<HTMLInputElement>;
+  readonly onChange?: ChangeEventHandler<HTMLInputElement>;
+  readonly onFocus?: FocusEventHandler<HTMLInputElement>;
+  readonly onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
 }
 
 export type NumberFieldRootProps<TAs extends ElementType = "div"> = RenderableProps<
@@ -51,7 +68,7 @@ export type NumberFieldGroupProps<TAs extends ElementType = "div"> = RenderableP
 
 export type NumberFieldInputProps<TAs extends ElementType = "input"> = RenderableProps<
   TAs,
-  Record<string, never>,
+  NumberFieldInputOwnProps,
   { disabled: boolean; readOnly: boolean; required: boolean },
   HTMLInputElement
 >;

@@ -8,6 +8,8 @@ Enter a numeric quantity with optional bounds and step controls.
 
 Enter a quantity for which numeric stepping and bounds are meaningful.
 
+Set `locale` to control both number formatting and parsing, including locale-specific digits and separators.
+
 ## Avoid when
 
 Do not use a number field for identifiers, postal codes, card numbers, or values where spinbutton behavior is not useful; use a text input instead.

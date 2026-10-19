@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { formatLabel } from "@gunkin/uiify/core/format-label";
 import { carouselFragment, carouselSlideId, normalizeCarouselProps } from "./carousel-markup.js";
 import type { CarouselMarkupProps } from "./types.js";
 
@@ -68,7 +69,15 @@ export function CarouselMarkup({
               id={slideId}
               role="group"
               aria-roledescription="slide"
-              aria-label={`${item.label}, ${index + 1} ${labels.of} ${items.length}`}
+              aria-label={formatLabel(
+                labels.slide,
+                {
+                  label: item.label,
+                  index: base.locale === undefined ? String(index + 1) : index + 1,
+                  count: base.locale === undefined ? String(items.length) : items.length,
+                },
+                base.locale,
+              )}
               className={item.className}
               data-part="slide"
               data-carousel-index={index}
@@ -108,7 +117,7 @@ export function CarouselMarkup({
               <a
                 key={item.id}
                 href={carouselFragment(carouselSlideId(base.id, item.id))}
-                aria-label={`${labels.goTo} ${item.label}`}
+                aria-label={formatLabel(labels.goToSlide, { label: item.label }, base.locale)}
                 aria-current={showActiveDot && itemIndex === activeIndex ? "true" : undefined}
                 data-part="dot"
                 data-carousel-index={itemIndex}
@@ -143,7 +152,16 @@ export function CarouselMarkup({
           data-part="status"
         >
           {enhanced && announcedIndex !== undefined
-            ? `${items[announcedIndex]?.label ?? ""}, ${announcedIndex + 1} ${labels.of} ${items.length}`
+            ? formatLabel(
+                labels.slide,
+                {
+                  label: items[announcedIndex]?.label ?? "",
+                  index:
+                    base.locale === undefined ? String(announcedIndex + 1) : announcedIndex + 1,
+                  count: base.locale === undefined ? String(items.length) : items.length,
+                },
+                base.locale,
+              )
             : null}
         </div>
       ) : null}

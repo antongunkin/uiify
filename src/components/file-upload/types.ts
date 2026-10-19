@@ -6,6 +6,12 @@ export interface FileRejection {
   readonly reason: "accept" | "max-size" | "max-files";
 }
 
+export interface FileUploadLabels {
+  readonly dropzone: string;
+  readonly remove: string;
+  readonly removeFallback: string;
+}
+
 export interface FileUploadStoreOptions {
   readonly accept?: readonly string[];
   readonly maxFiles?: number;
@@ -34,6 +40,8 @@ export interface FileUploadContextValue {
   readonly removeAt: (index: number) => void;
   readonly reset: () => void;
   readonly files: readonly File[];
+  readonly labels: FileUploadLabels;
+  readonly removeLabel?: string;
 }
 
 export interface FileUploadRootOwnProps {
@@ -43,6 +51,7 @@ export interface FileUploadRootOwnProps {
   readonly disabled?: boolean;
   readonly maxFiles?: number;
   readonly maxSize?: number;
+  readonly labels?: Partial<FileUploadLabels>;
   readonly minSize?: number;
   readonly multiple?: boolean;
   readonly onValueChange?: (files: File[]) => void;

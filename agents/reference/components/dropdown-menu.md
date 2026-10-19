@@ -31,7 +31,7 @@ Extends: `UseMenuSurfaceReturn`
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `cancelHoverClose` | `() => void` | yes |  |
-| `dir` | `Direction` | yes |  |
+| `dir` | `Direction` | no |  |
 | `disabled` | `boolean` | yes |  |
 | `hoverEnabledRef` | `RefObject<boolean>` | yes |  |
 | `loop` | `boolean` | yes |  |

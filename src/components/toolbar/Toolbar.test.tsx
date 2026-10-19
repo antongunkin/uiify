@@ -63,6 +63,21 @@ describe("Toolbar", () => {
     expect(document.activeElement).toBe(last);
   });
 
+  it("reads an inherited rtl direction without a dir prop", () => {
+    render(
+      <div dir="rtl">
+        <ClientToolbar.Root aria-label="Formatting" orientation="horizontal">
+          <ClientToolbar.Button>First</ClientToolbar.Button>
+          <ClientToolbar.Button>Second</ClientToolbar.Button>
+          <ClientToolbar.Button>Third</ClientToolbar.Button>
+        </ClientToolbar.Root>
+      </div>,
+    );
+    const first = screen.getByRole("button", { name: "First" });
+    fireEvent.keyDown(first, { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Second" }));
+  });
+
   it("embeds toggle groups and links", () => {
     render(
       <ClientToolbar.Root aria-label="Editor">

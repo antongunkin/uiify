@@ -68,16 +68,16 @@ describe("behavior.css", () => {
     );
     for (const [side, margin] of Object.entries({
       top: "margin-block-end",
-      right: "margin-inline-start",
+      right: "margin-left",
       bottom: "margin-block-start",
-      left: "margin-inline-end",
+      left: "margin-right",
     })) {
       expect(layer).toContain(
         `[data-positioning="native"][data-side="${side}"] { position-area: ${side}; ${margin}: var(--uiify-anchor-offset, 0); }`,
       );
     }
     expect(layer).toContain(
-      '[data-positioning="native"][data-side="bottom"][data-align="start"] { position-area: bottom span-right; justify-self: start; }',
+      '[data-positioning="native"][data-side="bottom"][data-align="start"] { position-area: block-end span-inline-end; justify-self: start; }',
     );
   });
 
@@ -98,5 +98,31 @@ describe("behavior.css", () => {
         expect(layer).toContain(normalizeCss(rule));
       }
     }
+  });
+
+  it("keeps aligned popups anchored through logical alignment", () => {
+    const layer = behaviorLayer();
+    const rules: readonly [string, string, string][] = [
+      ["top", "start", "block-start span-inline-end; justify-self: start"],
+      ["top", "end", "block-start span-inline-start; justify-self: end"],
+      ["bottom", "start", "block-end span-inline-end; justify-self: start"],
+      ["bottom", "end", "block-end span-inline-start; justify-self: end"],
+    ];
+    for (const [side, align, body] of rules) {
+      expect(layer).toContain(
+        `[data-positioning="native"][data-side="${side}"][data-align="${align}"] { position-area: ${body}; }`,
+      );
+    }
+    expect(layer).not.toMatch(/position-area: (top|bottom) span-(left|right)/);
+  });
+
+  it("matches physical side margins to the physical side", () => {
+    const layer = behaviorLayer();
+    expect(layer).toContain(
+      '[data-positioning="native"][data-side="right"] { position-area: right; margin-left: var(--uiify-anchor-offset, 0); }',
+    );
+    expect(layer).toContain(
+      '[data-positioning="native"][data-side="left"] { position-area: left; margin-right: var(--uiify-anchor-offset, 0); }',
+    );
   });
 });

@@ -86,7 +86,7 @@
 
   [data-uiify-textarea] {
     min-block-size: 4lh;
-    resize: vertical;
+    resize: block;
   }
 
   [data-uiify-textarea][data-autosize] {

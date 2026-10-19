@@ -34,6 +34,53 @@ describe("Pagination client", () => {
     expect(onChange).toHaveBeenCalledWith(2);
   });
 
+  it("formats visible page numbers with locale without changing callback values", () => {
+    const onChange = vi.fn();
+    render(
+      <Pagination.Root count={5} defaultPage={3} locale="ar-EG" onPageChange={onChange}>
+        <Pagination.List />
+      </Pagination.Root>,
+    );
+
+    expect(screen.getByRole("button", { name: "Page ٤" }).textContent).toBe("٤");
+    fireEvent.click(screen.getByRole("button", { name: "Page ٤" }));
+    expect(onChange).toHaveBeenCalledWith(4);
+  });
+
+  it("formats the localized page accessible name from a serializable template", () => {
+    render(
+      <Pagination.Root count={5} defaultPage={3} locale="ar-EG" labels={{ page: "الصفحة {page}" }}>
+        <Pagination.List />
+      </Pagination.Root>,
+    );
+
+    expect(screen.getByRole("button", { name: "الصفحة ٤" }).textContent).toBe("٤");
+  });
+
+  it("replaces every page placeholder in an accessible name template", () => {
+    render(
+      <Pagination.Root count={5} defaultPage={3} labels={{ page: "Page {page} of {page}" }}>
+        <Pagination.List />
+      </Pagination.Root>,
+    );
+
+    expect(screen.getByRole("button", { name: "Page 3 of 3" })).toBeTruthy();
+  });
+
+  it("uses label overrides for controls", () => {
+    render(
+      <Pagination.Root
+        count={5}
+        defaultPage={2}
+        labels={{ next: "الصفحة التالية", nextText: "التالي" }}
+      >
+        <Pagination.List />
+      </Pagination.Root>,
+    );
+
+    expect(screen.getByRole("button", { name: "الصفحة التالية" }).textContent).toBe("التالي");
+  });
+
   it("lets a consumer onClick veto the page change", () => {
     const onChange = vi.fn();
     render(

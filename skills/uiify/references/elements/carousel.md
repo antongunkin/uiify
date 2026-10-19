@@ -8,6 +8,8 @@ Present a labeled sequence of related slides with native scrolling and optional 
 
 A short sequence of related slides saves space and users benefit from viewing one or a subset at a time. Prefer direct scrolling when all items should remain discoverable together.
 
+Set `locale` to format the announced slide position; provide translated `slide` and `goToSlide` label templates with `{index}` and `{count}` or `{label}` placeholders.
+
 ## Avoid when
 
 Do not hide essential information in offscreen slides or auto-rotate content without a clear user need and an operable stop/restart control.

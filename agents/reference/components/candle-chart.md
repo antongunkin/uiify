@@ -10,7 +10,7 @@
 ## Exports
 
 - Runtime: `CandleChart`
-- Types: `CandleChartAxisLabel`, `CandleChartData`, `CandleChartOwnProps`, `CandleChartPointerPosition`, `CandleChartProps`
+- Types: `CandleChartAxisLabel`, `CandleChartLabels`, `CandleChartData`, `CandleChartOwnProps`, `CandleChartPointerPosition`, `CandleChartProps`
 
 ## Props and shapes
 
@@ -43,16 +43,34 @@
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `"aria-label"` | `string` | no |  |
+| `labels` | `Partial<CandleChartLabels>` | no |  |
 | `activeCandleIndex` | `number` | no |  |
 | `cursorY` | `number` | no |  |
 | `data` | `readonly CandleChartData[]` | yes |  |
 | `interactive` | `boolean` | no |  |
+| `locale` | `string` | no | BCP 47 locale for default axis labels. Defaults to `"en-US"`. |
 | `onCandleClick` | `(index: number) => void` | no |  |
 | `onCandlePointerLeave` | `() => void` | no |  |
 | `onCandlePointerMove` | `(position: CandleChartPointerPosition) => void` | no |  |
 | `selectedCandleIndex` | `number` | no |  |
 | `xAxis` | `readonly CandleChartAxisLabel[]` | no |  |
 | `yAxis` | `readonly CandleChartAxisLabel[]` | no |  |
+
+### CandleChartLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `chart` | `string` | yes |  |
+| `candle` | `string` | yes |  |
+| `candles` | `string` | yes |  |
+| `months` | `string` | yes |  |
+| `prices` | `string` | yes |  |
+| `data` | `string` | yes |  |
+| `time` | `string` | yes |  |
+| `open` | `string` | yes |  |
+| `high` | `string` | yes |  |
+| `low` | `string` | yes |  |
+| `close` | `string` | yes |  |
 
 ### CandleChartClientOwnProps
 
@@ -81,6 +99,7 @@ Extends: `CandleChartOwnProps`
 | --- | --- | --- | --- |
 | `as` | `"div" \| "li"` | yes |  |
 | `candle` | `CandleChartData` | yes |  |
+| `hitLabel` | `string` | yes |  |
 | `index` | `number` | yes | Index reported to the pointer and click callbacks. |
 | `x` | `number` | yes | Candle position and width, as percentages of the candle layer. |
 | `slot` | `number` | yes |  |

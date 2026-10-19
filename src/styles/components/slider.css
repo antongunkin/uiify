@@ -69,8 +69,15 @@
     background: transparent;
   }
 
-  [dir="rtl"] [data-uiify-slider]::-webkit-slider-runnable-track,
-  [dir="rtl"] [data-uiify-slider]::-moz-range-track {
+  [data-uiify-slider]:dir(rtl)::-webkit-slider-runnable-track {
+    background-image: linear-gradient(
+      to left,
+      var(--primary) 0 var(--uiify-slider-progress, 50%),
+      var(--muted) var(--uiify-slider-progress, 50%) 100%
+    );
+  }
+
+  [data-uiify-slider]:dir(rtl)::-moz-range-track {
     background-image: linear-gradient(
       to left,
       var(--primary) 0 var(--uiify-slider-progress, 50%),

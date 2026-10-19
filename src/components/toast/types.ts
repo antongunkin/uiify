@@ -2,6 +2,12 @@ import type { MouseEvent, ReactNode, Ref } from "react";
 
 export type ToastPriority = "polite" | "assertive";
 
+export interface ToastLabels {
+  readonly region: string;
+  readonly notification: string;
+  readonly close: string;
+}
+
 export interface ToastAction {
   readonly label: ReactNode;
   readonly onClick: () => void;
@@ -52,10 +58,12 @@ export interface ToastContextValue {
   readonly pause: (id: string) => void;
   readonly resume: (id: string) => void;
   readonly store: ToastStore;
+  readonly labels: ToastLabels;
 }
 
 export interface ToastProviderOwnProps {
   readonly children?: ReactNode;
+  readonly labels?: Partial<ToastLabels>;
   readonly limit?: number;
 }
 
@@ -63,6 +71,7 @@ export interface ToastViewportOwnProps {
   readonly "aria-label"?: string;
   readonly children?: ReactNode;
   readonly className?: string;
+  readonly labels?: Partial<ToastLabels>;
   /**
    * Set by the live client viewport (@gunkin/uiify/components/toast/Toast.js) to
    * `"manual"` so the queue's rendered surface sits in the top layer. The
@@ -75,6 +84,7 @@ export interface ToastViewportOwnProps {
 }
 
 export interface ToastRootOwnProps {
+  readonly labels?: Partial<ToastLabels>;
   readonly toast: ToastRecord;
 }
 
@@ -100,6 +110,7 @@ export interface ToastActionProps extends ToastActionOwnProps {
 export interface ToastCloseOwnProps {
   readonly children?: ReactNode;
   readonly className?: string;
+  readonly labels?: Partial<ToastLabels>;
 }
 
 export interface ToastCloseProps extends ToastCloseOwnProps {

@@ -14,6 +14,7 @@ export type {
   ToastActionProps,
   ToastCloseOwnProps,
   ToastCloseProps,
+  ToastLabels,
   ToastDescriptionOwnProps,
   ToastProviderOwnProps,
   ToastRootOwnProps,

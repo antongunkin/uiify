@@ -1,9 +1,11 @@
 import type { ElementType, ReactElement } from "react";
+import { formatLabel } from "@gunkin/uiify/core/format-label";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { buildPaginationItems } from "./pagination-engine.js";
 
 import type {
   PaginationItem,
+  PaginationLabels,
   PaginationRootProps,
   PaginationListProps,
   PaginationItemProps,
@@ -13,17 +15,32 @@ import type {
 
 export { buildPaginationItems } from "./pagination-engine.js";
 
+export const DEFAULT_PAGINATION_LABELS: PaginationLabels = {
+  root: "Pagination",
+  page: "Page {page}",
+  previous: "Previous page",
+  next: "Next page",
+  first: "First page",
+  last: "Last page",
+  previousText: "Previous",
+  nextText: "Next",
+  firstText: "First",
+  lastText: "Last",
+};
+
 export function PaginationRoot<TAs extends ElementType = "nav">(
   props: PaginationRootProps<TAs>,
 ): ReactElement | null {
   const {
     as,
     render,
-    "aria-label": ariaLabel = "Pagination",
+    "aria-label": ariaLabel,
     boundaryCount = 1,
     count,
     disabled = false,
     getPageHref,
+    labels,
+    locale,
     page = 1,
     showFirstLast = false,
     siblingCount = 1,
@@ -32,6 +49,7 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     onPageChange: _onPageChange,
     ...consumerProps
   } = props as PaginationRootProps<"nav">;
+  const mergedLabels = { ...DEFAULT_PAGINATION_LABELS, ...labels };
 
   const items = buildPaginationItems(
     count,
@@ -48,6 +66,8 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
         <PaginationItemRenderer
           item={item}
           key={`${item.type}-${item.page ?? index}`}
+          labels={mergedLabels}
+          {...(locale !== undefined ? { locale } : {})}
           page={page}
           {...paginationHrefProps(getPageHref)}
         />
@@ -60,7 +80,7 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     defaultTag: "nav",
     props: {
       ...consumerProps,
-      "aria-label": ariaLabel,
+      "aria-label": ariaLabel ?? mergedLabels.root,
       children: content,
       "data-uiify-pagination": "",
     },
@@ -79,10 +99,14 @@ function paginationHrefProps(getPageHref?: (page: number) => string): {
 function PaginationItemRenderer({
   getPageHref,
   item,
+  labels,
+  locale,
   page,
 }: {
   readonly getPageHref?: (page: number) => string;
   readonly item: PaginationItem;
+  readonly labels: PaginationLabels;
+  readonly locale?: string;
   readonly page: number;
 }): ReactElement {
   const hrefProps = paginationHrefProps(getPageHref);
@@ -94,7 +118,8 @@ function PaginationItemRenderer({
       return (
         <PaginationNavControl
           disabled={item.disabled}
-          label="Previous page"
+          label={labels.previous}
+          labelText={labels.previousText}
           page={page - 1}
           type="previous"
           {...hrefProps}
@@ -104,7 +129,8 @@ function PaginationItemRenderer({
       return (
         <PaginationNavControl
           disabled={item.disabled}
-          label="Next page"
+          label={labels.next}
+          labelText={labels.nextText}
           page={page + 1}
           type="next"
           {...hrefProps}
@@ -114,7 +140,8 @@ function PaginationItemRenderer({
       return (
         <PaginationNavControl
           disabled={item.disabled}
-          label="First page"
+          label={labels.first}
+          labelText={labels.firstText}
           page={1}
           type="first"
           {...hrefProps}
@@ -124,7 +151,8 @@ function PaginationItemRenderer({
       return (
         <PaginationNavControl
           disabled={item.disabled}
-          label="Last page"
+          label={labels.last}
+          labelText={labels.lastText}
           page={item.page ?? page}
           type="last"
           {...hrefProps}
@@ -134,6 +162,8 @@ function PaginationItemRenderer({
       return (
         <PaginationLink
           disabled={item.disabled}
+          {...(locale !== undefined ? { locale } : {})}
+          pageLabelTemplate={labels.page}
           page={item.page ?? 1}
           selected={item.selected}
           {...hrefProps}
@@ -179,6 +209,8 @@ export function PaginationLink<TAs extends ElementType = "a">(
     render,
     disabled = false,
     getPageHref,
+    locale,
+    pageLabelTemplate = DEFAULT_PAGINATION_LABELS.page,
     page,
     selected = false,
     ...consumerProps
@@ -193,7 +225,7 @@ export function PaginationLink<TAs extends ElementType = "a">(
     props: {
       ...consumerProps,
       "aria-current": selected ? "page" : undefined,
-      "aria-label": `Page ${page}`,
+      "aria-label": formatPageLabel(pageLabelTemplate, page, locale),
       "aria-disabled": disabled ? true : undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-selected": selected ? "" : undefined,
@@ -202,7 +234,7 @@ export function PaginationLink<TAs extends ElementType = "a">(
       "data-uiify-button": "",
       "data-variant": "ghost",
       href,
-      children: page,
+      children: formatPageNumber(page, locale),
     },
     render,
     state: { selected },
@@ -213,25 +245,18 @@ function PaginationNavControl({
   disabled,
   getPageHref,
   label,
+  labelText,
   page,
   type,
 }: {
   readonly disabled: boolean;
   readonly getPageHref?: (page: number) => string;
   readonly label: string;
+  readonly labelText: string;
   readonly page: number;
   readonly type: "previous" | "next" | "first" | "last";
 }): ReactElement {
   const href = !disabled && getPageHref ? getPageHref(page) : undefined;
-  const labelText =
-    type === "previous"
-      ? "Previous"
-      : type === "next"
-        ? "Next"
-        : type === "first"
-          ? "First"
-          : "Last";
-
   return (
     <PaginationItemPart>
       {href ? (
@@ -260,6 +285,14 @@ function PaginationNavControl({
   );
 }
 PaginationNavControl.displayName = "PaginationNavControl";
+
+function formatPageNumber(page: number, locale?: string): string {
+  return locale ? new Intl.NumberFormat(locale).format(page) : String(page);
+}
+
+function formatPageLabel(template: string, page: number, locale?: string): string {
+  return formatLabel(template, { page: locale === undefined ? String(page) : page }, locale);
+}
 
 export function PaginationEllipsis<TAs extends ElementType = "span">(
   props: PaginationEllipsisProps<TAs>,

@@ -12,6 +12,8 @@ import {
 } from "./ModalParts.js";
 import type { ModalProps } from "./types.js";
 
+const DEFAULT_MODAL_LABELS = { close: "Close" } as const;
+
 const CLOSE_ICON = (
   <svg
     aria-hidden="true"
@@ -45,7 +47,8 @@ export function Modal({
   title,
   description,
   children,
-  closeLabel = "Close",
+  closeLabel,
+  labels,
   footer,
   className,
   align,
@@ -55,6 +58,7 @@ export function Modal({
 }: ModalProps): ReactElement {
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
+  const effectiveCloseLabel = closeLabel ?? labels?.close ?? DEFAULT_MODAL_LABELS.close;
 
   return (
     <div data-part="root" data-uiify-modal="">
@@ -75,7 +79,7 @@ export function Modal({
           {isAbsent(description) ? null : (
             <ModalDescription id={descriptionId}>{description}</ModalDescription>
           )}
-          <ModalClose aria-label={closeLabel} target={id}>
+          <ModalClose aria-label={effectiveCloseLabel} target={id}>
             {CLOSE_ICON}
           </ModalClose>
         </ModalHeader>

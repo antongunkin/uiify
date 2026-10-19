@@ -63,11 +63,15 @@ export function moveActiveId(
   }
 }
 
+function foldForSearch(value: string): string {
+  return value.normalize("NFKC").toLowerCase();
+}
+
 export function defaultComboboxFilter(
   items: readonly ComboboxItemData[],
   inputValue: string,
 ): ComboboxItemData[] {
-  const query = inputValue.trim().toLowerCase();
+  const query = foldForSearch(inputValue.trim());
   if (!query) return [...items];
-  return items.filter((item) => item.label.toLowerCase().includes(query));
+  return items.filter((item) => foldForSearch(item.label).includes(query));
 }

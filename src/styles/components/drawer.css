@@ -61,6 +61,12 @@
     border-start-end-radius: 0;
     border-end-end-radius: 0;
   }
+  :dir(rtl) [data-uiify-drawer][data-part="content"][data-side="left"] {
+    margin-inline: auto 0;
+  }
+  :dir(rtl) [data-uiify-drawer][data-part="content"][data-side="right"] {
+    margin-inline: 0 auto;
+  }
   [data-uiify-drawer][data-part="content"][data-size="full"] {
     inline-size: 100dvi;
     max-inline-size: 100dvi;

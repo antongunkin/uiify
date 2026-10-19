@@ -34,3 +34,30 @@ test("open state is data-state, not data-open", () => {
   );
   expect(violations(implementation, /data-open\b/)).toEqual([]);
 });
+
+test("label interfaces use the labels prop without competing label bags", () => {
+  const typeFiles = sourceFiles().filter(
+    (path) => path.includes("/components/") && path.endsWith("types.ts"),
+  );
+  const labelsInterfaces = typeFiles.flatMap((path) => {
+    const source = readFileSync(path, "utf8");
+    return [...source.matchAll(/export interface (\w+Labels)\s*\{/g)].map((match) => ({
+      path,
+      source,
+      name: match[1]!,
+    }));
+  });
+
+  expect(labelsInterfaces.length).toBeGreaterThan(0);
+  for (const { path, source, name } of labelsInterfaces) {
+    expect(source, path).toMatch(new RegExp(`readonly labels\\?: Partial<${name}>`));
+  }
+
+  const competitors = typeFiles.flatMap((path) => {
+    const source = readFileSync(path, "utf8");
+    return [...source.matchAll(/readonly (\w*[lL]abels?)\?:\s*Partial</g)]
+      .filter((match) => match[1] !== "labels")
+      .map((match) => `${path}: ${match[1]}`);
+  });
+  expect(competitors).toEqual([]);
+});

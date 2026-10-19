@@ -8,12 +8,14 @@ import {
   type ElementType,
   type FocusEvent,
   type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
   type ReactElement,
   type ReactNode,
   type SyntheticEvent,
 } from "react";
 import { useControllableState, useId } from "@gunkin/uiify/hooks";
 import { createPartContext } from "@gunkin/uiify/core";
+import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement, type PolymorphicProps } from "@gunkin/uiify/core/render";
 import {
@@ -38,6 +40,7 @@ export type {
   NumberFieldDecrementProps,
   NumberFieldGroupProps,
   NumberFieldIncrementProps,
+  NumberFieldInputOwnProps,
   NumberFieldInputProps,
   NumberFieldRootOwnProps,
   NumberFieldRootProps,
@@ -59,6 +62,7 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
     max,
     step = 1,
     formatOptions,
+    locale = "en-US",
     clampValueOnBlur = true,
     disabled = false,
     readOnly = false,
@@ -68,7 +72,7 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
 
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const formatter = useMemo(() => createFormatter(formatOptions), [formatOptions]);
+  const formatter = useMemo(() => createFormatter(locale, formatOptions), [locale, formatOptions]);
   const [value, setValue] = useControllableState<number | undefined>({
     value: controlledValue,
     defaultValue,
@@ -192,7 +196,11 @@ export function NumberFieldGroup<TAs extends ElementType = "div">(
   return useRenderElement({
     as,
     defaultTag: "div",
-    props: { ...consumerProps, "data-disabled": disabled ? "" : undefined },
+    props: {
+      ...consumerProps,
+      "data-disabled": disabled ? "" : undefined,
+      "data-part": "group",
+    },
     render,
     state: { disabled },
   });
@@ -221,6 +229,7 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
   } = useNumberFieldContext("Input");
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (isComposingKeyEvent(event)) return;
     if (disabled || readOnly) return;
     switch (event.key) {
       case "ArrowUp":
@@ -257,9 +266,10 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
     defaultTag: "input",
     props: {
       ...consumerProps,
-      id: inputId,
+      id: consumerProps.id ?? inputId,
       ref: inputRef,
       role: "spinbutton",
+      "data-part": "input",
       inputMode: "decimal",
       "aria-valuenow": numericValue,
       "aria-valuemin": min,
@@ -308,9 +318,15 @@ export function NumberFieldIncrement<TAs extends ElementType = "button">(
       ...consumerProps,
       type: "button",
       tabIndex: -1,
+      "data-part": "increment",
       "data-disabled": inactive ? "" : undefined,
       disabled: inactive || undefined,
-      onClick: composeEventHandlers(consumerProps.onClick, () => increment()),
+      onClick: composeEventHandlers(
+        consumerProps.onClick,
+        (event: ReactMouseEvent<HTMLButtonElement>) => {
+          if (event.detail === 0) increment();
+        },
+      ),
       onPointerDown: composeEventHandlers(consumerProps.onPointerDown, repeatProps.onPointerDown),
       onPointerUp: composeEventHandlers(consumerProps.onPointerUp, repeatProps.onPointerUp),
       onPointerLeave: composeEventHandlers(
@@ -345,9 +361,15 @@ export function NumberFieldDecrement<TAs extends ElementType = "button">(
       ...consumerProps,
       type: "button",
       tabIndex: -1,
+      "data-part": "decrement",
       "data-disabled": inactive ? "" : undefined,
       disabled: inactive || undefined,
-      onClick: composeEventHandlers(consumerProps.onClick, () => decrement()),
+      onClick: composeEventHandlers(
+        consumerProps.onClick,
+        (event: ReactMouseEvent<HTMLButtonElement>) => {
+          if (event.detail === 0) decrement();
+        },
+      ),
       onPointerDown: composeEventHandlers(consumerProps.onPointerDown, repeatProps.onPointerDown),
       onPointerUp: composeEventHandlers(consumerProps.onPointerUp, repeatProps.onPointerUp),
       onPointerLeave: composeEventHandlers(

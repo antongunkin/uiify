@@ -88,8 +88,10 @@
     padding-inline: 0;
   }
 
-  [data-uiify-button]:hover:not(:disabled, [data-disabled]) {
-    background-color: color-mix(in oklch, var(--foreground) 90%, var(--background));
+  @media (any-hover: hover) and (any-pointer: fine) {
+    [data-uiify-button]:hover:not(:disabled, [data-disabled]) {
+      background-color: color-mix(in oklch, var(--foreground) 90%, var(--background));
+    }
   }
 
   [data-uiify-button]:active:not(:disabled, [data-disabled]) {
@@ -131,10 +133,6 @@
     padding: var(--border-width);
   }
 
-  [data-uiify-button][data-variant="outline"]:hover:not(:disabled, [data-disabled]) {
-    background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
-  }
-
   [data-uiify-button][data-variant="outline"]:active:not(:disabled, [data-disabled]) {
     background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
   }
@@ -150,16 +148,8 @@
     content: none;
   }
 
-  [data-uiify-button][data-variant="ghost"]:hover:not(:disabled, [data-disabled]) {
-    background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
-  }
-
   [data-uiify-button][data-variant="ghost"]:active:not(:disabled, [data-disabled]) {
     background-color: color-mix(in oklch, var(--foreground) 16%, transparent);
-  }
-
-  [data-uiify-button][data-variant="secondary"]:hover:not(:disabled, [data-disabled]) {
-    background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
   }
 
   [data-uiify-button][data-variant="secondary"]:active:not(:disabled, [data-disabled]) {
@@ -174,12 +164,23 @@
     color: var(--destructive-foreground);
   }
 
-  [data-uiify-button][data-variant="destructive"]:hover:not(:disabled, [data-disabled]) {
-    background-color: color-mix(in oklch, var(--destructive), black 12%);
-  }
-
   [data-uiify-button][data-variant="destructive"]:active:not(:disabled, [data-disabled]) {
     background-color: color-mix(in oklch, var(--destructive), black 20%);
+  }
+
+  @media (any-hover: hover) and (any-pointer: fine) {
+    [data-uiify-button][data-variant="outline"]:hover:not(:disabled, [data-disabled]),
+    [data-uiify-button][data-variant="ghost"]:hover:not(:disabled, [data-disabled]) {
+      background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
+    }
+
+    [data-uiify-button][data-variant="secondary"]:hover:not(:disabled, [data-disabled]) {
+      background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+    }
+
+    [data-uiify-button][data-variant="destructive"]:hover:not(:disabled, [data-disabled]) {
+      background-color: color-mix(in oklch, var(--destructive), black 12%);
+    }
   }
 }
 
@@ -198,22 +199,20 @@
     color: var(--primary-foreground);
   }
 
-  [data-uiify-button]:is([data-selected], [aria-pressed="true"], [aria-current="page"]):hover:not(
-      :disabled,
-      [data-disabled]
-    ),
-  :checked:not(:disabled) + [data-uiify-button]:hover {
-    background-color: color-mix(in oklch, var(--primary) 88%, var(--primary-foreground));
+  @media (any-hover: hover) and (any-pointer: fine) {
+    [data-uiify-button]:is([data-selected], [aria-pressed="true"], [aria-current="page"]):hover:not(
+        :disabled,
+        [data-disabled]
+      ),
+    :checked:not(:disabled) + [data-uiify-button]:hover {
+      background-color: color-mix(in oklch, var(--primary) 88%, var(--primary-foreground));
+    }
   }
 
   /* A label styled as a button follows the native control it belongs to. */
   :disabled + [data-uiify-button] {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  :focus-visible + [data-uiify-button] {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
   }
 
   [data-uiify-button][hidden] {
@@ -224,7 +223,7 @@
 @layer components {
   /* Link: an inline text action with no surface, on a button or an anchor alike. */
   [data-uiify-button][data-variant="link"],
-  [data-uiify-button][data-variant="link"]:is(:hover, :active) {
+  [data-uiify-button][data-variant="link"]:active {
     padding-inline: 0;
     border: 0;
     border-radius: 0;
@@ -235,6 +234,18 @@
   }
   [data-uiify-button][data-variant="link"] {
     min-inline-size: 0;
+  }
+
+  @media (any-hover: hover) and (any-pointer: fine) {
+    [data-uiify-button][data-variant="link"]:hover {
+      padding-inline: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
   }
 
   [data-uiify-button][data-variant="link"]::before,

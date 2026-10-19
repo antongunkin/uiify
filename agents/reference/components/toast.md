@@ -9,13 +9,21 @@
 ## Exports
 
 - Runtime: `Toast`, `ToastAction`, `ToastClose`, `ToastDescription`, `ToastProvider`, `ToastRoot`, `ToastTitle`, `ToastViewport`, `useToast`
-- Types: `ToastActionOwnProps`, `ToastActionProps`, `ToastCloseOwnProps`, `ToastCloseProps`, `ToastDescriptionOwnProps`, `ToastProviderOwnProps`, `ToastRootOwnProps`, `ToastTitleOwnProps`, `ToastViewportOwnProps`, `ToastInput`, `ToastPriority`, `ToastRecord`, `ToastStore`
+- Types: `ToastActionOwnProps`, `ToastActionProps`, `ToastCloseOwnProps`, `ToastCloseProps`, `ToastLabels`, `ToastDescriptionOwnProps`, `ToastProviderOwnProps`, `ToastRootOwnProps`, `ToastTitleOwnProps`, `ToastViewportOwnProps`, `ToastInput`, `ToastPriority`, `ToastRecord`, `ToastStore`
 
 ## Values
 
 - `ToastPriority`: `"polite" | "assertive"`
 
 ## Props and shapes
+
+### ToastLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `region` | `string` | yes |  |
+| `notification` | `string` | yes |  |
+| `close` | `string` | yes |  |
 
 ### ToastAction
 
@@ -82,12 +90,14 @@
 | `pause` | `(id: string) => void` | yes |  |
 | `resume` | `(id: string) => void` | yes |  |
 | `store` | `ToastStore` | yes |  |
+| `labels` | `ToastLabels` | yes |  |
 
 ### ToastProviderOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
+| `labels` | `Partial<ToastLabels>` | no |  |
 | `limit` | `number` | no |  |
 
 ### ToastViewportOwnProps
@@ -97,6 +107,7 @@
 | `"aria-label"` | `string` | no |  |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
+| `labels` | `Partial<ToastLabels>` | no |  |
 | `popover` | `"manual"` | no | Set by the live client viewport (@gunkin/uiify/components/toast/Toast.js) to `"manual"` so the queue's rendered surface sits in the top layer. The structural shell (this file's own re-exported ToastViewport, used directly by "Toast server shell" tests and any no-JS render) leaves it unset, since there is no queue-driven show/hide to wire up there. |
 | `ref` | `Ref<HTMLElement>` | no |  |
 
@@ -104,6 +115,7 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `labels` | `Partial<ToastLabels>` | no |  |
 | `toast` | `ToastRecord` | yes |  |
 
 ### ToastTitleOwnProps
@@ -141,6 +153,7 @@ Extends: `ToastActionOwnProps`
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
+| `labels` | `Partial<ToastLabels>` | no |  |
 
 ### ToastCloseProps
 

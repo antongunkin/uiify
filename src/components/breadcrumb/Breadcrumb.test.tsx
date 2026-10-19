@@ -42,6 +42,13 @@ describe("Breadcrumb", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
   });
 
+  it("uses label defaults and lets aria-label override the root label", () => {
+    const { rerender } = render(<Breadcrumb.Root labels={{ root: "Навигация" }} />);
+    expect(screen.getByRole("navigation", { name: "Навигация" })).toBeTruthy();
+    rerender(<Breadcrumb.Root aria-label="Location" labels={{ root: "Навигация" }} />);
+    expect(screen.getByRole("navigation", { name: "Location" })).toBeTruthy();
+  });
+
   it("sets aria-current=page on current link", () => {
     render(
       <Breadcrumb.Root>
@@ -136,6 +143,23 @@ describe("Breadcrumb", () => {
     expect(screen.getByRole("link", { name: "One" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Five" })).toBeTruthy();
     expect(container.querySelector("li li")).toBeNull();
+  });
+
+  it("allows the collapsed breadcrumbs summary label to be translated", () => {
+    render(
+      <Breadcrumb.Root>
+        <Breadcrumb.List
+          items={[
+            { key: "1", label: "One" },
+            { key: "2", label: "Two" },
+            { key: "3", label: "Three" },
+          ]}
+          labels={{ root: "Breadcrumb", showCollapsed: "Afficher les éléments masqués" }}
+          maxItems={2}
+        />
+      </Breadcrumb.Root>,
+    );
+    expect(screen.getByLabelText("Afficher les éléments masqués")).toBeTruthy();
   });
 
   it("renders every item from a data-driven items array, generated from a .map() through a wrapper component — no child traversal to break", () => {

@@ -23,16 +23,33 @@ export interface CandleChartPointerPosition {
 
 export interface CandleChartOwnProps {
   readonly "aria-label"?: string;
+  readonly labels?: Partial<CandleChartLabels>;
   readonly activeCandleIndex?: number;
   readonly cursorY?: number;
   readonly data: readonly CandleChartData[];
   readonly interactive?: boolean;
+  /** BCP 47 locale for default axis labels. Defaults to `"en-US"`. */
+  readonly locale?: string;
   readonly onCandleClick?: (index: number) => void;
   readonly onCandlePointerLeave?: () => void;
   readonly onCandlePointerMove?: (position: CandleChartPointerPosition) => void;
   readonly selectedCandleIndex?: number;
   readonly xAxis?: readonly CandleChartAxisLabel[];
   readonly yAxis?: readonly CandleChartAxisLabel[];
+}
+
+export interface CandleChartLabels {
+  readonly chart: string;
+  readonly candle: string;
+  readonly candles: string;
+  readonly months: string;
+  readonly prices: string;
+  readonly data: string;
+  readonly time: string;
+  readonly open: string;
+  readonly high: string;
+  readonly low: string;
+  readonly close: string;
 }
 
 export type CandleChartProps<TAs extends ElementType = "figure"> = RenderableProps<
@@ -74,6 +91,7 @@ export interface CandleChartViewProps extends CandleChartOwnProps {
 export interface CandleChartCandleProps {
   readonly as: "div" | "li";
   readonly candle: CandleChartData;
+  readonly hitLabel: string;
   /** Index reported to the pointer and click callbacks. */
   readonly index: number;
   /** Candle position and width, as percentages of the candle layer. */

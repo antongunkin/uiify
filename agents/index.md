@@ -20,6 +20,7 @@ exist here.
 | `className={(state) => ...}` | A plain string `className`; select state with `[data-state]`, `[data-disabled]` and friends | `className` is never a function. |
 | `contentClassName`, `triggerClassName`, `itemClassName`, `contentStyle` | `className` / `style` on the part itself | Every public part takes its own `className`. |
 | `onChange={(value) => ...}` on a root or control | `onValueChange`, `onOpenChange`, `onCheckedChange`, `onPageChange` | `onChange` is the native DOM `change` event and receives the event. |
+| English built-in labels in a non-English UI | `labels` and `locale` props; set `lang` and `dir` on `<html>` | Labels are serializable string values; locale formats embedded numbers. |
 | `isOpen`, `isDisabled`, `isChecked` | `open`, `disabled`, `checked` | No `is` prefix. |
 | `placement="bottom-start"` | `side="bottom" align="start"` | One vocabulary for popups. |
 | `data-open` | `data-state="open"` | Open state is `data-state`; there is no `data-open`. |

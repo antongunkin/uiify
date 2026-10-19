@@ -33,9 +33,14 @@ export interface ModalProps extends ModalAppearanceProps {
   readonly children?: ReactNode;
   /** Accessible name of the header close icon. */
   readonly closeLabel?: string;
+  readonly labels?: Partial<ModalLabels>;
   /** Actions row pinned under the body. */
   readonly footer?: ReactNode;
   readonly className?: string;
+}
+
+export interface ModalLabels {
+  readonly close: string;
 }
 
 /** Own props of the native `show-modal` invoker. */

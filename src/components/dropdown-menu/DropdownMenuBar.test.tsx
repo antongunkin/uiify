@@ -92,6 +92,22 @@ describe("DropdownMenuBar", () => {
     expect(document.activeElement).toBe(edit);
   });
 
+  it("reads an inherited rtl direction without a dir prop", () => {
+    render(
+      <div dir="rtl">
+        <DropdownMenuBar>
+          <Item label="File" />
+          <Item label="Edit" />
+          <Item label="View" />
+        </DropdownMenuBar>
+      </div>,
+    );
+    const file = screen.getByRole("button", { name: "File" });
+    file.focus();
+    fireEvent.keyDown(file, { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Edit" }));
+  });
+
   it("moves to the first and last item with Home and End", () => {
     render(
       <DropdownMenuBar>

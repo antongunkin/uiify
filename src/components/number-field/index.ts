@@ -10,6 +10,7 @@ export type {
   NumberFieldDecrementProps,
   NumberFieldGroupProps,
   NumberFieldIncrementProps,
+  NumberFieldInputOwnProps,
   NumberFieldInputProps,
   NumberFieldRootOwnProps,
   NumberFieldRootProps,

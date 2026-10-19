@@ -47,6 +47,10 @@ describe("Toast server shell", () => {
     expect(screen.getByText("Saved")).toBeTruthy();
     expect(screen.getByText("Profile updated")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Undo" })).toBeTruthy();
+    expect(screen.getByText("Saved").getAttribute("data-part")).toBe("title");
+    expect(screen.getByText("Profile updated").getAttribute("data-part")).toBe("description");
+    expect(screen.getByRole("button", { name: "Undo" }).getAttribute("data-part")).toBe("action");
+    expect(screen.getByRole("button", { name: "Close" }).getAttribute("data-part")).toBe("close");
     expect(document.querySelector("[aria-live='polite']")).toBeNull();
     expect(document.querySelector("[aria-live='assertive']")).toBeNull();
   });
@@ -72,6 +76,32 @@ describe("Toast server shell", () => {
     expect(markup).toContain("Saved");
     expect(markup).toContain("Profile updated");
     expect(markup).not.toContain("aria-live");
+  });
+
+  it("allows localized labels while keeping explicit viewport labels and toast titles ahead", () => {
+    render(
+      <Toast.Viewport
+        aria-label="Alertes"
+        labels={{
+          region: "Notifications traduites",
+          notification: "Notification traduite",
+          close: "Fermer",
+        }}
+      >
+        <Toast.Root
+          labels={{ notification: "Notification traduite", close: "Fermer" }}
+          toast={{ id: "untitled", duration: 0, priority: "polite" }}
+        />
+        <Toast.Root
+          labels={{ notification: "Notification traduite", close: "Fermer" }}
+          toast={{ id: "titled", duration: 0, priority: "polite", title: "Saved" }}
+        />
+      </Toast.Viewport>,
+    );
+    expect(screen.getByRole("region", { name: "Alertes" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "Notification traduite" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "Saved" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "Fermer" })).toHaveLength(2);
   });
 
   it("owns ToastClose's computed aria-label and does not let a consumer override it with string children", () => {

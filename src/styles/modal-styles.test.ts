@@ -100,8 +100,14 @@ describe("Modal skin: mobile sheet", () => {
     expect(css).toContain('[data-uiify-modal][data-part="content"]:not([data-size="full"]) {');
     expect(css).toContain("min-block-size: 50dvh;");
     expect(css).toContain("max-block-size: 80dvh;");
-    expect(css).toContain("margin: auto 0 0;");
+    expect(css).toContain("margin-block: auto 0;");
+    expect(css).toContain("margin-inline: 0;");
     expect(css).toContain("env(safe-area-inset-bottom)");
+  });
+
+  it("centers the sheet grabber with logical margins", () => {
+    expect(css).toContain("margin-block: 0.5rem 0;");
+    expect(css).toContain("margin-inline: auto;");
   });
 
   it("shows the grabber only on the sheet", () => {

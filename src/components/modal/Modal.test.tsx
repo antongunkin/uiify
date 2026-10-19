@@ -35,6 +35,24 @@ describe("Modal", () => {
     expect(close.closest("form")).toBeNull();
   });
 
+  it("allows the close label to be localized while closeLabel keeps priority", () => {
+    const { rerender } = render(
+      <Modal id="settings" trigger="Open" title="Settings" labels={{ close: "إغلاق" }} />,
+    );
+    expect(screen.getByRole("button", { name: "إغلاق", hidden: true })).toBeTruthy();
+
+    rerender(
+      <Modal
+        id="settings"
+        trigger="Open"
+        title="Settings"
+        labels={{ close: "إغلاق" }}
+        closeLabel="Dismiss"
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Dismiss", hidden: true })).toBeTruthy();
+  });
+
   it("renders consistent SSR markup", () => {
     const markup = renderToStaticMarkup(
       <Modal id="settings" trigger="Open" title="Settings" closeLabel="Close" />,

@@ -21,6 +21,11 @@
     cursor: not-allowed;
   }
 
+  [data-uiify-toggle] > input:focus-visible + [data-uiify-button],
+  [data-uiify-toggle-group] [data-part="item"] > input:focus-visible + [data-uiify-button] {
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+  }
+
   [data-uiify-toggle-group] {
     display: inline-flex;
     gap: var(--space-xs);

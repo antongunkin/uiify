@@ -20,7 +20,7 @@ describe("DropdownMenu skin", () => {
     expect(css).toContain("@starting-style");
     expect(css).toContain("prefers-reduced-motion: no-preference");
     expect(css).toContain("max-block-size:");
-    expect(css).toContain("overflow-y: auto");
+    expect(css).toContain("overflow-block: auto");
     expect(css.replace(/\s+/g, " ")).toContain(
       "[data-danger]:is(:hover, :focus-visible, [data-highlighted])",
     );

@@ -10,9 +10,15 @@ import type {
 import { useEffect, useState } from "react";
 import { useControllableState } from "@gunkin/uiify/hooks";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 
 import { getSliderStops, snapSliderToStops } from "../slider-values.js";
 import type { SliderClientProps, SliderClientValue, SliderMark } from "../types.js";
+
+const DEFAULT_SLIDER_LABELS = {
+  minimum: "Minimum value",
+  maximum: "Maximum value",
+} as const;
 
 type SliderPositionStyle = CSSProperties & {
   readonly "--uiify-slider-position"?: string;
@@ -74,6 +80,7 @@ export function SliderClient<TAs extends ElementType = "div">(
     disabled = false,
     orientation = "horizontal",
     marks = [],
+    labels,
     thumbLabels,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
@@ -115,6 +122,7 @@ export function SliderClient<TAs extends ElementType = "div">(
       ) + "%",
   };
   const visibleMarks = marksInRange(marks, min, max);
+  const accessibleLabels = { ...DEFAULT_SLIDER_LABELS, ...labels };
 
   const setThumbValue = (index: number, proposed: number): void => {
     if (disabled) return;
@@ -143,12 +151,17 @@ export function SliderClient<TAs extends ElementType = "div">(
   const handleKeyDown = (index: number, event: KeyboardEvent<HTMLInputElement>): void => {
     if (disabled || step !== null) return;
 
+    const horizontalKey = event.key === "ArrowRight" || event.key === "ArrowLeft";
+    const mirror =
+      horizontalKey && orientation !== "vertical" && resolveDirection(event.currentTarget) === "rtl"
+        ? -1
+        : 1;
     const direction =
-      event.key === "ArrowRight" || event.key === "ArrowUp"
+      (event.key === "ArrowRight" || event.key === "ArrowUp"
         ? 1
         : event.key === "ArrowLeft" || event.key === "ArrowDown"
           ? -1
-          : 0;
+          : 0) * mirror;
     if (direction === 0) return;
 
     event.preventDefault();
@@ -163,7 +176,8 @@ export function SliderClient<TAs extends ElementType = "div">(
 
   const inputNodes = values.map((currentValue, index) => {
     const inputLabel = isRange
-      ? (thumbLabels?.[index] ?? (index === 0 ? "Minimum value" : "Maximum value"))
+      ? (thumbLabels?.[index] ??
+        (index === 0 ? accessibleLabels.minimum : accessibleLabels.maximum))
       : ariaLabel;
     const inputLabelledBy = isRange ? undefined : ariaLabelledBy;
 

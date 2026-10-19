@@ -3,6 +3,7 @@ import { useRenderElement } from "@gunkin/uiify/core/render";
 import { DetailsContent, DetailsRoot, DetailsSummary } from "../../elements/details/index.js";
 import { collapseBreadcrumbItems } from "./breadcrumb-collapse.js";
 import type {
+  BreadcrumbLabels,
   BreadcrumbRootProps,
   BreadcrumbListProps,
   BreadcrumbItemProps,
@@ -12,20 +13,31 @@ import type {
   BreadcrumbEllipsisProps,
 } from "./types.js";
 
+const DEFAULT_BREADCRUMB_LABELS: BreadcrumbLabels = {
+  root: "Breadcrumb",
+  showCollapsed: "Show collapsed breadcrumbs",
+};
+
 export function BreadcrumbRoot<TAs extends ElementType = "nav">(
   props: BreadcrumbRootProps<TAs>,
 ): ReactElement | null {
   const {
     as,
     render,
-    "aria-label": ariaLabel = "Breadcrumb",
+    "aria-label": ariaLabel,
+    labels,
     ...consumerProps
   } = props as BreadcrumbRootProps<"nav">;
+  const resolvedLabels = { ...DEFAULT_BREADCRUMB_LABELS, ...labels };
 
   return useRenderElement({
     as,
     defaultTag: "nav",
-    props: { ...consumerProps, "aria-label": ariaLabel, "data-uiify-breadcrumb": "" },
+    props: {
+      ...consumerProps,
+      "aria-label": ariaLabel ?? resolvedLabels.root,
+      "data-uiify-breadcrumb": "",
+    },
     render,
     state: {},
   });
@@ -53,12 +65,14 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
     render,
     children,
     items,
+    labels,
     itemsAfterCollapse = 1,
     itemsBeforeCollapse = 1,
     maxItems,
     separator,
     ...consumerProps
   } = props as BreadcrumbListProps<"ol">;
+  const resolvedLabels = { ...DEFAULT_BREADCRUMB_LABELS, ...labels };
 
   if (maxItems !== undefined && items === undefined) {
     throw new Error(
@@ -81,6 +95,7 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
           <BreadcrumbEllipsis
             hiddenItems={collapsed.hidden}
             key="ellipsis"
+            labels={resolvedLabels}
             separator={separator}
           />,
           ...collapsed.after.map((item, index) =>
@@ -168,11 +183,15 @@ export function BreadcrumbSeparator<TAs extends ElementType = "span">(
  * `part` (this trigger and panel carry no `data-part`, unlike Accordion/Collapsible's), and
  * `Details.Content` renders as `<ol>` via `as` instead of the default `<div>`.
  */
-function BreadcrumbEllipsis({ hiddenItems, separator }: BreadcrumbEllipsisProps): ReactElement {
+function BreadcrumbEllipsis({
+  hiddenItems,
+  labels,
+  separator,
+}: BreadcrumbEllipsisProps): ReactElement {
   return (
     <BreadcrumbItem>
       <DetailsRoot data-part="ellipsis" data-uiify-breadcrumb="">
-        <DetailsSummary aria-label="Show collapsed breadcrumbs">…</DetailsSummary>
+        <DetailsSummary aria-label={labels.showCollapsed}>…</DetailsSummary>
         <DetailsContent as="ol">
           {hiddenItems.map((item) => (
             <BreadcrumbLink

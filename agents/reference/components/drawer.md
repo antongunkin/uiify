@@ -10,7 +10,7 @@
 ## Exports
 
 - Runtime: `Drawer`, `DrawerClose`, `DrawerContent`, `DrawerDescription`, `DrawerHandle`, `DrawerRoot`, `DrawerTitle`, `DrawerTrigger`, `DrawerPanel`, `DrawerNativeTrigger`, `DrawerNativeClose`, `DrawerNativeContent`
-- Types: `DrawerCloseOwnProps`, `DrawerCloseProps`, `DrawerContentOwnProps`, `DrawerContentProps`, `DrawerDescriptionOwnProps`, `DrawerHandleOwnProps`, `DrawerRootOwnProps`, `DrawerRootProps`, `DrawerTitleOwnProps`, `DrawerTriggerOwnProps`, `DrawerTriggerProps`, `DrawerProps`, `DrawerSide`, `DrawerAppearanceProps`, `DrawerNativeContentProps`, `DrawerNativeInvokerProps`
+- Types: `DrawerCloseOwnProps`, `DrawerCloseProps`, `DrawerContentOwnProps`, `DrawerContentProps`, `DrawerDescriptionOwnProps`, `DrawerHandleOwnProps`, `DrawerRootOwnProps`, `DrawerRootProps`, `DrawerTitleOwnProps`, `DrawerTriggerOwnProps`, `DrawerTriggerProps`, `DrawerProps`, `DrawerLabels`, `DrawerSide`, `DrawerAppearanceProps`, `DrawerNativeContentProps`, `DrawerNativeInvokerProps`
 
 ## Values
 
@@ -38,9 +38,16 @@ Extends: `DrawerAppearanceProps`
 | `description` | `ReactNode` | no |  |
 | `children` | `ReactNode` | no |  |
 | `closeLabel` | `string` | no |  |
+| `labels` | `Partial<DrawerLabels>` | no |  |
 | `footer` | `ReactNode` | no |  |
 | `side` | `DrawerSide` | no |  |
 | `className` | `string` | no |  |
+
+### DrawerLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `close` | `string` | yes |  |
 
 ### DrawerNativeContentProps
 

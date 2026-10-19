@@ -12,11 +12,11 @@ export interface NormalizedCarouselProps extends CarouselProps {
 const defaultLabels: CarouselLabels = {
   previous: "Previous slide",
   next: "Next slide",
-  goTo: "Go to",
+  goToSlide: "Go to {label}",
   navigation: "Choose slide",
   start: "Start slide rotation",
   stop: "Stop slide rotation",
-  of: "of",
+  slide: "{label}, {index} of {count}",
 };
 
 function validateId(id: string, subject: string): void {

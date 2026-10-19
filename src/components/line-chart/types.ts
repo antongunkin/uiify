@@ -24,6 +24,8 @@ export interface LineChartOwnProps {
   readonly cursorY?: number;
   readonly data: readonly LineChartData[];
   readonly interactive?: boolean;
+  /** BCP 47 locale for default axis labels. Defaults to `"en-US"`. */
+  readonly locale?: string;
   readonly onPointClick?: (index: number) => void;
   readonly onPointPointerLeave?: () => void;
   readonly onPointPointerMove?: (position: LineChartPointerPosition) => void;

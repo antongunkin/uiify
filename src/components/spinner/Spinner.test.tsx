@@ -30,6 +30,14 @@ describe("Spinner", () => {
     expect(screen.getByRole("status", { name: "Loading" })).toBeTruthy();
   });
 
+  it("uses the translated default unless the legacy label prop is provided", () => {
+    const { rerender } = render(<Spinner labels={{ loading: "Chargement" }} showLabel />);
+    expect(screen.getByRole("status", { name: "Chargement" })).toBeTruthy();
+    expect(screen.getByText("Chargement")).toBeTruthy();
+    rerender(<Spinner label="Fetching" labels={{ loading: "Chargement" }} />);
+    expect(screen.getByRole("status", { name: "Fetching" })).toBeTruthy();
+  });
+
   it("forwards className to the root element", () => {
     render(<Spinner className="docs-spinner docs-spinner--small" />);
     expect(screen.getByRole("status").className).toBe("docs-spinner docs-spinner--small");

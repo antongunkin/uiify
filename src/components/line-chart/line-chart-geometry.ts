@@ -79,10 +79,10 @@ function monthKey(time: string | number): string {
   return `${date.getUTCFullYear()}-${date.getUTCMonth()}`;
 }
 
-function monthLabel(time: string | number): string {
+function monthLabel(time: string | number, locale: string): string {
   const date = new Date(time);
   if (Number.isNaN(date.getTime())) return String(time);
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(locale, {
     month: "short",
     timeZone: "UTC",
     year: "2-digit",
@@ -94,7 +94,7 @@ export function pointPosition(index: number, count: number): number {
   return (index / (count - 1)) * 100;
 }
 
-export function monthLabelsFor(data: readonly LineChartData[]): AxisLabel[] {
+export function monthLabelsFor(data: readonly LineChartData[], locale: string): AxisLabel[] {
   const labels: AxisLabel[] = [];
   const seen = new Set<string>();
 
@@ -103,7 +103,7 @@ export function monthLabelsFor(data: readonly LineChartData[]): AxisLabel[] {
     if (seen.has(key)) return;
     seen.add(key);
     labels.push({
-      label: monthLabel(point.time),
+      label: monthLabel(point.time, locale),
       position: pointPosition(index, data.length),
     });
   });
@@ -111,7 +111,7 @@ export function monthLabelsFor(data: readonly LineChartData[]): AxisLabel[] {
   return labels;
 }
 
-export function valueLabelsFor(min: number, max: number): AxisLabel[] {
+export function valueLabelsFor(min: number, max: number, locale: string): AxisLabel[] {
   const tickCount = 6;
   const range = max - min;
 
@@ -119,7 +119,7 @@ export function valueLabelsFor(min: number, max: number): AxisLabel[] {
     const ratio = index / (tickCount - 1);
     const value = max - range * ratio;
     return {
-      label: new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value),
+      label: new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(value),
       position: ratio * 100,
     };
   });

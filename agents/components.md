@@ -55,7 +55,7 @@ its exports, props and shapes; exact types are in the `.d.ts` file listed in the
 | [tooltip](./reference/components/tooltip.md) | `@gunkin/uiify/components/tooltip` | 1 | S1 | `[popover]` | `dist/components/tooltip.d.ts` |  |
 | [hover-card](./reference/components/hover-card.md) | `@gunkin/uiify/components/hover-card` | 1 | S1 | `[popover]` | `dist/components/hover-card.d.ts` |  |
 | [toast](./reference/components/toast.md) | `@gunkin/uiify/components/toast` | 1 | S1 | `[popover] + aria-live` | `dist/components/toast.d.ts` |  |
-| [number-field](./reference/components/number-field.md) | `@gunkin/uiify/components/number-field` | 1 | S1 | `input[type=number]` | `dist/components/number-field.d.ts` |  |
+| [number-field](./reference/components/number-field.md) | `@gunkin/uiify/components/number-field` | 1 | S1 | `input[type=text][role=spinbutton]` | `dist/components/number-field.d.ts` |  |
 | [toolbar](./reference/components/toolbar.md) | `@gunkin/uiify/components/toolbar` | 1 | none | `div[role=toolbar]` | `dist/components/toolbar.d.ts` |  |
 | [file-upload](./reference/components/file-upload.md) | `@gunkin/uiify/components/file-upload` | 1 | S1 | `input[type=file]` | `dist/components/file-upload.d.ts` |  |
 | [header](./reference/components/header.md) | `@gunkin/uiify/components/header` | 0 | S1 | `header` | `dist/components/header.d.ts` | Semantic header root; compose native navigation with Modal. Full functionality without JavaScript; optional header/client adds scroll hide/reveal. |

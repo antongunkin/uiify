@@ -9,6 +9,7 @@ export {
 } from "./Breadcrumb.js";
 export type {
   BreadcrumbItemData,
+  BreadcrumbLabels,
   BreadcrumbItemProps,
   BreadcrumbLinkOwnProps,
   BreadcrumbLinkProps,

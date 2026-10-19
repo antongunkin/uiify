@@ -5,28 +5,59 @@ export function clampNumber(value: number, min?: number, max?: number): number {
   return next;
 }
 
-export function createFormatter(options?: Intl.NumberFormatOptions): Intl.NumberFormat {
-  return new Intl.NumberFormat(undefined, options);
+export function createFormatter(
+  locale: string,
+  options?: Intl.NumberFormatOptions,
+): Intl.NumberFormat {
+  return new Intl.NumberFormat(locale, options);
 }
 
 export function formatNumber(value: number, formatter: Intl.NumberFormat): string {
   return formatter.format(value);
 }
 
+const BIDI_CONTROL = /\p{Bidi_Control}/gu;
+const digitMaps = new WeakMap<Intl.NumberFormat, ReadonlyMap<string, string>>();
+
+function fold(value: string): string {
+  return value.normalize("NFKC").replace(BIDI_CONTROL, "");
+}
+
+function nativeDigits(formatter: Intl.NumberFormat): ReadonlyMap<string, string> {
+  let map = digitMaps.get(formatter);
+  if (!map) {
+    const { locale, numberingSystem } = formatter.resolvedOptions();
+    const digits = new Intl.NumberFormat(locale, { numberingSystem, useGrouping: false });
+    const entries = new Map<string, string>();
+    for (let digit = 0; digit <= 9; digit += 1) {
+      const native = fold(digits.format(digit));
+      if (native !== String(digit)) entries.set(native, String(digit));
+    }
+    map = entries;
+    digitMaps.set(formatter, map);
+  }
+  return map;
+}
+
 function normalizeInput(input: string, formatter: Intl.NumberFormat): string {
   const parts = formatter.formatToParts(-12345.6);
-  const decimal = parts.find((part) => part.type === "decimal")?.value ?? ".";
-  const group = parts.find((part) => part.type === "group")?.value ?? ",";
-  let normalized = input.trim().replaceAll(group, "").replace(decimal, ".");
+  const decimal = fold(parts.find((part) => part.type === "decimal")?.value ?? ".");
+  const group = fold(parts.find((part) => part.type === "group")?.value ?? ",");
+  let normalized = fold(input.trim());
+  for (const [native, ascii] of nativeDigits(formatter)) {
+    normalized = normalized.replaceAll(native, ascii);
+  }
+  normalized = normalized.replaceAll(group, "").replace(decimal, ".");
   for (const part of parts) {
+    const value = fold(part.value);
     if (
       part.type === "currency" ||
       part.type === "unit" ||
       part.type === "literal" ||
       part.type === "percentSign"
     )
-      normalized = normalized.replaceAll(part.value, "");
-    if (part.type === "minusSign") normalized = normalized.replaceAll(part.value, "-");
+      normalized = normalized.replaceAll(value, "");
+    if (part.type === "minusSign") normalized = normalized.replaceAll(value, "-");
   }
   return normalized.replace(/\s/g, "");
 }

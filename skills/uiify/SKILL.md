@@ -51,6 +51,7 @@ After the page renders, review it with a guide only when its question applies:
 - `references/guides/hierarchy.md` — what leads the eye, and do the parts read in the right order?
 - `references/guides/content.md` — does the copy say what this page and each action actually do?
 - `references/guides/states.md` — does the page still work outside the happy path?
+- `references/guides/i18n.md` — only when the page is localized, the project has an i18n setup, or the request mentions languages, RTL or CJK.
 
 Ground the visual direction in the subject, audience and primary job. Plan clear typography, hierarchy, grouping, purposeful copy and responsive layout using existing semantic color roles. Choose one signature detail appropriate to the subject and keep the rest restrained. Avoid defaulting to a gradient hero, repeated equal cards or decorative numbering without a reason. Preserve visible focus, keyboard-sized targets and reduced-motion behavior.
 
@@ -72,6 +73,8 @@ Do not add an unrelated marketing hero or make every field group an equally prom
 Use applicable project build, typecheck and test commands when permitted. The optional `node <resolved-skill-directory>/scripts/lint.mjs <project-root>` runs the static checks compiled from the published laws when this skill was built and prints their names; it does not read `DESIGN.md` or other design files. It inspects literal attributes of lowercase intrinsic JSX tags and of parts imported from `@gunkin/uiify/components` or `@gunkin/uiify/elements` (for example `Button` or `Field.Control`); other custom components are not analyzed. No findings is not proof of accessibility. Missing parsers or execution failures mean unavailable, never a pass.
 
 Reuse existing browser and accessibility tooling to inspect responsive layouts, keyboard access and requested interactions. When missing tools are needed for quality verification, use Playwright for browser checks and axe-core (or the project's axe integration) for accessibility checks. Before installing missing Playwright or axe-core packages or downloading browser binaries, notify the user briefly in their language, explaining what will be installed and why. For example: “I'll install Playwright and axe-core as development tools to check the page in a browser and catch accessibility issues.” This is a notification, not a confirmation question; continue within existing authorization and respect project installation rules. Use the project's package manager and development dependencies, reuse existing integrations, and install only what is needed.
+
+For localized pages, also render once with `dir="rtl"` and once with a long-text locale.
 
 Repair findings within the task's scope and rerun the affected checks. If commands, installation or browser execution are unavailable or prohibited, report those checks as not run and explain the limitation. Report actual checks and remaining issues in ordinary language; never claim a check passed without running it.
 

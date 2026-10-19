@@ -7,7 +7,7 @@ describe("NumberField", () => {
   it("renders a spinbutton input contract before hydration", () => {
     render(
       <NumberField.Root defaultValue={5} min={0} max={10} step={2}>
-        <NumberField.Group>
+        <NumberField.Group data-testid="group">
           <NumberField.Decrement aria-label="Decrease" />
           <NumberField.Input aria-label="Amount" />
           <NumberField.Increment aria-label="Increase" />
@@ -20,6 +20,30 @@ describe("NumberField", () => {
     expect(input.getAttribute("aria-valuemin")).toBe("0");
     expect(input.getAttribute("aria-valuemax")).toBe("10");
     expect(input.value).toBe("5");
+    expect(screen.getByTestId("group").getAttribute("data-part")).toBe("group");
+    expect(input.getAttribute("data-part")).toBe("input");
+    expect(screen.getByRole("button", { name: "Decrease" }).getAttribute("data-part")).toBe(
+      "decrement",
+    );
+    expect(screen.getByRole("button", { name: "Increase" }).getAttribute("data-part")).toBe(
+      "increment",
+    );
+  });
+
+  it("formats with an explicit locale and defaults to en-US", () => {
+    const { unmount } = render(
+      <NumberField.Root locale="de-DE" defaultValue={1234.5}>
+        <NumberField.Input aria-label="Amount" />
+      </NumberField.Root>,
+    );
+    expect((screen.getByRole("spinbutton") as HTMLInputElement).value).toBe("1.234,5");
+    unmount();
+    render(
+      <NumberField.Root defaultValue={1234.5}>
+        <NumberField.Input aria-label="Amount" />
+      </NumberField.Root>,
+    );
+    expect((screen.getByRole("spinbutton") as HTMLInputElement).value).toBe("1,234.5");
   });
 
   it("renders controlled initial values plus disabled and readonly states in SSR markup", () => {
@@ -127,6 +151,18 @@ describe("NumberField", () => {
     );
     const input = screen.getByRole("spinbutton", { name: "Amount" }) as HTMLInputElement;
     fireEvent.keyDown(input, { key: "ArrowUp" });
+    expect(input.value).toBe("5");
+  });
+
+  it("does not step during input method composition", () => {
+    render(
+      <NumberField.Root defaultValue={5} min={0} max={10}>
+        <NumberField.Input aria-label="Amount" />
+      </NumberField.Root>,
+    );
+    const input = screen.getByRole("spinbutton", { name: "Amount" }) as HTMLInputElement;
+    fireEvent.keyDown(input, { key: "ArrowUp", isComposing: true });
+    fireEvent.keyDown(input, { key: "ArrowUp", keyCode: 229 });
     expect(input.value).toBe("5");
   });
 

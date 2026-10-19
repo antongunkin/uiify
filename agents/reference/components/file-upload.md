@@ -9,7 +9,7 @@
 ## Exports
 
 - Runtime: `FileUpload`, `FileUploadDropzone`, `FileUploadHiddenInput`, `FileUploadItem`, `FileUploadItemRemove`, `FileUploadList`, `FileUploadRoot`, `FileUploadTrigger`, `validateFiles`
-- Types: `FileUploadDropzoneOwnProps`, `FileUploadDropzoneProps`, `FileUploadHiddenInputOwnProps`, `FileUploadListOwnProps`, `FileUploadItemRemoveOwnProps`, `FileUploadItemOwnProps`, `FileUploadItemProps`, `FileUploadRootOwnProps`, `FileUploadRootProps`, `FileUploadTriggerOwnProps`, `FileUploadTriggerProps`, `FileRejection`, `FileUploadStore`
+- Types: `FileUploadDropzoneOwnProps`, `FileUploadDropzoneProps`, `FileUploadHiddenInputOwnProps`, `FileUploadLabels`, `FileUploadListOwnProps`, `FileUploadItemRemoveOwnProps`, `FileUploadItemOwnProps`, `FileUploadItemProps`, `FileUploadRootOwnProps`, `FileUploadRootProps`, `FileUploadTriggerOwnProps`, `FileUploadTriggerProps`, `FileRejection`, `FileUploadStore`
 
 ## Props and shapes
 
@@ -19,6 +19,14 @@
 | --- | --- | --- | --- |
 | `file` | `File` | yes |  |
 | `reason` | `"accept" \| "max-size" \| "max-files"` | yes |  |
+
+### FileUploadLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `dropzone` | `string` | yes |  |
+| `remove` | `string` | yes |  |
+| `removeFallback` | `string` | yes |  |
 
 ### FileUploadStoreOptions
 
@@ -55,6 +63,8 @@
 | `removeAt` | `(index: number) => void` | yes |  |
 | `reset` | `() => void` | yes |  |
 | `files` | `readonly File[]` | yes |  |
+| `labels` | `FileUploadLabels` | yes |  |
+| `removeLabel` | `string` | no |  |
 
 ### FileUploadRootOwnProps
 
@@ -66,6 +76,7 @@
 | `disabled` | `boolean` | no |  |
 | `maxFiles` | `number` | no |  |
 | `maxSize` | `number` | no |  |
+| `labels` | `Partial<FileUploadLabels>` | no |  |
 | `minSize` | `number` | no |  |
 | `multiple` | `boolean` | no |  |
 | `onValueChange` | `(files: File[]) => void` | no |  |

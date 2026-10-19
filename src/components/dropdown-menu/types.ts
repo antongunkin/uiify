@@ -28,7 +28,7 @@ export interface DropdownMenuOpenChangeDetails {
 
 export interface DropdownMenuContextValue extends UseMenuSurfaceReturn {
   readonly cancelHoverClose: () => void;
-  readonly dir: Direction;
+  readonly dir?: Direction;
   readonly disabled: boolean;
   readonly hoverEnabledRef: RefObject<boolean>;
   readonly loop: boolean;

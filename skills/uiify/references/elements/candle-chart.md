@@ -8,6 +8,8 @@ Ordered market-style observations need open, high, low, and close values in each
 
 Ordered market-style observations need open, high, low, and close values in each time interval.
 
+Set `locale` to format the default month and price axis labels; custom `xAxis` and `yAxis` labels replace those defaults.
+
 ## Avoid when
 
 Do not use candlesticks for generic category comparisons or hide exact values in a visual glyph. This component visualizes data; it does not provide financial recommendations.

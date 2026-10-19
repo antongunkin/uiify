@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
-import { useDirection } from "@gunkin/uiify/core/direction";
+import { useDirectionOverride } from "@gunkin/uiify/core/direction";
+import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import type { DropdownMenuBarProps } from "./types.js";
 
 const ITEM_SELECTOR = '[data-uiify-menu] [data-part="trigger"]';
@@ -43,7 +44,7 @@ function moveIndex(
  */
 export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
   const { children, className, dir: localDir, loop = true } = props;
-  const dir = useDirection(localDir);
+  const dir = useDirectionOverride(localDir);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const currentRef = useRef<HTMLElement | null>(null);
 
@@ -78,11 +79,12 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
       let nextIndex: number | null = null;
       if (event.key === "Home") nextIndex = 0;
       if (event.key === "End") nextIndex = enabled.length - 1;
+      const rtl = resolveDirection(item, dir) === "rtl";
       if (event.key === "ArrowRight") {
-        nextIndex = moveIndex(currentIndex, dir === "rtl" ? -1 : 1, enabled.length, loop);
+        nextIndex = moveIndex(currentIndex, rtl ? -1 : 1, enabled.length, loop);
       }
       if (event.key === "ArrowLeft") {
-        nextIndex = moveIndex(currentIndex, dir === "rtl" ? 1 : -1, enabled.length, loop);
+        nextIndex = moveIndex(currentIndex, rtl ? 1 : -1, enabled.length, loop);
       }
 
       if (nextIndex === null) return;
@@ -105,7 +107,7 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
     <div
       {...(className ? { className } : {})}
       data-uiify-menu-bar=""
-      dir={dir}
+      {...(dir ? { dir } : {})}
       ref={rootRef}
       role="menubar"
     >

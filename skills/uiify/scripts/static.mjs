@@ -97,6 +97,73 @@ function jsxTarget(tagName, bindings, typescript) {
     : null;
 }
 
+const PHYSICAL_STYLE_PROPERTIES = new Set([
+  "marginLeft",
+  "marginRight",
+  "paddingLeft",
+  "paddingRight",
+  "left",
+  "right",
+  "borderLeft",
+  "borderRight",
+  "borderLeftWidth",
+  "borderRightWidth",
+]);
+
+function literalStyleViolation(attribute, typescript) {
+  if (attribute.name.text !== "style" || !attribute.initializer || !typescript.isJsxExpression(attribute.initializer)) {
+    return false;
+  }
+  let value = attribute.initializer.expression;
+  while (value && typescript.isParenthesizedExpression(value)) value = value.expression;
+  if (!value || !typescript.isObjectLiteralExpression(value)) return false;
+
+  return value.properties.some((property) => {
+    if (!typescript.isPropertyAssignment(property)) return false;
+    const name = property.name;
+    const key = typescript.isIdentifier(name) || typescript.isStringLiteral(name) ? name.text : null;
+    if (key === null) return false;
+    if (PHYSICAL_STYLE_PROPERTIES.has(key)) return true;
+    let initializer = property.initializer;
+    while (initializer && typescript.isParenthesizedExpression(initializer)) initializer = initializer.expression;
+    return (
+      key === "textAlign" &&
+      initializer &&
+      typescript.isStringLiteral(initializer) &&
+      (initializer.text === "left" || initializer.text === "right")
+    );
+  });
+}
+
+function concatenatedLabel(attribute, typescript) {
+  if (attribute.name.text !== "aria-label" || !attribute.initializer || !typescript.isJsxExpression(attribute.initializer)) {
+    return false;
+  }
+  const value = attribute.initializer.expression;
+  if (!value) return false;
+
+  if (typescript.isTemplateExpression(value)) {
+    return value.templateSpans.length > 0 &&
+      (value.head.text.trim() !== "" || value.templateSpans.some((span) => span.literal.text.trim() !== ""));
+  }
+
+  let found = false;
+  const visit = (node) => {
+    if (
+      typescript.isBinaryExpression(node) &&
+      node.operatorToken.kind === typescript.SyntaxKind.PlusToken &&
+      ((typescript.isStringLiteral(node.left) && !typescript.isStringLiteral(node.right)) ||
+        (typescript.isStringLiteral(node.right) && !typescript.isStringLiteral(node.left)))
+    ) {
+      found = true;
+      return;
+    }
+    typescript.forEachChild(node, visit);
+  };
+  visit(value);
+  return found;
+}
+
 function sourceCheck(id, law, message, violates) {
   return {
     id,
@@ -148,5 +215,17 @@ export const staticChecks = [
     "Give the intrinsic image an alt attribute (empty for decoration).",
     (target, attrs) =>
       target.kind === "intrinsic" && target.tag === "img" && !attrs.some((attr) => attr.name.text === "alt"),
+  ),
+  sourceCheck(
+    "logical-inline-style",
+    "localization",
+    "Use logical properties (marginInlineStart, insetInlineEnd, textAlign: \"start\").",
+    (_, attrs, typescript) => attrs.some((attribute) => literalStyleViolation(attribute, typescript)),
+  ),
+  sourceCheck(
+    "concatenated-aria-label",
+    "localization",
+    "Use one translated string with a placeholder.",
+    (_, attrs, typescript) => attrs.some((attribute) => concatenatedLabel(attribute, typescript)),
   ),
 ];

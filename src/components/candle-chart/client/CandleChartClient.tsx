@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import type { CSSProperties, ElementType, ReactElement, Ref } from "react";
+import { formatLabel } from "@gunkin/uiify/core/format-label";
 import { CandleChart, CandleChartCandle, getPriceBounds } from "../CandleChart.js";
 import type {
   CandleChartClientProps,
@@ -47,6 +48,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     data,
     visibleCount,
     xAxis,
+    labels,
     ref: consumerRef,
     style: consumerStyle,
     onCandleClick: consumerOnCandleClick,
@@ -113,6 +115,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
       ...consumerProps,
       ...(xAxis ? { xAxis } : {}),
       data,
+      labels,
       activeCandleIndex: cursor?.index,
       cursorY: cursor?.offsetY,
       interactive: true,
@@ -148,6 +151,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
           <CandleChartCandle
             as="div"
             candle={candle}
+            hitLabel={formatLabel(labels?.candle ?? "Candle {time}", { time: String(candle.time) })}
             index={index}
             x={0}
             slot={100}
@@ -174,6 +178,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
   const chartProps = {
     ...consumerProps,
     data: slice,
+    labels,
     xAxis: xAxis ?? liveTimeAxis(data, sliceStart, sliceEnd, visibleCount),
     activeCandleIndex: toSliceIndex(cursor?.index),
     announceReadout: false,

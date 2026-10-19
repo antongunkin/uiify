@@ -1,10 +1,17 @@
 {
   "extends": ["stylelint-config-standard"],
+  "plugins": ["stylelint-plugin-logical-css"],
   "rules": {
     "no-descending-specificity": null,
     "rule-empty-line-before": null,
     "selector-class-pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*(__[a-z][a-z0-9]*(-[a-z0-9]+)*)?(--[a-z][a-z0-9]*(-[a-z0-9]+)*)?$",
     "selector-id-pattern": null,
-    "at-rule-no-unknown": [true, {"ignoreAtRules": ["theme", "source", "custom-variant"]}]
+    "at-rule-no-unknown": [true, {"ignoreAtRules": ["theme", "source", "custom-variant"]}],
+    "logical-css/require-logical-keywords": [true, { "severity": "error" }],
+    "logical-css/require-logical-properties": [true, { "severity": "error" }],
+    "selector-disallowed-list": ["/\\[dir=/"],
+    "declaration-property-value-disallowed-list": {
+      "position-area": ["/\\b(top|bottom) span-(left|right)\\b/"]
+    }
   }
 }

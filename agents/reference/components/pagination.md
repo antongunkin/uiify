@@ -9,7 +9,7 @@
 ## Exports
 
 - Runtime: `buildPaginationItems`, `Pagination`, `PaginationEllipsis`, `PaginationItem`, `PaginationLink`, `PaginationList`, `PaginationRoot`
-- Types: `PaginationItemDescriptor`, `PaginationItemType`, `UsePaginationParams`, `PaginationEllipsisProps`, `PaginationEllipsisOwnProps`, `PaginationItemProps`, `PaginationItemOwnProps`, `PaginationLinkOwnProps`, `PaginationLinkProps`, `PaginationListOwnProps`, `PaginationListProps`, `PaginationRootOwnProps`, `PaginationRootProps`
+- Types: `PaginationItemDescriptor`, `PaginationItemType`, `UsePaginationParams`, `PaginationEllipsisProps`, `PaginationEllipsisOwnProps`, `PaginationItemProps`, `PaginationItemOwnProps`, `PaginationLinkOwnProps`, `PaginationLinkProps`, `PaginationListOwnProps`, `PaginationListProps`, `PaginationRootOwnProps`, `PaginationRootProps`, `PaginationLabels`
 
 ## Values
 
@@ -34,6 +34,21 @@
 | `page` | `number` | no |  |
 | `selected` | `false` | yes |  |
 | `type` | `Exclude<PaginationItemType, "page">` | yes |  |
+
+### PaginationLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `root` | `string` | yes |  |
+| `page` | `string` | yes |  |
+| `previous` | `string` | yes |  |
+| `next` | `string` | yes |  |
+| `first` | `string` | yes |  |
+| `last` | `string` | yes |  |
+| `previousText` | `string` | yes |  |
+| `nextText` | `string` | yes |  |
+| `firstText` | `string` | yes |  |
+| `lastText` | `string` | yes |  |
 
 ### UsePaginationParams
 
@@ -62,6 +77,8 @@
 | --- | --- | --- | --- |
 | `count` | `number` | yes |  |
 | `items` | `readonly PaginationItem[]` | yes |  |
+| `labels` | `PaginationLabels` | yes |  |
+| `locale` | `string` | no |  |
 | `page` | `number` | yes |  |
 | `setPage` | `(page: number) => void` | yes |  |
 
@@ -74,6 +91,8 @@ Extends: `UsePaginationParams`
 | `"aria-label"` | `string` | no |  |
 | `children` | `ReactNode` | no |  |
 | `getPageHref` | `(page: number) => string` | no |  |
+| `labels` | `Partial<PaginationLabels>` | no |  |
+| `locale` | `string` | no |  |
 
 ### PaginationListOwnProps
 
@@ -93,6 +112,8 @@ Extends: `UsePaginationParams`
 | --- | --- | --- | --- |
 | `disabled` | `boolean` | no |  |
 | `getPageHref` | `(page: number) => string` | no |  |
+| `locale` | `string` | no |  |
+| `pageLabelTemplate` | `string` | no |  |
 | `page` | `number` | yes |  |
 | `selected` | `boolean` | no |  |
 

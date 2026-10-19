@@ -82,6 +82,7 @@ export function LineChart<TAs extends ElementType = "figure">(
     activePointIndex,
     cursorY,
     interactive = false,
+    locale = "en-US",
     onPointClick,
     onPointPointerLeave,
     onPointPointerMove,
@@ -94,8 +95,8 @@ export function LineChart<TAs extends ElementType = "figure">(
   } = props as LineChartProps<"figure"> & LineChartViewProps;
   const { min, max } = getValueBounds(data);
   const label = ariaLabel ?? "Line chart";
-  const timeLabels = axisLabelsFor(xAxis, monthLabelsFor(data));
-  const valueLabels = axisLabelsFor(yAxis, valueLabelsFor(min, max));
+  const timeLabels = axisLabelsFor(xAxis, monthLabelsFor(data, locale));
+  const valueLabels = axisLabelsFor(yAxis, valueLabelsFor(min, max, locale));
   const readoutIndex =
     activePointIndex ?? selectedPointIndex ?? (data.length > 0 ? data.length - 1 : undefined);
   const readoutPoint = readoutIndex === undefined ? undefined : data[readoutIndex];

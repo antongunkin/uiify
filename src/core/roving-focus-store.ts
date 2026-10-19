@@ -11,7 +11,7 @@ export interface RovingFocusItemRecord {
 }
 
 export interface RovingFocusConfig {
-  readonly direction: Direction;
+  readonly direction?: Direction | undefined;
   readonly loop: boolean;
   readonly orientation: RovingFocusOrientation;
 }
@@ -19,8 +19,9 @@ export interface RovingFocusConfig {
 export interface RovingFocusStore {
   focus(id: string): void;
   getCurrentId(): string | null;
+  getDirection(): Direction | undefined;
   getItems(): readonly RovingFocusItemRecord[];
-  move(fromId: string, key: string): boolean;
+  move(fromId: string, key: string, direction?: Direction): boolean;
   register(item: RovingFocusItemRecord): () => void;
   search(character: string): void;
   setCurrentId(id: string): void;
@@ -68,8 +69,10 @@ export function createRovingFocusStore(initial: RovingFocusConfig): RovingFocusS
       item.element?.focus({ preventScroll: true });
     },
     getCurrentId: () => currentId,
+    getDirection: () => config.direction,
     getItems: () => orderedItems(items),
-    move(fromId, key) {
+    move(fromId, key, direction) {
+      const effectiveDirection = direction ?? config.direction ?? "ltr";
       const enabled = getEnabled();
       if (enabled.length === 0) return false;
       const currentIndex = Math.max(
@@ -82,10 +85,10 @@ export function createRovingFocusStore(initial: RovingFocusConfig): RovingFocusS
       if (vertical && key === "ArrowDown") offset = 1;
       if (vertical && key === "ArrowUp") offset = -1;
       if (horizontal && key === "ArrowRight") {
-        offset = config.direction === "rtl" ? -1 : 1;
+        offset = effectiveDirection === "rtl" ? -1 : 1;
       }
       if (horizontal && key === "ArrowLeft") {
-        offset = config.direction === "rtl" ? 1 : -1;
+        offset = effectiveDirection === "rtl" ? 1 : -1;
       }
       if (offset === 0 && key !== "Home" && key !== "End") return false;
       let nextIndex =

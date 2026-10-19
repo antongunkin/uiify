@@ -132,6 +132,38 @@ describe("NumberField client", () => {
     expect(onChange).toHaveBeenLastCalledWith(2);
   });
 
+  it("steps once for a pointer activation and once for a keyboard click", () => {
+    const onValueChange = vi.fn();
+    render(
+      <NumberField.Root defaultValue={2} onValueChange={onValueChange}>
+        <NumberField.Increment aria-label="Increase" />
+      </NumberField.Root>,
+    );
+
+    const increment = screen.getByRole("button", { name: "Increase" });
+    fireEvent.pointerDown(increment, { button: 0, pointerId: 1 });
+    fireEvent.click(increment, { detail: 1 });
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(onValueChange).toHaveBeenLastCalledWith(3);
+
+    fireEvent.click(increment, { detail: 0 });
+    expect(onValueChange).toHaveBeenCalledTimes(2);
+    expect(onValueChange).toHaveBeenLastCalledWith(4);
+  });
+
+  it("preserves a consumer input id for external label association", () => {
+    render(
+      <>
+        <label htmlFor="amount">Amount</label>
+        <NumberField.Root defaultValue={2}>
+          <NumberField.Input id="amount" />
+        </NumberField.Root>
+      </>,
+    );
+
+    expect(screen.getByLabelText("Amount").getAttribute("id")).toBe("amount");
+  });
+
   it("reflects controlled value", () => {
     const { rerender } = render(
       <NumberField.Root value={4}>

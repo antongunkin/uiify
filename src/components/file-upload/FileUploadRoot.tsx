@@ -3,7 +3,13 @@ import { useRef, type ReactElement } from "react";
 import { useControllableState, useId } from "@gunkin/uiify/hooks";
 import { FileUploadProvider } from "./file-upload-context.js";
 import { validateFiles } from "./file-upload-store.js";
-import type { FileUploadRootProps } from "./types.js";
+import type { FileUploadLabels, FileUploadRootProps } from "./types.js";
+
+const DEFAULT_FILE_UPLOAD_LABELS: FileUploadLabels = {
+  dropzone: "Drop files here",
+  remove: "Remove {name}",
+  removeFallback: "Remove file",
+};
 
 export function FileUploadRootClient({
   accept = [],
@@ -12,6 +18,7 @@ export function FileUploadRootClient({
   disabled = false,
   maxFiles,
   maxSize,
+  labels,
   minSize,
   multiple = false,
   onValueChange,
@@ -19,6 +26,7 @@ export function FileUploadRootClient({
   value,
   ...consumerProps
 }: FileUploadRootProps): ReactElement {
+  const resolvedLabels = { ...DEFAULT_FILE_UPLOAD_LABELS, ...labels };
   const inputId = useId();
   const hiddenInputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useControllableState<readonly File[]>({
@@ -47,6 +55,8 @@ export function FileUploadRootClient({
           accept,
           disabled,
           files,
+          labels: resolvedLabels,
+          ...(labels?.remove !== undefined ? { removeLabel: labels.remove } : {}),
           hiddenInputRef,
           inputId,
           multiple,

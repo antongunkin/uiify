@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { CandleChart } from "./CandleChart.js";
@@ -10,6 +11,100 @@ const DATA: readonly CandleChartData[] = [
 ];
 
 describe("CandleChart", () => {
+  it("allows candle hit labels to be localized with a time template", () => {
+    const { container } = render(
+      <CandleChart
+        data={[{ time: "2026-01-01", open: 1, high: 2, low: 0, close: 1 }]}
+        interactive
+        labels={{ candle: "شمعة {time}" }}
+      />,
+    );
+
+    expect(container.querySelector('[data-part="candle-hit"]')?.getAttribute("aria-label")).toBe(
+      "شمعة 2026-01-01",
+    );
+  });
+
+  it("uses localized labels for the chart, axes and data table", () => {
+    const { container } = render(
+      <CandleChart
+        data={[{ time: "2026-01-01", open: 1, high: 2, low: 0, close: 1 }]}
+        labels={{
+          chart: "مخطط الشموع",
+          candles: "شموع",
+          months: "أشهر",
+          prices: "أسعار",
+          data: "بيانات",
+          time: "الوقت",
+          open: "الافتتاح",
+          high: "الأعلى",
+          low: "الأدنى",
+          close: "الإغلاق",
+        }}
+      />,
+    );
+    expect(container.querySelector("figure")?.getAttribute("aria-label")).toBe("مخطط الشموع");
+    expect(container.querySelector('[data-part="candles"]')?.getAttribute("aria-label")).toBe(
+      "مخطط الشموع شموع",
+    );
+    expect(container.querySelector('[data-axis="time"]')?.getAttribute("aria-label")).toBe(
+      "مخطط الشموع أشهر",
+    );
+    expect(container.querySelector('[data-axis="price"]')?.getAttribute("aria-label")).toBe(
+      "مخطط الشموع أسعار",
+    );
+    expect(container.querySelector("table")?.getAttribute("aria-label")).toBe("مخطط الشموع بيانات");
+    expect(container.querySelector("thead")?.textContent).toContain("الوقت");
+    expect(container.querySelector("thead")?.textContent).toContain("الإغلاق");
+  });
+
+  it("uses aria-label as the base for composed accessible names", () => {
+    const { container } = render(
+      <CandleChart
+        data={DATA}
+        aria-label="Market overview"
+        labels={{
+          chart: "Localized chart",
+          candles: "bars",
+          months: "periods",
+          prices: "values",
+          data: "records",
+        }}
+      />,
+    );
+
+    expect(container.querySelector("figure")?.getAttribute("aria-label")).toBe("Market overview");
+    expect(container.querySelector('[data-part="candles"]')?.getAttribute("aria-label")).toBe(
+      "Market overview bars",
+    );
+    expect(container.querySelector('[data-axis="time"]')?.getAttribute("aria-label")).toBe(
+      "Market overview periods",
+    );
+    expect(container.querySelector('[data-axis="price"]')?.getAttribute("aria-label")).toBe(
+      "Market overview values",
+    );
+    expect(container.querySelector("table")?.getAttribute("aria-label")).toBe(
+      "Market overview records",
+    );
+  });
+
+  it("preserves the default composed accessible names", () => {
+    const { container } = render(<CandleChart data={DATA} />);
+
+    expect(container.querySelector('[data-part="candles"]')?.getAttribute("aria-label")).toBe(
+      "Candlestick chart candles",
+    );
+    expect(container.querySelector('[data-axis="time"]')?.getAttribute("aria-label")).toBe(
+      "Candlestick chart months",
+    );
+    expect(container.querySelector('[data-axis="price"]')?.getAttribute("aria-label")).toBe(
+      "Candlestick chart prices",
+    );
+    expect(container.querySelector("table")?.getAttribute("aria-label")).toBe(
+      "Candlestick chart data",
+    );
+  });
+
   it("renders each OHLC item as a decorative candle with responsive geometry", () => {
     const { container } = render(<CandleChart data={DATA} data-testid="chart" />);
     const chart = container.querySelector("[data-testid='chart']") as HTMLElement;
@@ -117,6 +212,23 @@ describe("CandleChart", () => {
     expect(prices[0]?.textContent).toBe("120");
     expect(prices[5]?.textContent).toBe("96");
     expect(prices[3]?.getAttribute("style")).toContain("--candle-axis-y:");
+  });
+
+  it("formats axis labels with the locale prop and defaults to en-US", () => {
+    const axisText = (chart: ReactElement, axis: string) => {
+      const { container, unmount } = render(chart);
+      const text = container.querySelector(`[data-axis='${axis}']`)?.textContent ?? "";
+      unmount();
+      return text;
+    };
+
+    const arabic = <CandleChart data={DATA} locale="ar-EG" />;
+    const english = <CandleChart data={DATA} locale="en-US" />;
+    const implicit = <CandleChart data={DATA} />;
+    expect(axisText(arabic, "price")).toMatch(/[٠-٩]/);
+    expect(axisText(arabic, "time")).not.toBe(axisText(english, "time"));
+    expect(axisText(implicit, "time")).toBe(axisText(english, "time"));
+    expect(axisText(implicit, "time")).toContain("Sep");
   });
 
   it("accepts arbitrary axis labels and positions", () => {

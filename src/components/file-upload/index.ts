@@ -12,6 +12,7 @@ export type {
   FileUploadDropzoneOwnProps,
   FileUploadDropzoneProps,
   FileUploadHiddenInputOwnProps,
+  FileUploadLabels,
   FileUploadListOwnProps,
   FileUploadItemRemoveOwnProps,
   FileUploadItemOwnProps,

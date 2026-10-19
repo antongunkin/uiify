@@ -30,6 +30,37 @@ function MultiCombobox(props: MultiComboboxProps) {
 MultiCombobox.displayName = "MultiCombobox";
 
 describe("Combobox", () => {
+  it("forwards a declared root id to the rendered root element", () => {
+    const rootRef = createRef<HTMLDivElement>();
+    const onClick = vi.fn();
+    render(
+      <Combobox.Root
+        id="fruit-picker"
+        className="fruit-root"
+        style={{ color: "red" }}
+        data-testid="fruit-root"
+        data-purpose="picker"
+        data-uiify-combobox="consumer-value"
+        onClick={onClick}
+        ref={rootRef}
+        items={items}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    const root = screen.getByTestId("fruit-root");
+    expect(root.id).toBe("fruit-picker");
+    expect(root.className).toBe("fruit-root");
+    expect((root as HTMLDivElement).style.color).toBe("red");
+    expect(root.getAttribute("data-purpose")).toBe("picker");
+    expect(root.getAttribute("data-uiify-combobox")).toBe("");
+    expect(rootRef.current).toBe(root);
+    fireEvent.click(root);
+    expect(onClick).toHaveBeenCalledOnce();
+  });
+
   it("renders control and chip data parts with accessible combobox linkage", () => {
     const controlRef = createRef<HTMLElement>();
 
@@ -762,5 +793,47 @@ describe("Combobox", () => {
     fireEvent.change(input, { target: { value: "React" } });
     fireEvent.keyDown(input, { key: "Enter" });
     expect(onValueChange).toHaveBeenLastCalledWith(["React"]);
+  });
+
+  describe("IME composition", () => {
+    function setup() {
+      const onValueChange = vi.fn();
+      render(
+        <Combobox.Root
+          defaultOpen
+          inputValue=""
+          items={items}
+          onInputValueChange={() => {}}
+          onValueChange={onValueChange}
+        >
+          <Combobox.Input aria-label="Fruit" />
+          <Combobox.Content>
+            {(filteredItems) =>
+              filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+            }
+          </Combobox.Content>
+        </Combobox.Root>,
+      );
+      return { input: screen.getByRole("combobox"), onValueChange };
+    }
+
+    it("does not move the active option on ArrowDown while composing", () => {
+      const { input } = setup();
+      fireEvent.keyDown(input, { key: "ArrowDown", isComposing: true });
+      expect(input.getAttribute("aria-activedescendant")).toBeNull();
+    });
+
+    it("does not select on Enter with keyCode 229", () => {
+      const { input, onValueChange } = setup();
+      fireEvent.keyDown(input, { key: "ArrowDown" });
+      fireEvent.keyDown(input, { key: "Enter", keyCode: 229 });
+      expect(onValueChange).not.toHaveBeenCalled();
+    });
+
+    it("stays open on Escape while composing", () => {
+      const { input } = setup();
+      fireEvent.keyDown(input, { key: "Escape", isComposing: true });
+      expect(input.getAttribute("aria-expanded")).toBe("true");
+    });
   });
 });

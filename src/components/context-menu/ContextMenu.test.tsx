@@ -378,4 +378,55 @@ describe("ContextMenu", () => {
     fireEvent.contextMenu(screen.getByText("Area"), { clientX: 10, clientY: 10 });
     expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Beta" }));
   });
+
+  describe("submenu keys", () => {
+    function SubMenu({ dir }: { readonly dir?: "rtl" }) {
+      return (
+        <div {...(dir ? { dir } : {})}>
+          <ContextMenu.Root defaultOpen>
+            <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+            <ContextMenu.Content>
+              <ContextMenu.Item>First</ContextMenu.Item>
+              <ContextMenu.Sub>
+                <ContextMenu.Sub.Trigger>More</ContextMenu.Sub.Trigger>
+                <ContextMenu.Sub.Content>
+                  <ContextMenu.Item>Nested</ContextMenu.Item>
+                </ContextMenu.Sub.Content>
+              </ContextMenu.Sub>
+            </ContextMenu.Content>
+          </ContextMenu.Root>
+        </div>
+      );
+    }
+    SubMenu.displayName = "SubMenu";
+
+    it("opens with ArrowLeft, not ArrowRight, in rtl", () => {
+      render(<SubMenu dir="rtl" />);
+      const trigger = screen.getByRole("menuitem", { name: "More" });
+      fireEvent.keyDown(trigger, { key: "ArrowRight" });
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+      fireEvent.keyDown(trigger, { key: "ArrowLeft" });
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    });
+
+    it.each(["ArrowLeft", "Escape"])("closes with %s in ltr and refocuses the trigger", (key) => {
+      render(<SubMenu />);
+      const trigger = screen.getByRole("menuitem", { name: "More" });
+      fireEvent.keyDown(trigger, { key: "ArrowRight" });
+      expect(trigger.getAttribute("aria-expanded")).toBe("true");
+      fireEvent.keyDown(screen.getByRole("menuitem", { name: "Nested" }), { key });
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+      expect(document.activeElement).toBe(trigger);
+      expect(screen.getByRole("menuitem", { name: "First" })).toBeTruthy();
+    });
+
+    it("closes with ArrowRight in rtl", () => {
+      render(<SubMenu dir="rtl" />);
+      const trigger = screen.getByRole("menuitem", { name: "More" });
+      fireEvent.keyDown(trigger, { key: "ArrowLeft" });
+      fireEvent.keyDown(screen.getByRole("menuitem", { name: "Nested" }), { key: "ArrowRight" });
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+      expect(document.activeElement).toBe(trigger);
+    });
+  });
 });

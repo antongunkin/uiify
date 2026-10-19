@@ -23,4 +23,5 @@ export type {
   PaginationListProps,
   PaginationRootOwnProps,
   PaginationRootProps,
+  PaginationLabels,
 } from "./types.js";

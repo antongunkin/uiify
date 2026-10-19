@@ -14,6 +14,7 @@ import {
 } from "react";
 import { useControllableState, useId } from "@gunkin/uiify/hooks";
 import { createPartContext } from "@gunkin/uiify/core";
+import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import type { PolymorphicProps } from "@gunkin/uiify/core/render";
@@ -185,6 +186,7 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (isComposingKeyEvent(event)) return;
     if (event.key === "Backspace" && value.length > 0) {
       event.preventDefault();
       updateValue(value.slice(0, -1));

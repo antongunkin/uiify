@@ -19,6 +19,19 @@ export interface PaginationControlItem {
 
 export type PaginationItem = PaginationPageItem | PaginationControlItem;
 
+export interface PaginationLabels {
+  readonly root: string;
+  readonly page: string;
+  readonly previous: string;
+  readonly next: string;
+  readonly first: string;
+  readonly last: string;
+  readonly previousText: string;
+  readonly nextText: string;
+  readonly firstText: string;
+  readonly lastText: string;
+}
+
 export interface UsePaginationParams {
   readonly boundaryCount?: number;
   readonly count: number;
@@ -39,6 +52,8 @@ export interface UsePaginationReturn {
 export interface PaginationContextValue {
   readonly count: number;
   readonly items: readonly PaginationItem[];
+  readonly labels: PaginationLabels;
+  readonly locale?: string;
   readonly page: number;
   readonly setPage: (page: number) => void;
 }
@@ -47,6 +62,8 @@ export interface PaginationRootOwnProps extends UsePaginationParams {
   readonly "aria-label"?: string;
   readonly children?: ReactNode;
   readonly getPageHref?: (page: number) => string;
+  readonly labels?: Partial<PaginationLabels>;
+  readonly locale?: string;
 }
 
 export type PaginationRootProps<TAs extends ElementType = "nav"> = RenderableProps<
@@ -81,6 +98,8 @@ export type PaginationItemProps<TAs extends ElementType = "li"> = RenderableProp
 export interface PaginationLinkOwnProps {
   readonly disabled?: boolean;
   readonly getPageHref?: (page: number) => string;
+  readonly locale?: string;
+  readonly pageLabelTemplate?: string;
   readonly page: number;
   readonly selected?: boolean;
 }

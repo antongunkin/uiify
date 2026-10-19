@@ -44,6 +44,7 @@
 | `cursorY` | `number` | no |  |
 | `data` | `readonly LineChartData[]` | yes |  |
 | `interactive` | `boolean` | no |  |
+| `locale` | `string` | no | BCP 47 locale for default axis labels. Defaults to `"en-US"`. |
 | `onPointClick` | `(index: number) => void` | no |  |
 | `onPointPointerLeave` | `() => void` | no |  |
 | `onPointPointerMove` | `(position: LineChartPointerPosition) => void` | no |  |

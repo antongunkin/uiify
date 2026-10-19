@@ -1,0 +1,59 @@
+/* Script-specific typography follows the document's lang attribute. */
+@layer base {
+  :lang(ja),
+  :lang(zh) {
+    text-autospace: normal;
+    line-break: strict;
+  }
+
+  body:lang(ja),
+  body:lang(zh) {
+    line-height: 1.75;
+  }
+
+  :lang(ja) {
+    font-family: var(
+      --font-sans-ja,
+      "Hiragino Sans",
+      "Hiragino Kaku Gothic ProN",
+      "Yu Gothic UI",
+      "Noto Sans JP",
+      var(--font-sans)
+    );
+  }
+
+  :lang(zh-Hans) {
+    font-family: var(
+      --font-sans-zh-hans,
+      "PingFang SC",
+      "Microsoft YaHei UI",
+      "Noto Sans SC",
+      var(--font-sans)
+    );
+  }
+
+  :lang(ar) {
+    letter-spacing: normal;
+    font-family: var(--font-sans-ar, "SF Arabic", "Segoe UI", "Noto Sans Arabic", var(--font-sans));
+  }
+
+  body:lang(ar) {
+    line-height: 1.8;
+  }
+
+  :lang(ja) :is(h1, h2, h3) {
+    word-break: auto-phrase;
+  }
+}
+
+/* These captions live in the later components layer, so their locale overrides do too. */
+@layer components {
+  :lang(ja) [data-uiify-line-chart] > figcaption,
+  :lang(zh) [data-uiify-line-chart] > figcaption,
+  :lang(ar) [data-uiify-line-chart] > figcaption,
+  :lang(ja) [data-uiify-candle-chart] > figcaption,
+  :lang(zh) [data-uiify-candle-chart] > figcaption,
+  :lang(ar) [data-uiify-candle-chart] > figcaption {
+    text-transform: none;
+  }
+}

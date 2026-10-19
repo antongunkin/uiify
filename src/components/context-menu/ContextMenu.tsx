@@ -8,6 +8,7 @@ import type {
   MouseEvent,
   PointerEvent as ReactPointerEvent,
   ReactElement,
+  RefObject,
   SyntheticEvent,
 } from "react";
 import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
@@ -15,6 +16,7 @@ import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import { createMenuSelectEvent } from "../internal/menu/menu-utils.js";
 import { focusMenuItem } from "../internal/menu/focus-menu-item.js";
 import { MenuLabel, MenuSeparator } from "../internal/menu/menu-parts.js";
@@ -373,6 +375,8 @@ ContextMenuRadioItem.displayName = "ContextMenuRadioItem";
 interface ContextMenuSubValue {
   readonly open: boolean;
   readonly setOpen: (open: boolean) => void;
+  readonly skipFocusOpenRef: RefObject<boolean>;
+  readonly triggerRef: RefObject<HTMLElement | null>;
 }
 
 const [ContextMenuSubProvider, useContextMenuSubContext] = createPartContext<ContextMenuSubValue>(
@@ -383,7 +387,9 @@ const [ContextMenuSubProvider, useContextMenuSubContext] = createPartContext<Con
 export function ContextMenuSub(props: ContextMenuSubOwnProps): ReactElement | null {
   const { children } = props;
   const [open, setOpen] = useState(false);
-  const value = useMemo(() => ({ open, setOpen }), [open]);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const skipFocusOpenRef = useRef(false);
+  const value = useMemo(() => ({ open, setOpen, skipFocusOpenRef, triggerRef }), [open]);
   return <ContextMenuSubProvider value={value}>{children}</ContextMenuSubProvider>;
 }
 ContextMenuSub.displayName = "ContextMenuSub";
@@ -391,18 +397,21 @@ ContextMenuSub.displayName = "ContextMenuSub";
 export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): ReactElement | null {
   const { children, className, disabled = false, textValue, ...consumerProps } = props;
   const sub = useContextMenuSubContext("SubTrigger");
+  const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
+  const mergedRef = useMergedRefs(sub.triggerRef, consumerRef);
   const {
     onFocus: consumerOnFocus,
     onKeyDown: consumerOnKeyDown,
     onPointerEnter: consumerOnPointerEnter,
-  } = consumerProps as {
+  } = withoutRef as {
     onFocus?: (event: FocusEvent<HTMLElement>) => void;
     onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
     onPointerEnter?: (event: ReactPointerEvent<HTMLElement>) => void;
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "ArrowRight") {
+    const openKey = resolveDirection(event.currentTarget) === "rtl" ? "ArrowLeft" : "ArrowRight";
+    if (event.key === openKey) {
       event.preventDefault();
       sub.setOpen(true);
     }
@@ -413,14 +422,17 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
       disabled={disabled}
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
-        ...consumerProps,
+        ...withoutRef,
+        ref: mergedRef,
         role: "menuitem",
         "data-part": "item",
         "aria-haspopup": "menu" as const,
         "aria-expanded": sub.open,
         ...(className ? { className } : {}),
         onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => sub.setOpen(true)),
-        onFocus: composeEventHandlers(consumerOnFocus, () => sub.setOpen(true)),
+        onFocus: composeEventHandlers(consumerOnFocus, () => {
+          if (!sub.skipFocusOpenRef.current) sub.setOpen(true);
+        }),
         onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
         children,
       }}
@@ -433,6 +445,19 @@ export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): Rea
   const { children, className } = props;
   const sub = useContextMenuSubContext("SubContent");
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    const closeKey = resolveDirection(event.currentTarget) === "rtl" ? "ArrowRight" : "ArrowLeft";
+    if (event.key !== closeKey && event.key !== "Escape") return;
+    // Escape closes only this submenu, not the menu around it.
+    event.preventDefault();
+    event.stopPropagation();
+    sub.setOpen(false);
+    // The trigger opens its submenu on focus; skip that while returning focus.
+    sub.skipFocusOpenRef.current = true;
+    sub.triggerRef.current?.focus();
+    sub.skipFocusOpenRef.current = false;
+  };
+
   const element = useRenderElement({
     defaultTag: "div",
     props: {
@@ -442,6 +467,7 @@ export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): Rea
       "data-state": sub.open ? "open" : "closed",
       hidden: !sub.open ? true : undefined,
       ...(className ? { className } : {}),
+      onKeyDown: handleKeyDown,
       children: sub.open ? children : null,
     },
     state: { open: sub.open },

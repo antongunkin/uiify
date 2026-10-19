@@ -318,7 +318,7 @@
     "number-field": {
       "tier": 1,
       "state": "S1",
-      "element": "input[type=number]",
+      "element": "input[type=text][role=spinbutton]",
       "sizeNow": "5 kB",
       "sizeTarget": "1 kB",
       "status": "done",

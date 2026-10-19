@@ -1,4 +1,5 @@
 import { fireEvent, render } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { LineChart } from "./LineChart.js";
@@ -97,6 +98,23 @@ describe("LineChart", () => {
 
     fireEvent.click(hit);
     expect(onPointClick).toHaveBeenCalledWith(2);
+  });
+
+  it("formats axis labels with the locale prop and defaults to en-US", () => {
+    const axisText = (chart: ReactElement, axis: string) => {
+      const { container, unmount } = render(chart);
+      const text = container.querySelector(`[data-axis='${axis}']`)?.textContent ?? "";
+      unmount();
+      return text;
+    };
+
+    const arabic = <LineChart data={DATA} locale="ar-EG" />;
+    const english = <LineChart data={DATA} locale="en-US" />;
+    const implicit = <LineChart data={DATA} />;
+    expect(axisText(arabic, "value")).toMatch(/[٠-٩]/);
+    expect(axisText(arabic, "time")).not.toBe(axisText(english, "time"));
+    expect(axisText(implicit, "time")).toBe(axisText(english, "time"));
+    expect(axisText(implicit, "time")).toContain("Sep");
   });
 
   it("forwards consumer props and renders on the server", () => {

@@ -24,9 +24,14 @@ export interface DrawerProps extends DrawerAppearanceProps {
   readonly description?: ReactNode;
   readonly children?: ReactNode;
   readonly closeLabel?: string;
+  readonly labels?: Partial<DrawerLabels>;
   readonly footer?: ReactNode;
   readonly side?: DrawerSide;
   readonly className?: string;
+}
+
+export interface DrawerLabels {
+  readonly close: string;
 }
 
 export interface DrawerNativeContentProps

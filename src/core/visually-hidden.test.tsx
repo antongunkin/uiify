@@ -1,7 +1,12 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { DirectionProvider, useDirection } from "./direction.js";
+import { DirectionProvider, useDirection, useDirectionOverride } from "./direction.js";
 import { VisuallyHidden } from "./visually-hidden.js";
+
+function OverrideReader() {
+  return <output>{useDirectionOverride() ?? "none"}</output>;
+}
+OverrideReader.displayName = "OverrideReader";
 
 function DirectionReader() {
   return <output>{useDirection()}</output>;
@@ -34,6 +39,18 @@ describe("small primitives", () => {
     render(
       <DirectionProvider dir="rtl">
         <DirectionReader />
+      </DirectionProvider>,
+    );
+    expect(screen.getByText("rtl")).toBeTruthy();
+  });
+
+  it("exposes the provider value as an override only when one exists", () => {
+    render(<OverrideReader />);
+    expect(screen.getByText("none")).toBeTruthy();
+    cleanup();
+    render(
+      <DirectionProvider dir="rtl">
+        <OverrideReader />
       </DirectionProvider>,
     );
     expect(screen.getByText("rtl")).toBeTruthy();

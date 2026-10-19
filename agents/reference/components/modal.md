@@ -10,7 +10,7 @@
 ## Exports
 
 - Runtime: `Modal`, `ModalBody`, `ModalClose`, `ModalContent`, `ModalDescription`, `ModalFooter`, `ModalGrabber`, `ModalHeader`, `ModalTitle`, `ModalTrigger`
-- Types: `ModalAlign`, `ModalAppearanceProps`, `ModalBackdrop`, `ModalBodyProps`, `ModalCloseOwnProps`, `ModalCloseProps`, `ModalContentOwnProps`, `ModalContentProps`, `ModalDescriptionProps`, `ModalDismiss`, `ModalFooterProps`, `ModalGrabberProps`, `ModalHeaderProps`, `ModalProps`, `ModalSize`, `ModalTitleProps`, `ModalTriggerOwnProps`, `ModalTriggerProps`
+- Types: `ModalAlign`, `ModalAppearanceProps`, `ModalBackdrop`, `ModalBodyProps`, `ModalCloseOwnProps`, `ModalCloseProps`, `ModalContentOwnProps`, `ModalContentProps`, `ModalDescriptionProps`, `ModalDismiss`, `ModalFooterProps`, `ModalGrabberProps`, `ModalHeaderProps`, `ModalProps`, `ModalLabels`, `ModalSize`, `ModalTitleProps`, `ModalTriggerOwnProps`, `ModalTriggerProps`
 
 ## Values
 
@@ -42,8 +42,15 @@ Extends: `ModalAppearanceProps`
 | `description` | `ReactNode` | no |  |
 | `children` | `ReactNode` | no |  |
 | `closeLabel` | `string` | no | Accessible name of the header close icon. |
+| `labels` | `Partial<ModalLabels>` | no |  |
 | `footer` | `ReactNode` | no | Actions row pinned under the body. |
 | `className` | `string` | no |  |
+
+### ModalLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `close` | `string` | yes |  |
 
 ### ModalTriggerOwnProps
 

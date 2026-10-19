@@ -8,18 +8,26 @@ import type {
   ToastDescriptionOwnProps,
   ToastActionProps,
   ToastCloseProps,
+  ToastLabels,
 } from "./types.js";
+
+const DEFAULT_TOAST_LABELS: ToastLabels = {
+  region: "Notifications",
+  notification: "Notification",
+  close: "Close",
+};
 
 export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null {
   return (props.children ?? null) as ReactElement | null;
 }
 
 export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null {
-  const { children, className, "aria-label": ariaLabel = "Notifications", popover, ref } = props;
+  const { children, className, "aria-label": ariaLabel, labels, popover, ref } = props;
+  const resolvedLabels = { ...DEFAULT_TOAST_LABELS, ...labels };
 
   return (
     <section
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? resolvedLabels.region}
       data-part="viewport"
       data-testid="toast-viewport"
       data-uiify-toast=""
@@ -34,11 +42,12 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
 ToastViewport.displayName = "ToastViewport";
 
 export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
-  const { toast } = props;
+  const { toast, labels } = props;
+  const resolvedLabels = { ...DEFAULT_TOAST_LABELS, ...labels };
 
   return (
     <fieldset
-      aria-label={typeof toast.title === "string" ? toast.title : "Notification"}
+      aria-label={typeof toast.title === "string" ? toast.title : resolvedLabels.notification}
       data-part="item"
       data-state="open"
       data-uiify-toast=""
@@ -46,7 +55,7 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
       {toast.title ? <ToastTitle>{toast.title}</ToastTitle> : null}
       {toast.description ? <ToastDescription>{toast.description}</ToastDescription> : null}
       {toast.action ? <ToastAction>{toast.action.label}</ToastAction> : null}
-      <ToastClose />
+      <ToastClose labels={resolvedLabels} />
     </fieldset>
   );
 }
@@ -57,7 +66,8 @@ export function ToastTitle(props: ToastTitleOwnProps): ReactElement | null {
   return useRenderElement({
     defaultTag: "div",
     props: {
-      ...(className ? { className } : {}),
+      "data-part": "title",
+      className,
       children,
     },
     state: {},
@@ -69,7 +79,8 @@ export function ToastDescription(props: ToastDescriptionOwnProps): ReactElement 
   return useRenderElement({
     defaultTag: "div",
     props: {
-      ...(className ? { className } : {}),
+      "data-part": "description",
+      className,
       children,
     },
     state: {},
@@ -83,7 +94,8 @@ export function ToastAction(props: ToastActionProps): ReactElement | null {
     props: {
       ...consumerProps,
       type: "button",
-      ...(className ? { className } : {}),
+      "data-part": "action",
+      className,
       onClick,
       children,
     },
@@ -92,16 +104,19 @@ export function ToastAction(props: ToastActionProps): ReactElement | null {
 }
 
 export function ToastClose(props: ToastCloseProps): ReactElement | null {
-  const { children = "Close", className, onClick, ...consumerProps } = props;
+  const { children, className, labels, onClick, ...consumerProps } = props;
+  const resolvedChildren = children ?? labels?.close ?? DEFAULT_TOAST_LABELS.close;
   return useRenderElement({
     defaultTag: "button",
     props: {
       ...consumerProps,
       type: "button",
-      "aria-label": typeof children === "string" ? children : "Close",
-      ...(className ? { className } : {}),
+      "aria-label":
+        typeof resolvedChildren === "string" ? resolvedChildren : DEFAULT_TOAST_LABELS.close,
+      "data-part": "close",
+      className,
       onClick,
-      children,
+      children: resolvedChildren,
     },
     state: {},
   });

@@ -22,11 +22,11 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `disabled` | `boolean` | no |  |
+| `disabled` | `boolean` | no | Prevents activation and exposes the disabled state to assistive technology. |
 | `selected` | `boolean` | no | Marks the button as the chosen one of a set, or a toggle that is on. |
-| `type` | `"button" \| "submit" \| "reset"` | no |  |
-| `size` | `ButtonSize` | no |  |
-| `variant` | `ButtonVariant` | no |  |
+| `type` | `"button" \| "submit" \| "reset"` | no | Sets the native button action; defaults to `button`. Set `submit` or `reset` explicitly when needed. |
+| `size` | `ButtonSize` | no | Sets the control's height and, for icon sizes, its width. |
+| `variant` | `ButtonVariant` | no | Sets the visual treatment without changing the control's semantics. |
 
 ### ButtonState
 

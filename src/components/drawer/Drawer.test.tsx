@@ -46,6 +46,24 @@ describe("DrawerPanel (native shell)", () => {
     expect(dialog.hasAttribute("open")).toBe(false);
   });
 
+  it("allows the close label to be localized while closeLabel keeps priority", () => {
+    const { rerender } = render(
+      <DrawerPanel id="settings" trigger="Open" title="Settings" labels={{ close: "إغلاق" }} />,
+    );
+    expect(screen.getByRole("button", { name: "إغلاق", hidden: true })).toBeTruthy();
+
+    rerender(
+      <DrawerPanel
+        id="settings"
+        trigger="Open"
+        title="Settings"
+        labels={{ close: "إغلاق" }}
+        closeLabel="Dismiss"
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Dismiss", hidden: true })).toBeTruthy();
+  });
+
   it("renders native dialog semantics during SSR with no popover markup", () => {
     const markup = renderToStaticMarkup(
       <DrawerPanel

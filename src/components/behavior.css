@@ -74,7 +74,10 @@
 
   [data-positioning="native"][data-side="right"] {
     position-area: right;
-    margin-inline-start: var(--uiify-anchor-offset, 0);
+
+    /* Physical on purpose: the offset must match the physical data-side, not the writing direction. */
+    /* stylelint-disable-next-line logical-css/require-logical-properties -- `side="right"` stays physical. */
+    margin-left: var(--uiify-anchor-offset, 0);
   }
 
   [data-positioning="native"][data-side="bottom"] {
@@ -84,26 +87,29 @@
 
   [data-positioning="native"][data-side="left"] {
     position-area: left;
-    margin-inline-end: var(--uiify-anchor-offset, 0);
+
+    /* Physical on purpose: the offset must match the physical data-side, not the writing direction. */
+    /* stylelint-disable-next-line logical-css/require-logical-properties -- `side="left"` stays physical. */
+    margin-right: var(--uiify-anchor-offset, 0);
   }
 
   [data-positioning="native"][data-side="top"][data-align="start"] {
-    position-area: top span-right;
+    position-area: block-start span-inline-end;
     justify-self: start;
   }
 
   [data-positioning="native"][data-side="top"][data-align="end"] {
-    position-area: top span-left;
+    position-area: block-start span-inline-start;
     justify-self: end;
   }
 
   [data-positioning="native"][data-side="bottom"][data-align="start"] {
-    position-area: bottom span-right;
+    position-area: block-end span-inline-end;
     justify-self: start;
   }
 
   [data-positioning="native"][data-side="bottom"][data-align="end"] {
-    position-area: bottom span-left;
+    position-area: block-end span-inline-start;
     justify-self: end;
   }
 
@@ -164,8 +170,8 @@
 
   [data-uiify-tabs] > [data-part="item"] > [data-part="control"] {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    inline-size: 1px;
+    block-size: 1px;
     padding: 0;
     margin: -1px;
     overflow: hidden;
@@ -292,7 +298,7 @@
   [data-uiify-virtual-scroll] {
     --uiify-virtual-scroll-row-height: 64px;
 
-    overflow-y: auto;
+    overflow-block: auto;
   }
 
   [data-uiify-virtual-scroll] > [data-part="spacer"] {

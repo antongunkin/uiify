@@ -94,6 +94,43 @@ describe("FileUpload", () => {
     fireEvent.click(screen.getByRole("button", { name: "Remove notes.txt" }));
     expect(screen.queryByRole("listitem")).toBeNull();
   });
+
+  it("keeps the default remove name and formats an opted-in name template", () => {
+    const file = createFile("notes.txt", "text/plain", 12);
+    const renderUpload = (labels?: { remove?: string }) => (
+      <ClientFileUpload.Root defaultValue={[file]} {...(labels ? { labels } : {})}>
+        <ClientFileUpload.List>
+          <ClientFileUpload.Item index={0}>
+            <ClientFileUpload.ItemRemove index={0}>×</ClientFileUpload.ItemRemove>
+          </ClientFileUpload.Item>
+        </ClientFileUpload.List>
+      </ClientFileUpload.Root>
+    );
+    renderUpload.displayName = "FileUploadRemoveLabelsExample";
+
+    const { rerender } = render(renderUpload());
+    expect(screen.getByRole("button", { name: "Remove file" })).toBeTruthy();
+    rerender(renderUpload({ remove: "Remove {name}" }));
+    expect(screen.getByRole("button", { name: "Remove notes.txt" })).toBeTruthy();
+  });
+
+  it("uses translated dropzone and remove fallback labels", () => {
+    render(
+      <ClientFileUpload.Root
+        defaultValue={[createFile("notes.txt", "text/plain", 12)]}
+        labels={{ dropzone: "Déposez les fichiers", removeFallback: "Supprimer le fichier" }}
+      >
+        <ClientFileUpload.Dropzone>Drop</ClientFileUpload.Dropzone>
+        <ClientFileUpload.List>
+          <ClientFileUpload.Item index={0}>
+            <ClientFileUpload.ItemRemove index={0}>×</ClientFileUpload.ItemRemove>
+          </ClientFileUpload.Item>
+        </ClientFileUpload.List>
+      </ClientFileUpload.Root>,
+    );
+    expect(screen.getByRole("region", { name: "Déposez les fichiers" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Supprimer le fichier" })).toBeTruthy();
+  });
   it("renders a native picker contract before hydration", () => {
     const markup = renderToStaticMarkup(
       <ServerFileUpload.Root>

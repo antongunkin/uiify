@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import type { Direction } from "@gunkin/uiify/core/direction";
+import { useDirectionOverride, type Direction } from "@gunkin/uiify/core/direction";
+import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import type { RovingFocusOrientation } from "@gunkin/uiify/core/roving-focus";
 
 import {
@@ -63,11 +64,12 @@ function moveIndex(
 export function ToolbarRootClient({
   children,
   className,
-  dir,
+  dir: localDir,
   loop = true,
   orientation = "horizontal",
   ...consumerProps
 }: ToolbarRootClientProps): ReactElement {
+  const dir = useDirectionOverride(localDir);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const currentRef = useRef<HTMLElement | null>(null);
 
@@ -102,11 +104,12 @@ export function ToolbarRootClient({
       let nextIndex: number | null = null;
       if (event.key === "Home") nextIndex = 0;
       if (event.key === "End") nextIndex = enabled.length - 1;
+      const rtl = resolveDirection(item, dir) === "rtl";
       if (orientation !== "vertical" && event.key === "ArrowRight") {
-        nextIndex = moveIndex(currentIndex, dir === "rtl" ? -1 : 1, enabled.length, loop);
+        nextIndex = moveIndex(currentIndex, rtl ? -1 : 1, enabled.length, loop);
       }
       if (orientation !== "vertical" && event.key === "ArrowLeft") {
-        nextIndex = moveIndex(currentIndex, dir === "rtl" ? 1 : -1, enabled.length, loop);
+        nextIndex = moveIndex(currentIndex, rtl ? 1 : -1, enabled.length, loop);
       }
       if (orientation !== "horizontal" && event.key === "ArrowDown") {
         nextIndex = moveIndex(currentIndex, 1, enabled.length, loop);
@@ -140,7 +143,7 @@ export function ToolbarRootClient({
       data-orientation={orientation}
       data-part="root"
       data-uiify-toolbar=""
-      dir={dir}
+      {...(dir ? { dir } : {})}
       ref={rootRef}
       role="toolbar"
     >

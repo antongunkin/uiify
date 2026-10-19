@@ -28,9 +28,15 @@ export interface SliderClientOwnProps {
   readonly disabled?: boolean;
   readonly orientation?: "horizontal" | "vertical";
   readonly marks?: readonly SliderMark[];
+  readonly labels?: Partial<SliderLabels>;
   readonly thumbLabels?: readonly [string, string];
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
+}
+
+export interface SliderLabels {
+  readonly minimum: string;
+  readonly maximum: string;
 }
 
 export interface SliderClientRenderState {

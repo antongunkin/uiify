@@ -10,13 +10,15 @@ import type {
   Ref,
 } from "react";
 import { composeEventHandlers } from "./compose-event-handlers.js";
-import { useDirection, type Direction } from "./direction.js";
+import { useDirectionOverride, type Direction } from "./direction.js";
+import { isComposingKeyEvent } from "./ime.js";
 import type { RenderableProps } from "./polymorphic.js";
 import {
   createRovingFocusStore,
   type RovingFocusOrientation,
   type RovingFocusStore,
 } from "./roving-focus-store.js";
+import { resolveDirection } from "./text-direction.js";
 import { useRenderElement } from "./use-render-element.js";
 
 const RovingFocusContext = createContext<RovingFocusStore | null>(null);
@@ -45,7 +47,7 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
     render,
     ...consumerProps
   } = props as RovingFocusRootProps<ElementType>;
-  const direction = useDirection(localDirection);
+  const direction = useDirectionOverride(localDirection);
   const storeRef = useRef<RovingFocusStore | null>(null);
   storeRef.current ??= createRovingFocusStore({ direction, loop, orientation });
   storeRef.current.updateConfig({ direction, loop, orientation });
@@ -55,8 +57,8 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       ...consumerProps,
+      ...(direction ? { dir: direction } : {}),
       "data-orientation": orientation,
-      dir: direction,
     },
     render,
     state: { orientation },
@@ -135,8 +137,11 @@ export function RovingFocusItem<TAs extends ElementType = "div">(
   };
 
   const handleKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (isComposingKeyEvent(event)) return;
     if (event.key === "Home" || event.key === "End" || event.key.startsWith("Arrow")) {
-      if (store.move(id, event.key)) event.preventDefault();
+      if (store.move(id, event.key, resolveDirection(event.currentTarget, store.getDirection()))) {
+        event.preventDefault();
+      }
     } else if (event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey) {
       store.search(event.key);
     }

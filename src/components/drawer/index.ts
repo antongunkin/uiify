@@ -29,6 +29,7 @@ export type {
 } from "./types.js";
 export type {
   DrawerProps,
+  DrawerLabels,
   DrawerSide,
   DrawerAppearanceProps,
   DrawerNativeContentProps,

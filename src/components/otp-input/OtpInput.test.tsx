@@ -32,6 +32,14 @@ describe("OtpInput", () => {
     expect(input.value).toBe("1");
   });
 
+  it("does not delete during input method composition", () => {
+    renderOtp({ defaultValue: "12" });
+    const input = screen.getByLabelText("One-time code") as HTMLInputElement;
+    fireEvent.keyDown(input, { key: "Backspace", isComposing: true });
+    fireEvent.keyDown(input, { key: "Backspace", keyCode: 229 });
+    expect(input.value).toBe("12");
+  });
+
   it("fills all cells on paste and calls onComplete", () => {
     const onComplete = vi.fn();
     renderOtp({ onComplete });

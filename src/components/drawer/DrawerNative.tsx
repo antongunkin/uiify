@@ -2,6 +2,8 @@ import type { ReactElement } from "react";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
 import type { DrawerProps, DrawerNativeContentProps, DrawerNativeInvokerProps } from "./types.js";
 
+const DEFAULT_DRAWER_LABELS = { close: "Close" } as const;
+
 export function DrawerNativeTrigger({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
   return renderNativeInvoker(
     "button",
@@ -51,7 +53,8 @@ export function DrawerPanel({
   title,
   description,
   children,
-  closeLabel = "Close",
+  closeLabel,
+  labels,
   side = "bottom",
   className,
   footer,
@@ -59,6 +62,7 @@ export function DrawerPanel({
   dismiss,
   backdrop,
 }: DrawerProps): ReactElement {
+  const effectiveCloseLabel = closeLabel ?? labels?.close ?? DEFAULT_DRAWER_LABELS.close;
   return (
     <div data-part="root" data-side={side} data-uiify-drawer="">
       <DrawerNativeTrigger target={id}>{trigger}</DrawerNativeTrigger>
@@ -84,7 +88,7 @@ export function DrawerPanel({
               {description}
             </p>
           )}
-          <DrawerNativeClose target={id} aria-label={closeLabel}>
+          <DrawerNativeClose target={id} aria-label={effectiveCloseLabel}>
             <svg
               aria-hidden="true"
               viewBox="0 0 16 16"

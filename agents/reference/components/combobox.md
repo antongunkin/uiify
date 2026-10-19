@@ -80,6 +80,8 @@
 
 ### ComboboxRootShellOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"div">, "children">`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `className` | `string` | no |  |
@@ -87,7 +89,6 @@
 | `defaultOpen` | `boolean` | no |  |
 | `defaultValue` | `string` | no |  |
 | `filterFn` | `ComboboxFilterFn` | no |  |
-| `id` | `string` | no |  |
 | `items` | `readonly ComboboxItemData[]` | yes |  |
 
 ### ComboboxRootControlledOwnProps

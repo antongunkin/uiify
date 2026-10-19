@@ -4,6 +4,25 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { DropdownMenu } from "./DropdownMenu.js";
 
+function RtlSubmenu({ side }: { readonly side?: "left" | "right" }) {
+  return (
+    <div dir="rtl">
+      <DropdownMenu.Root defaultOpen>
+        <DropdownMenu.Trigger>Actions</DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Sub>
+            <DropdownMenu.SubTrigger>Share</DropdownMenu.SubTrigger>
+            <DropdownMenu.SubContent {...(side ? { side } : {})}>
+              <DropdownMenu.Item>Copy link</DropdownMenu.Item>
+            </DropdownMenu.SubContent>
+          </DropdownMenu.Sub>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    </div>
+  );
+}
+RtlSubmenu.displayName = "RtlSubmenu";
+
 describe("DropdownMenu", () => {
   it("opens from the trigger and selects an item", () => {
     const onSelect = vi.fn();
@@ -672,5 +691,37 @@ describe("DropdownMenu", () => {
     });
     expect(trigger.getAttribute("data-state")).toBe("closed");
     vi.useRealTimers();
+  });
+
+  describe("rtl submenus", () => {
+    const subContent = () => document.querySelector<HTMLElement>('[data-part="sub-content"]');
+
+    it("opens with ArrowLeft, not ArrowRight, and defaults the side to left", async () => {
+      render(<RtlSubmenu />);
+      const trigger = screen.getByRole("menuitem", { name: "Share" });
+      fireEvent.keyDown(trigger, { key: "ArrowRight" });
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+      fireEvent.keyDown(trigger, { key: "ArrowLeft" });
+      await vi.waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("true"));
+      expect(subContent()?.getAttribute("data-side")).toBe("left");
+    });
+
+    it("closes with ArrowRight and refocuses the trigger", async () => {
+      render(<RtlSubmenu />);
+      const trigger = screen.getByRole("menuitem", { name: "Share" });
+      fireEvent.keyDown(trigger, { key: "ArrowLeft" });
+      await vi.waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("true"));
+      fireEvent.keyDown(screen.getByText("Copy link"), { key: "ArrowRight" });
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+      expect(document.activeElement).toBe(trigger);
+    });
+
+    it("keeps an explicit side", async () => {
+      render(<RtlSubmenu side="right" />);
+      const trigger = screen.getByRole("menuitem", { name: "Share" });
+      fireEvent.keyDown(trigger, { key: "ArrowLeft" });
+      await vi.waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("true"));
+      expect(subContent()?.getAttribute("data-side")).toBe("right");
+    });
   });
 });

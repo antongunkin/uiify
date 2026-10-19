@@ -34,11 +34,11 @@
 | --- | --- | --- | --- |
 | `previous` | `string` | yes |  |
 | `next` | `string` | yes |  |
-| `goTo` | `string` | yes |  |
+| `goToSlide` | `string` | yes |  |
 | `navigation` | `string` | yes |  |
 | `start` | `string` | yes |  |
 | `stop` | `string` | yes |  |
-| `of` | `string` | yes |  |
+| `slide` | `string` | yes |  |
 
 ### CarouselIcons
 
@@ -68,6 +68,7 @@ Extends: `CSSProperties`
 | `"aria-label"` | `string` | yes |  |
 | `axis` | `CarouselAxis` | no |  |
 | `dir` | `"ltr" \| "rtl"` | no |  |
+| `locale` | `string` | no |  |
 | `navigation` | `boolean` | no |  |
 | `pagination` | `boolean` | no |  |
 | `className` | `string` | no |  |

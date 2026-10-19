@@ -10,11 +10,11 @@ The person triggers an action on this page: submit a form, save, confirm, open a
 
 ## Avoid when
 
-The control moves to another page: use a link (`<a href>` or `Button as="a"`). A choice between options is a `segmented-control` or `toggle-group`, not several buttons.
+The control moves to another page: use a link (`<a href>` or `Button as="a"`). For a persistent or mutually exclusive choice, use `segmented-control` or `toggle-group` when its interaction model fits. `selected` can also mark a button as the chosen item in a set.
 
 ## Structure
 
-One visible label names the result with a verb: "Save changes", "Invite member". An icon-only button (`size="icon"`) needs an accessible name through `aria-label`.
+One visible label names the result with a verb: "Save changes", "Invite member". An icon-only button (`size="icon"`) needs a non-empty accessible name; `aria-label` or visually hidden text can provide it.
 
 ```tsx
 <Button type="submit">Save changes</Button>
@@ -29,15 +29,15 @@ Labels fit at 320 CSS px without truncation; shorten the copy rather than the ta
 
 ## States
 
-Disabled: say nearby why the action is unavailable, or keep it enabled and validate on submit. Busy: keep the label and width, show progress text such as "Saving…" and ignore a second press. `selected` only for a toggle that stays on.
+Disabled: say nearby why the action is unavailable, or keep it enabled and validate on submit. Busy: keep the label and width, show progress text such as "Saving…" and ignore a second press. `selected` marks the chosen button in a set or a toggle that stays on.
 
 ## Verify
 
-Tab reaches every button in reading order with a visible focus indicator; Enter and Space activate it. One default (solid) button per decision area. Icon-only buttons have a non-empty name in the accessibility tree.
+Enabled native buttons follow Tab order and activate with Enter or Space. A disabled button cannot activate; `as="a"` keeps link keyboard behavior. Every control has a visible focus indicator and a non-empty accessible name. A single solid action can clarify emphasis in a decision area; treat that as a contextual heuristic.
 
 ## Common mistake
 
-Two solid buttons side by side, such as "Save" and "Delete", make people compare colors instead of labels. Keep one solid action, use `variant="outline"` or `"ghost"` for the alternative and `variant="destructive"` only where data is removed.
+When two actions have similar priority, giving both the strongest treatment can make the hierarchy unclear. Consider `variant="outline"` or `"ghost"` for the secondary action, and reserve `variant="destructive"` for actions that remove or irreversibly change data.
 
 Related laws: references/laws/von-restorff.md, references/laws/accessibility.md
 

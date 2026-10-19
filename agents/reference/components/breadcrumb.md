@@ -10,15 +10,23 @@
 ## Exports
 
 - Runtime: `Breadcrumb`, `BreadcrumbEllipsis`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbList`, `BreadcrumbRoot`, `BreadcrumbSeparator`
-- Types: `BreadcrumbItemData`, `BreadcrumbItemProps`, `BreadcrumbLinkOwnProps`, `BreadcrumbLinkProps`, `BreadcrumbListOwnProps`, `BreadcrumbListProps`, `BreadcrumbRootOwnProps`, `BreadcrumbRootProps`, `BreadcrumbSeparatorOwnProps`, `BreadcrumbSeparatorProps`
+- Types: `BreadcrumbItemData`, `BreadcrumbLabels`, `BreadcrumbItemProps`, `BreadcrumbLinkOwnProps`, `BreadcrumbLinkProps`, `BreadcrumbListOwnProps`, `BreadcrumbListProps`, `BreadcrumbRootOwnProps`, `BreadcrumbRootProps`, `BreadcrumbSeparatorOwnProps`, `BreadcrumbSeparatorProps`
 
 ## Props and shapes
+
+### BreadcrumbLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `root` | `string` | yes |  |
+| `showCollapsed` | `string` | yes |  |
 
 ### BreadcrumbRootOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `"aria-label"` | `string` | no |  |
+| `labels` | `Partial<BreadcrumbLabels>` | no |  |
 
 ### BreadcrumbItemData
 
@@ -36,6 +44,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
+| `labels` | `Partial<BreadcrumbLabels>` | no |  |
 | `items` | `readonly BreadcrumbItemData[]` | no | Data-driven items, required to use `maxItems`. Filtering children by element type (`isValidElement` + a type check) can't see through a Fragment-free `.map()` over route data into a custom wrapper component — a real element only becomes visible to a parent's child introspection once React actually renders it, which hasn't happened yet when `BreadcrumbList` itself runs. An explicit array has no such blind spot. |
 | `itemsAfterCollapse` | `number` | no |  |
 | `itemsBeforeCollapse` | `number` | no |  |
@@ -61,6 +70,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `hiddenItems` | `readonly BreadcrumbItemData[]` | yes |  |
+| `labels` | `BreadcrumbLabels` | yes |  |
 | `separator` | `ReactNode` | no |  |
 
 ## Other types

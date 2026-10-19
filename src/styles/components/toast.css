@@ -44,6 +44,31 @@
     min-inline-size: 0;
   }
 
+  [data-uiify-toast] [data-part="close"] {
+    align-self: flex-end;
+    min-block-size: 30px;
+    padding-block: 0;
+    padding-inline: var(--space-sm);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--popover-foreground);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  [data-uiify-toast] [data-part="close"]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    [data-uiify-toast] [data-part="close"]:hover {
+      background-color: var(--accent);
+      color: var(--accent-foreground);
+    }
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     ::view-transition-group(.uiify-toast) {
       animation-duration: var(--duration-fast);

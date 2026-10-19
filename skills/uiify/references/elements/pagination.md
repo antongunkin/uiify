@@ -8,6 +8,8 @@ Navigate between pages of a result set.
 
 Let people move through a result set split into discrete pages.
 
+Set `locale` to format page numbers, and translate the `labels.page` template using its `{page}` placeholder.
+
 ## Avoid when
 
 Do not paginate a small result set that is easier to scan as one list, or imply that ellipses are links.

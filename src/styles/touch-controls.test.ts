@@ -4,11 +4,12 @@ import { describe, expect, it } from "vitest";
 
 const read = (path: string): string => readFileSync(resolve(import.meta.dirname, path), "utf8");
 
-/** The declaration block of the first rule whose selector line is exactly `selector`. */
+/** The declaration block of the first rule whose selector list contains `selector`. */
 function ruleBody(css: string, selector: string): string {
-  const start = css.indexOf(`  ${selector} {`);
+  const start = css.indexOf(selector);
   expect(start, `rule "${selector}" exists`).toBeGreaterThanOrEqual(0);
-  return css.slice(start, css.indexOf("}", start));
+  const openBrace = css.indexOf("{", start);
+  return css.slice(openBrace, css.indexOf("}", openBrace));
 }
 
 // iOS Safari zooms the page when a text-entry control below 16px takes focus.

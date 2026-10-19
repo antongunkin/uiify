@@ -78,6 +78,17 @@ describe("Carousel server renderer", () => {
     expect(screen.getByRole("group", { name: "Only, 1 of 1" })).toBeTruthy();
   });
 
+  it("preserves ungrouped English numbers in default slide labels", () => {
+    const items = Array.from({ length: 1000 }, (_, index) => ({
+      id: String(index),
+      label: `Slide ${index + 1}`,
+      children: `Content ${index + 1}`,
+    }));
+    render(<Carousel id="many" aria-label="Many slides" items={items} />);
+
+    expect(screen.getByRole("group", { name: "Slide 1000, 1000 of 1000" })).toBeTruthy();
+  });
+
   it("rejects invalid and duplicate ids while allowing encoded Unicode fragments", () => {
     expect(() =>
       render(
@@ -167,11 +178,11 @@ describe("Carousel server renderer", () => {
           labels: {
             previous: "Назад",
             next: "Вперёд",
-            goTo: "Перейти к",
+            goToSlide: "Перейти к {label}",
+            slide: "{label}, {index} из {count}",
             navigation: "Выберите слайд",
             start: "Запустить",
             stop: "Остановить",
-            of: "из",
           },
         }}
         presentation={{
@@ -200,6 +211,67 @@ describe("Carousel server renderer", () => {
     ).toBeTruthy();
     expect(root.querySelector('[data-part="status"]')).toBeTruthy();
     expect(root.querySelector("[aria-label='One, 1 из 2']")).toBeTruthy();
+    expect(root.querySelector("[aria-label='Перейти к One']")).toBeTruthy();
+  });
+
+  it("formats slide and dot labels from localized templates", () => {
+    const items = [
+      { id: "one", label: "Intro", children: "First" },
+      { id: "two", label: "Details", children: "Second" },
+      { id: "three", label: "Finish", children: "Third" },
+    ] as const;
+
+    const { rerender } = render(<Carousel id="templates" aria-label="Templates" items={items} />);
+    expect(screen.getByRole("group", { name: "Intro, 1 of 3" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Go to Intro" })).toBeTruthy();
+
+    rerender(
+      <Carousel
+        id="templates"
+        aria-label="Templates"
+        items={items}
+        locale="ja-JP"
+        labels={{ slide: "{count}枚中{index}枚目: {label}" }}
+      />,
+    );
+    expect(screen.getByRole("group", { name: "3枚中1枚目: Intro" })).toBeTruthy();
+
+    rerender(
+      <Carousel
+        id="templates"
+        aria-label="Templates"
+        items={items}
+        locale="ar-EG"
+        labels={{ slide: "{label}، {index} من {count}" }}
+      />,
+    );
+    expect(screen.getByRole("group", { name: "Intro، ١ من ٣" })).toBeTruthy();
+  });
+
+  it("uses the slide template for the live region announcement", () => {
+    const items = [
+      { id: "one", label: "Intro", children: "First" },
+      { id: "two", label: "Details", children: "Second" },
+      { id: "three", label: "Finish", children: "Third" },
+    ] as const;
+
+    render(
+      <CarouselMarkup
+        base={{
+          id: "announcement",
+          "aria-label": "Announcement",
+          items,
+          locale: "ja-JP",
+          labels: { slide: "{count}枚中{index}枚目: {label}" },
+        }}
+        presentation={{
+          ...readyPresentation,
+          snapshot: { ...readyPresentation.snapshot, settledIndex: 2 },
+        }}
+      />,
+    );
+
+    expect(screen.getByText("3枚中3枚目: Finish")).toBeTruthy();
   });
 
   it("produces deterministic handler-free server markup", () => {

@@ -7,6 +7,7 @@ import type {
   ReactNode,
 } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { formatLabel } from "@gunkin/uiify/core/format-label";
 import type {
   CandleChartAxisLabel,
   CandleChartCandleProps,
@@ -14,6 +15,20 @@ import type {
   CandleChartProps,
   CandleChartViewProps,
 } from "./types.js";
+
+const DEFAULT_CANDLE_CHART_LABELS = {
+  chart: "Candlestick chart",
+  candle: "Candle {time}",
+  candles: "candles",
+  months: "months",
+  prices: "prices",
+  data: "data",
+  time: "Time",
+  open: "Open",
+  high: "High",
+  low: "Low",
+  close: "Close",
+} as const;
 
 interface CandleStyle extends CSSProperties {
   "--candle-body-height": string;
@@ -91,17 +106,17 @@ function monthKey(time: string | number): string {
   return `${date.getUTCFullYear()}-${date.getUTCMonth()}`;
 }
 
-function monthLabel(time: string | number): string {
+function monthLabel(time: string | number, locale: string): string {
   const date = new Date(time);
   if (Number.isNaN(date.getTime())) return String(time);
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(locale, {
     month: "short",
     timeZone: "UTC",
     year: "2-digit",
   }).format(date);
 }
 
-function monthLabelsFor(data: readonly CandleChartData[]): AxisLabel[] {
+function monthLabelsFor(data: readonly CandleChartData[], locale: string): AxisLabel[] {
   const labels: AxisLabel[] = [];
   const seen = new Set<string>();
 
@@ -110,7 +125,7 @@ function monthLabelsFor(data: readonly CandleChartData[]): AxisLabel[] {
     if (seen.has(key)) return;
     seen.add(key);
     labels.push({
-      label: monthLabel(candle.time),
+      label: monthLabel(candle.time, locale),
       position: (index / Math.max(data.length, 1)) * 100,
     });
   });
@@ -118,7 +133,7 @@ function monthLabelsFor(data: readonly CandleChartData[]): AxisLabel[] {
   return labels;
 }
 
-function priceLabelsFor(min: number, max: number): AxisLabel[] {
+function priceLabelsFor(min: number, max: number, locale: string): AxisLabel[] {
   const tickCount = 6;
   const range = max - min;
 
@@ -126,7 +141,7 @@ function priceLabelsFor(min: number, max: number): AxisLabel[] {
     const ratio = index / (tickCount - 1);
     const value = max - range * ratio;
     return {
-      label: new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value),
+      label: new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(value),
       position: ratio * 100,
     };
   });
@@ -200,6 +215,7 @@ function axisLabelsFor(
 export function CandleChartCandle({
   as: Tag,
   candle,
+  hitLabel,
   index,
   x,
   slot,
@@ -233,7 +249,7 @@ export function CandleChartCandle({
         <button
           data-part="candle-hit"
           type="button"
-          aria-label={`Candle ${String(candle.time)}`}
+          aria-label={hitLabel}
           aria-pressed={isSelected}
           onClick={() => onCandleClick?.(index)}
           onKeyDown={handleKeyDown}
@@ -258,9 +274,11 @@ export function CandleChart<TAs extends ElementType = "figure">(
     xAxis,
     yAxis,
     "aria-label": ariaLabel,
+    labels,
     activeCandleIndex,
     cursorY,
     interactive = false,
+    locale = "en-US",
     onCandleClick,
     onCandlePointerLeave,
     onCandlePointerMove,
@@ -271,21 +289,23 @@ export function CandleChart<TAs extends ElementType = "figure">(
     slotOffset = 0,
     ...consumerProps
   } = props as CandleChartProps<"figure"> & CandleChartViewProps;
+  const accessibleLabels = { ...DEFAULT_CANDLE_CHART_LABELS, ...labels };
   const { min, max } = getPriceBounds(data);
-  const label = ariaLabel ?? "Candlestick chart";
-  const monthLabels = axisLabelsFor(xAxis, monthLabelsFor(data));
-  const priceLabels = axisLabelsFor(yAxis, priceLabelsFor(min, max));
+  const label = ariaLabel ?? accessibleLabels.chart;
+  const monthLabels = axisLabelsFor(xAxis, monthLabelsFor(data, locale));
+  const priceLabels = axisLabelsFor(yAxis, priceLabelsFor(min, max, locale));
   const readoutIndex =
     activeCandleIndex ?? selectedCandleIndex ?? (data.length > 0 ? data.length - 1 : undefined);
   const readoutCandle = readoutIndex === undefined ? undefined : data[readoutIndex];
   const crosshairCandle = activeCandleIndex === undefined ? undefined : data[activeCandleIndex];
   const candles = candleLayer ?? (
-    <ol data-part="candles" aria-label={`${label} candles`}>
+    <ol data-part="candles" aria-label={`${label} ${accessibleLabels.candles}`}>
       {data.map((candle, index) => (
         <CandleChartCandle
           key={`${candle.time}-${index}`}
           as="li"
           candle={candle}
+          hitLabel={formatLabel(accessibleLabels.candle, { time: String(candle.time) }, locale)}
           index={index}
           x={(index / data.length) * 100}
           slot={100 / data.length}
@@ -339,7 +359,11 @@ export function CandleChart<TAs extends ElementType = "figure">(
                   ) : null}
                 </div>
                 <div data-part="time-viewport">
-                  <ol data-part="time-axis" data-axis="time" aria-label={`${label} months`}>
+                  <ol
+                    data-part="time-axis"
+                    data-axis="time"
+                    aria-label={`${label} ${accessibleLabels.months}`}
+                  >
                     {monthLabels.map((axisLabel, index) => (
                       <li
                         key={`${axisLabel.position}-${index}`}
@@ -360,7 +384,11 @@ export function CandleChart<TAs extends ElementType = "figure">(
                 </div>
               </div>
             </div>
-            <ol data-part="price-axis" data-axis="price" aria-label={`${label} prices`}>
+            <ol
+              data-part="price-axis"
+              data-axis="price"
+              aria-label={`${label} ${accessibleLabels.prices}`}
+            >
               {priceLabels.map((axisLabel, index) => (
                 <li
                   key={`${axisLabel.position}-${index}`}
@@ -376,14 +404,14 @@ export function CandleChart<TAs extends ElementType = "figure">(
               ) : null}
             </ol>
           </div>
-          <table data-part="data" aria-label={`${label} data`}>
+          <table data-part="data" aria-label={`${label} ${accessibleLabels.data}`}>
             <thead>
               <tr>
-                <th scope="col">Time</th>
-                <th scope="col">Open</th>
-                <th scope="col">High</th>
-                <th scope="col">Low</th>
-                <th scope="col">Close</th>
+                <th scope="col">{accessibleLabels.time}</th>
+                <th scope="col">{accessibleLabels.open}</th>
+                <th scope="col">{accessibleLabels.high}</th>
+                <th scope="col">{accessibleLabels.low}</th>
+                <th scope="col">{accessibleLabels.close}</th>
               </tr>
             </thead>
             <tbody>

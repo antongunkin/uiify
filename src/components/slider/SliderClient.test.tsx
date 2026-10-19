@@ -30,6 +30,27 @@ describe("SliderClient", () => {
     expect(screen.getByRole("slider", { name: "Maximum value" })).toBeTruthy();
   });
 
+  it("allows default range thumb names to be localized while thumbLabels keep priority", () => {
+    const { rerender } = render(
+      <SliderClient
+        defaultValue={[20, 80]}
+        labels={{ minimum: "الحد الأدنى", maximum: "الحد الأقصى" }}
+      />,
+    );
+    expect(screen.getByRole("slider", { name: "الحد الأدنى" })).toBeTruthy();
+    expect(screen.getByRole("slider", { name: "الحد الأقصى" })).toBeTruthy();
+
+    rerender(
+      <SliderClient
+        defaultValue={[20, 80]}
+        labels={{ minimum: "الحد الأدنى", maximum: "الحد الأقصى" }}
+        thumbLabels={["Lower", "Upper"]}
+      />,
+    );
+    expect(screen.getByRole("slider", { name: "Lower" })).toBeTruthy();
+    expect(screen.getByRole("slider", { name: "Upper" })).toBeTruthy();
+  });
+
   it("snaps a marked value and reports the ordered tuple", () => {
     const onValueChange = vi.fn();
     render(
@@ -62,6 +83,27 @@ describe("SliderClient", () => {
     expect((input as HTMLInputElement).value).toBe("70");
     fireEvent.keyDown(input, { key: "ArrowLeft" });
     expect((input as HTMLInputElement).value).toBe("30");
+  });
+
+  it.each([
+    ["ArrowRight", "0", "rtl"],
+    ["ArrowLeft", "100", "rtl"],
+    ["ArrowUp", "100", "rtl"],
+    ["ArrowRight", "100", "ltr"],
+  ])("maps %s to %s in %s for stepped marks", (key, expected, dir) => {
+    render(
+      <div dir={dir}>
+        <SliderClient
+          defaultValue={50}
+          marks={[{ value: 0 }, { value: 50 }, { value: 100 }]}
+          step={null}
+          aria-label="Level"
+        />
+      </div>,
+    );
+    const input = screen.getByRole("slider", { name: "Level" }) as HTMLInputElement;
+    fireEvent.keyDown(input, { key });
+    expect(input.value).toBe(expected);
   });
 
   it("uses up and down arrows for vertical marked values", () => {

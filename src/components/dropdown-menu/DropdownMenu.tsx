@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   ElementType,
   KeyboardEvent,
@@ -14,7 +14,8 @@ import { useControllableState, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { useAnchorPosition } from "@gunkin/uiify/core/anchor-position";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { useDirection } from "@gunkin/uiify/core/direction";
+import { useDirectionOverride } from "@gunkin/uiify/core/direction";
+import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import { createHoverIntentStore } from "@gunkin/uiify/core/hover-intent-store";
 import type { HoverIntentStore } from "@gunkin/uiify/core/hover-intent-store";
 import type { OpenChangeDetails } from "@gunkin/uiify/core/open-change-details";
@@ -74,7 +75,7 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     onOpenChange,
     open,
   } = props;
-  const dir = useDirection(localDir);
+  const dir = useDirectionOverride(localDir);
   const surface = useMenuSurface({
     mode: "auto",
     ...(defaultOpen !== undefined ? { defaultOpen } : {}),
@@ -106,7 +107,7 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     () => ({
       ...surface,
       cancelHoverClose,
-      dir,
+      ...(dir ? { dir } : {}),
       disabled,
       hoverEnabledRef,
       loop,
@@ -278,7 +279,7 @@ export function DropdownMenuContent<TAs extends ElementType = "div">(
   if (render)
     return (
       <RovingFocusRoot
-        direction={dir}
+        {...(dir ? { direction: dir } : {})}
         loop={loop}
         orientation="vertical"
         {...contentProps}
@@ -288,7 +289,7 @@ export function DropdownMenuContent<TAs extends ElementType = "div">(
   return (
     <RovingFocusRoot
       as={as ?? "div"}
-      direction={dir}
+      {...(dir ? { direction: dir } : {})}
       loop={loop}
       orientation="vertical"
       {...contentProps}
@@ -570,6 +571,8 @@ interface SubValue {
   popover: ReturnType<typeof usePopover>;
   anchor: ReturnType<typeof useAnchorPosition>;
   triggerRef: React.RefObject<HTMLElement | null>;
+  resolvedSide: "left" | "right";
+  setResolvedSide: (side: "left" | "right") => void;
 }
 const [SubProvider, useSubContext] = createPartContext<SubValue>("DropdownMenu", "Sub");
 export function DropdownMenuSub(props: DropdownMenuSubProps): ReactElement | null {
@@ -589,9 +592,19 @@ export function DropdownMenuSub(props: DropdownMenuSubProps): ReactElement | nul
   });
   const anchor = useAnchorPosition();
   const clickedRef = useRef(false);
+  const [resolvedSide, setResolvedSide] = useState<"left" | "right">("right");
   const value = useMemo(
-    () => ({ anchor, clickedRef, contentRef, open: popover.open, popover, triggerRef }),
-    [anchor, popover, clickedRef],
+    () => ({
+      anchor,
+      clickedRef,
+      contentRef,
+      open: popover.open,
+      popover,
+      resolvedSide,
+      setResolvedSide,
+      triggerRef,
+    }),
+    [anchor, popover, clickedRef, resolvedSide],
   );
   return <SubProvider value={value}>{children}</SubProvider>;
 }
@@ -616,16 +629,21 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
       onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
     };
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    const openKey = root.dir === "rtl" ? "ArrowLeft" : "ArrowRight";
+    const rtl = resolveDirection(event.currentTarget, root.dir) === "rtl";
+    const openKey = rtl ? "ArrowLeft" : "ArrowRight";
     if (event.key === openKey || event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       clickedRef.current = true;
+      sub.setResolvedSide(rtl ? "left" : "right");
       sub.popover.openPopover();
       queueMicrotask(() => focusMenuItem(sub.contentRef.current));
     }
   };
-  const handlePointerEnter = () => {
+  const handlePointerEnter = (event: PointerEvent<HTMLElement>) => {
     clickedRef.current = false;
+    sub.setResolvedSide(
+      resolveDirection(event.currentTarget, root.dir) === "rtl" ? "left" : "right",
+    );
     sub.popover.openPopover();
   };
   const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
@@ -682,14 +700,15 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
     align = "start",
     as,
     render,
-    side = "right",
+    side,
     children,
     ...consumerProps
   } = props as DropdownMenuSubContentProps<"div">;
   const sub = useSubContext("SubContent");
   const root = useDropdownMenuContext("SubContent");
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    const closeKey = root.dir === "rtl" ? "ArrowRight" : "ArrowLeft";
+    const closeKey =
+      resolveDirection(event.currentTarget, root.dir) === "rtl" ? "ArrowRight" : "ArrowLeft";
     if (event.key === closeKey || event.key === "Escape") {
       event.preventDefault();
       sub.popover.close();
@@ -704,7 +723,7 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
     role: "menu",
     "data-part": "sub-content",
     "data-state": sub.open ? "open" : "closed",
-    "data-side": side,
+    "data-side": side ?? sub.resolvedSide,
     "data-align": align,
     onKeyDown: handleKeyDown,
     onPointerLeave: (event: PointerEvent<HTMLElement>) => {
@@ -719,7 +738,7 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
   if (render)
     return (
       <RovingFocusRoot
-        direction={root.dir}
+        {...(root.dir ? { direction: root.dir } : {})}
         loop={root.loop}
         orientation="vertical"
         {...contentProps}
@@ -729,7 +748,7 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
   return (
     <RovingFocusRoot
       as={as ?? "div"}
-      direction={root.dir}
+      {...(root.dir ? { direction: root.dir } : {})}
       loop={root.loop}
       orientation="vertical"
       {...contentProps}

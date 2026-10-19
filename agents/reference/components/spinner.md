@@ -9,7 +9,7 @@
 ## Exports
 
 - Runtime: `Spinner`
-- Types: `SpinnerAlign`, `SpinnerOwnProps`, `SpinnerProps`, `SpinnerSize`
+- Types: `SpinnerAlign`, `SpinnerLabels`, `SpinnerOwnProps`, `SpinnerProps`, `SpinnerSize`
 
 ## Values
 
@@ -17,6 +17,12 @@
 - `SpinnerSize`: `"sm" | "md" | "lg"`
 
 ## Props and shapes
+
+### SpinnerLabels
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `loading` | `string` | yes |  |
 
 ### SpinnerOwnProps
 
@@ -26,6 +32,7 @@
 | `children` | `ReactNode` | no |  |
 | `delay` | `number` | no |  |
 | `label` | `string` | no |  |
+| `labels` | `Partial<SpinnerLabels>` | no |  |
 | `showLabel` | `boolean` | no |  |
 | `size` | `SpinnerSize` | no |  |
 

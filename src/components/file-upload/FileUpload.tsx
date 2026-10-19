@@ -3,6 +3,7 @@
 import type { ElementType, DragEvent, ReactElement, SyntheticEvent } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { formatLabel } from "@gunkin/uiify/core/format-label";
 import { FileUploadRoot, FileUploadRootClient } from "./FileUploadRoot.js";
 import { FileUploadHiddenInput } from "./FileUploadInput.js";
 import { useFileUploadContext } from "./file-upload-context.js";
@@ -59,7 +60,7 @@ export function FileUploadDropzone<TAs extends ElementType = "div">(
 ): ReactElement | null {
   const { as, render, className, children, ...consumerProps } =
     props as FileUploadDropzoneProps<"div">;
-  const { disabled, processFiles } = useFileUploadContext("Dropzone");
+  const { disabled, labels, processFiles } = useFileUploadContext("Dropzone");
   const { onDragOver: consumerOnDragOver, onDrop: consumerOnDrop } = consumerProps as {
     onDragOver?: (event: DragEvent<HTMLElement>) => void;
     onDrop?: (event: DragEvent<HTMLElement>) => void;
@@ -72,7 +73,7 @@ export function FileUploadDropzone<TAs extends ElementType = "div">(
       ...consumerProps,
       role: "region",
       "data-part": "dropzone",
-      "aria-label": "Drop files here",
+      "aria-label": labels.dropzone,
       "data-disabled": disabled ? "" : undefined,
       onDragOver: composeEventHandlers(consumerOnDragOver, (event: DragEvent<HTMLElement>) => {
         event.preventDefault();
@@ -140,7 +141,13 @@ export function FileUploadItemRemove(props: FileUploadItemRemoveOwnProps): React
     children = "×",
     ...consumerProps
   } = props;
-  const { disabled: rootDisabled, removeAt } = useFileUploadContext("ItemRemove");
+  const {
+    disabled: rootDisabled,
+    files,
+    labels,
+    removeAt,
+    removeLabel,
+  } = useFileUploadContext("ItemRemove");
 
   const disabled = rootDisabled || consumerDisabled;
   return useRenderElement({
@@ -148,7 +155,11 @@ export function FileUploadItemRemove(props: FileUploadItemRemoveOwnProps): React
     props: {
       type: "button",
       ...consumerProps,
-      "aria-label": consumerProps["aria-label"] ?? "Remove file",
+      "aria-label":
+        consumerProps["aria-label"] ??
+        (removeLabel !== undefined
+          ? formatLabel(removeLabel, { name: files[index]?.name ?? "" })
+          : labels.removeFallback),
       children,
       "data-part": "remove",
       disabled: disabled || undefined,

@@ -51,6 +51,26 @@ describe("RovingFocus", () => {
     expect(document.activeElement).toBe(last);
   });
 
+  it("ignores arrows, Home/End and typeahead during IME composition", () => {
+    render(
+      <RovingFocusRoot orientation="vertical">
+        <RovingFocusItem as="button" textValue="Alpha">
+          Alpha
+        </RovingFocusItem>
+        <RovingFocusItem as="button" textValue="Beta">
+          Beta
+        </RovingFocusItem>
+      </RovingFocusRoot>,
+    );
+    const alpha = screen.getByRole("button", { name: "Alpha" });
+    alpha.focus();
+    fireEvent.keyDown(alpha, { key: "b", isComposing: true });
+    fireEvent.keyDown(alpha, { key: "b", keyCode: 229 });
+    fireEvent.keyDown(alpha, { key: "ArrowDown", isComposing: true });
+    fireEvent.keyDown(alpha, { key: "End", keyCode: 229 });
+    expect(document.activeElement).toBe(alpha);
+  });
+
   it("supports Home, End, and locale-aware typeahead", () => {
     render(
       <RovingFocusRoot orientation="vertical">
@@ -76,15 +96,72 @@ describe("RovingFocus", () => {
     expect(document.activeElement).toBe(beta);
   });
 
-  it("owns RovingFocusRoot's data-orientation and dir, not overridable by the consumer", () => {
+  it("owns RovingFocusRoot's data-orientation, not overridable by the consumer", () => {
     render(
-      <RovingFocusRoot data-orientation="vertical" dir="rtl" orientation="horizontal">
+      <RovingFocusRoot data-orientation="vertical" orientation="horizontal">
         <RovingFocusItem as="button">One</RovingFocusItem>
       </RovingFocusRoot>,
     );
     const root = screen.getByRole("button", { name: "One" }).parentElement;
     expect(root?.dataset.orientation).toBe("horizontal");
-    expect(root?.getAttribute("dir")).toBe("ltr");
+  });
+
+  it("does not write dir without an explicit direction", () => {
+    render(
+      <div dir="rtl">
+        <RovingFocusRoot orientation="horizontal">
+          <RovingFocusItem as="button">One</RovingFocusItem>
+        </RovingFocusRoot>
+      </div>,
+    );
+    const root = screen.getByRole("button", { name: "One" }).parentElement;
+    expect(root?.hasAttribute("dir")).toBe(false);
+  });
+
+  it("moves forward with ArrowLeft inside an rtl page", () => {
+    render(
+      <div dir="rtl">
+        <RovingFocusRoot orientation="horizontal">
+          <RovingFocusItem as="button">First</RovingFocusItem>
+          <RovingFocusItem as="button">Second</RovingFocusItem>
+          <RovingFocusItem as="button">Third</RovingFocusItem>
+        </RovingFocusRoot>
+      </div>,
+    );
+    const first = screen.getByRole("button", { name: "First" });
+    first.focus();
+    fireEvent.keyDown(first, { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Second" }));
+  });
+
+  it("keeps a consumer dir", () => {
+    render(
+      <RovingFocusRoot dir="rtl" orientation="horizontal">
+        <RovingFocusItem as="button">First</RovingFocusItem>
+        <RovingFocusItem as="button">Second</RovingFocusItem>
+      </RovingFocusRoot>,
+    );
+    const first = screen.getByRole("button", { name: "First" });
+    expect(first.parentElement?.getAttribute("dir")).toBe("rtl");
+    first.focus();
+    fireEvent.keyDown(first, { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Second" }));
+  });
+
+  it("lets the explicit direction prop own dir", () => {
+    render(
+      <div dir="rtl">
+        <RovingFocusRoot direction="ltr" orientation="horizontal">
+          <RovingFocusItem as="button">First</RovingFocusItem>
+          <RovingFocusItem as="button">Second</RovingFocusItem>
+        </RovingFocusRoot>
+      </div>,
+    );
+    const first = screen.getByRole("button", { name: "First" });
+    expect(first.parentElement?.getAttribute("dir")).toBe("ltr");
+    first.focus();
+    fireEvent.keyDown(first, { key: "ArrowRight" });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Second" }));
   });
 
   it("owns RovingFocusItem's aria-disabled/data-current/data-disabled, not overridable by the consumer", () => {
