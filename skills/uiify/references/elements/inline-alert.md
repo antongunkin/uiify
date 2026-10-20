@@ -1,46 +1,38 @@
 # inline-alert
 
-Binding: gap
+Binding: alert
 
-Give a short message context beside the content it affects.
+Give a short persistent message context beside the content it affects.
 
 ## Use when
 
-A message belongs beside the content or control it explains. Use status for a non-urgent update and alert only when the information requires immediate attention.
+A message belongs beside the content or control it explains and should remain visible.
 
 ## Avoid when
 
-Do not use assertive announcements for routine success, or a toast for an error that must remain visible while the person fixes it.
+Do not use a persistent alert for transient success or add an assertive live role to routine initial content.
 
 ## Structure
 
-This is an app-level composition, not a UIify component. Place concise text in a semantic status/alert element next to the affected content; include a heading when it helps identify the issue.
+Compose `Alert`, `AlertTitle`, and `AlertDescription` from `@gunkin/uiify/components/alert`. The static root owns `data-uiify-alert` and a `data-variant` (default `secondary`). It supplies a decorative text symbol: ⓘ, ✓, ⚠︎, or × for `secondary`, `success`, `warning`, or `destructive`. Pass `symbol="!"` to override it or `symbol={false}` to hide it. No SVG or demo layout is needed. Title/description expose `data-part="title|description"`; the built-in glyph is `data-part="symbol"`. The component adds no `role` by default.
 
 ## Responsive
 
-Keep the message in reading order beside the affected field or section. Let text wrap and do not communicate severity by color alone.
+Keep the message beside affected content. The optional package stylesheet handles wrapping, logical symbol placement and part typography. With Tailwind, style those same attributes/parts. Keep severity in the title or description; the glyph is hidden from assistive technology.
 
 ## States
 
-Use role=status for dynamic, non-urgent updates; use role=alert for urgent messages that should be announced immediately. Keep the message visible until the related issue can be addressed.
+Pass `role="status"` for a dynamic non-urgent update or `role="alert"` for urgent content only when timing and urgency warrant announcement. Alert does not dismiss or move focus.
 
 ## Verify
 
-Check announcement timing and role, reading order, message visibility, color contrast, and the relationship to its field/section. Avoid repeating the same announcement through multiple live regions.
+Check every variant, a hidden/custom symbol, default role, native props/ref forwarding and copied CSS/Tailwind code. For dynamic messages, test actual announcement timing and avoid duplicate live regions.
 
 ## Common mistake
 
-Do not move focus to routine status text; the live region should announce the update while focus stays on the user's task.
-
-## Custom implementation
-
-```html
-<p role="status">Changes saved.</p>
-```
-
-This is an app-level composition; UIify does not currently ship this component.
+Use the real `variant` instead of making every outcome `secondary` and rebuilding its icon/layout in a demo wrapper. `role="alert"` is only for an urgent announcement.
 
 ## Sources
 
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html) (verified 2026-10-16)
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-16)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html) (verified 2026-10-19)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-19)

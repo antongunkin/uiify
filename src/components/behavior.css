@@ -4,6 +4,20 @@
 @layer ui.reset, ui.behavior, ui.tokens, ui.theme, app;
 
 @layer ui.behavior {
+  [data-uiify-aspect-ratio] {
+    display: block;
+    position: relative;
+    min-inline-size: 0;
+    aspect-ratio: var(--uiify-aspect-ratio, 1);
+  }
+
+  [data-uiify-aspect-ratio] > [data-part="content"] {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: 0;
+    min-inline-size: 0;
+  }
+
   [data-uiify-file-upload] > [data-part="input"] {
     position: absolute;
     inline-size: 1px;

@@ -23,6 +23,8 @@
 | `checked` | `CheckedState` | no |  |
 | `defaultChecked` | `boolean` | no |  |
 | `disabled` | `boolean` | no |  |
+| `name` | `string` | no |  |
+| `value` | `string` | no |  |
 | `className` | `string` | no |  |
 | `onCheckedChange` | `(checked: boolean) => void` | no |  |
 | `"aria-label"` | `string` | no |  |

@@ -27,6 +27,14 @@ describe("Checkbox", () => {
     );
   });
 
+  it("forwards name and value for native form submission", () => {
+    render(<Checkbox id="email" label="Email" name="contact" value="email" defaultChecked />);
+
+    const checkbox = screen.getByRole("checkbox", { name: "Email" }) as HTMLInputElement;
+    expect(checkbox.name).toBe("contact");
+    expect(checkbox.value).toBe("email");
+  });
+
   it("keeps the consumer class on the label and exposes the identity marker", () => {
     render(<Checkbox id="terms" label="Terms" className="custom-checkbox" />);
 

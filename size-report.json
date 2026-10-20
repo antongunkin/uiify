@@ -1,13 +1,13 @@
 {
-  "behavior.css": 1481,
+  "behavior.css": 1523,
   "enhance": 2292,
   "modal/client": 842,
-  "root convenience export": 40089,
+  "root convenience export": 41153,
   "root: native modal parts only": 344,
   "button": 340,
   "input": 331,
   "textarea": 348,
-  "checkbox": 436,
+  "checkbox": 448,
   "radio-group": 946,
   "switch": 319,
   "toggle": 295,
@@ -55,7 +55,13 @@
   "elements/details": 355,
   "elements/choice": 520,
   "elements barrel": 1266,
-  "table/client": 5029,
+  "table/client": 5044,
   "table-of-contents": 682,
-  "table-of-contents/client": 4139
+  "table-of-contents/client": 4139,
+  "aspect-ratio": 268,
+  "badge": 201,
+  "card": 164,
+  "progress": 93,
+  "avatar": 293,
+  "alert": 387
 }

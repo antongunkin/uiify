@@ -61,6 +61,19 @@ export function RemoveButton() {
 }
 ```
 
+`Alert` supplies a decorative text symbol from its variant. Use the published parts for its
+content; the optional stylesheet owns their layout. Set `symbol={false}` to hide the symbol.
+Static initial content has no live role by default.
+
+```tsx
+import { Alert, AlertDescription, AlertTitle } from "@gunkin/uiify/components/alert";
+
+<Alert variant="warning">
+  <AlertTitle>Browser support is incomplete</AlertTitle>
+  <AlertDescription>Check the support matrix before release.</AlertDescription>
+</Alert>;
+```
+
 `as` swaps the rendered element and keeps the component's behavior:
 
 ```tsx

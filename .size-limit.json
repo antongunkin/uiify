@@ -2,7 +2,7 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "1520 B"
+    "limit": "1560 B"
   },
   {
     "name": "enhance",
@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "40900 B",
+    "limit": "41980 B",
     "import": "*"
   },
   {
@@ -48,7 +48,7 @@
   {
     "name": "checkbox",
     "path": "dist/components/checkbox.js",
-    "limit": "450 B",
+    "limit": "460 B",
     "import": "*"
   },
   {
@@ -338,7 +338,7 @@
   {
     "name": "table/client",
     "path": "dist/components/table/client.js",
-    "limit": "5130 B",
+    "limit": "5150 B",
     "import": "*"
   },
   {
@@ -351,6 +351,42 @@
     "name": "table-of-contents/client",
     "path": "dist/components/table-of-contents/client.js",
     "limit": "4230 B",
+    "import": "*"
+  },
+  {
+    "name": "aspect-ratio",
+    "path": "dist/components/aspect-ratio.js",
+    "limit": "280 B",
+    "import": "*"
+  },
+  {
+    "name": "badge",
+    "path": "dist/components/badge.js",
+    "limit": "210 B",
+    "import": "*"
+  },
+  {
+    "name": "card",
+    "path": "dist/components/card.js",
+    "limit": "170 B",
+    "import": "*"
+  },
+  {
+    "name": "progress",
+    "path": "dist/components/progress.js",
+    "limit": "100 B",
+    "import": "*"
+  },
+  {
+    "name": "avatar",
+    "path": "dist/components/avatar.js",
+    "limit": "300 B",
+    "import": "*"
+  },
+  {
+    "name": "alert",
+    "path": "dist/components/alert.js",
+    "limit": "400 B",
     "import": "*"
   }
 ]

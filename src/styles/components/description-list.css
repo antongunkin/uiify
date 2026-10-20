@@ -1,0 +1,29 @@
+@layer components {
+  [data-uiify-description-list] {
+    display: grid;
+    grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr);
+    gap: 0.75rem 1.5rem;
+    margin: 0;
+  }
+
+  [data-uiify-description-term] {
+    font-weight: var(--weight-medium);
+  }
+
+  [data-uiify-description-details] {
+    min-inline-size: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  @media (width < 32rem) {
+    [data-uiify-description-list] {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0.25rem;
+    }
+
+    [data-uiify-description-term]:not(:first-child) {
+      margin-block-start: 0.75rem;
+    }
+  }
+}

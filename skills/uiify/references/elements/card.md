@@ -1,51 +1,40 @@
 # card
 
-Binding: gap
+Binding: card
 
 Group one feature heading and its explanation.
 
 ## Use when
 
-A small set of related content needs a clear grouping, with a heading and supporting detail.
+A related heading, explanation, and optional links or actions need a clear content group.
 
 ## Avoid when
 
-Do not wrap every paragraph or list item in a card. Avoid card-within-card nesting and whole-surface click behavior when the card contains multiple independent controls.
+Do not wrap every paragraph or list item in a card. Avoid whole-surface click behavior when the card contains independent controls.
 
 ## Structure
 
-This is an app-level composition, not a UIify component. Group one topic under a heading, add a concise description, and use a link for one clear destination. If the card has one destination, make the heading link the primary control; keep other controls separate.
+`Card` renders a `div` by default and accepts `as` for a semantic root such as `article`. Compose native headings, text, links, and buttons as children; each control remains independent.
 
 ## Responsive
 
-Keep cards in reading order when the grid stacks. Let content determine height and align repeated actions without truncating essential labels.
+Let content set the height. Keep links readable and allow the layout around cards to stack in source order at narrow widths and zoom.
 
 ## States
 
-Use links for navigation and buttons for in-place actions. Add selected/pressed state only when the card itself represents a selectable item.
+Card has no selection or interaction state. Add interactive semantics to a link, button, or other child only.
 
 ## Verify
 
-Check heading hierarchy, reading order, single versus multiple actions, keyboard reachability, focus visibility, and one-column reflow.
+Unit and public-page tests check the content root and independent link. Check heading order, focus visibility on child controls, and one-column reflow in the consumer layout.
 
 ## Common mistake
 
-Making an entire card clickable while also placing buttons or links inside it creates nested, ambiguous controls.
-
-## Custom implementation
-
-```html
-<article aria-labelledby="plan-title">
-  <h2 id="plan-title"><a href="/plans/pro">Pro plan</a></h2>
-  <p>For teams that need shared workspaces.</p>
-</article>
-```
-
-This is an app-level composition; UIify does not currently ship this component.
+Making the whole card a link while also nesting other links or buttons creates ambiguous interactive content.
 
 Related laws: references/laws/proximity.md, references/laws/readability.md
 
 ## Sources
 
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-16)
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html) (verified 2026-10-16)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-19)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html) (verified 2026-10-19)

@@ -1,0 +1,37 @@
+@layer components {
+  [data-uiify-avatar] {
+    display: inline-grid;
+    place-items: center;
+    overflow: clip;
+    border-radius: var(--radius-full);
+    background: var(--muted);
+    color: var(--muted-foreground);
+    font-weight: var(--weight-medium);
+    line-height: 1;
+    vertical-align: middle;
+  }
+
+  [data-uiify-avatar][data-size="sm"] {
+    inline-size: 2rem;
+    block-size: 2rem;
+    font-size: var(--text-xs);
+  }
+
+  [data-uiify-avatar]:is(:not([data-size]), [data-size="md"]) {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    font-size: var(--text-sm);
+  }
+
+  [data-uiify-avatar][data-size="lg"] {
+    inline-size: 3rem;
+    block-size: 3rem;
+    font-size: var(--text-base);
+  }
+
+  [data-uiify-avatar] > [data-part="image"] {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+}

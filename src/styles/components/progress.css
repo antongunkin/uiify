@@ -1,0 +1,7 @@
+@layer components {
+  [data-uiify-progress] {
+    inline-size: 100%;
+    block-size: 0.5rem;
+    accent-color: var(--primary);
+  }
+}

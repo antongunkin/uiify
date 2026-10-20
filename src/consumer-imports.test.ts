@@ -12,6 +12,8 @@ describe("uiify consumer entrypoints", () => {
         import("@gunkin/uiify/components/segmented-control/client"),
       ]);
 
+    const aspectRatio = await import("@gunkin/uiify/components/aspect-ratio");
+    expect(root.AspectRatio).toBe(aspectRatio.AspectRatio);
     expect(root.Button).toBeDefined();
     expect(root.Toast).toBeDefined();
     expect(root.useToast).toBeDefined();

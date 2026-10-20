@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Accordion } from "./accordion/Accordion.js";
+import { AspectRatio } from "./aspect-ratio/AspectRatio.js";
 import { Button } from "./button/Button.js";
 import { Checkbox } from "./checkbox/Checkbox.js";
 import { Combobox } from "./combobox/Combobox.js";
@@ -20,6 +21,11 @@ import { Tooltip } from "./tooltip/Tooltip.js";
 import { assertSSRRenderable } from "./test-utils/ssr.js";
 
 describe("SSR smoke — all shipped components", () => {
+  it("renders AspectRatio", () => {
+    expect(assertSSRRenderable(<AspectRatio ratio={16 / 9}>Media</AspectRatio>)).toContain(
+      'data-uiify-aspect-ratio=""',
+    );
+  });
   it("renders Button", () => {
     expect(assertSSRRenderable(<Button>Save</Button>)).toContain("<button");
   });

@@ -39,6 +39,8 @@ For each selected element with a fourth-column reference path, read that file on
 
 For mapped components, read the resolved package's `agents/index.md` once and the relevant `agents/reference/components/<name>.md`, then adapt a documented example. Import from `@gunkin/uiify/components/<name>`. Inspect Runtime exports and the Types/declaration file before rendering: use the explicit `NameRoot` export when available. A namespace export is not itself a JSX component; use its `.Root` or an explicit root export. Prefer these version-matched references over memory. Use UIify wherever its documented API covers the interaction; for gaps, use semantic native HTML or custom components following UIify's public styling and accessibility contracts.
 
+Before writing controls or interaction markup, check the selected package's public exports, component references and examples for an existing UIify component that covers the need. Compose the documented component when it fits; do not substitute raw `<button>`, `<input>`, checkbox or similar controls for an available UIify component in a consumer-facing example. Use native HTML when no published component fits, when the page intentionally demonstrates native semantics, or when the component layer cannot legally import it. Keep semantic structures such as `fieldset`, `dl` and native form markup when they are the right contract.
+
 ## Design guidance
 
 Consult `frontend-design` when available for design direction; if absent, use the built-in guidance below. Consult `vercel-react-best-practices` for relevant React performance decisions and `web-design-guidelines` for reviews. These skills are optional references. UIify's public component and styling contracts take precedence over conflicting advice.
@@ -70,7 +72,7 @@ Do not add an unrelated marketing hero or make every field group an equally prom
 
 ## Verification guidance
 
-Use applicable project build, typecheck and test commands when permitted. The optional `node <resolved-skill-directory>/scripts/lint.mjs <project-root>` runs the static checks compiled from the published laws when this skill was built and prints their names; it does not read `DESIGN.md` or other design files. It inspects literal attributes of lowercase intrinsic JSX tags and of parts imported from `@gunkin/uiify/components` or `@gunkin/uiify/elements` (for example `Button` or `Field.Control`); other custom components are not analyzed. No findings is not proof of accessibility. Missing parsers or execution failures mean unavailable, never a pass.
+Finish the requested edits before running applicable project build, typecheck and test commands. Run the relevant verification once against the stable result; do not repeat full checks or E2E after each small edit. If a check fails, fix related findings together, rerun focused checks to diagnose them, then rerun the required final gate. The optional `node <resolved-skill-directory>/scripts/lint.mjs <project-root>` runs the static checks compiled from the published laws when this skill was built and prints their names; it does not read `DESIGN.md` or other design files. It inspects literal attributes of lowercase intrinsic JSX tags and of parts imported from `@gunkin/uiify/components` or `@gunkin/uiify/elements` (for example `Button` or `Field.Control`); other custom components are not analyzed. No findings is not proof of accessibility. Missing parsers or execution failures mean unavailable, never a pass.
 
 Reuse existing browser and accessibility tooling to inspect responsive layouts, keyboard access and requested interactions. When missing tools are needed for quality verification, use Playwright for browser checks and axe-core (or the project's axe integration) for accessibility checks. Before installing missing Playwright or axe-core packages or downloading browser binaries, notify the user briefly in their language, explaining what will be installed and why. For example: “I'll install Playwright and axe-core as development tools to check the page in a browser and catch accessibility issues.” This is a notification, not a confirmation question; continue within existing authorization and respect project installation rules. Use the project's package manager and development dependencies, reuse existing integrations, and install only what is needed.
 
@@ -85,13 +87,14 @@ One line per element: `element|aliases|uiify component or gap|reference path`. A
 ```text
 accordion|faq-accordion,disclosure|accordion|references/elements/accordion.md
 alert-modal|confirmation-dialog,alert-dialog|alert-modal|references/elements/alert-modal.md
-avatar|profile-picture|gap|references/elements/avatar.md
-badge|chip,tag|gap|references/elements/badge.md
+aspect-ratio|media-frame,responsive-embed|aspect-ratio|references/elements/aspect-ratio.md
+avatar|profile-picture|avatar|references/elements/avatar.md
+badge|chip,tag|badge|references/elements/badge.md
 bar-chart|column-chart|gap|references/elements/bar-chart.md
 breadcrumb|breadcrumbs|breadcrumb|references/elements/breadcrumb.md
 button|cta-button,icon-button,primary-button|button|references/elements/button.md
 candle-chart|candlestick-chart|candle-chart|references/elements/candle-chart.md
-card|content-card|gap|references/elements/card.md
+card|content-card|card|references/elements/card.md
 carousel|testimonial-carousel,image-slider|carousel|references/elements/carousel.md
 checkbox||checkbox|references/elements/checkbox.md
 code-block|code-snippet|gap|references/elements/code-block.md
@@ -101,22 +104,27 @@ combobox|autocomplete,typeahead|combobox|references/elements/combobox.md
 command-palette|spotlight-search|gap|references/elements/command-palette.md
 context-menu|right-click-menu|context-menu|references/elements/context-menu.md
 cookie-banner|cookie-consent|gap|references/elements/cookie-banner.md
-date-picker|calendar-picker|gap|references/elements/date-picker.md
+date-picker|native-date-field,calendar-picker|date-picker|references/elements/date-picker.md
+description-list|definition-list,key-value-list|description-list|references/elements/description-list.md
 divider|separator|gap|references/elements/divider.md
 drawer|sheet,off-canvas-menu|drawer|references/elements/drawer.md
 dropdown-menu|menu|dropdown-menu|references/elements/dropdown-menu.md
-empty-state|no-results|gap|references/elements/empty-state.md
+empty-state|empty-state|empty|references/elements/empty-state.md
 feature-grid|feature-cards,feature-list|gap|references/elements/feature-grid.md
 field|form-field|field|references/elements/field.md
+fieldset|fieldset-legend|fieldset|references/elements/fieldset.md
 file-upload|file-input,dropzone|file-upload|references/elements/file-upload.md
 footer|site-footer|gap|references/elements/footer.md
 form||form|references/elements/form.md
+form-error-summary|error-summary|form-error-summary|references/elements/form-error-summary.md
 header|navbar,top-nav|header|references/elements/header.md
 hero|hero-section,hero-banner|gap|references/elements/hero.md
 hover-card||hover-card|references/elements/hover-card.md
 image-gallery|gallery,lightbox|gap|references/elements/image-gallery.md
-inline-alert|banner-alert,callout|gap|references/elements/inline-alert.md
+inline-alert|banner-alert,callout|alert|references/elements/inline-alert.md
 input|text-input|input|references/elements/input.md
+input-group|input-prefix-suffix|input-group|references/elements/input-group.md
+item|list-item|item|references/elements/item.md
 line-chart|sparkline|line-chart|references/elements/line-chart.md
 logo-wall|logo-cloud,customer-logos|gap|references/elements/logo-wall.md
 modal|dialog|modal|references/elements/modal.md
@@ -126,7 +134,7 @@ pagination||pagination|references/elements/pagination.md
 password-input|show-hide-password|gap|references/elements/password-input.md
 popup|popover|popup|references/elements/popup.md
 pricing-table|pricing,plan-cards,pricing-plans|gap|references/elements/pricing-table.md
-progress-bar|progress,linear-progress|gap|references/elements/progress-bar.md
+progress-bar|progress,linear-progress|progress|references/elements/progress-bar.md
 radio-group|radio|radio-group|references/elements/radio-group.md
 rating|star-rating|rating|references/elements/rating.md
 search-input|search-box|gap|references/elements/search-input.md

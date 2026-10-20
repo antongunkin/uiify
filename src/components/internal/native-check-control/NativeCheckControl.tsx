@@ -11,8 +11,10 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
     disabled = false,
     id,
     label,
+    name,
     onCheckedChange,
     className,
+    value,
     "aria-label": ariaLabel,
   } = props;
   const isControlled = checked !== undefined;
@@ -51,9 +53,11 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
       defaultChecked={!isControlled ? defaultChecked : undefined}
       disabled={disabled || undefined}
       id={id}
+      name={name}
       onChange={handleChange}
       ref={inputRef}
       type="checkbox"
+      value={value}
       {...(label === undefined ? { "data-uiify-checkbox": "" } : { "data-part": "control" })}
     />
   );

@@ -1,0 +1,77 @@
+@layer components {
+  :where([data-uiify-alert]) {
+    --uiify-alert-tone: var(--muted-foreground);
+
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: 0.75rem;
+    padding-inline: 1rem;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-1);
+    corner-shape: round;
+    background: var(--card);
+    color: var(--card-foreground);
+    font-size: var(--text-sm);
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
+
+  :where([data-uiify-alert][data-variant="success"]) {
+    --uiify-alert-tone: var(--success);
+  }
+
+  :where([data-uiify-alert][data-variant="warning"]) {
+    --uiify-alert-tone: var(--warning);
+  }
+
+  :where([data-uiify-alert][data-variant="destructive"]) {
+    --uiify-alert-tone: var(--destructive);
+  }
+
+  :where([data-uiify-alert]:has(> [data-part="symbol"])) {
+    padding-inline-start: 2.75rem;
+  }
+
+  :where([data-uiify-alert]) > [data-part="symbol"] {
+    position: absolute;
+    inset-block-start: 0.875rem;
+    inset-inline-start: 1rem;
+    display: grid;
+    place-items: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    color: color-mix(in oklab, var(--uiify-alert-tone) 65%, var(--card-foreground));
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  :where([data-uiify-alert-title]) {
+    margin: 0;
+    font-size: inherit;
+    font-weight: var(--weight-semibold);
+    line-height: inherit;
+  }
+
+  :where([data-uiify-alert-description]) {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: inherit;
+    line-height: 1.5;
+  }
+
+  :where([data-uiify-alert-title] + [data-uiify-alert-description]) {
+    margin-block-start: 0.25rem;
+  }
+
+  :where([data-uiify-alert-description]) > p {
+    margin: 0;
+  }
+
+  :where([data-uiify-alert-description]) > p + p {
+    margin-block-start: 0.5rem;
+  }
+}

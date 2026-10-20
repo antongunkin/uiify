@@ -8,6 +8,8 @@ export interface NativeCheckControlProps {
   readonly checked?: CheckedState;
   readonly defaultChecked?: boolean;
   readonly disabled?: boolean;
+  readonly name?: string;
+  readonly value?: string;
   readonly className?: string;
   readonly onCheckedChange?: (checked: boolean) => void;
   readonly "aria-label"?: string;

@@ -1,0 +1,102 @@
+@layer components {
+  [data-uiify-input-group][data-part="root"] {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    inline-size: 100%;
+    max-inline-size: 24rem;
+    min-inline-size: 0;
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-md);
+    border: var(--border-width) solid var(--input);
+    border-radius: var(--radius-md);
+    corner-shape: squircle;
+    background-color: var(--card);
+    color: var(--foreground);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    transition: var(--transition-colors);
+  }
+
+  [data-uiify-input-group][data-part="root"] > :is(input, textarea, select) {
+    flex: 1 1 0%;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: none;
+    min-block-size: 2.625rem;
+    padding-block: var(--space-sm);
+    padding-inline: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    box-shadow: none;
+    outline: none;
+  }
+
+  [data-uiify-input-group][data-part="root"] > :is(input, textarea, select):focus-visible {
+    box-shadow: none;
+    outline: none;
+  }
+
+  [data-uiify-input-group][data-part="root"]:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+  }
+
+  [data-uiify-input-group][data-part="root"] > [data-part="addon"] {
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 50%;
+    color: var(--muted-foreground);
+    overflow-wrap: anywhere;
+  }
+
+  [data-uiify-input-group] > [data-part="addon"] > [data-uiify-button] {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* Reorder passive affixes only. Actions keep their DOM and keyboard order. */
+  [data-uiify-input-group]
+    > [data-part="addon"][data-align="start"]:not(
+      :has(:is(a[href], button, input, select, textarea, [tabindex]))
+    ) {
+    order: -1;
+  }
+
+  [data-uiify-input-group]
+    > [data-part="addon"][data-align="end"]:not(
+      :has(:is(a[href], button, input, select, textarea, [tabindex]))
+    ) {
+    order: 1;
+  }
+
+  [data-uiify-input-group][data-part="root"]:has(
+      > :is(input, textarea, select):is(:disabled, [data-disabled])
+    ) {
+    cursor: not-allowed;
+  }
+
+  [data-uiify-input-group][data-part="root"]
+    > :is(input, textarea, select):is(:disabled, [data-disabled]) {
+    opacity: 0.5;
+  }
+
+  [data-uiify-input-group][data-part="root"]:has(
+      > :is(input, textarea, select):is([data-invalid], [aria-invalid="true"], :user-invalid)
+    ) {
+    border-color: var(--destructive);
+  }
+
+  [data-uiify-input-group][data-part="root"]:has(
+      > :is(input, textarea, select):is([data-invalid], [aria-invalid="true"], :user-invalid)
+    ):focus-within {
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--destructive) 20%, transparent);
+  }
+}

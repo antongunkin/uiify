@@ -14,7 +14,7 @@ Use a radio group when exactly one option can be selected. Use a switch for a si
 
 ## Structure
 
-Use the documented Checkbox with a stable id and a visible, descriptive label. Group related choices in a fieldset with a legend; use the indeterminate state only for an aggregate that represents mixed child selections.
+Use the documented Checkbox with a stable id and a visible, descriptive label. For form submission, provide its native `name` and `value`. Group related choices in a fieldset with a legend; use the indeterminate state only for an aggregate that represents mixed child selections.
 
 ## Responsive
 

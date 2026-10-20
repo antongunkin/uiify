@@ -1,47 +1,38 @@
 # progress-bar
 
-Binding: gap
+Binding: progress
 
-Show determinate completion of a task.
+Show determinate or indeterminate progress for a task.
 
 ## Use when
 
-A task has measurable completion with a known range. Use native <progress> and provide a programmatic label.
+Show the completion of a task with a known range, or use indeterminate progress when the amount completed is unknown.
 
 ## Avoid when
 
-Do not use it for a quantity like disk space or a score; use <meter>. For unknown duration, omit value for indeterminate progress or use a labeled spinner.
+Do not use Progress for a static measurement or score; use `meter` for a measured quantity.
 
 ## Structure
 
-This is an app-level composition, not a UIify component. Associate a visible <label> with <progress>, set max and the current value, and add a text status if the exact progress matters to the task.
+`Progress` renders native `<progress>`. Set `value` and a positive `max` for a known amount; omit `value` for indeterminate progress. Give it an accessible name with an associated `<label>`, `aria-label`, or `aria-labelledby`.
 
 ## Responsive
 
-Keep the label and progress indicator together in reading order; allow the label and textual status to wrap on narrow screens.
+Keep the label and indicator together in reading order. The optional skin fills the available inline size; native browser rendering can differ.
 
 ## States
 
-A present value is determinate; omit value when the amount completed is not known. Use a positive max and keep value within 0..max. Mark the described region busy while it is updating when appropriate.
+The browser exposes determinate or indeterminate semantics from the native attributes. UIify does not simulate value changes or announce them.
 
 ## Verify
 
-Check accessible name, min/max/current values, determinate and indeterminate states, changing value, completion message, and responsive layout.
+Unit and public-page tests check native determinate and indeterminate markup and an associated label. In the consuming page, keep `value` between zero and `max` and check the accessible name.
 
 ## Common mistake
 
-Fallback text inside <progress> is not its accessible label; associate an actual label or aria-label.
-
-## Custom implementation
-
-```html
-<label for="upload-progress">Upload</label>
-<progress id="upload-progress" value="3" max="5"></progress>
-```
-
-This is an app-level composition; UIify does not currently ship this component.
+Text inside `<progress>` is not its accessible name; associate a label or provide an ARIA name.
 
 ## Sources
 
-- [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress) (verified 2026-10-16)
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-16)
+- [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/progress) (verified 2026-10-19)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-19)

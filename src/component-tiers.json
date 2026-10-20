@@ -434,6 +434,102 @@
       "clientDoes": "scrollspy, hover/pinning, controlled selection/open, proximity highlighting and mouse line navigation",
       "note": "Base entry is a server-pure native navigation shell; /client adds enhancements. Native links and popover invocation/dismissal work without JavaScript.",
       "sizeNow": "4.14 kB compressed (client entry)"
+    },
+    "aspect-ratio": {
+      "tier": 0,
+      "state": "none",
+      "element": "div",
+      "sizeNow": "268 B compressed (server entry; no client island)",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Static Block; native CSS aspect-ratio isolates child intrinsic sizing."
+    },
+    "badge": {
+      "tier": 0,
+      "state": "none",
+      "element": "span",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "card": {
+      "tier": 0,
+      "state": "none",
+      "element": "div",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "progress": {
+      "tier": 0,
+      "state": "S1",
+      "element": "progress",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "avatar": {
+      "tier": 0,
+      "state": "none",
+      "element": "span",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "alert": {
+      "tier": 0,
+      "state": "none",
+      "element": "div",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "input-group": {
+      "tier": 0,
+      "state": "none",
+      "element": "div + native controls",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Static Block; keeps independently labeled native input and action."
+    },
+    "empty": {
+      "tier": 0,
+      "state": "none",
+      "element": "section",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "item": {
+      "tier": 0,
+      "state": "none",
+      "element": "li",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "date-picker": {
+      "tier": 0,
+      "state": "native",
+      "element": "input[type=date]",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Native date picker; stylesheet styles the outer input only."
+    },
+    "fieldset": {
+      "tier": 0,
+      "state": "native",
+      "element": "fieldset + legend",
+      "sizeTarget": "0 kB",
+      "status": "done"
+    },
+    "form-error-summary": {
+      "tier": 0,
+      "state": "none",
+      "element": "section + heading + ul + links",
+      "sizeTarget": "0 kB",
+      "status": "done",
+      "note": "Static server-rendered error links; no alert or focus script."
+    },
+    "description-list": {
+      "tier": 0,
+      "state": "none",
+      "element": "dl + dt + dd",
+      "sizeTarget": "0 kB",
+      "status": "done"
     }
   }
 }

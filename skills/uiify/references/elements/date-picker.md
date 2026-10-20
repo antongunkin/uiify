@@ -1,8 +1,8 @@
 # date-picker
 
-Binding: gap
+Binding: date-picker
 
-Collect one calendar date using the browser’s native date control.
+Collect one calendar date with the browser’s native date input.
 
 ## Use when
 
@@ -10,34 +10,30 @@ Collect one calendar date without a time, such as a start or due date.
 
 ## Avoid when
 
-Use a date-time control when time matters. Avoid replacing the native picker with a custom calendar unless the task requires behavior that has been tested for keyboard and assistive technology.
+Use a date-time control when time matters. Do not replace the native picker with a custom calendar unless its keyboard and assistive-technology behavior is in scope and tested.
 
 ## Structure
 
-Use a visible label with a native input of type date. Add min and max only when the constraints are real, explain them before entry, and associate error feedback with the field.
+`DatePicker` renders a native `input[type="date"]`. It accepts native input props and ref except `type`, which is fixed; `invalid` sets `aria-invalid` and `data-invalid`. Add a separate visible label and caller-owned help/error relationships. Use `min`, `max`, `required`, `name`, and `value` only as needed. The submitted date is `yyyy-mm-dd`; display and picker UI belong to the browser and locale.
 
 ## Responsive
 
-Allow the browser’s date UI to use the platform layout; keep the field within the available width and do not assume every browser displays the same picker.
+The optional stylesheet styles only the outer control: border, surface/text, typography, logical padding, minimum inline size, focus, invalid, and disabled state. Preserve native `appearance`, picker icon, and calendar internals.
 
 ## States
 
-Distinguish an empty value, a valid date, and a date outside the allowed range. The submitted date value is a calendar date normalized as yyyy-mm-dd.
+Preserve native empty/value, required, bounds, disabled, and invalid behavior. Revalidate on the server; a date-only value is not a timestamp or time-zone value.
 
 ## Verify
 
-Test keyboard entry and picker operation in target browsers, date bounds, visible format guidance, validation text, and narrow-screen behavior.
+Test label, native entry/picker, submitted value, required/bounds, visible focus, invalid/disabled style, and narrow layout with JavaScript disabled. Browser picker operation and visuals remain unverified until each target engine is exercised.
 
 ## Common mistake
 
-Treating a date-only value as a timestamp with a time zone.
-
-## Custom implementation
-
-Use a labelled native input with type date. This app-level pattern does not add a UIify date-picker component.
+Do not add a custom calendar, convert the date to a time-zone timestamp, style vendor-only picker pseudo-elements, or use a placeholder as the only label.
 
 ## Sources
 
-- [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/date) (verified 2026-10-17)
-- [www.w3.org](https://www.w3.org/WAI/tutorials/forms/labels/) (verified 2026-10-17)
-- [www.w3.org](https://www.w3.org/WAI/tutorials/forms/instructions/) (verified 2026-10-17)
+- [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/date) (verified 2026-10-19)
+- [html.spec.whatwg.org](https://html.spec.whatwg.org/multipage/input.html) (verified 2026-10-19)
+- [www.w3.org](https://www.w3.org/WAI/tutorials/forms/labels/) (verified 2026-10-19)

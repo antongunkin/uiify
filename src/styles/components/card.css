@@ -1,0 +1,10 @@
+@layer components {
+  [data-uiify-card] {
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--card);
+    color: var(--card-foreground);
+    padding-block: 1rem;
+    padding-inline: 1rem;
+  }
+}

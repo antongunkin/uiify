@@ -1,47 +1,39 @@
 # badge
 
-Binding: gap
+Binding: badge
 
 Mark a short status or category beside related content.
 
 ## Use when
 
-A short status or category qualifies nearby content and helps people scan it.
+A short visible label helps people scan the state or category of nearby content.
 
 ## Avoid when
 
-Do not use a badge for a control, long explanation, or decoration that repeats an adjacent heading without adding meaning.
+Do not use Badge as a control, for long explanations, or for status conveyed by color alone.
 
 ## Structure
 
-This is an app-level composition, not a UIify component. Use non-interactive text beside the item it qualifies. Include the status in words; color and shape are supplementary.
+`Badge` renders a text `span`. Its `variant` (`secondary`, `success`, `warning`, or `destructive`) and `size` (`sm`, `md`, or `lg`) write `data-variant` and `data-size`. Keep the state or category in the text.
 
 ## Responsive
 
-Allow text to wrap or choose a concise label that remains readable at zoom. Keep the badge attached to its related heading or value in reading order.
+Keep labels concise and attached to the related content in reading order. Check long translated text and zoom.
 
 ## States
 
-For status changes, update the text and announce meaningful dynamic changes in an appropriate status region. Do not use badge styling alone to indicate selection.
+Badge is static text. It does not add a role, keyboard behavior, selection state, or live announcement.
 
 ## Verify
 
-Check text contrast, status conveyed without color, association with the item, zoom, and dynamic announcement only when needed.
+Unit tests check the native span, text, optional attributes, root props and ref. Check contrast and meaning without color in the consumer's chosen theme.
 
 ## Common mistake
 
-A green dot without a textual status does not explain what “active” means.
-
-## Custom implementation
-
-```html
-<p>Deployment <span>Pending review</span></p>
-```
-
-This is an app-level composition; UIify does not currently ship this component.
+A colored dot or a green background without a textual status does not explain the state.
 
 ## Sources
 
-- [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span) (verified 2026-10-16)
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-16)
-- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) (verified 2026-10-16)
+- [developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span) (verified 2026-10-19)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html) (verified 2026-10-19)
+- [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) (verified 2026-10-19)
