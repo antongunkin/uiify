@@ -10,7 +10,8 @@ Export: `TableControls`
 "use client";
 
 import { useState } from "react";
-import { Table } from "@gunkin/uiify";
+import { Input } from "@gunkin/uiify/components/input";
+import { Table } from "@gunkin/uiify/components/table";
 
 const people = ["Ada Lovelace", "Grace Hopper", "Katherine Johnson"];
 
@@ -19,7 +20,7 @@ export function TableControls() {
   const visible = people.filter((person) => person.toLowerCase().includes(query.toLowerCase()));
   return (
     <section>
-      <label>Filter people <input value={query} onChange={(event) => setQuery(event.currentTarget.value)} /></label>
+      <label>Filter people <Input value={query} onValueChange={setQuery} /></label>
       <Table.Root>
         <Table.Header><Table.Row id="header"><Table.ColumnHeader id="name-heading">Name</Table.ColumnHeader></Table.Row></Table.Header>
         <Table.Body>{visible.map((person) => <Table.Row id={person} key={person}><Table.Cell>{person}</Table.Cell></Table.Row>)}</Table.Body>

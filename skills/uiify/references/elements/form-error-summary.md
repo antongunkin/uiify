@@ -10,7 +10,7 @@ A server-rendered form response needs a summary of errors and navigation to affe
 
 ## Avoid when
 
-Do not expect this static block to validate fields, announce dynamic updates, move focus, or repair missing IDs.
+Do not expect this static component to validate fields, announce dynamic updates, move focus, or repair missing IDs.
 
 ## Structure
 
@@ -22,7 +22,7 @@ Keep error links readable and allow long messages to wrap. Preserve the document
 
 ## States
 
-The block is static and has no `role="alert"`, live region, focus movement, or validation engine. Use dynamic announcements only in caller-owned behavior when the application updates errors.
+The component is static and has no `role="alert"`, live region, focus movement, or validation engine. Use dynamic announcements only in caller-owned behavior when the application updates errors.
 
 ## Verify
 

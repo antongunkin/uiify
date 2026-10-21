@@ -10,7 +10,7 @@ Export: `FieldValidation`
 "use client";
 
 import { useState } from "react";
-import { Field } from "@gunkin/uiify";
+import { Field } from "@gunkin/uiify/components/field";
 
 export function FieldValidation() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export function FieldValidation() {
   return (
     <Field.Root id="email" invalid={invalid}>
       <Field.Label fieldId="email">Email</Field.Label>
-      <Field.Control fieldId="email" as="input" type="email" invalid={invalid} value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
+      <Field.Control fieldId="email" as="input" name="email" type="email" invalid={invalid} value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
       <Field.Description fieldId="email">We will send your receipt here.</Field.Description>
       {invalid ? <Field.Error fieldId="email" invalid>Enter a valid email address.</Field.Error> : null}
     </Field.Root>

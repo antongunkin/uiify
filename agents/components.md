@@ -68,13 +68,13 @@ its exports, props and shapes; exact types are in the `.d.ts` file listed in the
 | [color-picker](./reference/components/color-picker.md) | `@gunkin/uiify/components/color-picker` | 1 | S1 | `input[type=color]` | `dist/components/color-picker.d.ts` |  |
 | [virtual-scroll](./reference/components/virtual-scroll.md) | `@gunkin/uiify/components/virtual-scroll` | 2 | none | `div[overflow]` | `dist/components/virtual-scroll.d.ts` |  |
 | [table-of-contents](./reference/components/table-of-contents.md) | `@gunkin/uiify/components/table-of-contents` | 2 | S1 | `nav + button[popovertarget] + [popover] + a[href]` | `dist/components/table-of-contents.d.ts` | Base entry is a server-pure native navigation shell; /client adds enhancements. Native links and popover invocation/dismissal work without JavaScript. |
-| [aspect-ratio](./reference/components/aspect-ratio.md) | `@gunkin/uiify/components/aspect-ratio` | 0 | none | `div` | `dist/components/aspect-ratio.d.ts` | Static Block; native CSS aspect-ratio isolates child intrinsic sizing. |
+| [aspect-ratio](./reference/components/aspect-ratio.md) | `@gunkin/uiify/components/aspect-ratio` | 0 | none | `div` | `dist/components/aspect-ratio.d.ts` | Static layout component; native CSS aspect-ratio isolates child intrinsic sizing. |
 | [badge](./reference/components/badge.md) | `@gunkin/uiify/components/badge` | 0 | none | `span` | `dist/components/badge.d.ts` |  |
 | [card](./reference/components/card.md) | `@gunkin/uiify/components/card` | 0 | none | `div` | `dist/components/card.d.ts` |  |
 | [progress](./reference/components/progress.md) | `@gunkin/uiify/components/progress` | 0 | S1 | `progress` | `dist/components/progress.d.ts` |  |
 | [avatar](./reference/components/avatar.md) | `@gunkin/uiify/components/avatar` | 0 | none | `span` | `dist/components/avatar.d.ts` |  |
 | [alert](./reference/components/alert.md) | `@gunkin/uiify/components/alert` | 0 | none | `div` | `dist/components/alert.d.ts` |  |
-| [input-group](./reference/components/input-group.md) | `@gunkin/uiify/components/input-group` | 0 | none | `div + native controls` | `dist/components/input-group.d.ts` | Static Block; keeps independently labeled native input and action. |
+| [input-group](./reference/components/input-group.md) | `@gunkin/uiify/components/input-group` | 0 | none | `div + native controls` | `dist/components/input-group.d.ts` | Static form component; keeps independently labeled native input and action. |
 | [empty](./reference/components/empty.md) | `@gunkin/uiify/components/empty` | 0 | none | `section` | `dist/components/empty.d.ts` |  |
 | [item](./reference/components/item.md) | `@gunkin/uiify/components/item` | 0 | none | `li` | `dist/components/item.d.ts` |  |
 | [date-picker](./reference/components/date-picker.md) | `@gunkin/uiify/components/date-picker` | 0 | native | `input[type=date]` | `dist/components/date-picker.d.ts` | Native date picker; stylesheet styles the outer input only. |

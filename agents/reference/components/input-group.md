@@ -5,7 +5,7 @@
 - Tier 0 (RSC — zero client JavaScript); state source none; native element `div + native controls`
 - Without JavaScript: full
 - Types file: `dist/components/input-group.d.ts`
-- Note: Static Block; keeps independently labeled native input and action.
+- Note: Static form component; keeps independently labeled native input and action.
 
 ## Exports
 

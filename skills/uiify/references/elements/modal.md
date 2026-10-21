@@ -22,7 +22,7 @@ On narrow screens the default modal becomes a full-width bottom sheet. Its body 
 
 ## States
 
-The native `show-modal` dialog blocks interaction with the page. Its default dismissal allows Escape; `dismiss="none"` requires an explicit close action. Controlled or initially open state requires `ModalClientContent` from `@gunkin/uiify/components/modal/client`.
+The native `show-modal` dialog blocks interaction with the page. Default dismissal allows Escape. `dismiss="none"` uses native `closedby`; Safari ignores it and still permits Escape. Verify supported engines. Controlled or initially open state requires `ModalClientContent` from `@gunkin/uiify/components/modal/client`.
 
 ## Verify
 

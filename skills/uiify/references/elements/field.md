@@ -22,7 +22,7 @@ Keep labels and help text close to the control at narrow widths. Let long instru
 
 ## States
 
-Native required validation works without JavaScript. For application validation, set `invalid` on Root and Control and render `Field.Error` with the same state after validation. The control's accessible description includes the error while invalid.
+Native required validation works without JavaScript. For application validation, set `invalid` on Root and Control and render `Field.Error` with the same state after validation. Keep `Field.Description` mounted alongside the conditional Error: Control always references its derived description ID. Parts own their IDs and Control's ARIA relationships; omit manual `id`/`aria-describedby` overrides. The error is included while invalid.
 
 ## Verify
 
@@ -30,7 +30,7 @@ Click the label and confirm its control receives focus. Inspect the accessibilit
 
 ## Common mistake
 
-A label and control with different `fieldId` values disconnect the visible label from the input and its instructions.
+Use `Field.Control as="input"`, which supplies the UIify Input marker and derived control ID. A standalone `Input id={rootId}` duplicates Root's ID and disconnects Field.Label. Do not guess ID suffixes; adapt the complete example. Click the label to verify the relationship.
 
 Example: `references/examples/field-validation.md`.
 

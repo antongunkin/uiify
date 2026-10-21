@@ -7,7 +7,7 @@ Export: `SelectBasic`
 ## Source
 
 ```tsx
-import { Select } from "@gunkin/uiify";
+import { Select } from "@gunkin/uiify/components/select";
 
 export function SelectBasic() {
   return (

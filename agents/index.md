@@ -99,7 +99,7 @@ export function EmailField({ invalid }: { readonly invalid: boolean }) {
       <Field.Label fieldId="email" required>
         Email
       </Field.Label>
-      <Field.Control as="input" fieldId="email" type="email" invalid={invalid} required />
+      <Field.Control as="input" fieldId="email" name="email" type="email" invalid={invalid} required />
       <Field.Description fieldId="email">We only use it to send receipts.</Field.Description>
       <Field.Error fieldId="email" invalid={invalid}>
         Enter a valid email address
@@ -107,6 +107,23 @@ export function EmailField({ invalid }: { readonly invalid: boolean }) {
     </Field.Root>
   );
 }
+```
+
+`Field.Label` connects to `Field.Control`, not a standalone Select. For a select, wrap the
+control in a native label (or match native `htmlFor` to an explicit unique select `id`):
+
+```tsx
+import { Select } from "@gunkin/uiify/components/select";
+
+<label>
+  Delivery frequency
+  <Select.Root name="frequency" defaultValue="weekly">
+    <Select.Content>
+      <Select.Item value="daily">Daily</Select.Item>
+      <Select.Item value="weekly">Weekly</Select.Item>
+    </Select.Content>
+  </Select.Root>
+</label>;
 ```
 
 A trigger and its close button reference the dialog by `id` and `target`:

@@ -10,40 +10,47 @@ disable-model-invocation: true
 
 Page request: $ARGUMENTS
 
-Add UIify component and UX knowledge to the user's request. Follow the agent's normal workflow and the project's instructions; this skill is a reference, not a separate interaction protocol. Do not add approval gates, fixed stages, routine questions or pauses. Use ordinary language in the user's language for useful progress and results, without internal stage names or machine-readable status markers. Proceed with authorized work autonomously; handle genuine missing requirements through the agent's normal workflow.
+Add UIify knowledge using the agent's normal workflow and project instructions. Do not add approval gates, fixed stages, routine questions or pauses. Work autonomously. Use ordinary language in the user's language, without internal stage names or machine-readable status markers.
 
 ## Project context
 
-Use the explicit request in the conversation if the client does not substitute `$ARGUMENTS`. Read repository instructions, the relevant package manifest and framework config, and a route example as needed. Resolve `@gunkin/uiify` from the selected workspace, including hoisted dependencies in parent workspaces. Follow the requested framework's route conventions and RSC/client boundaries. Create the requested route rather than replacing the home page; `src/App.tsx` is a destination only when it matches the request.
+If `$ARGUMENTS` is not substituted, use the explicit conversation request. Inspect repository instructions and relevant manifest, framework config and route examples. Resolve `@gunkin/uiify` from the selected workspace, including hoisted dependencies. Follow the framework's route conventions and RSC/client boundaries; `src/App.tsx` is a destination only when requested. Preserve the home page when creating another route.
 
-Reuse existing design decisions, tokens and conventions, including `DESIGN.md` when present. Do not create `DESIGN.md` or a managed state block merely because this skill was invoked. Create or update planning files only when the user or project workflow calls for them, preserving unrelated content. Keep changes within the requested page and necessary source files; setup and dependency changes follow the user's request and project rules.
+Reuse existing design decisions, tokens and conventions, including `DESIGN.md` when present. Do not create `DESIGN.md` or managed state merely for this skill. Setup, dependencies and planning files follow project rules and the request. Preserve unrelated files, routes and content.
 
 ## Choose an approach before composition
 
-Use the request to choose an internal approach; do not ask the user to choose a mode:
+Choose internally: reproduce a supplied reference; extend the existing UI for scoped work; create/redesign for a new direction; audit for findings only. For a reference, read its guide before composition and compare again after rendering.
 
-- Reproduce an explicit visual reference while preserving its layout, content and recognizable details; read the reference guide before choosing composition and compare again after rendering.
-- Extend the existing UI for a scoped change; keep surrounding routes and established design choices intact.
-- Create or redesign when the request asks for a new page or a broad visual change.
-- Audit when the user asks for findings rather than implementation; report observed issues and evidence.
+For a compact plan or handoff, use a UI brief:
 
-Use this precedence: explicit brief or reference → existing project → selected recipes → aesthetic guidance. This classification only guides the work; continue the agent's normal workflow.
+```text
+Place + job: /settings/profile — edit delivery preferences.
+Keep + UI: existing routes/theme; Field email, Select frequency, Checkbox marketing, Button save.
+Flow + proof: invalid → inline error; valid → demo confirmation + retained values; keyboard, narrow layout.
+```
 
-When images or typography shape the composition, read `references/guides/assets.md` before choosing material. Skip it for routine UI changes where imagery and type are not part of the design decision.
+Adapt or reuse the brief in the user's language; no parser, required file or output. Keep exact API names; expand ambiguity before coding.
+
+Use this precedence: explicit brief or reference → existing project → selected recipes → aesthetic guidance.
+
+When images or typography shape the composition, read `references/guides/assets.md` before choosing material.
 
 ## Select knowledge for the page
 
-Match the needed elements to the Index by name or alias. Use the listed component binding; never invent a binding. A `gap` or an unlisted element needs custom UI, not a guessed UIify API.
+`references/` paths are relative to this skill directory; `agents/` paths are relative to the resolved package root. Read each distinct file once, reusing it across selected elements.
 
-For each selected element with a fourth-column reference path, read that file once. A blank path means no curated recipe is available. From the Composition index, read only relationships where both elements are needed on the page. Read each selected reference and linked law once, including the related laws named by element recipes. Do not load the complete catalog or unrelated component references.
+Match the needed elements to the Index by name or alias. Use the listed component binding; never invent a binding. A `gap` or an unlisted element needs custom UI composed from available UIify controls or semantic native HTML, not a guessed UIify API.
 
-For mapped components, read the resolved package's `agents/index.md` once and the relevant `agents/reference/components/<name>.md`, then adapt a documented example. Import from `@gunkin/uiify/components/<name>`. Inspect Runtime exports and the Types/declaration file before rendering: use the explicit `NameRoot` export when available. A namespace export is not itself a JSX component; use its `.Root` or an explicit root export. Prefer these version-matched references over memory. Use UIify wherever its documented API covers the interaction; for gaps, use semantic native HTML or custom components following UIify's public styling and accessibility contracts.
+For each selected element with a fourth-column reference path, read that file once. A blank path means no curated recipe. Read and adapt its linked example for part wiring. From the Composition index, read only relationships where both elements are needed. Follow each selected reference and linked law, including laws named by element recipes. Do not load unrelated references or the complete catalog.
 
-Before writing controls or interaction markup, check the selected package's public exports, component references and examples for an existing UIify component that covers the need. Compose the documented component when it fits; do not substitute raw `<button>`, `<input>`, checkbox or similar controls for an available UIify component in a consumer-facing example. Use native HTML when no published component fits, when the page intentionally demonstrates native semantics, or when the component layer cannot legally import it. Keep semantic structures such as `fieldset`, `dl` and native form markup when they are the right contract.
+For mapped components, read the package's `agents/index.md` and relevant `agents/reference/components/<name>.md`, then adapt a documented example. Check its Runtime exports before rendering: use the explicit `NameRoot` export when available. A namespace export is not itself a JSX component; use its `.Root` or an explicit root export. Import from `@gunkin/uiify/components/<name>`. If the reference leaves an export, required prop or part relationship ambiguous, inspect its listed Types/declaration file and runtime exports before using it. Prefer these version-matched references over memory.
+
+Reuse documented UIify components, including controls inside custom gaps. Check `agents/components.md` for controls absent from recipes. Do not replace an available Button, Input, Checkbox or AlertModal with a raw-tag lookalike. Keep native HTML when no component fits, the page demonstrates native semantics, or layer rules prohibit the import; preserve semantic structures such as `fieldset`, `dl` and forms.
 
 ## Design guidance
 
-Consult `frontend-design` when available for design direction; if absent, use the built-in guidance below. Consult `vercel-react-best-practices` for relevant React performance decisions and `web-design-guidelines` for reviews. These skills are optional references. UIify's public component and styling contracts take precedence over conflicting advice.
+Consult `frontend-design` for visual direction; if absent, use the built-in guidance below. Optional: `vercel-react-best-practices` for React performance, `web-design-guidelines` for reviews. UIify's public component and styling contracts take precedence over conflicting advice.
 
 After the page renders, review it with a guide only when its question applies:
 
@@ -55,30 +62,21 @@ After the page renders, review it with a guide only when its question applies:
 - `references/guides/states.md` — does the page still work outside the happy path?
 - `references/guides/i18n.md` — only when the page is localized, the project has an i18n setup, or the request mentions languages, RTL or CJK.
 
-Ground the visual direction in the subject, audience and primary job. Plan clear typography, hierarchy, grouping, purposeful copy and responsive layout using existing semantic color roles. Choose one signature detail appropriate to the subject and keep the rest restrained. Avoid defaulting to a gradient hero, repeated equal cards or decorative numbering without a reason. Preserve visible focus, keyboard-sized targets and reduced-motion behavior.
+Ground visual direction in the subject, audience and primary job. Use clear typography, hierarchy, grouping, purposeful copy, responsive layout and existing semantic color roles. Choose one signature detail; keep the rest restrained. Avoid automatic gradient heroes, equal cards or decorative numbering. Preserve visible focus, keyboard-sized targets and reduced-motion behavior.
 
-For a settings page, group fields by the decision the person makes, keep labels and validation close to controls, and give one `Button` the save action. Use documented anatomy:
+For a settings page, group fields by decision and give one `Button` the save action. Adapt the Field example in `agents/index.md`: Root gets `id`, Label/Control/Description/Error get the same `fieldId`. Pass `invalid`/`required` to both Root and Control. `Field.Control as="input"` supplies UIify Input and its ID. Keep Field's ID/ARIA wiring and Description mounted when showing Error. Wrap standalone `Select.Root` in a native `<label>`; Field.Label wires only Field.Control.
 
-```tsx
-<Field.Root id="email" invalid={invalid} required>
-  <Field.Label fieldId="email" required>Email</Field.Label>
-  <Field.Control as="input" fieldId="email" type="email" invalid={invalid} required />
-  <Field.Error fieldId="email" invalid={invalid}>Enter a valid email address</Field.Error>
-</Field.Root>
-<Button type="submit">Save changes</Button>
-```
+Wire each requested action through its outcome: a dialog closing is not a mutation. Keep cancel/error paths safe; if an action removes its opener, focus a surviving target, including the empty state. Describe in-memory demos as demos; claim persistence only when implemented.
 
 Do not add an unrelated marketing hero or make every field group an equally prominent card. For unresolved gaps, explain material limitations in plain language; research only when it helps the request. Research does not grant approval to change the library's public API or mark a catalog gap accepted.
 
 ## Verification guidance
 
-Finish the requested edits before running applicable project build, typecheck and test commands. Run the relevant verification once against the stable result; do not repeat full checks or E2E after each small edit. If a check fails, fix related findings together, rerun focused checks to diagnose them, then rerun the required final gate. The optional `node <resolved-skill-directory>/scripts/lint.mjs <project-root>` runs the static checks compiled from the published laws when this skill was built and prints their names; it does not read `DESIGN.md` or other design files. It inspects literal attributes of lowercase intrinsic JSX tags and of parts imported from `@gunkin/uiify/components` or `@gunkin/uiify/elements` (for example `Button` or `Field.Control`); other custom components are not analyzed. No findings is not proof of accessibility. Missing parsers or execution failures mean unavailable, never a pass.
+Finish the edits before running applicable project build, typecheck and test commands. Run relevant verification once against the stable result. On failure, fix related findings together, diagnose with focused checks, then rerun the required final gate. For the optional static lint and its limits, read `references/guides/verification.md`.
 
-Reuse existing browser and accessibility tooling to inspect responsive layouts, keyboard access and requested interactions. When missing tools are needed for quality verification, use Playwright for browser checks and axe-core (or the project's axe integration) for accessibility checks. Before installing missing Playwright or axe-core packages or downloading browser binaries, notify the user briefly in their language, explaining what will be installed and why. For example: “I'll install Playwright and axe-core as development tools to check the page in a browser and catch accessibility issues.” This is a notification, not a confirmation question; continue within existing authorization and respect project installation rules. Use the project's package manager and development dependencies, reuse existing integrations, and install only what is needed.
+Reuse existing browser and accessibility tooling for responsive layouts, keyboard access and requested interactions. Before installing missing Playwright or axe-core tooling or browser binaries, notify the user what is needed and why. This is a notification, not a confirmation question; follow project rules, its package manager and development dependencies. Use Playwright for browser checks and axe-core for accessibility.
 
-For localized pages, also render once with `dir="rtl"` and once with a long-text locale.
-
-Repair findings within the task's scope and rerun the affected checks. If commands, installation or browser execution are unavailable or prohibited, report those checks as not run and explain the limitation. Report actual checks and remaining issues in ordinary language; never claim a check passed without running it.
+Repair findings within scope and rerun affected checks. Report unavailable or prohibited checks as not run, with the reason; never claim a check passed without running it.
 
 ## Index
 

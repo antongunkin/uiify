@@ -442,7 +442,7 @@
       "sizeNow": "268 B compressed (server entry; no client island)",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Static Block; native CSS aspect-ratio isolates child intrinsic sizing."
+      "note": "Static layout component; native CSS aspect-ratio isolates child intrinsic sizing."
     },
     "badge": {
       "tier": 0,
@@ -485,7 +485,7 @@
       "element": "div + native controls",
       "sizeTarget": "0 kB",
       "status": "done",
-      "note": "Static Block; keeps independently labeled native input and action."
+      "note": "Static form component; keeps independently labeled native input and action."
     },
     "empty": {
       "tier": 0,

@@ -14,7 +14,7 @@ Avoid a select when users must compare several options at once or when the task 
 
 ## Structure
 
-Associate a visible label with the select. Group related options with `optgroup` and provide an empty prompt only when the value is genuinely optional.
+Wrap `Select.Root` in a native `<label>` as in the example. Alternatively, match a native label's `htmlFor` to an explicit unique `id` on Select.Root. `Field.Label` derives the ID for Field.Control; it does not label a standalone Select.Root. Do not reuse Field.Root's ID on the select. Group related options with `optgroup`; an empty prompt is for an optional value.
 
 ## Responsive
 
