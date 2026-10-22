@@ -4,7 +4,7 @@
 - Import: `@gunkin/uiify/elements/invoker`
 - Native mechanism: command/commandfor attributes
 - Parts: `Invoker`
-- Used by: dialog
+- Used by: [dialog](../elements/dialog.md)
 - Types file: `dist/elements/invoker.d.ts`
 
 ## Exports

@@ -6,6 +6,10 @@
 - Without JavaScript: pre-hydration-only
 - Types file: `dist/components/virtual-scroll.d.ts`
 
+## Related knowledge
+
+- Recipe: [virtual-scroll](../../../skills/uiify/references/elements/virtual-scroll.md)
+
 ## Exports
 
 - Runtime: `VirtualScroll`, `VIRTUAL_SCROLL_ANCHOR_THRESHOLD`, `VIRTUAL_SCROLL_OVERSCAN`, `VIRTUAL_SCROLL_ROW_HEIGHT`, `VIRTUAL_SCROLL_SCROLL_RESET_DELAY`

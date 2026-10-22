@@ -7,6 +7,10 @@
 - Types file: `dist/components/input-group.d.ts`
 - Note: Static form component; keeps independently labeled native input and action.
 
+## Related knowledge
+
+- Recipe: [input-group](../../../skills/uiify/references/elements/input-group.md)
+
 ## Exports
 
 - Runtime: `InputGroup`, `InputGroupAddon`

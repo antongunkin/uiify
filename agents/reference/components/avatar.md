@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/avatar.d.ts`
 
+## Related knowledge
+
+- Recipe: [avatar](../../../skills/uiify/references/elements/avatar.md)
+
 ## Exports
 
 - Runtime: `Avatar`

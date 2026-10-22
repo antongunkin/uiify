@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/description-list.d.ts`
 
+## Related knowledge
+
+- Recipe: [description-list](../../../skills/uiify/references/elements/description-list.md)
+
 ## Exports
 
 - Runtime: `DescriptionDetails`, `DescriptionList`, `DescriptionTerm`

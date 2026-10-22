@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/tooltip.d.ts`
 
+## Related knowledge
+
+- Recipe: [tooltip](../../../skills/uiify/references/elements/tooltip.md)
+
 ## Exports
 
 - Runtime: `Tooltip`, `TooltipContent`, `TooltipProvider`, `TooltipRoot`, `TooltipTrigger`

@@ -7,6 +7,10 @@
 - Types file: `dist/components/checkbox.d.ts`
 - Note: Native checkbox + label; default entry ships controlled callbacks with use client.
 
+## Related knowledge
+
+- Recipe: [checkbox](../../../skills/uiify/references/elements/checkbox.md)
+
 ## Exports
 
 - Runtime: `Checkbox`

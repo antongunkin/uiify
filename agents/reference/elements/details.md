@@ -4,7 +4,7 @@
 - Import: `@gunkin/uiify/elements/details`
 - Native mechanism: details/summary
 - Parts: `Details.Root`, `Details.Summary`, `Details.Content`
-- Used by: accordion, collapsible, breadcrumb
+- Used by: [accordion](../components/accordion.md), [collapsible](../components/collapsible.md), [breadcrumb](../components/breadcrumb.md)
 - Types file: `dist/elements/details.d.ts`
 
 ## Exports

@@ -7,6 +7,10 @@
 - Types file: `dist/components/header.d.ts`
 - Note: Semantic header root; compose native navigation with Modal. Full functionality without JavaScript; optional header/client adds scroll hide/reveal.
 
+## Related knowledge
+
+- Recipe: [header](../../../skills/uiify/references/elements/header.md)
+
 ## Exports
 
 - Runtime: `Header`, `HeaderRoot`

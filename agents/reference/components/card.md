@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/card.d.ts`
 
+## Related knowledge
+
+- Recipe: [card](../../../skills/uiify/references/elements/card.md)
+
 ## Exports
 
 - Runtime: `Card`

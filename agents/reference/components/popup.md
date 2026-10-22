@@ -5,7 +5,12 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `[popover]+popovertarget`
 - Without JavaScript: full
 - Types file: `dist/components/popup.d.ts`
+- Related native Element (manifest): [popover](../elements/popover.md)
 - Note: Native parts anchor to their invoker (implicit anchor) and carry no aria-expanded; Chromium exposes expanded through the accessibility tree, other engines are unmeasured. The legacy Popup.Root compound keeps UIEnhance for its DOM attribute. Trigger/Content/Close built on @gunkin/uiify/elements/popover.
+
+## Related knowledge
+
+- Recipe: [popup](../../../skills/uiify/references/elements/popup.md)
 
 ## Exports
 

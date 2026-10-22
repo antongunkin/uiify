@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/badge.d.ts`
 
+## Related knowledge
+
+- Recipe: [badge](../../../skills/uiify/references/elements/badge.md)
+
 ## Exports
 
 - Runtime: `Badge`

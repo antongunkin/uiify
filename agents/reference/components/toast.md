@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/toast.d.ts`
 
+## Related knowledge
+
+- Recipe: [toast](../../../skills/uiify/references/elements/toast.md)
+
 ## Exports
 
 - Runtime: `Toast`, `ToastAction`, `ToastClose`, `ToastDescription`, `ToastProvider`, `ToastRoot`, `ToastTitle`, `ToastViewport`, `useToast`

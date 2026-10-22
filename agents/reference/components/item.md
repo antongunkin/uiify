@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/item.d.ts`
 
+## Related knowledge
+
+- Recipe: [item](../../../skills/uiify/references/elements/item.md)
+
 ## Exports
 
 - Runtime: `Item`, `ItemActions`, `ItemContent`, `ItemMedia`, `ItemMetadata`

@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/number-field.d.ts`
 
+## Related knowledge
+
+- Recipe: [number-field](../../../skills/uiify/references/elements/number-field.md)
+
 ## Exports
 
 - Runtime: `NumberField`, `NumberFieldDecrement`, `NumberFieldGroup`, `NumberFieldIncrement`, `NumberFieldInput`, `NumberFieldRoot`

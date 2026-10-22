@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/hover-card.d.ts`
 
+## Related knowledge
+
+- Recipe: [hover-card](../../../skills/uiify/references/elements/hover-card.md)
+
 ## Exports
 
 - Runtime: `HoverCard`

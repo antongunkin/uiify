@@ -7,6 +7,11 @@
 - Types file: `dist/components/field.d.ts`
 - Note: :user-invalid + :has() reveals the error message
 
+## Related knowledge
+
+- Recipe: [field](../../../skills/uiify/references/elements/field.md)
+- Example: [field-validation](../../../skills/uiify/references/examples/field-validation.md)
+
 ## Exports
 
 - Runtime: `Field`, `FieldControl`, `FieldDescription`, `FieldError`, `FieldLabel`, `FieldRoot`

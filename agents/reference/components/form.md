@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/form.d.ts`
 
+## Related knowledge
+
+- Recipe: [form](../../../skills/uiify/references/elements/form.md)
+
 ## Exports
 
 - Runtime: `Form`

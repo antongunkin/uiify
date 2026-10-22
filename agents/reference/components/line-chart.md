@@ -7,6 +7,10 @@
 - Types file: `dist/components/line-chart.d.ts`
 - Note: Static line segments are computed during render and expressed as percentage CSS custom properties; the decorative CSS line has an accessible table fallback.
 
+## Related knowledge
+
+- Recipe: [line-chart](../../../skills/uiify/references/elements/line-chart.md)
+
 ## Exports
 
 - Runtime: `LineChart`

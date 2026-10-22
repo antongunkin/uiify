@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/empty.d.ts`
 
+## Related knowledge
+
+- Recipe: [empty-state](../../../skills/uiify/references/elements/empty-state.md)
+
 ## Exports
 
 - Runtime: `Empty`, `EmptyContent`, `EmptyDescription`, `EmptyTitle`

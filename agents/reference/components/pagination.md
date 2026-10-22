@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/pagination.d.ts`
 
+## Related knowledge
+
+- Recipe: [pagination](../../../skills/uiify/references/elements/pagination.md)
+
 ## Exports
 
 - Runtime: `buildPaginationItems`, `Pagination`, `PaginationEllipsis`, `PaginationItem`, `PaginationLink`, `PaginationList`, `PaginationRoot`

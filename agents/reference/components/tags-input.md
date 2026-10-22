@@ -6,6 +6,10 @@
 - Without JavaScript: pre-hydration-only
 - Types file: `dist/components/tags-input.d.ts`
 
+## Related knowledge
+
+- Recipe: [tags-input](../../../skills/uiify/references/elements/tags-input.md)
+
 ## Exports
 
 - Runtime: `TagsInput`, `TagsInputInput`, `TagsInputList`, `TagsInputRoot`, `TagsInputTag`, `TagsInputTagRemove`, `splitTags`

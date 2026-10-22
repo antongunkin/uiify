@@ -7,6 +7,10 @@
 - Types file: `dist/components/aspect-ratio.d.ts`
 - Note: Static layout component; native CSS aspect-ratio isolates child intrinsic sizing.
 
+## Related knowledge
+
+- Recipe: [aspect-ratio](../../../skills/uiify/references/elements/aspect-ratio.md)
+
 ## Exports
 
 - Runtime: `AspectRatio`

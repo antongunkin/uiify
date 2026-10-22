@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/input.d.ts`
 
+## Related knowledge
+
+- Recipe: [input](../../../skills/uiify/references/elements/input.md)
+
 ## Exports
 
 - Runtime: `Input`

@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/switch.d.ts`
 
+## Related knowledge
+
+- Recipe: [switch](../../../skills/uiify/references/elements/switch.md)
+
 ## Exports
 
 - Runtime: `Switch`

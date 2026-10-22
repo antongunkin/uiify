@@ -7,6 +7,10 @@
 - Types file: `dist/components/textarea.d.ts`
 - Note: field-sizing:content replaces the auto-grow JS. Baseline since Firefox 152.
 
+## Related knowledge
+
+- Recipe: [textarea](../../../skills/uiify/references/elements/textarea.md)
+
 ## Exports
 
 - Runtime: `Textarea`

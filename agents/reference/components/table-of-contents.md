@@ -7,6 +7,10 @@
 - Types file: `dist/components/table-of-contents.d.ts`
 - Note: Base entry is a server-pure native navigation shell; /client adds enhancements. Native links and popover invocation/dismissal work without JavaScript.
 
+## Related knowledge
+
+- Recipe: [table-of-contents](../../../skills/uiify/references/elements/table-of-contents.md)
+
 ## Exports
 
 - Runtime: `TableOfContents`, `TableOfContentsRoot`, `TableOfContentsTrigger`, `TableOfContentsRail`, `TableOfContentsIndicator`, `TableOfContentsContent`, `TableOfContentsList`, `TableOfContentsLink`

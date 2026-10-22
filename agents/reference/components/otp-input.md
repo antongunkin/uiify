@@ -6,6 +6,10 @@
 - Without JavaScript: pre-hydration-only
 - Types file: `dist/components/otp-input.d.ts`
 
+## Related knowledge
+
+- Recipe: [otp-input](../../../skills/uiify/references/elements/otp-input.md)
+
 ## Exports
 
 - Runtime: `OtpInput`, `OtpInputHiddenInput`, `OtpInputRoot`, `OtpInputSlot`

@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/spinner.d.ts`
 
+## Related knowledge
+
+- Recipe: [spinner](../../../skills/uiify/references/elements/spinner.md)
+
 ## Exports
 
 - Runtime: `Spinner`

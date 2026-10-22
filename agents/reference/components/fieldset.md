@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/fieldset.d.ts`
 
+## Related knowledge
+
+- Recipe: [fieldset](../../../skills/uiify/references/elements/fieldset.md)
+
 ## Exports
 
 - Runtime: `Fieldset`, `FieldsetLegend`

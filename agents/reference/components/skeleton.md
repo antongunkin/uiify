@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/skeleton.d.ts`
 
+## Related knowledge
+
+- Recipe: [skeleton](../../../skills/uiify/references/elements/skeleton.md)
+
 ## Exports
 
 - Runtime: `Skeleton`

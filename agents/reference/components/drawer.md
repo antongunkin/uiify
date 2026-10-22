@@ -5,7 +5,12 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `dialog + command=show-modal`
 - Without JavaScript: full
 - Types file: `dist/components/drawer.d.ts`
+- Related native Element (manifest): [dialog](../elements/dialog.md)
 - Note: DrawerPanel native shell + compound Drawer.* client API; snap-point drag on client entry.
+
+## Related knowledge
+
+- Recipe: [drawer](../../../skills/uiify/references/elements/drawer.md)
 
 ## Exports
 

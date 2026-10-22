@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/slider.d.ts`
 
+## Related knowledge
+
+- Recipe: [slider](../../../skills/uiify/references/elements/slider.md)
+
 ## Exports
 
 - Runtime: `Slider`

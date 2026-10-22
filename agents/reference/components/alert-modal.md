@@ -5,7 +5,13 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `dialog[role=alertdialog] + command=show-modal`
 - Without JavaScript: full
 - Types file: `dist/components/alert-modal.d.ts`
+- Related native Element (manifest): [dialog](../elements/dialog.md)
 - Note: Native modal alertdialog via show-modal; Cancel/Action are request-close invokers. Baseline Chrome 139 / Firefox 147 / Safari 26.2; below it UIEnhance's invoker fallback runs the command after hydration.
+
+## Related knowledge
+
+- Recipe: [alert-modal](../../../skills/uiify/references/elements/alert-modal.md)
+- Example: [alert-confirmation](../../../skills/uiify/references/examples/alert-confirmation.md)
 
 ## Exports
 

@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/progress.d.ts`
 
+## Related knowledge
+
+- Recipe: [progress-bar](../../../skills/uiify/references/elements/progress-bar.md)
+
 ## Exports
 
 - Runtime: `Progress`

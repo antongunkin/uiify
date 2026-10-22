@@ -7,6 +7,10 @@
 - Types file: `dist/components/toggle.d.ts`
 - Note: Native checkbox + label toggle; browser owns pressed state.
 
+## Related knowledge
+
+- Recipe: [toggle](../../../skills/uiify/references/elements/toggle.md)
+
 ## Exports
 
 - Runtime: `Toggle`

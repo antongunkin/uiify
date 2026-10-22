@@ -5,7 +5,12 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `input[type=radio]`
 - Without JavaScript: full
 - Types file: `dist/components/rating.d.ts`
+- Related native Element (manifest): [choice](../elements/choice.md)
 - Note: Native radio group; hover preview and persisted selection are pure CSS (:checked/:hover sibling rules), no JS. Controlled value/onValueChange lives in the separate rating/client entry. Built on @gunkin/uiify/elements/choice.
+
+## Related knowledge
+
+- Recipe: [rating](../../../skills/uiify/references/elements/rating.md)
 
 ## Exports
 

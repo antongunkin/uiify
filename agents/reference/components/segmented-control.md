@@ -5,7 +5,12 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `input[type=radio]`
 - Without JavaScript: full
 - Types file: `dist/components/segmented-control.d.ts`
+- Related native Element (manifest): [choice](../elements/choice.md)
 - Note: Built on @gunkin/uiify/elements/choice.
+
+## Related knowledge
+
+- Recipe: [segmented-control](../../../skills/uiify/references/elements/segmented-control.md)
 
 ## Exports
 

@@ -4,7 +4,7 @@
 - Import: `@gunkin/uiify/elements/choice`
 - Native mechanism: input[type=radio|checkbox] + label
 - Parts: `Choice.Group`, `Choice.Item`
-- Used by: radio-group, tabs, toggle-group, segmented-control, rating
+- Used by: [radio-group](../components/radio-group.md), [tabs](../components/tabs.md), [toggle-group](../components/toggle-group.md), [segmented-control](../components/segmented-control.md), [rating](../components/rating.md)
 - Types file: `dist/elements/choice.d.ts`
 
 ## Exports

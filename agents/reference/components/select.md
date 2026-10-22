@@ -7,6 +7,11 @@
 - Types file: `dist/components/select.d.ts`
 - Note: Native text-only select; appearance:base-select is a Chrome+Safari cosmetic enhancement and Firefox keeps the OS picker.
 
+## Related knowledge
+
+- Recipe: [select](../../../skills/uiify/references/elements/select.md)
+- Example: [select-basic](../../../skills/uiify/references/examples/select-basic.md)
+
 ## Exports
 
 - Runtime: `Select`, `SelectContent`, `SelectGroup`, `SelectItem`, `SelectRoot`, `SelectSeparator`

@@ -4,7 +4,7 @@
 - Import: `@gunkin/uiify/elements/dialog`
 - Native mechanism: dialog + command=show-modal
 - Parts: `Dialog.Trigger`, `Dialog.Content`, `Dialog.Close`
-- Used by: modal, alert-modal, drawer
+- Used by: [modal](../components/modal.md), [alert-modal](../components/alert-modal.md), [drawer](../components/drawer.md)
 - Types file: `dist/elements/dialog.d.ts`
 
 ## Exports

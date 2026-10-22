@@ -5,7 +5,12 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `dialog + command=show-modal`
 - Without JavaScript: full
 - Types file: `dist/components/modal.d.ts`
+- Related native Element (manifest): [dialog](../elements/dialog.md)
 - Note: True modal via show-modal/request-close; the browser owns inertness, Escape and focus return. Controlled/initially open state lives in @gunkin/uiify/components/modal/client. Trigger/Close built on @gunkin/uiify/elements/dialog. Backdrop tap and swipe-down are optional UIEnhance improvements; without them the modal still closes by icon, Escape and (Chrome/Firefox) backdrop tap.
+
+## Related knowledge
+
+- Recipe: [modal](../../../skills/uiify/references/elements/modal.md)
 
 ## Exports
 

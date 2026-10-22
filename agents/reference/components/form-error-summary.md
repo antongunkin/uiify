@@ -7,6 +7,10 @@
 - Types file: `dist/components/form-error-summary.d.ts`
 - Note: Static server-rendered error links; no alert or focus script.
 
+## Related knowledge
+
+- Recipe: [form-error-summary](../../../skills/uiify/references/elements/form-error-summary.md)
+
 ## Exports
 
 - Runtime: `FormErrorSummary`

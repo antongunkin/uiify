@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/color-picker.d.ts`
 
+## Related knowledge
+
+- Recipe: [color-picker](../../../skills/uiify/references/elements/color-picker.md)
+
 ## Exports
 
 - Runtime: `ColorPicker`

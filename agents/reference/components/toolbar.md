@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/toolbar.d.ts`
 
+## Related knowledge
+
+- Recipe: [toolbar](../../../skills/uiify/references/elements/toolbar.md)
+
 ## Exports
 
 - Runtime: `Toolbar`

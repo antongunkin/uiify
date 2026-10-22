@@ -7,6 +7,10 @@
 - Types file: `dist/components/candle-chart.d.ts`
 - Note: Static OHLC geometry is computed during render and expressed as percentage CSS custom properties; the decorative candle glyphs have an accessible table fallback.
 
+## Related knowledge
+
+- Recipe: [candle-chart](../../../skills/uiify/references/elements/candle-chart.md)
+
 ## Exports
 
 - Runtime: `CandleChart`

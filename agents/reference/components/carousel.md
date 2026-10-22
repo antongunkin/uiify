@@ -7,6 +7,10 @@
 - Types file: `dist/components/carousel.d.ts`
 - Note: The documented interactive carousel uses /client and requires hydration for synchronized controls. The base entry remains a native no-JS scroller with CSS Scroll Snap and fragment navigation; /fade adds client-driven CSS transitions.
 
+## Related knowledge
+
+- Recipe: [carousel](../../../skills/uiify/references/elements/carousel.md)
+
 ## Exports
 
 - Runtime: `Carousel`

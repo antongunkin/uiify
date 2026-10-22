@@ -6,6 +6,10 @@
 - Without JavaScript: pre-hydration-only
 - Types file: `dist/components/dropdown-menu.d.ts`
 
+## Related knowledge
+
+- Recipe: [dropdown-menu](../../../skills/uiify/references/elements/dropdown-menu.md)
+
 ## Exports
 
 - Runtime: `DropdownMenu`, `DropdownMenuCheckboxItem`, `DropdownMenuContent`, `DropdownMenuGroup`, `DropdownMenuItem`, `DropdownMenuItemDescription`, `DropdownMenuItemIcon`, `DropdownMenuItemIndicator`, `DropdownMenuItemText`, `DropdownMenuLabel`, `DropdownMenuRadioGroup`, `DropdownMenuRadioItem`, `DropdownMenuRoot`, `DropdownMenuSeparator`, `DropdownMenuShortcut`, `DropdownMenuSub`, `DropdownMenuSubContent`, `DropdownMenuSubTrigger`, `DropdownMenuTrigger`, `DropdownMenuBar`

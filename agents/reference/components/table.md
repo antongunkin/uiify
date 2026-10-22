@@ -7,6 +7,11 @@
 - Types file: `dist/components/table.d.ts`
 - Note: Native semantic Table parts; selection, sorting and expansion use the explicit /client entry.
 
+## Related knowledge
+
+- Recipe: [table](../../../skills/uiify/references/elements/table.md)
+- Example: [table-controls](../../../skills/uiify/references/examples/table-controls.md)
+
 ## Exports
 
 - Runtime: `Table`, `TableFooter`, `TableRowHeader`, `TableBody`, `TableCaption`, `TableCell`, `TableColumnHeader`, `TableHeader`, `TableRoot`, `TableRow`

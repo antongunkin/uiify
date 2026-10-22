@@ -4,7 +4,7 @@
 - Import: `@gunkin/uiify/elements/popover`
 - Native mechanism: [popover] + popovertarget
 - Parts: `Popover.Trigger`, `Popover.Surface`, `Popover.Close`
-- Used by: popup
+- Used by: [popup](../components/popup.md)
 - Types file: `dist/elements/popover.d.ts`
 
 ## Exports

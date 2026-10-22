@@ -6,6 +6,10 @@
 - Without JavaScript: full
 - Types file: `dist/components/alert.d.ts`
 
+## Related knowledge
+
+- Recipe: [inline-alert](../../../skills/uiify/references/elements/inline-alert.md)
+
 ## Exports
 
 - Runtime: `Alert`, `AlertDescription`, `AlertTitle`

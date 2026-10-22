@@ -7,6 +7,10 @@
 - Types file: `dist/components/date-picker.d.ts`
 - Note: Native date picker; stylesheet styles the outer input only.
 
+## Related knowledge
+
+- Recipe: [date-picker](../../../skills/uiify/references/elements/date-picker.md)
+
 ## Exports
 
 - Runtime: `DatePicker`

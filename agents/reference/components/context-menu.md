@@ -6,6 +6,10 @@
 - Without JavaScript: pre-hydration-only
 - Types file: `dist/components/context-menu.d.ts`
 
+## Related knowledge
+
+- Recipe: [context-menu](../../../skills/uiify/references/elements/context-menu.md)
+
 ## Exports
 
 - Runtime: `ContextMenu`, `ContextMenuCheckboxItem`, `ContextMenuContent`, `ContextMenuItem`, `ContextMenuLabel`, `ContextMenuRadioItem`, `ContextMenuRoot`, `ContextMenuSeparator`, `ContextMenuSub`, `ContextMenuSubContent`, `ContextMenuSubTrigger`, `ContextMenuTrigger`

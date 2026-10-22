@@ -6,6 +6,10 @@
 - Without JavaScript: pre-hydration-only
 - Types file: `dist/components/combobox.d.ts`
 
+## Related knowledge
+
+- Recipe: [combobox](../../../skills/uiify/references/elements/combobox.md)
+
 ## Exports
 
 - Runtime: `Combobox`, `ComboboxControl`, `ComboboxContent`, `ComboboxEmpty`, `ComboboxInput`, `ComboboxItem`, `ComboboxRoot`, `ComboboxTags`, `ComboboxTrigger`

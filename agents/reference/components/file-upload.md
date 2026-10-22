@@ -6,6 +6,10 @@
 - Without JavaScript: degraded-documented
 - Types file: `dist/components/file-upload.d.ts`
 
+## Related knowledge
+
+- Recipe: [file-upload](../../../skills/uiify/references/elements/file-upload.md)
+
 ## Exports
 
 - Runtime: `FileUpload`, `FileUploadDropzone`, `FileUploadHiddenInput`, `FileUploadItem`, `FileUploadItemRemove`, `FileUploadList`, `FileUploadRoot`, `FileUploadTrigger`, `validateFiles`
