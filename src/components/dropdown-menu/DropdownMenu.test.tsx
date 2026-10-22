@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Profiler, useState } from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
@@ -129,35 +129,41 @@ describe("DropdownMenu", () => {
     expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Beta" }));
   });
 
-  it(
-    "rerenders at most two items when moving across a 1,000-item menu",
-    { timeout: 30_000 },
-    () => {
-      const renders = Array.from({ length: 1000 }, () => 0);
-      function Item({ index }: { readonly index: number }) {
-        renders[index] = (renders[index] ?? 0) + 1;
-        return <DropdownMenu.Item textValue={`Item ${index}`}>Item {index}</DropdownMenu.Item>;
-      }
-      Item.displayName = "Item";
-
-      render(
-        <DropdownMenu.Root defaultOpen>
-          <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            {renders.map((_, index) => (
-              <Item index={index} key={index} />
-            ))}
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>,
+  it("rerenders at most two item subtrees when moving focus", () => {
+    const renders = Array.from({ length: 100 }, () => 0);
+    function Item({ index }: { readonly index: number }) {
+      return (
+        <Profiler
+          id={String(index)}
+          onRender={() => {
+            renders[index] = (renders[index] ?? 0) + 1;
+          }}
+        >
+          <DropdownMenu.Item textValue={`Item ${index}`}>Item {index}</DropdownMenu.Item>
+        </Profiler>
       );
+    }
+    Item.displayName = "Item";
 
-      renders.fill(0);
-      const first = screen.getByRole("menuitem", { name: "Item 0" });
-      first.focus();
-      fireEvent.keyDown(first, { key: "ArrowDown" });
-      expect(renders.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(2);
-    },
-  );
+    render(
+      <DropdownMenu.Root defaultOpen>
+        <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          {renders.map((_, index) => (
+            <Item index={index} key={index} />
+          ))}
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>,
+    );
+
+    renders.fill(0);
+    const first = screen.getByRole("menuitem", { name: "Item 0" });
+    first.focus();
+    fireEvent.keyDown(first, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Item 1" }));
+    expect(renders.slice(2).every((count) => count === 0)).toBe(true);
+    expect(renders.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(2);
+  });
 
   it("renders consistent SSR markup", () => {
     const markup = renderToStaticMarkup(

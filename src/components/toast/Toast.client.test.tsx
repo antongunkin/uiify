@@ -489,3 +489,29 @@ describe("Toast client", () => {
     expect(viewport.contains(assertiveRegion)).toBe(false);
   });
 });
+
+it("keeps the enqueue owner within its render budget", () => {
+  let providerRenders = 0;
+  function Harness() {
+    providerRenders++;
+    const { toast } = useToast();
+    return (
+      <>
+        <button onClick={() => toast({ title: "Saved" })} type="button">
+          Show
+        </button>
+        <Toast.Viewport />
+      </>
+    );
+  }
+  Harness.displayName = "Harness";
+
+  render(
+    <Toast.Provider>
+      <Harness />
+    </Toast.Provider>,
+  );
+  providerRenders = 0;
+  fireEvent.click(screen.getByRole("button", { name: "Show" }));
+  expect(providerRenders).toBeLessThanOrEqual(2);
+});

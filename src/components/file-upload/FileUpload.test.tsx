@@ -9,18 +9,42 @@ function createFile(name: string, type: string, size: number): File {
 }
 
 describe("file-upload-store", () => {
-  it("rejects files over maxSize", () => {
-    const file = createFile("big.txt", "text/plain", 200);
-    const { accepted, rejected } = validateFiles([file], { maxSize: 100 });
-    expect(accepted).toHaveLength(0);
-    expect(rejected[0]?.reason).toBe("max-size");
+  it("accepts case-insensitive extensions and MIME wildcards while rejecting mismatches", () => {
+    const document = createFile("REPORT.PDF", "application/pdf", 10);
+    const image = createFile("photo.png", "image/png", 10);
+    const text = createFile("notes.txt", "text/plain", 10);
+
+    expect(
+      validateFiles([document, image, text], { accept: [".pdf", "image/*"], multiple: true }),
+    ).toEqual({
+      accepted: [document, image],
+      rejected: [{ file: text, reason: "accept" }],
+    });
+    expect(validateFiles([text, image], { accept: ["text/plain"], multiple: true })).toEqual({
+      accepted: [text],
+      rejected: [{ file: image, reason: "accept" }],
+    });
   });
 
-  it("rejects files with wrong accept type", () => {
-    const file = createFile("photo.png", "image/png", 10);
-    const { accepted, rejected } = validateFiles([file], { accept: ["text/plain"] });
-    expect(accepted).toHaveLength(0);
-    expect(rejected[0]?.reason).toBe("accept");
+  it("includes the size boundaries and rejects files outside them", () => {
+    const tooSmall = createFile("small.txt", "text/plain", 9);
+    const minimum = createFile("minimum.txt", "text/plain", 10);
+    const maximum = createFile("maximum.txt", "text/plain", 20);
+    const tooLarge = createFile("large.txt", "text/plain", 21);
+
+    expect(
+      validateFiles([tooSmall, minimum, maximum, tooLarge], {
+        minSize: 10,
+        maxSize: 20,
+        multiple: true,
+      }),
+    ).toEqual({
+      accepted: [minimum, maximum],
+      rejected: [
+        { file: tooSmall, reason: "max-size" },
+        { file: tooLarge, reason: "max-size" },
+      ],
+    });
   });
 });
 

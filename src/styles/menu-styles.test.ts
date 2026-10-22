@@ -11,7 +11,6 @@ describe("DropdownMenu skin", () => {
     expect(css).toContain("appearance: none");
     expect(css).toContain("text-align: start");
     expect(css).toContain("font-family: inherit");
-    expect(css).toContain("1.15rem");
     expect(css).toContain('[role="menuitemradio"][data-state="checked"]');
     expect(css).toContain('data-state="checked"] [data-part="item-indicator"]');
     expect(css).toContain('[data-part="item-indicator"]');

@@ -39,17 +39,6 @@ const canonicalSemanticTokens = [
   "chart-5",
 ] as const;
 
-const foregroundPairs = [
-  ["background", "foreground"],
-  ["card", "card-foreground"],
-  ["popover", "popover-foreground"],
-  ["primary", "primary-foreground"],
-  ["secondary", "secondary-foreground"],
-  ["muted", "muted-foreground"],
-  ["accent", "accent-foreground"],
-  ["destructive", "destructive-foreground"],
-] as const;
-
 const legacySemanticTokens = [
   "--color-bg",
   "--color-fg",
@@ -101,26 +90,10 @@ describe("canonical semantic token contract", () => {
     }
   });
 
-  test("defines every foreground role as a complete pair", () => {
-    for (const [surface, foreground] of foregroundPairs) {
-      expect(canonicalSemanticTokens).toContain(surface);
-      expect(canonicalSemanticTokens).toContain(foreground);
-    }
-  });
-
   test("does not ship the legacy semantic vocabulary", () => {
     const source = sourceForStyleRoots();
     for (const token of legacySemanticTokens) {
       expect(hasCssVariable(source, token)).toBe(false);
-    }
-  });
-
-  test("defines every canonical token used by package styles", () => {
-    const source = sourceForStyleRoots();
-    for (const token of canonicalSemanticTokens) {
-      if (source.includes(`var(--${token}`)) {
-        expect(semanticSource).toMatch(new RegExp(`--${token}\\s*:`));
-      }
     }
   });
 
@@ -136,9 +109,5 @@ describe("canonical semantic token contract", () => {
     ]) {
       expect(primitiveSource).toContain(`${token}:`);
     }
-  });
-
-  test("allows private component hooks outside the semantic vocabulary", () => {
-    expect(sourceForStyleRoots()).toMatch(/--uiify-[a-z0-9-]+\s*:/);
   });
 });

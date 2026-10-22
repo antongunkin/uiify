@@ -7,8 +7,8 @@
     gap: var(--space-xs);
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-lg);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
+    corner-shape: round;
     background-color: var(--card);
   }
 

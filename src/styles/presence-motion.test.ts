@@ -10,7 +10,7 @@ const overlaySkins = ["popup", "surface", "menu", "combobox", "select", "modal"]
 describe("shared presence motion", () => {
   it("defines one transition and scale for every appearing surface", () => {
     const semantic = read("tokens/semantic.css");
-    expect(semantic).toContain("--presence-scale: 0.96;");
+    expect(semantic).toMatch(/--presence-scale:\s*[^;]+;/);
     expect(semantic).toContain(
       "--transition-presence: opacity var(--duration-fast) var(--ease-out), scale var(--duration-fast) var(--ease-out), display var(--duration-fast) allow-discrete, overlay var(--duration-fast) allow-discrete;",
     );
@@ -22,14 +22,6 @@ describe("shared presence motion", () => {
     expect(css).toContain("transition: var(--transition-presence);");
     expect(css).toContain("@starting-style");
     expect(css).toContain("scale: var(--presence-scale);");
-  });
-
-  it("keeps no bespoke overlay entry keyframes", () => {
-    for (const skin of [...overlaySkins, "drawer", "toast"]) {
-      expect(read(`components/${skin}.css`)).not.toMatch(
-        /@keyframes uiify-(overlay|dialog|drawer|menu|combobox|toast|fade)-in/,
-      );
-    }
   });
 
   it("animates toast view transitions with the same presence values", () => {

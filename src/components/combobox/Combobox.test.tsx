@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { createRef, Profiler } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
@@ -368,17 +368,25 @@ describe("Combobox", () => {
     expect(screen.queryByRole("option")).toBeNull();
   });
 
-  it("rerenders at most two options when moving across a large list", () => {
-    const largeItems = Array.from({ length: 1000 }, (_, index) => ({
+  it("rerenders only the previous and next option subtrees", () => {
+    const largeItems = Array.from({ length: 100 }, (_, index) => ({
       label: `Item ${index}`,
       value: String(index),
     }));
-    const renders = Array.from({ length: 1000 }, () => 0);
+    const renders = Array.from({ length: 100 }, () => 0);
 
     function Item({ item }: { readonly item: ComboboxItemData }) {
       const index = Number(item.value);
-      renders[index] = (renders[index] ?? 0) + 1;
-      return <Combobox.Item item={item} />;
+      return (
+        <Profiler
+          id={item.value}
+          onRender={() => {
+            renders[index] = (renders[index] ?? 0) + 1;
+          }}
+        >
+          <Combobox.Item item={item} />
+        </Profiler>
+      );
     }
     Item.displayName = "Item";
 
@@ -394,7 +402,11 @@ describe("Combobox", () => {
     renders.fill(0);
     const input = screen.getByRole("combobox");
     fireEvent.keyDown(input, { key: "ArrowDown" });
+    renders.fill(0);
     fireEvent.keyDown(input, { key: "ArrowDown" });
+    const active = screen.getByRole("option", { name: "Item 1" });
+    expect(input.getAttribute("aria-activedescendant")).toBe(active.id);
+    expect(renders.slice(2).every((count) => count === 0)).toBe(true);
     expect(renders.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(2);
   });
 

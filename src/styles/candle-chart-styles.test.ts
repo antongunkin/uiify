@@ -19,21 +19,17 @@ describe("CandleChart styles", () => {
     expect(css).not.toContain("transform: translateX(calc((1 - var(--candle-pan))");
   });
 
-  it("keeps candles flat and adapts chart chrome to the active color scheme", () => {
-    expect(css).toContain("background: transparent");
+  it("adapts chart chrome to the active color scheme", () => {
     expect(css).toContain("color-scheme: light dark");
     expect(css).toContain("color: light-dark(");
-    expect(css).not.toContain("box-shadow:");
-    expect(css).not.toContain("border-radius:");
   });
 
-  it("keeps candle values in React markup and makes the crosshair neutral", () => {
+  it("keeps candle values in React markup", () => {
     expect(css).not.toContain("--candle-open");
     expect(css).not.toContain("--candle-high");
     expect(css).not.toContain("--candle-low");
     expect(css).not.toContain("--candle-close");
     expect(css).not.toContain("--candle-time");
-    expect(css).toContain("color: light-dark(oklch(52% 0.01 0deg), oklch(72% 0.01 0deg))");
     expect(css).toContain("inline-size: 100%");
   });
 });

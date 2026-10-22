@@ -53,10 +53,10 @@
     block-size: 100dvh;
     transform: var(--uiify-drawer-transform, none);
   }
-  [data-uiify-drawer][data-side="left"] {
+  [data-uiify-drawer][data-part="content"][data-side="left"] {
     margin-inline-end: auto;
   }
-  [data-uiify-drawer][data-side="right"] {
+  [data-uiify-drawer][data-part="content"][data-side="right"] {
     margin-inline-start: auto;
     border-start-end-radius: 0;
     border-end-end-radius: 0;

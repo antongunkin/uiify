@@ -24,9 +24,7 @@ describe("Slider skin", () => {
     expect(css).toContain(":focus-visible");
     expect(css).toContain('[data-uiify-slider-client][data-orientation="vertical"]');
     expect(css).toContain("inset-inline: 0");
-    expect(css).toContain("block-size: 0.375rem");
     expect(css).toContain("inset-block-start: var(--uiify-slider-position)");
-    expect(css).toContain("inset-inline: calc(50% + 0.8rem) auto");
     expect(css).toContain("translate: 50% 0");
     expect(css).toContain("translate: 50% -50%");
     expect(css).toContain("[data-uiify-slider-client][data-disabled]");

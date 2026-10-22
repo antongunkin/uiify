@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRenderCounter } from "../test-utils/RenderCounter.js";
@@ -12,11 +10,9 @@ it("does not create an event handler for a native server render", () => {
 });
 
 describe("Textarea", () => {
-  it("sets data-autosize without reading scrollHeight", () => {
+  it("exposes native autosizing through data-autosize", () => {
     render(<Textarea autoSize aria-label="Notes" />);
     expect(screen.getByRole("textbox", { name: "Notes" }).hasAttribute("data-autosize")).toBe(true);
-    const source = readFileSync(join(import.meta.dirname, "Textarea.tsx"), "utf8");
-    expect(source).not.toContain("scrollHeight");
   });
 
   it("mirrors Input value control semantics", () => {

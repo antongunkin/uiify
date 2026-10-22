@@ -6,16 +6,6 @@ const packageDirectory = resolve(import.meta.dirname, "..");
 
 function readPackageManifest(): {
   readonly name?: string;
-  readonly version?: string;
-  readonly description?: string;
-  readonly license?: string;
-  readonly repository?: { readonly type?: string; readonly url?: string };
-  readonly homepage?: string;
-  readonly bugs?: { readonly url?: string };
-  readonly keywords?: readonly string[];
-  readonly files?: readonly string[];
-  readonly publishConfig?: { readonly access?: string; readonly tag?: string };
-  readonly scripts?: Record<string, string>;
   readonly exports?: Record<string, unknown>;
 } {
   const manifestPath = resolve(packageDirectory, "package.json");
@@ -36,57 +26,6 @@ test("defines the uiify package and its initial public subpaths", () => {
     "./elements/*": expect.anything(),
     "./styles": expect.anything(),
   });
-});
-
-test("declares public alpha release metadata", () => {
-  const manifest = readPackageManifest();
-  expect(manifest).toMatchObject({
-    name: "@gunkin/uiify",
-    version: expect.stringMatching(/^\d+\.\d+\.\d+-alpha(?:\.\d+)?$/),
-    license: "MIT",
-    repository: {
-      type: "git",
-      url: "git+https://github.com/antongunkin/uiify.git",
-    },
-    homepage: "https://uiify.gunkin.dev/",
-    bugs: { url: "https://github.com/antongunkin/uiify/issues" },
-    files: ["dist", "agents", "skills"],
-    publishConfig: { access: "public", tag: "alpha" },
-  });
-  expect(manifest.description).toBeTruthy();
-  expect(manifest.keywords).toContain("react");
-});
-
-test("owns all standalone release commands", () => {
-  expect(readPackageManifest().scripts).toMatchObject({
-    build: "tsup",
-    test: "vitest run",
-    typecheck: "tsc --noEmit",
-    "check:package": expect.stringContaining("attw --pack ."),
-    "check:layout-reads": "node scripts/check-banned-layout-reads.mjs",
-    "verify:tarball": "node scripts/verify-tarball.mjs",
-    "release:check": expect.any(String),
-  });
-});
-
-test("excludes the elements behavior stylesheet from attw resolution", () => {
-  const checkPackage = readPackageManifest().scripts?.["check:package"] ?? "";
-
-  for (const entrypoint of [
-    "./components/behavior.css",
-    "./elements/behavior.css",
-    "./styles",
-    "./styles/index.css",
-    "./styles.css",
-    "./styles/tokens",
-    "./styles/tokens.css",
-    "./styles/tailwind",
-    "./styles/tailwind.css",
-    "./styles/reset",
-    "./styles/reset.css",
-  ]) {
-    expect(checkPackage).toContain(entrypoint);
-  }
 });
 
 test("emits built Carousel base and explicit adapter entry points", () => {

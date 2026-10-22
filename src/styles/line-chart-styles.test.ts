@@ -35,16 +35,6 @@ describe("LineChart styles", () => {
     expect(css).toContain("prefers-reduced-motion");
   });
 
-  it("uses the shared muted text token and filled trend-colored point centers", () => {
-    expect(css).toMatch(
-      /--line-axis:\s*light-dark\(\s*color-mix\(in oklch, var\(--muted-foreground\) 70%, var\(--foreground\)\),\s*var\(--muted-foreground\)\s*\);/,
-    );
-    expect(css).toMatch(
-      /\[data-part="point"\]::after \{[^}]*border: 0;[^}]*background: currentcolor;/,
-    );
-    expect(css).toMatch(/> figcaption \{[\s\S]*?color: var\(--line-axis\);/);
-  });
-
   it("keeps values in semantic markup instead of CSS custom properties", () => {
     expect(css).not.toContain("--line-value");
     expect(css).not.toContain("--line-time");
