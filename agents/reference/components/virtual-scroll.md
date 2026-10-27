@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `VirtualScroll`, `VIRTUAL_SCROLL_ANCHOR_THRESHOLD`, `VIRTUAL_SCROLL_OVERSCAN`, `VIRTUAL_SCROLL_ROW_HEIGHT`, `VIRTUAL_SCROLL_SCROLL_RESET_DELAY`
-- Types: `VirtualScrollAnchor`, `VirtualScrollHandle`, `VirtualScrollItem`, `VirtualScrollListRole`, `VirtualScrollOrientation`, `VirtualScrollOwnProps`, `VirtualScrollRangeChange`, `VirtualScrollRowSlot`, `VirtualScrollScrollAlign`, `VirtualScrollScrollBehavior`, `VirtualScrollScrollBehaviorOptions`, `VirtualScrollScrollState`, `VirtualScrollScrollToIndexOptions`
+- Types: `VirtualScrollAnchor`, `VirtualScrollHandle`, `VirtualScrollItem`, `VirtualScrollListRole`, `VirtualScrollOrientation`, `VirtualScrollOwnProps`, `VirtualScrollRangeChange`, `VirtualScrollRowSlot`, `VirtualScrollRowSlotProps`, `VirtualScrollScrollAlign`, `VirtualScrollScrollBehavior`, `VirtualScrollScrollBehaviorOptions`, `VirtualScrollScrollState`, `VirtualScrollScrollToIndexOptions`, `VirtualScrollSpacerSlotProps`, `VirtualScrollSlotProps`
 
 ## Values
 
@@ -30,6 +30,13 @@
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | yes |  |
+
+### VirtualScrollSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `row` | `VirtualScrollRowSlotProps` | no |  |
+| `spacer` | `VirtualScrollSpacerSlotProps` | no |  |
 
 ### VirtualScrollScrollBehaviorOptions
 
@@ -75,12 +82,13 @@ Extends: `Omit<ComponentPropsWithoutRef<"div">, "children" | "role">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `ref` | `Ref<HTMLDivElement>` | no |  |
 | `items` | `readonly T[]` | yes |  |
 | `height` | `number` | no | Scrollport height; also the viewport extent used before the first resize measurement. |
 | `rowHeight` | `number` | no | Fixed item size along the scroll axis — row height when vertical, item width when horizontal. |
 | `orientation` | `VirtualScrollOrientation` | no |  |
 | `overscan` | `number` | no |  |
-| `className` | `string` | no |  |
+| `className` | `string \| undefined` | no |  |
 | `testId` | `string` | no |  |
 | `renderRow` | `(item: T, index: number) => ReactNode` | yes |  |
 | `scrollRef` | `Ref<VirtualScrollHandle>` | no |  |
@@ -91,6 +99,22 @@ Extends: `Omit<ComponentPropsWithoutRef<"div">, "children" | "role">`
 | `followAppend` | `boolean \| "smooth"` | no |  |
 | `onScrollStateChange` | `(state: VirtualScrollScrollState) => void` | no |  |
 | `isScrollingResetDelay` | `number` | no |  |
+| `slotProps` | `VirtualScrollSlotProps` | no |  |
+
+### VirtualScrollRowShellProps
+
+Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-posinset" | "aria-setsize" | "children" | "data-dynamic-row" | "data-part" | "data-row-index" | "dangerouslySetInnerHTML" | "role">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | yes |  |
+| `dynamicLayout` | `boolean` | yes |  |
+| `index` | `number` | yes |  |
+| `itemCount` | `number` | yes |  |
+| `listRole` | `VirtualScrollListRole` | yes |  |
+| `rowOffset` | `number` | no |  |
+| `rowHeight` | `number` | no |  |
+| `slotIndex` | `number` | yes |  |
 
 ### VirtualScrollRowSlot
 
@@ -99,3 +123,8 @@ Extends: `Omit<ComponentPropsWithoutRef<"div">, "children" | "role">`
 | `slotIndex` | `number` | yes |  |
 | `index` | `number` | yes |  |
 | `item` | `T \| null` | yes |  |
+
+## Other types
+
+- `VirtualScrollRowSlotProps`: `RepeatedSlotProps<VirtualScrollRowNativeProps, VirtualScrollRowOwnedProps> & { readonly byItemIndex?: Readonly<Record<number, VirtualScrollRowNativeProps & ConsumerDataAttributes & VirtualScrollRowOwnedProps>>; }`
+- `VirtualScrollSpacerSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part"> & { readonly "data-part"?: never; } & ConsumerDataAttributes`

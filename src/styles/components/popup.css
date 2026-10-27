@@ -5,8 +5,15 @@
     [data-uiify-popover][data-part="surface"],
     [data-uiify-popup][data-part="content"],
     [data-uiify-hover-card][data-part="content"]
-  ) {
+  ):where(:not([popover]), :popover-open) {
     display: flex;
+  }
+
+  :where(
+    [data-uiify-popover][data-part="surface"],
+    [data-uiify-popup][data-part="content"],
+    [data-uiify-hover-card][data-part="content"]
+  ) {
     flex-direction: column;
     gap: var(--space-sm);
     inline-size: max-content;
@@ -28,8 +35,11 @@
     display: none;
   }
 
-  [data-uiify-tooltip] {
+  [data-uiify-tooltip]:where(:not([popover]), :popover-open) {
     display: block;
+  }
+
+  [data-uiify-tooltip] {
     inline-size: max-content;
     max-inline-size: 16rem;
     padding-block: var(--space-xs);

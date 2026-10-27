@@ -72,7 +72,18 @@ describe("Combobox", () => {
           data-testid="control"
           ref={controlRef}
         >
-          <Combobox.Tags />
+          <Combobox.Tags
+            slotProps={{
+              tag: {
+                byItemValue: { apple: { className: "apple-tag", "data-testid": "apple-tag" } },
+              },
+              remove: {
+                byItemValue: {
+                  apple: { className: "apple-remove", "data-testid": "apple-remove" },
+                },
+              },
+            }}
+          />
           <Combobox.Input aria-label="Fruit" />
         </Combobox.Control>
         <Combobox.Content>{() => null}</Combobox.Content>
@@ -86,6 +97,8 @@ describe("Combobox", () => {
     expect(control.getAttribute("data-part")).toBe("control");
     expect(controlRef.current).toBe(control);
     expect(control.querySelector('[data-part="tags"]')).not.toBeNull();
+    expect(screen.getByTestId("apple-tag").classList.contains("apple-tag")).toBe(true);
+    expect(screen.getByTestId("apple-remove").classList.contains("apple-remove")).toBe(true);
     expect(screen.getByText("Apple").getAttribute("data-part")).toBe("tag");
     expect(screen.getByRole("button", { name: "Remove Apple" }).getAttribute("data-part")).toBe(
       "tag-remove",
@@ -167,15 +180,47 @@ describe("Combobox", () => {
     render(
       <Combobox.Root defaultOpen inputValue="" items={items} onInputValueChange={() => {}}>
         <Combobox.Input aria-label="Fruit" />
-        <Combobox.Content>
+        <Combobox.Content data-testid="fruit-listbox" title="Filtered fruit">
           {(filteredItems) =>
-            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+            filteredItems.map((item) => (
+              <Combobox.Item
+                className="fruit-option"
+                data-testid={`option-${item.value}`}
+                item={item}
+                key={item.value}
+              />
+            ))
           }
         </Combobox.Content>
       </Combobox.Root>,
     );
 
     expect(screen.getAllByRole("option")).toHaveLength(3);
+    expect(screen.getByTestId("fruit-listbox").getAttribute("title")).toBe("Filtered fruit");
+    expect(screen.getByTestId("option-apple").classList.contains("fruit-option")).toBe(true);
+  });
+
+  it("forwards native props to the empty state and generated listbox", () => {
+    render(
+      <Combobox.Root defaultInputValue="not found" defaultOpen items={items}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content data-testid="fruit-listbox">
+          {(filteredItems) =>
+            filteredItems.length === 0 ? (
+              <Combobox.Empty className="no-results" data-testid="empty" title="No match">
+                No results
+              </Combobox.Empty>
+            ) : (
+              filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+            )
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    expect(screen.getByTestId("fruit-listbox").getAttribute("role")).toBe("listbox");
+    expect(screen.getByTestId("empty").classList.contains("no-results")).toBe(true);
+    expect(screen.getByTestId("empty").getAttribute("title")).toBe("No match");
   });
 
   it("derives filtered items from inputValue", () => {

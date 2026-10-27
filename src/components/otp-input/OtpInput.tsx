@@ -12,7 +12,7 @@ import {
   type ReactElement,
   type SyntheticEvent,
 } from "react";
-import { useControllableState, useId } from "@gunkin/uiify/hooks";
+import { useControllableState, useId, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext } from "@gunkin/uiify/core";
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
@@ -149,6 +149,7 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
     as,
     render,
     autoFocus: autoFocusProp,
+    ref: consumerRef,
     style: consumerStyle,
     ...consumerProps
   } = props as PolymorphicProps<"input", { readonly autoFocus?: boolean }>;
@@ -165,6 +166,7 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
     updateValue,
     value,
   } = useOtpInputContext("HiddenInput");
+  const mergedRef = useMergedRefs(consumerRef, hiddenInputRef);
   const inputId = useId();
   const autoFocus = autoFocusProp ?? rootAutoFocus;
   const {
@@ -205,7 +207,7 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
       ...consumerProps,
       "data-part": "control",
       id: inputId,
-      ref: hiddenInputRef,
+      ref: mergedRef,
       type: mask ? "password" : "text",
       inputMode: type === "numeric" ? "numeric" : "text",
       autoComplete: "one-time-code",

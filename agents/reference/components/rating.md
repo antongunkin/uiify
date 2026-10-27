@@ -15,11 +15,11 @@
 ## Exports
 
 - Runtime: `Rating`
-- Types: `RatingProps`
+- Types: `RatingOwnProps`, `RatingProps`, `RatingSlotProps`
 
 ## Props and shapes
 
-### RatingProps
+### RatingOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -30,6 +30,7 @@
 | `disabled` | `boolean` | no |  |
 | `className` | `string` | no |  |
 | `"aria-label"` | `string` | no |  |
+| `slotProps` | `RatingSlotProps` | no | Props for each generated item, radio input, or label. Values target one rating item. |
 
 ### RatingClientProps
 
@@ -39,6 +40,11 @@ Extends: `RatingProps`
 | --- | --- | --- | --- |
 | `value` | `number` | no |  |
 | `onValueChange` | `(value: number) => void` | no |  |
+
+## Other types
+
+- `RatingSlotProps`: `ChoiceOptionSlotProps`
+- `RatingProps`: `RatingOwnProps & Omit<ComponentPropsWithRef<"div">, | keyof RatingOwnProps | "children" | "dangerouslySetInnerHTML" | "data-orientation" | "data-part" | "data-uiify-choice" | "data-uiify-rating"> & ConsumerDataAttributes & { readonly "data-orientation"?: never; readonly "data-uiify-choice"?: never; readonly "data-uiify-rating"?: never; }`
 
 ## Sub-entries
 

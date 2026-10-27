@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 // jsdom does not implement the Popover API at all (no showPopover/hidePopover,
@@ -32,6 +33,44 @@ describe("Tooltip", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  it("forwards native props, classes, styles, and refs through its public DOM parts", async () => {
+    const { Tooltip: ClientTooltip } = await loadClientTooltip();
+    const triggerRef = createRef<HTMLButtonElement>();
+    const contentRef = createRef<HTMLDivElement>();
+
+    render(
+      <ClientTooltip.Provider>
+        <ClientTooltip.Root>
+          <ClientTooltip.Trigger
+            className="custom-trigger"
+            data-testid="tooltip-trigger"
+            style={{ color: "red" }}
+            ref={triggerRef}
+          >
+            Help
+          </ClientTooltip.Trigger>
+          <ClientTooltip.Content
+            className="custom-content"
+            data-testid="tooltip-content"
+            style={{ color: "blue" }}
+            ref={contentRef}
+          >
+            Hint
+          </ClientTooltip.Content>
+        </ClientTooltip.Root>
+      </ClientTooltip.Provider>,
+    );
+
+    const trigger = screen.getByTestId("tooltip-trigger");
+    const content = screen.getByTestId("tooltip-content");
+    expect(trigger.className).toBe("custom-trigger");
+    expect(trigger.style.color).toBe("red");
+    expect(triggerRef.current).toBe(trigger);
+    expect(content.className).toBe("custom-content");
+    expect(content.style.color).toBe("blue");
+    expect(contentRef.current).toBe(content);
   });
 
   it("opens after delayDuration on hover and immediately on focus", async () => {

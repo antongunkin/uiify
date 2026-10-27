@@ -11,8 +11,10 @@ export function ToggleGroup({
   orientation = "horizontal",
   size,
   className,
+  slotProps,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
+  ...rootProps
 }: ToggleGroupProps): ReactElement {
   const values = Array.isArray(defaultValue) ? defaultValue : [defaultValue];
   const resolvedItems = items.map((item) => ({
@@ -23,6 +25,7 @@ export function ToggleGroup({
   return (
     <ChoiceGroup<ToggleGroupItem>
       {...(className !== undefined ? { className } : {})}
+      rootProps={rootProps}
       id={id}
       items={resolvedItems}
       isChecked={(item) => values.includes(item.value)}
@@ -34,6 +37,7 @@ export function ToggleGroup({
         ...(size !== undefined ? { "data-size": size } : {}),
       }}
       orientation={orientation}
+      {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{
         role: type === "single" ? "radiogroup" : "group",
         "aria-label": ariaLabel,

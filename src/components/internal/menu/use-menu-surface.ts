@@ -17,10 +17,11 @@ import type { UseMenuSurfaceOptions, UseMenuSurfaceReturn } from "./types.js";
  * so the menu compounds were merging them into their DOM ref for nothing.
  */
 export function useMenuSurface(options: UseMenuSurfaceOptions): UseMenuSurfaceReturn {
-  const { align, defaultOpen, mode, onOpenChange, open, side } = options;
+  const { align, defaultOpen, id, mode, onOpenChange, open, side } = options;
   const triggerRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const popover = usePopover({
+    ...(id !== undefined ? { id } : {}),
     mode,
     ...(defaultOpen !== undefined ? { defaultOpen } : {}),
     ...(open !== undefined ? { open } : {}),

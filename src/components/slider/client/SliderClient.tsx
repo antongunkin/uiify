@@ -11,9 +11,19 @@ import { useEffect, useState } from "react";
 import { useControllableState } from "@gunkin/uiify/hooks";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
+import {
+  mergeRepeatedSlotProps,
+  omitProps,
+  resolveRepeatedSlotProps,
+} from "../../../core/slot-props.js";
 
 import { getSliderStops, snapSliderToStops } from "../slider-values.js";
-import type { SliderClientProps, SliderClientValue, SliderMark } from "../types.js";
+import type {
+  SliderClientProps,
+  SliderClientSlotProps,
+  SliderClientValue,
+  SliderMark,
+} from "../types.js";
 
 const DEFAULT_SLIDER_LABELS = {
   minimum: "Minimum value",
@@ -65,6 +75,21 @@ function marksInRange(
   return marks.filter(({ value }) => Number.isFinite(value) && value >= min && value <= max);
 }
 
+function resolveMarkSlotProps(
+  slotProps: SliderClientSlotProps["mark"],
+  markValue: number,
+  index: number,
+) {
+  const { byItemValue, byItemIndex, ...commonProps } = slotProps ?? {};
+  return omitProps(
+    mergeRepeatedSlotProps(
+      mergeRepeatedSlotProps(commonProps, byItemValue?.[String(markValue)]),
+      byItemIndex?.[index],
+    ),
+    ["children", "dangerouslySetInnerHTML", "data-part"],
+  );
+}
+
 export function SliderClient<TAs extends ElementType = "div">(
   props: SliderClientProps<TAs>,
 ): ReactElement | null {
@@ -81,6 +106,7 @@ export function SliderClient<TAs extends ElementType = "div">(
     orientation = "horizontal",
     marks = [],
     labels,
+    slotProps,
     thumbLabels,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
@@ -174,7 +200,26 @@ export function SliderClient<TAs extends ElementType = "div">(
     if (nextValue !== undefined) setThumbValue(index, nextValue);
   };
 
+  const thumbKeys = isRange ? (["minimum", "maximum"] as const) : (["value"] as const);
   const inputNodes = values.map((currentValue, index) => {
+    const thumbKey = thumbKeys[index]!;
+    const inputProps = resolveRepeatedSlotProps(slotProps?.input, thumbKey, [
+      "aria-label",
+      "aria-labelledby",
+      "aria-orientation",
+      "data-disabled",
+      "data-orientation",
+      "data-part",
+      "data-state",
+      "defaultChecked",
+      "defaultValue",
+      "disabled",
+      "max",
+      "min",
+      "step",
+      "type",
+      "value",
+    ]);
     const inputLabel = isRange
       ? (thumbLabels?.[index] ??
         (index === 0 ? accessibleLabels.minimum : accessibleLabels.maximum))
@@ -183,6 +228,7 @@ export function SliderClient<TAs extends ElementType = "div">(
 
     return (
       <input
+        {...inputProps}
         key={index}
         type="range"
         min={min}
@@ -197,8 +243,14 @@ export function SliderClient<TAs extends ElementType = "div">(
         data-state={String(currentValue)}
         data-orientation={orientation}
         data-disabled={disabled ? "" : undefined}
-        onChange={(event) => handleChange(index, event)}
-        onKeyDown={(event) => handleKeyDown(index, event)}
+        onChange={(event) => {
+          inputProps.onChange?.(event);
+          if (!event.defaultPrevented) handleChange(index, event);
+        }}
+        onKeyDown={(event) => {
+          inputProps.onKeyDown?.(event);
+          if (!event.defaultPrevented) handleKeyDown(index, event);
+        }}
       />
     );
   });
@@ -221,24 +273,53 @@ export function SliderClient<TAs extends ElementType = "div">(
       style: rootStyle,
       children: (
         <>
-          <div data-part="track" aria-hidden="true">
-            <span data-part="range" />
-            {visibleMarks.map((mark) => (
-              <span
-                key={mark.value}
-                data-part="mark"
-                style={
-                  {
-                    "--uiify-slider-position": String(position(mark.value, min, max)) + "%",
-                  } as SliderPositionStyle
-                }
-              >
-                {mark.label}
-              </span>
-            ))}
-            {positionStyles.map((style, index) => (
-              <span key={index} data-part="visual-thumb" style={style} />
-            ))}
+          <div
+            {...omitProps(slotProps?.track, [
+              "aria-hidden",
+              "children",
+              "dangerouslySetInnerHTML",
+              "data-part",
+            ])}
+            data-part="track"
+            aria-hidden="true"
+          >
+            <span
+              {...omitProps(slotProps?.range, ["children", "dangerouslySetInnerHTML", "data-part"])}
+              data-part="range"
+            />
+            {visibleMarks.map((mark, index) => {
+              const markProps = resolveMarkSlotProps(slotProps?.mark, mark.value, index);
+              return (
+                <span
+                  {...markProps}
+                  key={index}
+                  data-part="mark"
+                  style={
+                    {
+                      ...markProps.style,
+                      "--uiify-slider-position": String(position(mark.value, min, max)) + "%",
+                    } as SliderPositionStyle
+                  }
+                >
+                  {mark.label}
+                </span>
+              );
+            })}
+            {positionStyles.map((style, index) => {
+              const thumbProps = resolveRepeatedSlotProps(
+                slotProps?.visualThumb,
+                thumbKeys[index]!,
+                ["data-part"],
+              );
+              return (
+                <span
+                  {...thumbProps}
+                  key={index}
+                  data-part="visual-thumb"
+                  style={{ ...thumbProps.style, ...style }}
+                />
+              );
+            })}
           </div>
           {inputNodes}
         </>

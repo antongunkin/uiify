@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `Combobox`, `ComboboxControl`, `ComboboxContent`, `ComboboxEmpty`, `ComboboxInput`, `ComboboxItem`, `ComboboxRoot`, `ComboboxTags`, `ComboboxTrigger`
-- Types: `ComboboxContentOwnProps`, `ComboboxControlOwnProps`, `ComboboxControlProps`, `ComboboxEmptyOwnProps`, `ComboboxFilterFn`, `ComboboxInputOwnProps`, `ComboboxInputProps`, `ComboboxItemData`, `ComboboxItemOwnProps`, `ComboboxRootControlledOwnProps`, `ComboboxRootShellOwnProps`, `ComboboxRootShellProps`, `ComboboxRootProps`, `ComboboxTagsOwnProps`, `ComboboxTagsProps`, `ComboboxTriggerOwnProps`, `ComboboxTriggerProps`
+- Types: `ComboboxContentOwnProps`, `ComboboxControlOwnProps`, `ComboboxControlProps`, `ComboboxEmptyOwnProps`, `ComboboxFilterFn`, `ComboboxInputOwnProps`, `ComboboxInputProps`, `ComboboxItemData`, `ComboboxItemOwnProps`, `ComboboxRootControlledOwnProps`, `ComboboxRootShellOwnProps`, `ComboboxRootShellProps`, `ComboboxRootProps`, `ComboboxTagsOwnProps`, `ComboboxTagsSlotProps`, `ComboboxTagsProps`, `ComboboxTriggerOwnProps`, `ComboboxTriggerProps`
 
 ## Values
 
@@ -151,6 +151,14 @@ Extends: `Omit<ComboboxRootShellOwnProps, "defaultValue">`, `Omit<ComboboxRootCo
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
+| `slotProps` | `ComboboxTagsSlotProps` | no |  |
+
+### ComboboxTagsSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `tag` | `ComboboxRepeatedSlotProps<"span">` | no |  |
+| `remove` | `ComboboxRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly type?: never }>` | no |  |
 
 ### ComboboxInputOwnProps
 
@@ -165,28 +173,30 @@ Extends: `Omit<ComboboxRootShellOwnProps, "defaultValue">`, `Omit<ComboboxRootCo
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
 
-### ComboboxContentOwnProps
-
-| Member | Type | Required | Description |
-| --- | --- | --- | --- |
-| `align` | `AnchorAlign` | no |  |
-| `children` | `(filteredItems: ComboboxItemData[]) => ReactNode` | yes |  |
-| `className` | `string` | no |  |
-| `side` | `AnchorSide` | no |  |
-
 ### ComboboxItemOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-disabled" | "aria-selected" | "children" | "data-disabled" | "data-highlighted" | "data-part" | "data-selected" | "dangerouslySetInnerHTML" | "id" | "role">`, `ConsumerDataAttributes`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `"aria-disabled"` | `never` | no |  |
+| `"aria-selected"` | `never` | no |  |
 | `className` | `string` | no |  |
+| `"data-disabled"` | `never` | no |  |
+| `"data-highlighted"` | `never` | no |  |
+| `"data-part"` | `never` | no |  |
+| `"data-selected"` | `never` | no |  |
 | `item` | `ComboboxItemData` | yes |  |
 
 ### ComboboxEmptyOwnProps
+
+Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "data-part" | "dangerouslySetInnerHTML" | "role">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
+| `"data-part"` | `never` | no |  |
 
 ## Other types
 
@@ -196,3 +206,4 @@ Extends: `Omit<ComboboxRootShellOwnProps, "defaultValue">`, `Omit<ComboboxRootCo
 - `ComboboxTagsProps<TAs>`: `RenderableProps<TAs, ComboboxTagsOwnProps, Record<string, never>, HTMLElement>`
 - `ComboboxInputProps<TAs>`: `RenderableProps<TAs, ComboboxInputOwnProps, { open: boolean }, HTMLInputElement>`
 - `ComboboxTriggerProps<TAs>`: `RenderableProps<TAs, ComboboxTriggerOwnProps, { open: boolean }, HTMLElement>`
+- `ComboboxContentOwnProps`: `Omit<ComponentPropsWithRef<"div">, | "aria-multiselectable" | "children" | "className" | "data-align" | "data-part" | "data-side" | "data-state" | "dangerouslySetInnerHTML" | "id" | "role"> & ConsumerDataAttributes & { readonly "aria-multiselectable"?: never; readonly "data-align"?: never; readonly "data-part"?: never; readonly "data-side"?: never; readonly "data-state"?: never; readonly align?: AnchorAlign; readonly children: (filteredItems: ComboboxItemData[]) => ReactNode; readonly className?: string; readonly side?: AnchorSide; }`

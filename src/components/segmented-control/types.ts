@@ -1,8 +1,15 @@
-import type { ChoiceItem, ChoiceOrientation } from "../internal/choice-family/types.js";
+import type {
+  ChoiceGroupRootProps,
+  ChoiceOptionSlotProps,
+  ChoiceItem,
+  ChoiceOrientation,
+} from "../internal/choice-family/types.js";
+
+export type SegmentedControlSlotProps = ChoiceOptionSlotProps;
 
 export interface SegmentedControlItem extends ChoiceItem {}
 
-export interface SegmentedControlProps {
+export interface SegmentedControlProps extends ChoiceGroupRootProps {
   readonly id: string;
   readonly items: readonly SegmentedControlItem[];
   readonly defaultValue?: string;
@@ -10,8 +17,7 @@ export interface SegmentedControlProps {
   readonly orientation?: ChoiceOrientation;
   readonly fullWidth?: boolean;
   readonly className?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
+  readonly slotProps?: SegmentedControlSlotProps;
 }
 
 export interface SegmentedControlClientProps extends SegmentedControlProps {

@@ -31,6 +31,41 @@ describe("FormErrorSummary", () => {
     expect(container.innerHTML).toBe("");
   });
 
+  it("forwards native props to generated parts and targets repeated errors by href", () => {
+    render(
+      <FormErrorSummary
+        title="There is a problem"
+        errors={[
+          { href: "#email", message: "Enter a valid email address" },
+          { href: "#password", message: "Choose a longer password" },
+        ]}
+        slotProps={{
+          title: { className: "summary-title", "data-testid": "summary-title" },
+          list: { "data-testid": "error-list" },
+          item: { byItemValue: { "#email": { "data-testid": "email-item" } } },
+          link: {
+            byItemValue: {
+              "#email": {
+                className: "email-link",
+                title: "Fix email",
+                "data-testid": "email-link",
+              },
+            },
+          },
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("summary-title").classList.contains("summary-title")).toBe(true);
+    expect(screen.getByTestId("error-list").tagName).toBe("UL");
+    expect(screen.getByTestId("email-item").tagName).toBe("LI");
+    expect(screen.getByTestId("email-link").getAttribute("href")).toBe("#email");
+    expect(screen.getByTestId("email-link").getAttribute("title")).toBe("Fix email");
+    expect(
+      screen.getByRole("link", { name: "Choose a longer password" }).getAttribute("href"),
+    ).toBe("#password");
+  });
+
   it("preserves consumer attributes and makes the identity marker immutable", () => {
     render(
       <FormErrorSummary

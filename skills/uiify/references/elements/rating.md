@@ -14,7 +14,7 @@ Do not use stars for a binary choice or as the only way to report a detailed eva
 
 ## Structure
 
-Use the documented Rating with a stable id, a group name in aria-label, and an appropriate max. Each radio option exposes its star count as text; pair the scale with visible instructions that explain what low and high values mean.
+Use the documented Rating with a stable id, a group name in aria-label, and an appropriate max. Each radio option exposes its star count as text; pair the scale with visible instructions that explain what low and high values mean. Use slotProps.item, slotProps.input, and slotProps.label to style or add native attributes to generated parts; byItemValue targets the item's numeric string, such as "3".
 
 ## Responsive
 

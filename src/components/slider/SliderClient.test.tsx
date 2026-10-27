@@ -1,11 +1,88 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToStaticMarkup, renderToString } from "react-dom/server";
+import type { ChangeEvent } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { SliderClient } from "./client/SliderClient.js";
 
 describe("SliderClient", () => {
+  it("forwards native props, classes and events to generated slider parts", () => {
+    const onLowerChange = vi.fn();
+    const onMinimumKeyDown = vi.fn();
+    const onValueChange = vi.fn();
+    const { container } = render(
+      <SliderClient
+        defaultValue={[20, 80]}
+        marks={[
+          { value: 50, label: "Half" },
+          { value: 50, label: "Repeated half" },
+        ]}
+        thumbLabels={["Minimum", "Maximum"]}
+        onValueChange={onValueChange}
+        slotProps={{
+          track: { className: "track", "data-testid": "track" },
+          range: { className: "range" },
+          mark: {
+            className: "mark",
+            byItemValue: { "50": { className: "value-50" } },
+            byItemIndex: { 1: { "data-testid": "mark-duplicate" } },
+          },
+          visualThumb: {
+            byItemValue: {
+              minimum: { "data-testid": "visual-minimum" },
+              maximum: { "data-testid": "visual-maximum" },
+            },
+          },
+          input: {
+            byItemValue: {
+              minimum: {
+                className: "lower-thumb",
+                onChange: onLowerChange,
+                onKeyDown: onMinimumKeyDown,
+              },
+            },
+          },
+        }}
+      />,
+    );
+    const lower = screen.getByRole("slider", { name: "Minimum" });
+
+    expect(screen.getByTestId("track").className).toContain("track");
+    expect(container.querySelector('[data-part="range"]')?.className).toContain("range");
+    const firstMark = screen.getByText("Half").closest('[data-part="mark"]')!;
+    expect(firstMark.className).toContain("mark value-50");
+    expect(screen.getByTestId("mark-duplicate").textContent).toBe("Repeated half");
+    expect(screen.getByTestId("visual-minimum")).toBeTruthy();
+    expect(screen.getByTestId("visual-maximum")).toBeTruthy();
+    expect(lower.className).toContain("lower-thumb");
+
+    fireEvent.change(lower, { target: { value: "30" } });
+    fireEvent.keyDown(lower, { key: "ArrowRight" });
+    expect(onLowerChange).toHaveBeenCalledOnce();
+    expect(onMinimumKeyDown).toHaveBeenCalledOnce();
+    expect(onValueChange).toHaveBeenCalledWith([30, 80]);
+  });
+
+  it("lets an input slot cancel the internal value update", () => {
+    const onChange = vi.fn((event: ChangeEvent<HTMLInputElement>) => event.preventDefault());
+    const onValueChange = vi.fn();
+    render(
+      <SliderClient
+        defaultValue={40}
+        aria-label="Volume"
+        onValueChange={onValueChange}
+        slotProps={{ input: { byItemValue: { value: { onChange } } } }}
+      />,
+    );
+    const input = screen.getByRole("slider", { name: "Volume" }) as HTMLInputElement;
+
+    fireEvent.change(input, { target: { value: "60" } });
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(input.value).toBe("40");
+  });
+
   it("server-renders one native range input for a single value", () => {
     const html = renderToStaticMarkup(<SliderClient defaultValue={40} aria-label="Volume" />);
     expect(html).toContain('type="range"');

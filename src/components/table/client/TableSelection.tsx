@@ -3,10 +3,10 @@
 import { useCallback, useSyncExternalStore } from "react";
 import type { ReactElement } from "react";
 import { NativeCheckControl } from "../../internal/native-check-control/NativeCheckControl.js";
-import type { TableRowSelectOwnProps } from "../types.js";
+import type { TableRowSelectOwnProps, TableSelectAllOwnProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
 
-export function TableSelectAll(): ReactElement {
+export function TableSelectAll({ slotProps }: TableSelectAllOwnProps = {}): ReactElement {
   const { store, instanceId } = useTableContext("SelectAll");
   const selectionState = useSyncExternalStore(
     store.subscribeSelection,
@@ -24,12 +24,13 @@ export function TableSelectAll(): ReactElement {
       label="Select all rows"
       checked={checked}
       onCheckedChange={handleChange}
+      {...(slotProps ? { slotProps } : {})}
     />
   );
 }
 TableSelectAll.displayName = "TableSelectAll";
 
-export function TableRowSelect({ rowId }: TableRowSelectOwnProps): ReactElement {
+export function TableRowSelect({ rowId, slotProps }: TableRowSelectOwnProps): ReactElement {
   const { store, instanceId } = useTableContext("RowSelect");
   const selected = useSyncExternalStore(
     (listener) => store.subscribeRow(rowId, listener),
@@ -43,6 +44,7 @@ export function TableRowSelect({ rowId }: TableRowSelectOwnProps): ReactElement 
       label="Select row"
       checked={selected}
       onCheckedChange={() => store.toggleRow(rowId)}
+      {...(slotProps ? { slotProps } : {})}
     />
   );
 }

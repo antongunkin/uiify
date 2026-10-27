@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import type { MouseEvent } from "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { Toast, useToast } from "./Toast.js";
 
@@ -97,6 +98,24 @@ describe("Toast client", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 
+  it("forwards native props directly to the public Toast.Root element", () => {
+    render(
+      <Toast.Provider>
+        <Toast.Root
+          toast={{ id: "authored", duration: 0, priority: "polite", title: "Authored toast" }}
+          className="authored-toast"
+          data-testid="authored-toast"
+          style={{ order: 3 }}
+        />
+      </Toast.Provider>,
+    );
+
+    const root = screen.getByTestId("authored-toast");
+    expect(root.className).toBe("authored-toast");
+    expect(root.getAttribute("style")).toContain("order: 3");
+    expect(root.getAttribute("data-part")).toBe("item");
+  });
+
   it("passes provider label overrides to the live viewport and generated toast controls", () => {
     function UntitledToastHarness() {
       const { toast } = useToast();
@@ -145,6 +164,87 @@ describe("Toast client", () => {
     expect(
       screen.getByRole("button", { name: "Close", hidden: true }).getAttribute("data-part"),
     ).toBe("close");
+  });
+
+  it("forwards slot props to generated viewport, toast content, and live-region nodes", () => {
+    const action = vi.fn();
+    function SlottedToastHarness() {
+      const { toast } = useToast();
+      return (
+        <>
+          <button
+            type="button"
+            onClick={() =>
+              toast({
+                id: "saved",
+                title: "Saved",
+                duration: 0,
+                action: { label: "Undo", onClick: action },
+              })
+            }
+          >
+            Show slotted toast
+          </button>
+          <Toast.Viewport
+            className="toast-viewport-class"
+            data-testid="custom-toast-viewport"
+            slotProps={
+              {
+                item: {
+                  className: "toast-item-common",
+                  "data-testid": "toast-item-common",
+                  byItemValue: {
+                    saved: { className: "toast-item-saved", "data-testid": "toast-item-saved" },
+                  },
+                },
+                title: { className: "toast-title", "data-testid": "toast-title" },
+                action: {
+                  dangerouslySetInnerHTML: { __html: "<b>unsafe action</b>" },
+                  byItemValue: { saved: { "data-testid": "toast-action-saved" } },
+                  onClick: (event: MouseEvent<HTMLButtonElement>) => event.preventDefault(),
+                },
+                close: { "data-testid": "toast-close" },
+              } as never
+            }
+          />
+        </>
+      );
+    }
+    SlottedToastHarness.displayName = "SlottedToastHarness";
+
+    render(
+      <Toast.Provider
+        slotProps={
+          {
+            politeLiveRegion: {
+              className: "polite-region",
+              "data-testid": "polite-region",
+              dangerouslySetInnerHTML: { __html: "<b>unsafe announcement</b>" },
+            },
+            assertiveLiveRegion: {
+              className: "assertive-region",
+              "data-testid": "assertive-region",
+            },
+          } as never
+        }
+      >
+        <SlottedToastHarness />
+      </Toast.Provider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Show slotted toast" }));
+
+    expect(screen.getByTestId("custom-toast-viewport").className).toBe("toast-viewport-class");
+    expect(screen.getByTestId("toast-item-saved").className).toBe(
+      "toast-item-common toast-item-saved",
+    );
+    expect(screen.getByTestId("toast-title").className).toBe("toast-title");
+    expect(screen.getByTestId("toast-close")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("toast-action-saved"));
+    expect(action).not.toHaveBeenCalled();
+    expect(screen.getByTestId("toast-item-saved")).toBeTruthy();
+    expect(screen.getByTestId("polite-region").getAttribute("aria-live")).toBe("polite");
+    expect(screen.getByTestId("assertive-region").getAttribute("aria-live")).toBe("assertive");
   });
 
   it("auto-dismisses after duration", () => {

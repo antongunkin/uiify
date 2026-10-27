@@ -8,11 +8,14 @@ export type {
   VirtualScrollOwnProps,
   VirtualScrollRangeChange,
   VirtualScrollRowSlot,
+  VirtualScrollRowSlotProps,
   VirtualScrollScrollAlign,
   VirtualScrollScrollBehavior,
   VirtualScrollScrollBehaviorOptions,
   VirtualScrollScrollState,
   VirtualScrollScrollToIndexOptions,
+  VirtualScrollSpacerSlotProps,
+  VirtualScrollSlotProps,
 } from "./types.js";
 export {
   VIRTUAL_SCROLL_ANCHOR_THRESHOLD,

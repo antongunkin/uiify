@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import type { ComponentProps } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
@@ -84,6 +85,25 @@ describe("OtpInput", () => {
       </OtpInput.Root>,
     );
     expect((screen.getByLabelText("One-time code") as HTMLInputElement).value).toBe("000000");
+  });
+
+  it("allows direct styling, refs, and data attributes on each public part", () => {
+    const rootRef = createRef<HTMLDivElement>();
+    const slotRef = createRef<HTMLDivElement>();
+    const inputRef = createRef<HTMLInputElement>();
+    render(
+      <OtpInput.Root ref={rootRef} className="otp-root" data-testid="otp-root">
+        <OtpInput.Slot index={0} ref={slotRef} className="otp-slot" data-testid="otp-slot" />
+        <OtpInput.HiddenInput ref={inputRef} className="otp-input" data-testid="otp-input" />
+      </OtpInput.Root>,
+    );
+
+    expect(screen.getByTestId("otp-root").className).toBe("otp-root");
+    expect(screen.getByTestId("otp-slot").className).toBe("otp-slot");
+    expect(screen.getByTestId("otp-input").className).toBe("otp-input");
+    expect(rootRef.current).toBe(screen.getByTestId("otp-root"));
+    expect(slotRef.current).toBe(screen.getByTestId("otp-slot"));
+    expect(inputRef.current).toBe(screen.getByTestId("otp-input"));
   });
 
   it("renders consistent SSR markup", () => {

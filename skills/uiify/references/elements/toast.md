@@ -15,6 +15,7 @@ Do not use a timed toast for errors that require correction, critical informatio
 ## Structure
 
 Place a live `ToastViewport` beside the client provider and enqueue a concise title/description. Include an explicit close control; add one short action only when undo or a direct follow-up is useful.
+Style generated queue nodes with `Toast.Viewport`'s `slotProps` (`item`, `title`, `description`, `action`, `close`). Repeated slots accept `byItemValue`, keyed by the toast record id. Configure the provider's generated polite and assertive announcement elements with `Toast.Provider`'s `slotProps` (`politeLiveRegion`, `assertiveLiveRegion`).
 
 ## Responsive
 

@@ -1,2 +1,2 @@
 export { Rating } from "./Rating.js";
-export type { RatingProps } from "./types.js";
+export type { RatingOwnProps, RatingProps, RatingSlotProps } from "./types.js";

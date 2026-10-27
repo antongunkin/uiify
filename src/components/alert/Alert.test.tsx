@@ -36,6 +36,18 @@ describe("Alert", () => {
     expect(alert.textContent).toBe("Saved");
   });
 
+  it("forwards slot props to the generated decorative symbol", () => {
+    render(
+      <Alert slotProps={{ symbol: { className: "alert-symbol", "data-testid": "alert-symbol" } }}>
+        Saved
+      </Alert>,
+    );
+    const symbol = screen.getByTestId("alert-symbol");
+    expect(symbol.className).toBe("alert-symbol");
+    expect(symbol.getAttribute("data-part")).toBe("symbol");
+    expect(symbol.getAttribute("aria-hidden")).toBe("true");
+  });
+
   it("owns the default variant even when a consumer supplies a data attribute", () => {
     render(<Alert data-variant="destructive">Saved</Alert>);
     expect(screen.getByText("Saved").getAttribute("data-variant")).toBe("secondary");

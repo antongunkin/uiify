@@ -71,12 +71,18 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     defaultOpen,
     dir: localDir,
     disabled = false,
+    id,
     loop = true,
     onOpenChange,
     open,
+    ...rootProps
   } = props;
+  const nativeRootProps = Object.fromEntries(
+    Object.entries(rootProps).filter(([name]) => name !== "dangerouslySetInnerHTML"),
+  ) as typeof rootProps;
   const dir = useDirectionOverride(localDir);
   const surface = useMenuSurface({
+    ...(id !== undefined ? { id } : {}),
     mode: "auto",
     ...(defaultOpen !== undefined ? { defaultOpen } : {}),
     ...(open !== undefined ? { open } : {}),
@@ -116,7 +122,7 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     [cancelHoverClose, surface, dir, disabled, loop, scheduleHoverClose],
   );
   return (
-    <div className={className} data-uiify-menu="">
+    <div {...nativeRootProps} className={className} data-uiify-menu="">
       <DropdownMenuProvider value={value}>{children}</DropdownMenuProvider>
     </div>
   );

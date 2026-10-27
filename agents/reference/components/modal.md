@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `Modal`, `ModalBody`, `ModalClose`, `ModalContent`, `ModalDescription`, `ModalFooter`, `ModalGrabber`, `ModalHeader`, `ModalTitle`, `ModalTrigger`
-- Types: `ModalAlign`, `ModalAppearanceProps`, `ModalBackdrop`, `ModalBodyProps`, `ModalCloseOwnProps`, `ModalCloseProps`, `ModalContentOwnProps`, `ModalContentProps`, `ModalDescriptionProps`, `ModalDismiss`, `ModalFooterProps`, `ModalGrabberProps`, `ModalHeaderProps`, `ModalProps`, `ModalLabels`, `ModalSize`, `ModalTitleProps`, `ModalTriggerOwnProps`, `ModalTriggerProps`
+- Types: `ModalAlign`, `ModalAppearanceProps`, `ModalBackdrop`, `ModalBodyProps`, `ModalCloseOwnProps`, `ModalCloseProps`, `ModalContentOwnProps`, `ModalContentProps`, `ModalDescriptionProps`, `ModalDismiss`, `ModalFooterProps`, `ModalGrabberProps`, `ModalHeaderProps`, `ModalProps`, `ModalLabels`, `ModalOwnProps`, `ModalSlotProps`, `ModalSize`, `ModalTitleProps`, `ModalTriggerOwnProps`, `ModalTriggerProps`
 
 ## Values
 
@@ -35,7 +35,7 @@
 | `dismiss` | `ModalDismiss \| undefined` | no | Native `closedby`: `any` also closes on a backdrop tap, `closerequest` on Escape only, `none` only through your own controls. Default `any`. Engines without `closedby` (Safari) ignore it: Escape still closes the dialog there, and `UIEnhance` honours it only for its own backdrop tap (`any` only) and sheet swipe (off for `none`). |
 | `backdrop` | `ModalBackdrop \| undefined` | no | Backdrop treatment. Default `opaque`. |
 
-### ModalProps
+### ModalOwnProps
 
 Extends: `ModalAppearanceProps`
 
@@ -49,7 +49,25 @@ Extends: `ModalAppearanceProps`
 | `closeLabel` | `string` | no | Accessible name of the header close icon. |
 | `labels` | `Partial<ModalLabels>` | no |  |
 | `footer` | `ReactNode` | no | Actions row pinned under the body. |
-| `className` | `string` | no |  |
+| `slotProps` | `ModalSlotProps` | no | Native props for the elements created by this convenience component. |
+
+### ModalSlotProps
+
+Native props for Modal's generated inner elements. Owned ids and markers stay internal.
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `trigger` | `ModalSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "popoverTarget" \| "popoverTargetAction" \| "data-part" \| "data-uiify-modal" \| "data-uiify-button">` | no |  |
+| `content` | `ModalSlotElementProps<"dialog", \| "id" \| "open" \| "popover" \| "closedby" \| "data-part" \| "data-uiify-modal" \| "aria-describedby" \| "aria-labelledby">` | no |  |
+| `grabber` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal" \| "aria-hidden">` | no |  |
+| `header` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal">` | no |  |
+| `title` | `ModalSlotElementProps<"h2", "id" \| "data-part" \| "data-uiify-modal">` | no |  |
+| `description` | `ModalSlotElementProps<"p", "id" \| "data-part" \| "data-uiify-modal">` | no |  |
+| `close` | `ModalSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "popoverTarget" \| "popoverTargetAction" \| "data-part" \| "data-uiify-modal" \| "data-uiify-button" \| "aria-label">` | no |  |
+| `closeIcon` | `ModalSlotElementProps<"svg", "aria-hidden" \| "focusable">` | no |  |
+| `closeIconPath` | `ModalSlotElementProps<"path">` | no |  |
+| `body` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal">` | no |  |
+| `footer` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal">` | no |  |
 
 ### ModalLabels
 
@@ -99,6 +117,7 @@ Extends: `ModalAppearanceProps`
 
 ## Other types
 
+- `ModalProps`: `ModalOwnProps & Omit<ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">, keyof ModalOwnProps>` — Native props for Modal's root div plus its dialog and trigger contract.
 - `ModalTriggerProps<TAs>`: `NativeButtonProps<TAs, ModalTriggerOwnProps>`
 - `ModalCloseProps<TAs>`: `NativeButtonProps<TAs, ModalCloseOwnProps>`
 - `ModalContentProps`: `ModalContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof ModalContentOwnProps | "open" | "popover" | "closedby">` — A plain, initially closed `<dialog>`: `open` and `popover` are not part of the native contract.

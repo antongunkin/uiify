@@ -1,4 +1,4 @@
-import type { ElementType, HTMLAttributes } from "react";
+import type { ComponentPropsWithRef, ElementType } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export interface FieldRootOwnProps {
@@ -29,7 +29,7 @@ export interface FieldLabelOwnProps extends FieldPartOwnProps {
 }
 
 export type FieldLabelProps = FieldLabelOwnProps &
-  Omit<HTMLAttributes<HTMLLabelElement>, "htmlFor" | keyof FieldLabelOwnProps>;
+  Omit<ComponentPropsWithRef<"label">, "htmlFor" | keyof FieldLabelOwnProps>;
 
 export interface FieldControlOwnProps extends FieldPartOwnProps {
   readonly disabled?: boolean;
@@ -49,11 +49,11 @@ export interface FieldDescriptionOwnProps extends FieldPartOwnProps {
 }
 
 export type FieldDescriptionProps = FieldDescriptionOwnProps &
-  Omit<HTMLAttributes<HTMLElement>, keyof FieldDescriptionOwnProps>;
+  Omit<ComponentPropsWithRef<"p">, keyof FieldDescriptionOwnProps>;
 
 export interface FieldErrorOwnProps extends FieldPartOwnProps {
   readonly invalid?: boolean;
 }
 
 export type FieldErrorProps = FieldErrorOwnProps &
-  Omit<HTMLAttributes<HTMLElement>, keyof FieldErrorOwnProps>;
+  Omit<ComponentPropsWithRef<"p">, keyof FieldErrorOwnProps>;

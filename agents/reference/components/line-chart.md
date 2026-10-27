@@ -14,9 +14,46 @@
 ## Exports
 
 - Runtime: `LineChart`
-- Types: `LineChartAxisLabel`, `LineChartData`, `LineChartOwnProps`, `LineChartPointerPosition`, `LineChartProps`
+- Types: `LineChartAxisLabel`, `LineChartData`, `LineChartOwnProps`, `LineChartPointerPosition`, `LineChartProps`, `LineChartSlotProps`
 
 ## Props and shapes
+
+### LineChartSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `caption` | `LineChartPartSlotProps<"figcaption">` | no |  |
+| `readout` | `LineChartPartSlotProps<"div", { readonly "aria-live"?: never; readonly "data-part"?: never; }>` | no |  |
+| `readoutTime` | `LineChartPartSlotProps<"span">` | no |  |
+| `readoutValue` | `LineChartPartSlotProps<"span">` | no |  |
+| `plot` | `LineChartPartSlotProps<"div", { readonly "aria-hidden"?: never; readonly "data-part"?: never; }>` | no |  |
+| `scrollViewport` | `LineChartPartSlotProps<"div">` | no |  |
+| `canvas` | `LineChartPartSlotProps<"div">` | no |  |
+| `viewport` | `LineChartPartSlotProps<"div">` | no |  |
+| `points` | `LineChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-part"?: never; }>` | no |  |
+| `point` | `LineChartIndexedSlotProps<LineChartPointElementProps, LineChartPointOwnedProps>` | no |  |
+| `pointHit` | `LineChartRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly "aria-pressed"?: never; readonly "data-part"?: never; readonly type?: never; }>` | no |  |
+| `crosshair` | `LineChartPartSlotProps<"div", { readonly "aria-hidden"?: never; readonly "data-part"?: never; }>` | no |  |
+| `crosshairMarker` | `LineChartPartSlotProps<"span">` | no |  |
+| `timeViewport` | `LineChartPartSlotProps<"div">` | no |  |
+| `timeAxis` | `LineChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never; }>` | no |  |
+| `timeAxisLabel` | `LineChartRepeatedSlotProps<"li">` | no |  |
+| `crosshairTime` | `LineChartPartSlotProps<"li">` | no |  |
+| `valueAxis` | `LineChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never; }>` | no |  |
+| `valueAxisLabel` | `LineChartRepeatedSlotProps<"li">` | no |  |
+| `crosshairValue` | `LineChartPartSlotProps<"li">` | no |  |
+| `liveScrollport` | `LineChartPartSlotProps<"div", { readonly "data-dynamic-layout"?: never; readonly "data-orientation"?: never; readonly "data-part"?: never; readonly "data-uiify-virtual-scroll"?: never; readonly role?: never; }>` | no |  |
+| `liveSpacer` | `LineChartPartSlotProps<"div">` | no |  |
+| `livePointRow` | `LineChartLiveRowSlotProps` | no |  |
+| `dataTable` | `LineChartPartSlotProps<"table", { readonly "aria-label"?: never; readonly "data-part"?: never; }>` | no |  |
+| `dataTableHead` | `LineChartPartSlotProps<"thead">` | no |  |
+| `dataTableHeaderRow` | `LineChartPartSlotProps<"tr">` | no |  |
+| `dataTableTimeHeader` | `LineChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never; }>` | no |  |
+| `dataTableValueHeader` | `LineChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never; }>` | no |  |
+| `dataTableBody` | `LineChartPartSlotProps<"tbody">` | no |  |
+| `dataTableRow` | `LineChartRepeatedSlotProps<"tr">` | no |  |
+| `dataTableTimeCell` | `LineChartRepeatedSlotProps<"th", { readonly scope?: never }>` | no |  |
+| `dataTableValueCell` | `LineChartRepeatedSlotProps<"td">` | no |  |
 
 ### LineChartData
 
@@ -53,6 +90,7 @@
 | `onPointPointerLeave` | `() => void` | no |  |
 | `onPointPointerMove` | `(position: LineChartPointerPosition) => void` | no |  |
 | `selectedPointIndex` | `number` | no |  |
+| `slotProps` | `LineChartSlotProps` | no |  |
 | `xAxis` | `readonly LineChartAxisLabel[]` | no |  |
 | `yAxis` | `readonly LineChartAxisLabel[]` | no |  |
 
@@ -95,6 +133,7 @@ Extends: `LineChartOwnProps`
 | `onPointClick` | `((index: number) => void) \| undefined` | no |  |
 | `onPointPointerLeave` | `(() => void) \| undefined` | no |  |
 | `onPointPointerMove` | `((position: LineChartPointerPosition) => void) \| undefined` | no |  |
+| `slotProps` | `Pick<LineChartSlotProps, "point" \| "pointHit"> \| undefined` | no |  |
 
 ## Other types
 
@@ -106,4 +145,4 @@ Extends: `LineChartOwnProps`
 ### `@gunkin/uiify/components/line-chart/client`
 
 - Runtime: `LineChartClient`
-- Types: `LineChartAxisLabel`, `LineChartClientOwnProps`, `LineChartClientProps`, `LineChartData`, `LineChartOwnProps`, `LineChartPointerPosition`, `LineChartProps`
+- Types: `LineChartAxisLabel`, `LineChartClientOwnProps`, `LineChartClientProps`, `LineChartData`, `LineChartOwnProps`, `LineChartPointerPosition`, `LineChartProps`, `LineChartSlotProps`

@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `buildPaginationItems`, `Pagination`, `PaginationEllipsis`, `PaginationItem`, `PaginationLink`, `PaginationList`, `PaginationRoot`
-- Types: `PaginationItemDescriptor`, `PaginationItemType`, `UsePaginationParams`, `PaginationEllipsisProps`, `PaginationEllipsisOwnProps`, `PaginationItemProps`, `PaginationItemOwnProps`, `PaginationLinkOwnProps`, `PaginationLinkProps`, `PaginationListOwnProps`, `PaginationListProps`, `PaginationRootOwnProps`, `PaginationRootProps`, `PaginationLabels`
+- Types: `PaginationItemDescriptor`, `PaginationItemType`, `UsePaginationParams`, `PaginationEllipsisProps`, `PaginationEllipsisOwnProps`, `PaginationItemProps`, `PaginationItemOwnProps`, `PaginationLinkOwnProps`, `PaginationLinkProps`, `PaginationListOwnProps`, `PaginationListProps`, `PaginationRootOwnProps`, `PaginationRootSlotProps`, `PaginationRootProps`, `PaginationLabels`
 
 ## Values
 
@@ -85,6 +85,17 @@
 | `locale` | `string` | no |  |
 | `page` | `number` | yes |  |
 | `setPage` | `(page: number) => void` | yes |  |
+| `slotProps` | `PaginationRootSlotProps` | no |  |
+
+### PaginationRootSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `list` | `Omit<ComponentPropsWithRef<"ol">, "children" \| "dangerouslySetInnerHTML"> & ConsumerDataAttributes` | no |  |
+| `item` | `PaginationRepeatedSlotProps<"li">` | no |  |
+| `link` | `PaginationRepeatedSlotProps<"button", { readonly "aria-current"?: never; readonly "aria-label"?: never; readonly disabled?: never; readonly "data-selected"?: never; readonly "data-size"?: never; readonly "data-type"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly type?: never; }>` | no |  |
+| `control` | `PaginationRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly disabled?: never; readonly "data-type"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly type?: never; }>` | no |  |
+| `ellipsis` | `PaginationRepeatedSlotProps<"span", { readonly "aria-hidden"?: never; readonly "data-type"?: never }>` | no |  |
 
 ### PaginationRootOwnProps
 
@@ -97,6 +108,7 @@ Extends: `UsePaginationParams`
 | `getPageHref` | `(page: number) => string` | no |  |
 | `labels` | `Partial<PaginationLabels>` | no |  |
 | `locale` | `string` | no |  |
+| `slotProps` | `PaginationRootSlotProps` | no |  |
 
 ### PaginationListOwnProps
 

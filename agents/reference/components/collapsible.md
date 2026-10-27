@@ -15,11 +15,18 @@
 ## Exports
 
 - Runtime: `Collapsible`
-- Types: `CollapsibleProps`
+- Types: `CollapsiblePanelSlotProps`, `CollapsibleProps`, `CollapsibleSlotProps`, `CollapsibleTriggerSlotProps`
 
 ## Props and shapes
 
-### CollapsibleProps
+### CollapsibleSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `trigger` | `CollapsibleTriggerSlotProps` | no |  |
+| `panel` | `CollapsiblePanelSlotProps` | no |  |
+
+### CollapsibleOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -28,4 +35,10 @@
 | `content` | `ReactNode` | yes |  |
 | `defaultOpen` | `boolean` | no |  |
 | `disabled` | `boolean` | no |  |
-| `className` | `string` | no |  |
+| `slotProps` | `CollapsibleSlotProps` | no |  |
+
+## Other types
+
+- `CollapsibleTriggerSlotProps`: `Omit<ComponentPropsWithRef<"summary">, | "aria-disabled" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "disabled" | "part" | "tabIndex"> & CollapsibleTriggerOwnedAttributes & ConsumerDataAttributes`
+- `CollapsiblePanelSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "part"> & CollapsiblePanelOwnedAttributes & ConsumerDataAttributes`
+- `CollapsibleProps`: `CollapsibleOwnProps & Omit<ComponentPropsWithRef<"details">, | keyof CollapsibleOwnProps | "children" | "dangerouslySetInnerHTML" | "data-disabled" | "data-uiify-collapsible" | "data-uiify-details" | "open" | "name">`

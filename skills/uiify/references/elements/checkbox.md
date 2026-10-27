@@ -14,7 +14,7 @@ Use a radio group when exactly one option can be selected. Use a switch for a si
 
 ## Structure
 
-Use the documented Checkbox with a stable id and a visible, descriptive label. For form submission, provide its native `name` and `value`. Group related choices in a fieldset with a legend; use the indeterminate state only for an aggregate that represents mixed child selections.
+Use the documented Checkbox with a stable id and a visible, descriptive label. For form submission, provide its native `name` and `value`. Use `slotProps.input` and `slotProps.label` to style or annotate the generated native input and wrapping label. The top-level `className` remains a label shortcut. Group related choices in a fieldset with a legend; use the indeterminate state only for an aggregate that represents mixed child selections.
 
 ## Responsive
 

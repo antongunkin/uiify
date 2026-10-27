@@ -1,2 +1,7 @@
 export { Collapsible } from "./Collapsible.js";
-export type { CollapsibleProps } from "./types.js";
+export type {
+  CollapsiblePanelSlotProps,
+  CollapsibleProps,
+  CollapsibleSlotProps,
+  CollapsibleTriggerSlotProps,
+} from "./types.js";

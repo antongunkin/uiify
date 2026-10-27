@@ -24,7 +24,6 @@
   [data-uiify-tabs] [data-part="trigger"][data-state="active"] {
     border-block-end-color: var(--primary);
     color: var(--foreground);
-    font-weight: var(--weight-semibold);
   }
 
   /* Panel visibility is owned by @gunkin/uiify/components/behavior.css (radio :checked). */
@@ -77,7 +76,6 @@
   [data-uiify-tabs] > [data-part="item"]:has(> input:checked) > label {
     border-block-end-color: var(--primary);
     color: var(--foreground);
-    font-weight: var(--weight-semibold);
   }
 
   [data-uiify-tabs] > [data-part="item"] > input:focus-visible + label {

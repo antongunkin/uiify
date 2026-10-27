@@ -22,7 +22,7 @@ Preserve the table's row and column relationships. If columns need horizontal sc
 
 ## States
 
-Distinguish an empty dataset from a filter with no matches. Communicate loading and errors, and keep selection or sort state visible when requested. The native table is Tier 0; row selection, sorting, and expansion require the `/client` entry.
+Distinguish an empty dataset from a filter with no matches. Communicate loading and errors, and keep selection or sort state visible when requested. The native table is Tier 0; row selection, sorting, and expansion require the `/client` entry. In that entry, use `TableClient.ColumnHeader.slotProps.sortButton` for the sortable control and `slotProps.input/label` on `TableClient.SelectAll` or `TableClient.RowSelect` for generated checkbox parts.
 
 ## Verify
 

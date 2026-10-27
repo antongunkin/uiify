@@ -16,11 +16,11 @@
 ## Exports
 
 - Runtime: `AlertModal`, `AlertModalAction`, `AlertModalCancel`, `AlertModalContent`, `AlertModalTrigger`
-- Types: `AlertModalActionOwnProps`, `AlertModalActionProps`, `AlertModalCancelOwnProps`, `AlertModalCancelProps`, `AlertModalContentOwnProps`, `AlertModalContentProps`, `AlertModalProps`, `AlertModalTriggerOwnProps`, `AlertModalTriggerProps`
+- Types: `AlertModalActionOwnProps`, `AlertModalActionProps`, `AlertModalCancelOwnProps`, `AlertModalCancelProps`, `AlertModalContentOwnProps`, `AlertModalContentProps`, `AlertModalOwnProps`, `AlertModalProps`, `AlertModalSlotProps`, `AlertModalTriggerOwnProps`, `AlertModalTriggerProps`
 
 ## Props and shapes
 
-### AlertModalProps
+### AlertModalOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -31,7 +31,18 @@
 | `children` | `ReactNode` | no |  |
 | `actionLabel` | `ReactNode` | no |  |
 | `cancelLabel` | `ReactNode` | no |  |
-| `className` | `string` | no |  |
+| `slotProps` | `AlertModalSlotProps` | no | Native props for each generated part; the AlertModal root takes props directly. |
+
+### AlertModalSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `trigger` | `AlertModalInvokerSlotProps` | no |  |
+| `content` | `AlertModalSlotElementProps<"dialog", \| "id" \| "role" \| "open" \| "popover" \| "aria-describedby" \| "aria-labelledby" \| "data-part" \| "data-uiify-alert-modal">` | no |  |
+| `title` | `AlertModalSlotElementProps<"h2", "id" \| "data-part" \| "data-uiify-alert-modal">` | no |  |
+| `description` | `AlertModalSlotElementProps<"p", "id" \| "data-part" \| "data-uiify-alert-modal">` | no |  |
+| `cancel` | `AlertModalChoiceSlotProps` | no |  |
+| `action` | `AlertModalChoiceSlotProps` | no |  |
 
 ### AlertModalTriggerOwnProps
 
@@ -63,7 +74,8 @@
 
 ## Other types
 
-- `AlertModalTriggerProps<TAs>`: `NativeButtonProps<TAs, AlertModalTriggerOwnProps>`
-- `AlertModalActionProps<TAs>`: `NativeButtonProps<TAs, AlertModalActionOwnProps>`
-- `AlertModalCancelProps<TAs>`: `NativeButtonProps<TAs, AlertModalCancelOwnProps>`
-- `AlertModalContentProps`: `AlertModalContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof AlertModalContentOwnProps | "open" | "popover" | "role">` — `<dialog role="alertdialog">`; `role`, `open` and `popover` belong to the part.
+- `AlertModalProps`: `AlertModalOwnProps & Omit<AlertModalSlotElementProps<"div", "data-part" | "data-uiify-alert-modal">, keyof AlertModalOwnProps>`
+- `AlertModalTriggerProps<TAs>`: `Omit<NativeButtonProps<TAs, AlertModalTriggerOwnProps>, "dangerouslySetInnerHTML"> & ConsumerDataAttributes & { readonly "data-part"?: never; readonly "data-uiify-button"?: never; readonly "data-uiify-alert-modal"?: never; }`
+- `AlertModalActionProps<TAs>`: `Omit<NativeButtonProps<TAs, AlertModalActionOwnProps>, "dangerouslySetInnerHTML"> & ConsumerDataAttributes & { readonly "data-part"?: never; readonly "data-variant"?: never; readonly "data-uiify-button"?: never; readonly "data-uiify-alert-modal"?: never; }`
+- `AlertModalCancelProps<TAs>`: `Omit<NativeButtonProps<TAs, AlertModalCancelOwnProps>, "dangerouslySetInnerHTML"> & ConsumerDataAttributes & { readonly "data-part"?: never; readonly "data-variant"?: never; readonly "data-uiify-button"?: never; readonly "data-uiify-alert-modal"?: never; }`
+- `AlertModalContentProps`: `AlertModalContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof AlertModalContentOwnProps | "open" | "popover" | "role" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes & { readonly "data-part"?: never; readonly "data-uiify-alert-modal"?: never; }` — `<dialog role="alertdialog">`; `role`, `open` and `popover` belong to the part.

@@ -15,6 +15,7 @@ Use ordinary links for navigation, Tabs for switching associated panels, and che
 ## Structure
 
 Use ToggleGroup with a stable id, a group name, and items with values and labels. Set type to single for one choice or multiple for independent choices.
+Style generated item wrappers, inputs, and labels with `slotProps.item`, `slotProps.input`, and `slotProps.label`. Use `byItemValue` when one toggle needs its own props or `data-testid`.
 
 ## Responsive
 

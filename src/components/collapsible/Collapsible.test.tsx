@@ -21,6 +21,25 @@ describe("Collapsible", () => {
     expect(summary.closest("details")?.hasAttribute("data-disabled")).toBe(true);
   });
 
+  it("forwards slot props to the generated summary and panel", () => {
+    render(
+      <Collapsible
+        content={<>Panel</>}
+        className="root"
+        id="slots"
+        label="Trigger"
+        slotProps={{
+          trigger: { className: "trigger", "data-testid": "trigger-slot" },
+          panel: { className: "panel", "data-testid": "panel-slot" },
+        }}
+      />,
+    );
+
+    expect(document.querySelector("details")?.getAttribute("class")).toBe("root");
+    expect(screen.getByTestId("trigger-slot").getAttribute("class")).toBe("trigger");
+    expect(screen.getByTestId("panel-slot").getAttribute("class")).toBe("panel");
+  });
+
   it("renders open state and panel wiring in SSR markup", () => {
     const html = assertSSRRenderable(
       <Collapsible content={<>Visible</>} defaultOpen id="filters" label="Filters" />,

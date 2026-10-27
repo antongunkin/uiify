@@ -1,4 +1,5 @@
 import { act, createEvent, fireEvent, render } from "@testing-library/react";
+import { createRef } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LineChartClient } from "./LineChartClient.js";
 
@@ -119,6 +120,81 @@ describe("LineChartClient", () => {
 
       fireEvent.wheel(chart, { deltaY: -100 });
       expect(chart.style.getPropertyValue("--line-scale")).toBe("1");
+    });
+
+    it("forwards slots to live scrollport, row shells, points, and absolute table rows", () => {
+      stubResizeObserver();
+      const scrollportRef = createRef<HTMLDivElement>();
+      const { container, rerender } = render(
+        <LineChartClient
+          data={LONG_DATA}
+          visibleCount={20}
+          slotProps={{
+            liveScrollport: { className: "live-scrollport", ref: scrollportRef },
+            liveSpacer: { className: "live-spacer", "data-testid": "live-spacer" },
+            livePointRow: {
+              className: "live-row",
+            },
+            point: {
+              className: "live-point",
+            },
+          }}
+        />,
+      );
+      const element = scrollport(container);
+      const visiblePoint = container.querySelector('[data-part="point"]');
+      const pointIndex = LONG_DATA.findIndex(
+        (point) => String(point.time) === visiblePoint?.getAttribute("data-time"),
+      );
+      const firstTableRow = container.querySelector("tbody tr");
+      const tableIndex = LONG_DATA.findIndex(
+        (point) => String(point.time) === firstTableRow?.querySelector("th")?.textContent,
+      );
+
+      rerender(
+        <LineChartClient
+          data={LONG_DATA}
+          visibleCount={20}
+          slotProps={{
+            liveScrollport: { className: "live-scrollport", ref: scrollportRef },
+            liveSpacer: { className: "live-spacer", "data-testid": "live-spacer" },
+            livePointRow: {
+              className: "live-row",
+              byItemIndex: {
+                [pointIndex]: { className: "indexed-row", "data-testid": "row-index" },
+              },
+            },
+            point: {
+              className: "live-point",
+              byItemIndex: {
+                [pointIndex]: { className: "indexed-point", "data-testid": "point-index" },
+              },
+            },
+            dataTableRow: {
+              byItemIndex: {
+                [tableIndex]: { className: "indexed-table-row", "data-testid": "table-row-index" },
+              },
+            },
+          }}
+        />,
+      );
+
+      expect(element.className).toContain("live-scrollport");
+      expect(scrollportRef.current).toBe(element);
+      expect(container.querySelector('[data-testid="live-spacer"]')?.className).toContain(
+        "live-spacer",
+      );
+      expect(container.querySelector('[data-part="row"]')?.className).toContain("live-row");
+      expect(container.querySelector('[data-part="point"]')?.className).toContain("live-point");
+      expect(container.querySelector('[data-testid="row-index"]')?.className).toContain(
+        "indexed-row",
+      );
+      expect(container.querySelector('[data-testid="point-index"]')?.className).toContain(
+        "indexed-point",
+      );
+      expect(container.querySelector('[data-testid="table-row-index"]')?.className).toContain(
+        "indexed-table-row",
+      );
     });
 
     it("draws no segment into the first point", () => {

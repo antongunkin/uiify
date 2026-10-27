@@ -3,6 +3,7 @@
 import type { ReactElement } from "react";
 import { useControllableState } from "@gunkin/uiify/hooks";
 import { ChoiceGroup } from "../../internal/choice-family/ChoiceGroup.js";
+import type { ChoiceGroupRootProps } from "../../internal/choice-family/types.js";
 import type { ToggleGroupClientProps, ToggleGroupItem } from "../types.js";
 
 function normalizeSingle(value: string | readonly string[] | undefined): string | undefined {
@@ -24,8 +25,10 @@ export function ToggleGroupClient({
   orientation = "horizontal",
   size,
   className,
+  slotProps,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
+  ...rootProps
 }: ToggleGroupClientProps): ReactElement {
   if (type === "multiple") {
     return (
@@ -40,6 +43,8 @@ export function ToggleGroupClient({
         items={items}
         onValueChange={onValueChange}
         orientation={orientation}
+        rootProps={rootProps}
+        slotProps={slotProps}
         size={size}
       />
     );
@@ -57,6 +62,8 @@ export function ToggleGroupClient({
       items={items}
       onValueChange={onValueChange}
       orientation={orientation}
+      rootProps={rootProps}
+      {...(slotProps !== undefined ? { slotProps } : {})}
       size={size}
     />
   );
@@ -73,6 +80,8 @@ interface ToggleGroupClientBranchProps {
   readonly items: readonly ToggleGroupItem[];
   readonly onValueChange?: ((value: string | readonly string[]) => void) | undefined;
   readonly orientation: "horizontal" | "vertical";
+  readonly rootProps: ChoiceGroupRootProps;
+  readonly slotProps?: ToggleGroupClientProps["slotProps"];
   readonly size?: ToggleGroupClientProps["size"];
 }
 
@@ -87,6 +96,8 @@ function SingleToggleGroupClient({
   items,
   onValueChange,
   orientation,
+  rootProps,
+  slotProps,
   size,
 }: ToggleGroupClientBranchProps): ReactElement {
   const [selectedValue, setSelectedValue] = useControllableState<string | undefined>({
@@ -104,6 +115,7 @@ function SingleToggleGroupClient({
   return (
     <ChoiceGroup<ToggleGroupItem>
       {...(className !== undefined ? { className } : {})}
+      rootProps={rootProps}
       id={id}
       items={resolvedItems}
       isChecked={(item) => item.value === selectedValue}
@@ -117,6 +129,7 @@ function SingleToggleGroupClient({
       }}
       onItemChange={(item) => setSelectedValue(item.value)}
       orientation={orientation}
+      {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{
         role: "radiogroup",
         "aria-label": ariaLabel,
@@ -140,6 +153,8 @@ function MultipleToggleGroupClient({
   items,
   onValueChange,
   orientation,
+  rootProps,
+  slotProps,
   size,
 }: ToggleGroupClientBranchProps): ReactElement {
   const [selectedValues, setSelectedValues] = useControllableState<readonly string[]>({
@@ -155,6 +170,7 @@ function MultipleToggleGroupClient({
   return (
     <ChoiceGroup<ToggleGroupItem>
       {...(className !== undefined ? { className } : {})}
+      rootProps={rootProps}
       id={id}
       items={resolvedItems}
       isChecked={(item) => selectedValues.includes(item.value)}
@@ -174,6 +190,7 @@ function MultipleToggleGroupClient({
         )
       }
       orientation={orientation}
+      {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{
         role: "group",
         "aria-label": ariaLabel,

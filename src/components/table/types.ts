@@ -1,5 +1,7 @@
 import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { NativeCheckControlSlotProps } from "../internal/native-check-control/types.js";
 
 export type SortDirection = "ascending" | "descending";
 
@@ -124,7 +126,32 @@ export interface TableColumnHeaderOwnProps extends TableStickyCellOwnProps {
 
 export interface TableRowSelectOwnProps {
   readonly rowId: string;
+  readonly slotProps?: TableSelectionSlotProps;
 }
+
+export interface TableSelectAllOwnProps {
+  readonly slotProps?: TableSelectionSlotProps;
+}
+
+export type TableSelectionSlotProps = NativeCheckControlSlotProps;
+
+type TableSortButtonOwnedAttributes = {
+  readonly "data-part"?: never;
+};
+
+export interface TableClientColumnHeaderSlotProps {
+  readonly sortButton?: Omit<
+    ComponentPropsWithRef<"button">,
+    "children" | "dangerouslySetInnerHTML" | "type" | "data-part"
+  > &
+    ConsumerDataAttributes &
+    TableSortButtonOwnedAttributes;
+}
+
+export type TableClientColumnHeaderProps<TAs extends ElementType = "th"> =
+  TableColumnHeaderProps<TAs> & {
+    readonly slotProps?: TableClientColumnHeaderSlotProps;
+  };
 
 export type TableColumnHeaderProps<TAs extends ElementType = "th"> = RenderableProps<
   TAs,

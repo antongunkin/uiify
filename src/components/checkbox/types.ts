@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
+import type { NativeCheckControlSlotProps } from "../internal/native-check-control/types.js";
 
 export type CheckedState = boolean | "indeterminate";
+
+export type CheckboxSlotProps = NativeCheckControlSlotProps;
 
 export interface CheckboxProps {
   readonly id: string;
@@ -12,5 +15,6 @@ export interface CheckboxProps {
   readonly value?: string;
   readonly className?: string;
   readonly onCheckedChange?: (checked: boolean) => void;
+  readonly slotProps?: CheckboxSlotProps;
   readonly "aria-label"?: string;
 }

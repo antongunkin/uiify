@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `Accordion`
-- Types: `AccordionItem`, `AccordionProps`, `AccordionType`
+- Types: `AccordionItem`, `AccordionItemSlotProps`, `AccordionPanelSlotProps`, `AccordionProps`, `AccordionSlotProps`, `AccordionTriggerSlotProps`, `AccordionType`
 
 ## Values
 
@@ -29,7 +29,15 @@ Extends: `ChoicePanelItem`
 
 No own members.
 
-### AccordionProps
+### AccordionSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `item` | `AccordionItemSlotProps` | no |  |
+| `trigger` | `AccordionTriggerSlotProps` | no |  |
+| `panel` | `AccordionPanelSlotProps` | no |  |
+
+### AccordionOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -37,4 +45,11 @@ No own members.
 | `items` | `readonly AccordionItem[]` | yes |  |
 | `type` | `AccordionType` | no |  |
 | `defaultValue` | `string \| readonly string[]` | no |  |
-| `className` | `string` | no |  |
+| `slotProps` | `AccordionSlotProps` | no |  |
+
+## Other types
+
+- `AccordionItemSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"details">, | "name" | "open" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "data-uiify-accordion" | "disabled">, AccordionOwnedSlotAttributes>`
+- `AccordionTriggerSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"summary">, | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "data-uiify-accordion" | "disabled" | "part">, AccordionOwnedSlotAttributes>`
+- `AccordionPanelSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "data-uiify-accordion" | "part">, AccordionOwnedSlotAttributes>`
+- `AccordionProps`: `AccordionOwnProps & Omit<ComponentPropsWithRef<"div">, keyof AccordionOwnProps | "children" | "dangerouslySetInnerHTML" | "data-uiify-accordion">`

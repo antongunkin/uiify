@@ -10,7 +10,7 @@
 ## Exports
 
 - Runtime: `Choice`, `ChoiceGroup`, `ChoiceItem`, `choiceGroupName`, `choiceIds`
-- Types: `ChoiceGroupOwnProps`, `ChoiceGroupProps`, `ChoiceItemOwnProps`, `ChoiceItemProps`, `ChoiceKind`, `ChoiceOrientation`
+- Types: `ChoiceGroupOwnProps`, `ChoiceGroupProps`, `ChoiceInputSlotProps`, `ChoiceItemOwnProps`, `ChoiceItemProps`, `ChoiceItemSlotProps`, `ChoiceKind`, `ChoiceLabelSlotProps`, `ChoiceOrientation`, `ChoicePanelSlotProps`
 
 ## Values
 
@@ -18,6 +18,10 @@
 - `ChoiceOrientation`: `"horizontal" | "vertical"`
 
 ## Props and shapes
+
+### ConsumerDataAttributes
+
+No own members.
 
 ### ChoiceGroupOwnProps
 
@@ -28,6 +32,14 @@
 | `kind` | `ChoiceKind` | yes |  |
 | `orientation` | `ChoiceOrientation` | no |  |
 | `name` | `string` | no | Documents the derived `choiceGroupName(id, kind)` override every child `Choice.Item` should also receive as its own `name` — not read by `Choice.Group` itself (there is nowhere to inject it to without context), but declaring it here keeps the two in sync for anyone reading the JSX. |
+
+### ChoiceItemSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `input` | `ChoiceInputSlotProps` | no |  |
+| `label` | `ChoiceLabelSlotProps` | no |  |
+| `panel` | `ChoicePanelSlotProps` | no |  |
 
 ### ChoiceItemOwnProps
 
@@ -43,13 +55,14 @@
 | `checked` | `boolean` | no | Controlled checked state for client-enhanced choice groups. |
 | `disabled` | `boolean` | no |  |
 | `part` | `string` | no | Wrapper `data-part`. Defaults to `"item"`. |
-| `labelPart` | `boolean` | no | Adds `data-part="label"` to the `<label>`. |
-| `inputProps` | `Record<string, unknown>` | no | Escape hatch: extra attributes spread onto the `<input>` (for example, `data-part="control"`). |
-| `labelProps` | `Record<string, unknown>` | no | Escape hatch: extra attributes spread onto the `<label>`. |
-| `panelProps` | `Record<string, unknown>` | no | Escape hatch: extra attributes spread onto the panel `<div>`. |
+| `labelPart` | `boolean \| string` | no | Adds an owned `data-part` marker to the `<label>`; `true` means `"label"`. |
+| `slotProps` | `ChoiceItemSlotProps` | no | Native props for the generated input, label and optional panel. |
 | `onValueChange` | `(value: string) => void` | no | Client-only: attaches to the input's native `change`. Passing it does not make this element a client component — the *caller* must already be one. Omitted by every uncontrolled (server) caller, so the server output stays handler-free. |
 
 ## Other types
 
-- `ChoiceGroupProps`: `ChoiceGroupOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ChoiceGroupOwnProps>`
-- `ChoiceItemProps`: `ChoiceItemOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ChoiceItemOwnProps | "children">`
+- `ChoiceGroupProps`: `ChoiceGroupOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ChoiceGroupOwnProps | "dangerouslySetInnerHTML">`
+- `ChoiceInputSlotProps`: `Omit<ComponentPropsWithRef<"input">, | "children" | "dangerouslySetInnerHTML" | "aria-labelledby" | "checked" | "defaultChecked" | "disabled" | "id" | "name" | "type" | "value" | "data-part" | "data-uiify-choice" | "data-uiify-radio"> & ConsumerDataAttributes & { readonly "data-part"?: never; readonly "data-uiify-choice"?: never; readonly "data-uiify-radio"?: never; }`
+- `ChoiceLabelSlotProps`: `Omit<ComponentPropsWithRef<"label">, "children" | "dangerouslySetInnerHTML" | "htmlFor" | "id" | "data-part"> & ConsumerDataAttributes & { readonly "data-part"?: never }`
+- `ChoicePanelSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "id" | "data-part"> & ConsumerDataAttributes & { readonly "data-part"?: never }`
+- `ChoiceItemProps`: `ChoiceItemOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ChoiceItemOwnProps | "children" | "dangerouslySetInnerHTML">`

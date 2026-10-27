@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 import type { Direction } from "@gunkin/uiify/core/direction";
 import type { RovingFocusOrientation } from "@gunkin/uiify/core/roving-focus";
 import type { ToggleGroupProps } from "../toggle-group/types.js";
@@ -10,7 +10,7 @@ export interface ToolbarRootOwnProps {
 }
 
 export interface ToolbarRootProps
-  extends ToolbarRootOwnProps, Omit<HTMLAttributes<HTMLDivElement>, keyof ToolbarRootOwnProps> {}
+  extends ToolbarRootOwnProps, Omit<ComponentPropsWithRef<"div">, keyof ToolbarRootOwnProps> {}
 
 export interface ToolbarButtonOwnProps {
   /** Toggle state of the button: reported as aria-pressed and styled as selected. */
@@ -23,7 +23,7 @@ export interface ToolbarButtonOwnProps {
 export interface ToolbarButtonProps
   extends
     ToolbarButtonOwnProps,
-    Omit<HTMLAttributes<HTMLButtonElement>, keyof ToolbarButtonOwnProps | "disabled"> {}
+    Omit<ComponentPropsWithRef<"button">, keyof ToolbarButtonOwnProps | "disabled"> {}
 
 export interface ToolbarLinkOwnProps {
   readonly children?: ReactNode;
@@ -34,7 +34,7 @@ export interface ToolbarLinkOwnProps {
 export interface ToolbarLinkProps
   extends
     ToolbarLinkOwnProps,
-    Omit<HTMLAttributes<HTMLAnchorElement>, keyof ToolbarLinkOwnProps | "href"> {}
+    Omit<ComponentPropsWithRef<"a">, keyof ToolbarLinkOwnProps | "href"> {}
 
 export interface ToolbarSeparatorOwnProps {
   readonly className?: string;
@@ -42,6 +42,6 @@ export interface ToolbarSeparatorOwnProps {
 }
 
 export type ToolbarSeparatorProps = ToolbarSeparatorOwnProps &
-  Omit<HTMLAttributes<HTMLHRElement>, keyof ToolbarSeparatorOwnProps>;
+  Omit<ComponentPropsWithRef<"hr">, keyof ToolbarSeparatorOwnProps>;
 
 export type ToolbarToggleGroupProps = ToggleGroupProps;

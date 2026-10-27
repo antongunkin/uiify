@@ -75,7 +75,7 @@ Extends: `FieldPartOwnProps`
 ## Other types
 
 - `FieldRootProps<TAs>`: `RenderableProps<TAs, FieldRootOwnProps, FieldRootOwnProps, HTMLElement>`
-- `FieldLabelProps`: `FieldLabelOwnProps & Omit<HTMLAttributes<HTMLLabelElement>, "htmlFor" | keyof FieldLabelOwnProps>`
+- `FieldLabelProps`: `FieldLabelOwnProps & Omit<ComponentPropsWithRef<"label">, "htmlFor" | keyof FieldLabelOwnProps>`
 - `FieldControlProps<TAs>`: `RenderableProps<TAs, FieldControlOwnProps, { disabled: boolean; invalid: boolean; required: boolean }, HTMLElement>`
-- `FieldDescriptionProps`: `FieldDescriptionOwnProps & Omit<HTMLAttributes<HTMLElement>, keyof FieldDescriptionOwnProps>`
-- `FieldErrorProps`: `FieldErrorOwnProps & Omit<HTMLAttributes<HTMLElement>, keyof FieldErrorOwnProps>`
+- `FieldDescriptionProps`: `FieldDescriptionOwnProps & Omit<ComponentPropsWithRef<"p">, keyof FieldDescriptionOwnProps>`
+- `FieldErrorProps`: `FieldErrorOwnProps & Omit<ComponentPropsWithRef<"p">, keyof FieldErrorOwnProps>`

@@ -14,7 +14,7 @@ Use a select or checkbox group for a fixed choice set. Do not add suggestion-lis
 
 ## Structure
 
-Use TagsInput.Root with the documented List, Tag, TagRemove, and Input parts. Give the text input a clear accessible name and keep each remove control adjacent to its tag. UIify currently names each one “Remove tag”; verify that the tag context is announced when moving among removal controls.
+Use TagsInput.Root with the documented List, Tag, TagRemove, and Input parts. Root, List and TagRemove accept native DOM props. List's generated tag entries accept `slotProps.tag`, addressed by list index through `byItemIndex`; its generated input wrapper accepts `slotProps.input`. Give the text input a clear accessible name and keep each remove control adjacent to its tag. UIify currently names each one “Remove tag”; verify that the tag context is announced when moving among removal controls.
 
 ## Responsive
 

@@ -4,5 +4,7 @@ export type {
   CarouselItem,
   CarouselLabels,
   CarouselProps,
+  CarouselSlotProps,
   CarouselStyle,
+  CarouselWithRefProps,
 } from "./types.js";

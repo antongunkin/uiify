@@ -14,7 +14,7 @@ Do not use a menu for site navigation; use ordinary links and navigation landmar
 
 ## Structure
 
-Compose `DropdownMenu` Root, Trigger, Content, and named items. Give the trigger an action-oriented accessible name; group related actions with labels and separators, and use checkbox/radio items only for their matching state model.
+Compose `DropdownMenu` Root, Trigger, Content, and named items. Give the trigger an action-oriented accessible name; group related actions with labels and separators, and use checkbox/radio items only for their matching state model. `Root.id` sets the popup id and trigger relationship. `Bar` forwards native div props to its menubar element.
 
 ## Responsive
 

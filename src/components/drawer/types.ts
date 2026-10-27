@@ -1,6 +1,7 @@
 import type {
   ComponentPropsWithRef,
   CSSProperties,
+  ElementType,
   MouseEvent,
   PointerEvent,
   ReactNode,
@@ -9,6 +10,7 @@ import type {
 } from "react";
 
 import type { DialogChangeHandler, UseDialogReturn } from "@gunkin/uiify/core/dialog";
+import type { ConsumerDataAttributes } from "../../core/slot-props.js";
 
 export type DrawerSide = "top" | "right" | "bottom" | "left";
 
@@ -17,7 +19,7 @@ export interface DrawerAppearanceProps {
   readonly dismiss?: "any" | "closerequest" | "none";
   readonly backdrop?: "opaque" | "transparent";
 }
-export interface DrawerProps extends DrawerAppearanceProps {
+export interface DrawerOwnProps extends DrawerAppearanceProps {
   readonly id: string;
   readonly trigger: ReactNode;
   readonly title: ReactNode;
@@ -27,8 +29,82 @@ export interface DrawerProps extends DrawerAppearanceProps {
   readonly labels?: Partial<DrawerLabels>;
   readonly footer?: ReactNode;
   readonly side?: DrawerSide;
-  readonly className?: string;
+  /** Native props for generated inner nodes; DrawerPanel's root takes props directly. */
+  readonly slotProps?: DrawerSlotProps;
 }
+
+type DrawerSlotElementProps<T extends ElementType, TProtected extends string = never> = Omit<
+  ComponentPropsWithRef<T>,
+  "children" | "dangerouslySetInnerHTML" | TProtected
+> &
+  ConsumerDataAttributes & { readonly [K in TProtected]?: never };
+
+export interface DrawerSlotProps {
+  readonly trigger?: DrawerSlotElementProps<
+    "button",
+    | "type"
+    | "command"
+    | "commandfor"
+    | "commandFor"
+    | "popoverTarget"
+    | "popoverTargetAction"
+    | "data-part"
+    | "data-uiify-button"
+    | "data-uiify-drawer"
+  >;
+  readonly content?: DrawerSlotElementProps<
+    "dialog",
+    | "size"
+    | "dismiss"
+    | "side"
+    | "backdrop"
+    | "id"
+    | "open"
+    | "popover"
+    | "closedby"
+    | "aria-describedby"
+    | "aria-labelledby"
+    | "aria-modal"
+    | "data-part"
+    | "data-side"
+    | "data-size"
+    | "data-backdrop"
+    | "data-state"
+    | "data-snap-enabled"
+    | "data-uiify-drawer"
+  >;
+  readonly grabber?: DrawerSlotElementProps<
+    "div",
+    "aria-hidden" | "data-part" | "data-uiify-drawer"
+  >;
+  readonly header?: DrawerSlotElementProps<"div", "data-part" | "data-uiify-drawer">;
+  readonly title?: DrawerSlotElementProps<"h2", "id" | "data-part" | "data-uiify-drawer">;
+  readonly description?: DrawerSlotElementProps<"p", "id" | "data-part" | "data-uiify-drawer">;
+  readonly close?: DrawerSlotElementProps<
+    "button",
+    | "type"
+    | "command"
+    | "commandfor"
+    | "commandFor"
+    | "popoverTarget"
+    | "popoverTargetAction"
+    | "aria-label"
+    | "data-part"
+    | "data-variant"
+    | "data-uiify-button"
+    | "data-uiify-drawer"
+  >;
+  readonly closeIcon?: DrawerSlotElementProps<"svg", "aria-hidden" | "focusable">;
+  readonly closeIconPath?: DrawerSlotElementProps<"path">;
+  readonly body?: DrawerSlotElementProps<"div", "data-part" | "data-uiify-drawer">;
+  readonly footer?: DrawerSlotElementProps<"div", "data-part" | "data-uiify-drawer">;
+}
+
+export type DrawerProps = DrawerOwnProps &
+  Omit<
+    DrawerSlotElementProps<"div", "data-part" | "data-side" | "data-uiify-drawer">,
+    keyof DrawerOwnProps
+  >;
 
 export interface DrawerLabels {
   readonly close: string;
@@ -36,14 +112,40 @@ export interface DrawerLabels {
 
 export interface DrawerNativeContentProps
   extends
-    Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "closedby">,
+    Omit<
+      ComponentPropsWithRef<"dialog">,
+      | "open"
+      | "popover"
+      | "closedby"
+      | "dangerouslySetInnerHTML"
+      | "data-part"
+      | "data-side"
+      | "data-size"
+      | "data-backdrop"
+      | "data-uiify-drawer"
+    >,
     DrawerAppearanceProps {
   readonly id: string;
   readonly side?: DrawerSide;
+  readonly "data-part"?: never;
+  readonly "data-side"?: never;
+  readonly "data-size"?: never;
+  readonly "data-backdrop"?: never;
+  readonly "data-uiify-drawer"?: never;
 }
 export interface DrawerNativeInvokerProps extends Omit<
   ComponentPropsWithRef<"button">,
-  "command" | "commandFor"
+  | "type"
+  | "command"
+  | "commandfor"
+  | "commandFor"
+  | "popoverTarget"
+  | "popoverTargetAction"
+  | "data-part"
+  | "data-variant"
+  | "data-uiify-button"
+  | "data-uiify-drawer"
+  | "dangerouslySetInnerHTML"
 > {
   readonly target: string;
 }

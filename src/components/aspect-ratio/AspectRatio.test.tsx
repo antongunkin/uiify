@@ -96,6 +96,18 @@ describe("AspectRatio", () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
+  it("forwards slot props to the generated content wrapper", () => {
+    render(
+      <AspectRatio
+        slotProps={{ content: { className: "frame-content", "data-testid": "content" } }}
+      >
+        Photo
+      </AspectRatio>,
+    );
+    expect(screen.getByTestId("content").className).toBe("frame-content");
+    expect(screen.getByTestId("content").getAttribute("data-part")).toBe("content");
+  });
+
   it("owns its identity marker even when a consumer supplies another value", () => {
     render(<AspectRatio data-uiify-aspect-ratio="overridden" data-testid="frame" />);
     expect(screen.getByTestId("frame").getAttribute("data-uiify-aspect-ratio")).toBe("");

@@ -1,8 +1,15 @@
-import type { ChoiceItem, ChoiceOrientation } from "../internal/choice-family/types.js";
+import type {
+  ChoiceGroupRootProps,
+  ChoiceOptionSlotProps,
+  ChoiceItem,
+  ChoiceOrientation,
+} from "../internal/choice-family/types.js";
+
+export type ToggleGroupSlotProps = ChoiceOptionSlotProps;
 
 export type ToggleGroupItem = ChoiceItem;
 
-export interface ToggleGroupProps {
+export interface ToggleGroupProps extends ChoiceGroupRootProps {
   readonly id: string;
   readonly type?: "single" | "multiple";
   readonly items: readonly ToggleGroupItem[];
@@ -12,8 +19,7 @@ export interface ToggleGroupProps {
   /** Button size of each item; `md` metrics when omitted. */
   readonly size?: "sm" | "md" | "lg";
   readonly className?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
+  readonly slotProps?: ToggleGroupSlotProps;
 }
 
 export interface ToggleGroupClientProps extends ToggleGroupProps {

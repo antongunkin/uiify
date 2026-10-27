@@ -4,7 +4,18 @@ import type { MouseEvent, PointerEvent, ReactElement, SyntheticEvent } from "rea
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Drawer } from "./Drawer.js";
-import { DrawerPanel } from "./DrawerNative.js";
+import {
+  DrawerNativeClose,
+  DrawerNativeContent,
+  DrawerNativeTrigger,
+  DrawerPanel,
+} from "./DrawerNative.js";
+import type {
+  DrawerNativeContentProps,
+  DrawerNativeInvokerProps,
+  DrawerProps,
+  DrawerSlotProps,
+} from "./types.js";
 
 describe("DrawerPanel (native shell)", () => {
   it("provides native dismissal, size and complete dialog anatomy", () => {
@@ -85,6 +96,229 @@ describe("DrawerPanel (native shell)", () => {
     expect(markup).not.toContain("<form");
     expect(markup).not.toContain("<dialog open");
   });
+
+  it("forwards props and refs to the root and each generated part", () => {
+    const refs = {
+      root: createRef<HTMLDivElement>(),
+      trigger: createRef<HTMLButtonElement>(),
+      content: createRef<HTMLDialogElement>(),
+      grabber: createRef<HTMLDivElement>(),
+      header: createRef<HTMLDivElement>(),
+      title: createRef<HTMLHeadingElement>(),
+      description: createRef<HTMLParagraphElement>(),
+      close: createRef<HTMLButtonElement>(),
+      closeIcon: createRef<SVGSVGElement>(),
+      closeIconPath: createRef<SVGPathElement>(),
+      body: createRef<HTMLDivElement>(),
+      footer: createRef<HTMLDivElement>(),
+    };
+    render(
+      <DrawerPanel
+        className="root-class"
+        data-testid="root"
+        description="Description"
+        footer="Actions"
+        id="slot-test"
+        ref={refs.root}
+        side="left"
+        slotProps={{
+          trigger: { className: "trigger-class", "data-testid": "trigger", ref: refs.trigger },
+          content: { className: "content-class", "data-testid": "content", ref: refs.content },
+          grabber: { className: "grabber-class", "data-testid": "grabber", ref: refs.grabber },
+          header: { className: "header-class", "data-testid": "header", ref: refs.header },
+          title: { className: "title-class", "data-testid": "title", ref: refs.title },
+          description: {
+            className: "description-class",
+            "data-testid": "description",
+            ref: refs.description,
+          },
+          close: { className: "close-class", "data-testid": "close", ref: refs.close },
+          closeIcon: {
+            className: "icon-class",
+            "data-testid": "close-icon",
+            height: 20,
+            ref: refs.closeIcon,
+            width: 20,
+          },
+          closeIconPath: {
+            className: "path-class",
+            "data-testid": "close-icon-path",
+            d: "M1 1L15 15",
+            ref: refs.closeIconPath,
+          },
+          body: { className: "body-class", "data-testid": "body", ref: refs.body },
+          footer: { className: "footer-class", "data-testid": "footer", ref: refs.footer },
+        }}
+        title="Drawer title"
+        trigger="Open"
+      >
+        Body
+      </DrawerPanel>,
+    );
+
+    const slotExpectations: readonly [keyof typeof refs, string, string][] = [
+      ["root", "root", "root-class"],
+      ["trigger", "trigger", "trigger-class"],
+      ["content", "content", "content-class"],
+      ["grabber", "grabber", "grabber-class"],
+      ["header", "header", "header-class"],
+      ["title", "title", "title-class"],
+      ["description", "description", "description-class"],
+      ["close", "close", "close-class"],
+      ["closeIcon", "close-icon", "icon-class"],
+      ["closeIconPath", "close-icon-path", "path-class"],
+      ["body", "body", "body-class"],
+      ["footer", "footer", "footer-class"],
+    ];
+    for (const [slot, testId, className] of slotExpectations) {
+      expect(screen.getByTestId(testId).getAttribute("class")).toContain(className);
+      expect(refs[slot].current).toBe(screen.getByTestId(testId));
+    }
+    expect(screen.getByTestId("root").getAttribute("data-side")).toBe("left");
+    expect(screen.getByTestId("trigger").getAttribute("commandfor")).toBe("slot-test");
+    expect(screen.getByTestId("content").getAttribute("aria-labelledby")).toBe("slot-test-title");
+    expect(screen.getByTestId("content").getAttribute("aria-describedby")).toBe(
+      "slot-test-description",
+    );
+    expect(screen.getByTestId("title").id).toBe("slot-test-title");
+    expect(screen.getByTestId("description").id).toBe("slot-test-description");
+    expect(screen.getByTestId("close").getAttribute("aria-label")).toBe("Close");
+    expect(screen.getByTestId("close-icon").getAttribute("width")).toBe("20");
+    expect(screen.getByTestId("close-icon-path").getAttribute("d")).toBe("M1 1L15 15");
+  });
+
+  it("filters hostile JavaScript props from generated nodes and native invokers", () => {
+    const dangerousHtml = { dangerouslySetInnerHTML: { __html: "injected" } };
+    const hostileSlots = {
+      trigger: { ...dangerousHtml, command: "request-close", commandfor: "wrong", type: "submit" },
+      content: {
+        ...dangerousHtml,
+        backdrop: "transparent",
+        dismiss: "none",
+        id: "wrong",
+        open: true,
+        popover: "auto",
+        side: "right",
+        size: "full",
+      },
+      grabber: { ...dangerousHtml, "aria-hidden": false },
+      header: dangerousHtml,
+      title: { ...dangerousHtml, id: "wrong-title" },
+      description: { ...dangerousHtml, id: "wrong-description" },
+      close: { ...dangerousHtml, "aria-label": "Wrong", command: "show-modal", type: "submit" },
+      closeIcon: { ...dangerousHtml, "aria-hidden": false, focusable: true },
+      closeIconPath: dangerousHtml,
+      body: dangerousHtml,
+      footer: dangerousHtml,
+    } as unknown as DrawerSlotProps;
+    const hostileRoot = {
+      className: "safe-root",
+      "data-testid": "safe-root",
+      "data-part": "wrong",
+      "data-side": "right",
+      "data-uiify-drawer": "wrong",
+      ...dangerousHtml,
+    } as unknown as DrawerProps;
+    render(
+      <DrawerPanel
+        {...hostileRoot}
+        description="Description"
+        footer="Actions"
+        id="safe-drawer"
+        slotProps={hostileSlots}
+        title="Drawer title"
+        trigger="Open"
+      >
+        Body
+      </DrawerPanel>,
+    );
+
+    const root = screen.getByTestId("safe-root");
+    const trigger = screen.getByRole("button", { name: "Open" });
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    const close = screen.getByRole("button", { name: "Close", hidden: true });
+    expect(root.textContent).not.toContain("injected");
+    expect(root.getAttribute("data-part")).toBe("root");
+    expect(root.getAttribute("data-side")).toBe("bottom");
+    expect(trigger.getAttribute("command")).toBe("show-modal");
+    expect(trigger.getAttribute("commandfor")).toBe("safe-drawer");
+    expect(trigger.getAttribute("type")).toBe("button");
+    expect(dialog.id).toBe("safe-drawer");
+    expect(dialog.hasAttribute("open")).toBe(false);
+    expect(dialog.hasAttribute("popover")).toBe(false);
+    expect(dialog.getAttribute("closedby")).toBe("any");
+    expect(dialog.getAttribute("data-side")).toBe("bottom");
+    expect(dialog.hasAttribute("data-size")).toBe(false);
+    expect(dialog.hasAttribute("data-backdrop")).toBe(false);
+    expect(dialog.getAttribute("aria-labelledby")).toBe("safe-drawer-title");
+    expect(close.getAttribute("command")).toBe("request-close");
+    expect(close.getAttribute("commandfor")).toBe("safe-drawer");
+    expect(close.getAttribute("aria-label")).toBe("Close");
+    expect(dialog.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("keeps direct native aliases customizable while filtering hostile invoker and dialog props", () => {
+    const triggerRef = createRef<HTMLButtonElement>();
+    const closeRef = createRef<HTMLButtonElement>();
+    const dialogRef = createRef<HTMLDialogElement>();
+    const triggerProps = {
+      className: "trigger-class",
+      "data-testid": "native-trigger",
+      command: "request-close",
+      commandfor: "wrong",
+      dangerouslySetInnerHTML: { __html: "injected trigger" },
+      popoverTarget: "wrong",
+      target: "native-dialog",
+      type: "submit",
+      ref: triggerRef,
+    } as unknown as DrawerNativeInvokerProps;
+    const closeProps = {
+      className: "close-class",
+      "data-testid": "native-close",
+      dangerouslySetInnerHTML: { __html: "injected close" },
+      target: "native-dialog",
+      type: "submit",
+      ref: closeRef,
+    } as unknown as DrawerNativeInvokerProps;
+    const dialogProps = {
+      "data-testid": "native-dialog",
+      "data-part": "wrong",
+      closedby: "none",
+      dangerouslySetInnerHTML: { __html: "injected" },
+      id: "native-dialog",
+      open: true,
+      popover: "auto",
+      ref: dialogRef,
+    } as unknown as DrawerNativeContentProps;
+    render(
+      <>
+        <DrawerNativeTrigger {...triggerProps}>Open</DrawerNativeTrigger>
+        <DrawerNativeContent {...dialogProps}>Safe body</DrawerNativeContent>
+        <DrawerNativeClose {...closeProps}>Close</DrawerNativeClose>
+      </>,
+    );
+
+    const trigger = screen.getByTestId("native-trigger");
+    const dialog = screen.getByTestId("native-dialog");
+    const close = screen.getByTestId("native-close");
+    expect(trigger.className).toContain("trigger-class");
+    expect(trigger.getAttribute("command")).toBe("show-modal");
+    expect(trigger.getAttribute("commandfor")).toBe("native-dialog");
+    expect(trigger.getAttribute("type")).toBe("button");
+    expect(trigger.hasAttribute("popovertarget")).toBe(false);
+    expect(dialog).toBe(dialogRef.current);
+    expect(dialog.getAttribute("data-part")).toBe("content");
+    expect(dialog.getAttribute("closedby")).toBe("any");
+    expect(dialog.hasAttribute("open")).toBe(false);
+    expect(dialog.hasAttribute("popover")).toBe(false);
+    expect(dialog.textContent).toBe("Safe body");
+    expect(close.className).toContain("close-class");
+    expect(close.getAttribute("command")).toBe("request-close");
+    expect(close.getAttribute("commandfor")).toBe("native-dialog");
+    expect(close.getAttribute("type")).toBe("button");
+    expect(triggerRef.current).toBe(trigger);
+    expect(closeRef.current).toBe(close);
+  });
 });
 
 // jsdom 29 implements neither showModal()/close() modality nor requestClose();
@@ -127,6 +361,21 @@ beforeEach(() => {
 });
 
 describe("Drawer compound — props ownership", () => {
+  it("rejects dangerouslySetInnerHTML on native invoker parts at the type level", () => {
+    const elements: ReactElement[] = [
+      <DrawerNativeTrigger key="safe" target="dialog">
+        Open
+      </DrawerNativeTrigger>,
+      <DrawerNativeClose
+        key="unsafe"
+        target="dialog"
+        // @ts-expect-error -- invokers own their children.
+        dangerouslySetInnerHTML={{ __html: "unsafe" }}
+      />,
+    ];
+    expect(elements).toHaveLength(2);
+  });
+
   it("only accepts Trigger's type as library-computed — the type system rejects a consumer override", () => {
     const elements: ReactElement[] = [
       <Drawer.Trigger key="ok">Open</Drawer.Trigger>,
@@ -296,6 +545,32 @@ describe("Drawer compound — props ownership", () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  it("forwards handle pointer events when snap-point dragging is disabled", () => {
+    const handlers = {
+      onPointerDown: vi.fn(),
+      onPointerMove: vi.fn(),
+      onPointerUp: vi.fn(),
+      onPointerCancel: vi.fn(),
+    };
+    const { container } = render(
+      <Drawer.Root>
+        <Drawer.Content>
+          <Drawer.Handle {...handlers} />
+        </Drawer.Content>
+      </Drawer.Root>,
+    );
+    const handle = container.querySelector('[data-part="handle"]');
+    expect(handle).not.toBeNull();
+    fireEvent.pointerDown(handle as HTMLElement, { pointerId: 1 });
+    fireEvent.pointerMove(handle as HTMLElement, { pointerId: 1 });
+    fireEvent.pointerUp(handle as HTMLElement, { pointerId: 1 });
+    fireEvent.pointerCancel(handle as HTMLElement, { pointerId: 1 });
+    expect(handlers.onPointerDown).toHaveBeenCalledOnce();
+    expect(handlers.onPointerMove).toHaveBeenCalledOnce();
+    expect(handlers.onPointerUp).toHaveBeenCalledOnce();
+    expect(handlers.onPointerCancel).toHaveBeenCalledOnce();
   });
 
   it("lets a consumer onCancel veto Content's close-reason bookkeeping", () => {

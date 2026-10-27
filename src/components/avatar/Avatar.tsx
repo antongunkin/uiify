@@ -1,11 +1,13 @@
 import type { ElementType, ReactElement } from "react";
+import { omitProps } from "../../core/slot-props.js";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import type { AvatarProps } from "./types.js";
 
 export function Avatar<TAs extends ElementType = "span">(
   props: AvatarProps<TAs>,
 ): ReactElement | null {
-  const { as, render, name, fallback, src, size, ...consumerProps } = props as AvatarProps<"span">;
+  const { as, render, name, fallback, src, size, slotProps, ...consumerProps } =
+    props as AvatarProps<"span">;
 
   return useRenderElement({
     as,
@@ -18,9 +20,18 @@ export function Avatar<TAs extends ElementType = "span">(
       ...(size !== undefined ? { "data-size": size } : {}),
       children:
         src !== undefined ? (
-          <img data-part="image" src={src} alt="" />
+          <img
+            {...omitProps(slotProps?.image, ["alt", "data-part", "data-uiify-avatar", "src"])}
+            data-part="image"
+            src={src}
+            alt=""
+          />
         ) : (
-          <span data-part="fallback" aria-hidden="true">
+          <span
+            {...omitProps(slotProps?.fallback, ["aria-hidden", "data-part", "data-uiify-avatar"])}
+            data-part="fallback"
+            aria-hidden="true"
+          >
             {fallback}
           </span>
         ),

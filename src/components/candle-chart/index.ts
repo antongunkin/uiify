@@ -6,4 +6,5 @@ export type {
   CandleChartOwnProps,
   CandleChartPointerPosition,
   CandleChartProps,
+  CandleChartSlotProps,
 } from "./types.js";

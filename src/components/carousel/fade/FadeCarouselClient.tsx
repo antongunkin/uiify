@@ -25,6 +25,7 @@ import { createFadeController } from "./fade-controller.js";
 import { attachFadeSwipe } from "./fade-swipe.js";
 
 export function FadeCarouselClient(props: FadeCarouselClientProps): ReactElement | null {
+  const { ref: clientRef, ...base } = props;
   const [root, setRoot] = useState<HTMLElement | null>(null);
   const [controller, setController] = useState<CarouselController>();
   const [autoplay, setAutoplay] = useState<CarouselAutoplayController>();
@@ -95,7 +96,7 @@ export function FadeCarouselClient(props: FadeCarouselClientProps): ReactElement
     return attachFadeSwipe(root, controller, props.mouseDrag ?? false);
   }, [root, controller, props.swipe, props.mouseDrag]);
   useImperativeHandle(
-    props.ref,
+    clientRef,
     () => ({
       next: () => controller?.next("next"),
       previous: () => controller?.previous("previous"),
@@ -108,7 +109,7 @@ export function FadeCarouselClient(props: FadeCarouselClientProps): ReactElement
   );
   return (
     <CarouselClientView
-      base={props}
+      base={base}
       rootRef={setRoot}
       mode="fade"
       {...(controller ? { controller } : {})}

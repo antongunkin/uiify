@@ -24,6 +24,7 @@ export type {
   ComboboxRootShellProps,
   ComboboxRootProps,
   ComboboxTagsOwnProps,
+  ComboboxTagsSlotProps,
   ComboboxTagsProps,
   ComboboxTriggerOwnProps,
   ComboboxTriggerProps,

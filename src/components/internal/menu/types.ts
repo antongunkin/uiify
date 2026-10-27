@@ -49,6 +49,7 @@ export interface MenuSelectEvent {
 export interface UseMenuSurfaceOptions {
   readonly align?: AnchorAlign;
   readonly defaultOpen?: boolean;
+  readonly id?: string;
   /** `"auto"` for click-dismissable surfaces, `"manual"` when the compound drives dismissal. */
   readonly mode: "auto" | "manual";
   readonly onOpenChange?: PopoverChangeHandler;

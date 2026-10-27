@@ -15,6 +15,7 @@ Do not use breadcrumbs as the only way to navigate or show unrelated destination
 ## Structure
 
 Use BreadcrumbRoot, BreadcrumbList, BreadcrumbItem, and BreadcrumbLink inside a labelled navigation landmark. Keep items in ancestor order, use current to identify the current page, and use links for ancestors.
+When BreadcrumbList renders its data-driven `items`, use `slotProps.item` and `slotProps.link` for each generated item and link. Address a specific item with `byItemValue[item.key]`. Collapsed lists also accept `slotProps.ellipsisItem`, `ellipsis`, `ellipsisTrigger`, and `ellipsisContent`. The standalone `Breadcrumb.Ellipsis` uses `slotProps.item` and `slotProps.ellipsis`.
 
 ## Responsive
 

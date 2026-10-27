@@ -14,7 +14,7 @@ Do not use color as the only way to choose or identify a required category. Use 
 
 ## Structure
 
-Use the documented ColorPicker with its required visible label. Choose the documented colorSpace and alpha options to match the stored value; show the current color value as text as well as a swatch.
+Use the documented ColorPicker with its required visible label. Choose the documented colorSpace and alpha options to match the stored value; show the current color value as text as well as a swatch. The component's `slotProps.field`, `slotProps.label`, `slotProps.surface`, `slotProps.control`, and `slotProps.input` accept native props for the generated field, label, swatch surface, value control, and native picker input respectively. The component's own `className` and `style` still target the field.
 
 ## Responsive
 

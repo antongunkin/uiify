@@ -15,6 +15,7 @@ Use ordinary links for navigation and Tabs only when each choice opens a corresp
 ## Structure
 
 Use SegmentedControl with a stable id and items that each have a value and label. Give the group an accessible name, and show the selected option with the component's native radio semantics.
+Style generated item wrappers, radios, and labels with `slotProps.item`, `slotProps.input`, and `slotProps.label`. Use `byItemValue` when one segment needs its own props or `data-testid`.
 
 ## Responsive
 

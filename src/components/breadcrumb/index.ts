@@ -9,12 +9,14 @@ export {
 } from "./Breadcrumb.js";
 export type {
   BreadcrumbItemData,
+  BreadcrumbEllipsisPartProps,
   BreadcrumbLabels,
   BreadcrumbItemProps,
   BreadcrumbLinkOwnProps,
   BreadcrumbLinkProps,
   BreadcrumbListOwnProps,
   BreadcrumbListProps,
+  BreadcrumbListSlotProps,
   BreadcrumbRootOwnProps,
   BreadcrumbRootProps,
   BreadcrumbSeparatorOwnProps,

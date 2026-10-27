@@ -25,7 +25,9 @@ export function RatingClient({
   readOnly = false,
   disabled = false,
   className,
+  slotProps,
   "aria-label": ariaLabel,
+  ...rootProps
 }: RatingClientProps): ReactElement {
   const [value, setValue] = useControllableState({
     defaultValue,
@@ -44,6 +46,8 @@ export function RatingClient({
       namespace="rating"
       onItemChange={(item) => setValue(Number(item.value))}
       orientation="horizontal"
+      rootProps={rootProps}
+      {...(slotProps ? { slotProps } : {})}
       rootAttributes={{
         "aria-label": ariaLabel,
         "data-disabled": disabled ? "" : undefined,

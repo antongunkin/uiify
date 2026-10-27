@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `ContextMenu`, `ContextMenuCheckboxItem`, `ContextMenuContent`, `ContextMenuItem`, `ContextMenuLabel`, `ContextMenuRadioItem`, `ContextMenuRoot`, `ContextMenuSeparator`, `ContextMenuSub`, `ContextMenuSubContent`, `ContextMenuSubTrigger`, `ContextMenuTrigger`
-- Types: `ContextMenuCheckboxItemOwnProps`, `ContextMenuContentOwnProps`, `ContextMenuContentProps`, `ContextMenuItemOwnProps`, `ContextMenuItemProps`, `ContextMenuRadioItemOwnProps`, `ContextMenuRootControlledOwnProps`, `ContextMenuRootShellOwnProps`, `ContextMenuRootShellProps`, `ContextMenuRootProps`, `ContextMenuSubContentOwnProps`, `ContextMenuSubOwnProps`, `ContextMenuSubTriggerOwnProps`, `ContextMenuTriggerOwnProps`, `ContextMenuTriggerProps`, `ContextMenuLabelOwnProps`, `ContextMenuSeparatorOwnProps`
+- Types: `ContextMenuCheckboxItemOwnProps`, `ContextMenuContentOwnProps`, `ContextMenuContentProps`, `ContextMenuItemOwnProps`, `ContextMenuItemProps`, `ContextMenuRadioItemOwnProps`, `ContextMenuRootControlledOwnProps`, `ContextMenuRootShellOwnProps`, `ContextMenuRootShellProps`, `ContextMenuRootProps`, `ContextMenuRootSlotProps`, `ContextMenuSubContentOwnProps`, `ContextMenuSubOwnProps`, `ContextMenuSubTriggerOwnProps`, `ContextMenuTriggerOwnProps`, `ContextMenuTriggerProps`, `ContextMenuLabelOwnProps`, `ContextMenuSeparatorOwnProps`
 
 ## Props and shapes
 
@@ -33,6 +33,13 @@ Extends: `UseMenuSurfaceReturn`
 | --- | --- | --- | --- |
 | `defaultOpen` | `boolean` | no |  |
 | `id` | `string` | no |  |
+| `slotProps` | `ContextMenuRootSlotProps` | no |  |
+
+### ContextMenuRootSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `virtualAnchor` | `Omit<ComponentPropsWithRef<"span">, \| "aria-hidden" \| "children" \| "dangerouslySetInnerHTML" \| "data-anchor" \| "data-virtual-anchor" \| "data-uiify-menu"> & ConsumerDataAttributes & { readonly "data-anchor"?: never; readonly "data-uiify-menu"?: never; readonly "data-virtual-anchor"?: never; }` | no |  |
 
 ### ContextMenuRootControlledOwnProps
 
@@ -83,24 +90,38 @@ Extends: `ContextMenuRootShellOwnProps`, `ContextMenuRootControlledOwnProps`
 
 ### ContextMenuCheckboxItemOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-checked" | "children" | "data-disabled" | "data-part" | "data-state" | "data-uiify-menu" | "dangerouslySetInnerHTML" | "role">`, `ConsumerDataAttributes`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `checked` | `boolean \| "indeterminate"` | no |  |
 | `children` | `ReactNode` | no |  |
-| `className` | `string` | no |  |
 | `disabled` | `boolean` | no |  |
 | `onCheckedChange` | `(checked: boolean) => void` | no |  |
 | `textValue` | `string` | no |  |
+| `"aria-checked"` | `never` | no |  |
+| `"data-disabled"` | `never` | no |  |
+| `"data-part"` | `never` | no |  |
+| `"data-state"` | `never` | no |  |
+| `"data-uiify-menu"` | `never` | no |  |
+| `role` | `never` | no |  |
 
 ### ContextMenuRadioItemOwnProps
+
+Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-checked" | "children" | "data-disabled" | "data-part" | "data-state" | "data-uiify-menu" | "dangerouslySetInnerHTML" | "role">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
-| `className` | `string` | no |  |
 | `disabled` | `boolean` | no |  |
 | `textValue` | `string` | no |  |
 | `value` | `string` | yes |  |
+| `"aria-checked"` | `never` | no |  |
+| `"data-disabled"` | `never` | no |  |
+| `"data-part"` | `never` | no |  |
+| `"data-state"` | `never` | no |  |
+| `"data-uiify-menu"` | `never` | no |  |
+| `role` | `never` | no |  |
 
 ### ContextMenuSubOwnProps
 
@@ -110,19 +131,30 @@ Extends: `ContextMenuRootShellOwnProps`, `ContextMenuRootControlledOwnProps`
 
 ### ContextMenuSubTriggerOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-expanded" | "aria-haspopup" | "children" | "data-part" | "data-uiify-menu" | "dangerouslySetInnerHTML" | "role">`, `ConsumerDataAttributes`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
-| `className` | `string` | no |  |
 | `disabled` | `boolean` | no |  |
 | `textValue` | `string` | no |  |
+| `"aria-expanded"` | `never` | no |  |
+| `"aria-haspopup"` | `never` | no |  |
+| `"data-part"` | `never` | no |  |
+| `"data-uiify-menu"` | `never` | no |  |
+| `role` | `never` | no |  |
 
 ### ContextMenuSubContentOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"div">, | "children" | "data-part" | "data-state" | "data-uiify-menu" | "dangerouslySetInnerHTML" | "hidden" | "role">`, `ConsumerDataAttributes`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
-| `className` | `string` | no |  |
+| `"data-part"` | `never` | no |  |
+| `"data-state"` | `never` | no |  |
+| `"data-uiify-menu"` | `never` | no |  |
+| `role` | `never` | no |  |
 
 ## Other types
 

@@ -1,4 +1,5 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
+import type { ConsumerDataAttributes } from "../../core/slot-props.js";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export type AlertVariant = "secondary" | "success" | "warning" | "destructive";
@@ -9,6 +10,7 @@ export interface AlertOwnProps {
   readonly variant?: AlertVariant;
   /** Override the decorative text symbol, or hide it with false. */
   readonly symbol?: string | false;
+  readonly slotProps?: AlertSlotProps;
 }
 
 export type AlertProps<TAs extends ElementType = "div"> = RenderableProps<
@@ -39,3 +41,16 @@ export type AlertDescriptionProps<TAs extends ElementType = "div"> = RenderableP
   Record<string, never>,
   HTMLElement
 >;
+
+export type AlertSymbolSlotProps = Omit<
+  ComponentPropsWithRef<"span">,
+  "aria-hidden" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-alert"
+> & {
+  readonly "aria-hidden"?: never;
+  readonly "data-part"?: never;
+  readonly "data-uiify-alert"?: never;
+} & ConsumerDataAttributes;
+
+export interface AlertSlotProps {
+  readonly symbol?: AlertSymbolSlotProps;
+}

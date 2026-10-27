@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { omitProps } from "../../core/slot-props.js";
 import type { ToggleProps } from "./types.js";
 
 export function Toggle({
@@ -7,7 +8,8 @@ export function Toggle({
   pressed,
   defaultPressed = false,
   disabled = false,
-  className,
+  slotProps,
+  ...rootProps
 }: ToggleProps): ReactElement {
   const isControlled = pressed !== undefined;
   const checked = isControlled ? pressed : undefined;
@@ -15,8 +17,30 @@ export function Toggle({
   const labelId = `${id}-label`;
 
   return (
-    <div data-disabled={disabled ? "" : undefined} data-uiify-toggle="">
+    <div
+      {...omitProps(rootProps, [
+        "children",
+        "dangerouslySetInnerHTML",
+        "data-disabled",
+        "data-uiify-toggle",
+        "id",
+      ])}
+      data-disabled={disabled ? "" : undefined}
+      data-uiify-toggle=""
+    >
       <input
+        {...omitProps(slotProps?.control, [
+          "aria-labelledby",
+          "checked",
+          "data-disabled",
+          "data-part",
+          "data-state",
+          "data-uiify-toggle",
+          "defaultChecked",
+          "disabled",
+          "id",
+          "type",
+        ])}
         aria-labelledby={labelId}
         checked={checked}
         data-disabled={disabled ? "" : undefined}
@@ -28,7 +52,13 @@ export function Toggle({
         type="checkbox"
       />
       <label
-        className={className}
+        {...omitProps(slotProps?.label, [
+          "data-part",
+          "data-uiify-button",
+          "data-variant",
+          "htmlFor",
+          "id",
+        ])}
         data-part="label"
         data-uiify-button=""
         data-variant="outline"

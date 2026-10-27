@@ -26,6 +26,8 @@ export type {
   ModalHeaderProps,
   ModalProps,
   ModalLabels,
+  ModalOwnProps,
+  ModalSlotProps,
   ModalSize,
   ModalTitleProps,
   ModalTriggerOwnProps,

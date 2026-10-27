@@ -15,8 +15,14 @@
   :where(
     [data-uiify-menu] :is([data-part="content"], [data-part="sub-content"]),
     [data-uiify-menu]:is([data-part="content"], [data-part="sub-content"])
-  ) {
+  ):where(:not([popover]), :popover-open) {
     display: flex;
+  }
+
+  :where(
+    [data-uiify-menu] :is([data-part="content"], [data-part="sub-content"]),
+    [data-uiify-menu]:is([data-part="content"], [data-part="sub-content"])
+  ) {
     flex-direction: column;
     min-inline-size: 12rem;
     max-block-size: min(24rem, calc(100dvb - 2rem));
@@ -126,9 +132,9 @@
   [data-uiify-menu] [data-part="item-indicator"] {
     display: inline-grid;
     place-items: center;
-    inline-size: 1.15rem;
-    block-size: 1.15rem;
-    flex: 0 0 1.15rem;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    flex: 0 0 1.25rem;
   }
 
   [data-uiify-menu] [data-part="item-indicator"] {

@@ -24,7 +24,15 @@
 | --- | --- | --- | --- |
 | `ratio` | `number` | no | Positive finite width / height ratio. Omit to use the CSS default (square). |
 | `children` | `ReactNode` | no |  |
+| `slotProps` | `AspectRatioSlotProps` | no |  |
+
+### AspectRatioSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `content` | `AspectRatioContentSlotProps` | no |  |
 
 ## Other types
 
 - `AspectRatioProps<TAs>`: `RenderableProps<TAs, AspectRatioOwnProps, Record<string, never>, HTMLElement>`
+- `AspectRatioContentSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-aspect-ratio"> & { readonly "data-part"?: never; readonly "data-uiify-aspect-ratio"?: never; } & ConsumerDataAttributes`

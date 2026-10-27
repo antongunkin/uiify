@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { HoverCard } from "./HoverCard.js";
@@ -47,6 +48,40 @@ function renderHoverCard(
 }
 
 describe("HoverCard", () => {
+  it("forwards native props, classes, styles, and refs through its public DOM parts", () => {
+    const triggerRef = createRef<HTMLButtonElement>();
+    const contentRef = createRef<HTMLDivElement>();
+    render(
+      <HoverCard.Root>
+        <HoverCard.Trigger
+          className="custom-trigger"
+          data-testid="hover-card-trigger"
+          style={{ color: "red" }}
+          ref={triggerRef}
+        >
+          Profile
+        </HoverCard.Trigger>
+        <HoverCard.Content
+          className="custom-content"
+          data-testid="hover-card-content"
+          style={{ color: "blue" }}
+          ref={contentRef}
+        >
+          Extra details
+        </HoverCard.Content>
+      </HoverCard.Root>,
+    );
+
+    const trigger = screen.getByTestId("hover-card-trigger");
+    const content = screen.getByTestId("hover-card-content");
+    expect(trigger.className).toBe("custom-trigger");
+    expect(trigger.style.color).toBe("red");
+    expect(triggerRef.current).toBe(trigger);
+    expect(content.className).toBe("custom-content");
+    expect(content.style.color).toBe("blue");
+    expect(contentRef.current).toBe(content);
+  });
+
   it("renders the structural shell from the main export", () => {
     renderHoverCard();
     const trigger = screen.getByRole("button", { name: "Profile" });

@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `Drawer`, `DrawerClose`, `DrawerContent`, `DrawerDescription`, `DrawerHandle`, `DrawerRoot`, `DrawerTitle`, `DrawerTrigger`, `DrawerPanel`, `DrawerNativeTrigger`, `DrawerNativeClose`, `DrawerNativeContent`
-- Types: `DrawerCloseOwnProps`, `DrawerCloseProps`, `DrawerContentOwnProps`, `DrawerContentProps`, `DrawerDescriptionOwnProps`, `DrawerHandleOwnProps`, `DrawerRootOwnProps`, `DrawerRootProps`, `DrawerTitleOwnProps`, `DrawerTriggerOwnProps`, `DrawerTriggerProps`, `DrawerProps`, `DrawerLabels`, `DrawerSide`, `DrawerAppearanceProps`, `DrawerNativeContentProps`, `DrawerNativeInvokerProps`
+- Types: `DrawerCloseOwnProps`, `DrawerCloseProps`, `DrawerContentOwnProps`, `DrawerContentProps`, `DrawerDescriptionOwnProps`, `DrawerHandleOwnProps`, `DrawerRootOwnProps`, `DrawerRootProps`, `DrawerTitleOwnProps`, `DrawerTriggerOwnProps`, `DrawerTriggerProps`, `DrawerProps`, `DrawerLabels`, `DrawerSide`, `DrawerAppearanceProps`, `DrawerNativeContentProps`, `DrawerNativeInvokerProps`, `DrawerOwnProps`, `DrawerSlotProps`
 
 ## Values
 
@@ -31,7 +31,7 @@
 | `dismiss` | `"any" \| "closerequest" \| "none"` | no |  |
 | `backdrop` | `"opaque" \| "transparent"` | no |  |
 
-### DrawerProps
+### DrawerOwnProps
 
 Extends: `DrawerAppearanceProps`
 
@@ -46,7 +46,23 @@ Extends: `DrawerAppearanceProps`
 | `labels` | `Partial<DrawerLabels>` | no |  |
 | `footer` | `ReactNode` | no |  |
 | `side` | `DrawerSide` | no |  |
-| `className` | `string` | no |  |
+| `slotProps` | `DrawerSlotProps` | no | Native props for generated inner nodes; DrawerPanel's root takes props directly. |
+
+### DrawerSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `trigger` | `DrawerSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "commandFor" \| "popoverTarget" \| "popoverTargetAction" \| "data-part" \| "data-uiify-button" \| "data-uiify-drawer">` | no |  |
+| `content` | `DrawerSlotElementProps<"dialog", \| "size" \| "dismiss" \| "side" \| "backdrop" \| "id" \| "open" \| "popover" \| "closedby" \| "aria-describedby" \| "aria-labelledby" \| "aria-modal" \| "data-part" \| "data-side" \| "data-size" \| "data-backdrop" \| "data-state" \| "data-snap-enabled" \| "data-uiify-drawer">` | no |  |
+| `grabber` | `DrawerSlotElementProps<"div", "aria-hidden" \| "data-part" \| "data-uiify-drawer">` | no |  |
+| `header` | `DrawerSlotElementProps<"div", "data-part" \| "data-uiify-drawer">` | no |  |
+| `title` | `DrawerSlotElementProps<"h2", "id" \| "data-part" \| "data-uiify-drawer">` | no |  |
+| `description` | `DrawerSlotElementProps<"p", "id" \| "data-part" \| "data-uiify-drawer">` | no |  |
+| `close` | `DrawerSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "commandFor" \| "popoverTarget" \| "popoverTargetAction" \| "aria-label" \| "data-part" \| "data-variant" \| "data-uiify-button" \| "data-uiify-drawer">` | no |  |
+| `closeIcon` | `DrawerSlotElementProps<"svg", "aria-hidden" \| "focusable">` | no |  |
+| `closeIconPath` | `DrawerSlotElementProps<"path">` | no |  |
+| `body` | `DrawerSlotElementProps<"div", "data-part" \| "data-uiify-drawer">` | no |  |
+| `footer` | `DrawerSlotElementProps<"div", "data-part" \| "data-uiify-drawer">` | no |  |
 
 ### DrawerLabels
 
@@ -56,16 +72,21 @@ Extends: `DrawerAppearanceProps`
 
 ### DrawerNativeContentProps
 
-Extends: `Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "closedby">`, `DrawerAppearanceProps`
+Extends: `Omit<ComponentPropsWithRef<"dialog">, | "open" | "popover" | "closedby" | "dangerouslySetInnerHTML" | "data-part" | "data-side" | "data-size" | "data-backdrop" | "data-uiify-drawer">`, `DrawerAppearanceProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | yes |  |
 | `side` | `DrawerSide` | no |  |
+| `"data-part"` | `never` | no |  |
+| `"data-side"` | `never` | no |  |
+| `"data-size"` | `never` | no |  |
+| `"data-backdrop"` | `never` | no |  |
+| `"data-uiify-drawer"` | `never` | no |  |
 
 ### DrawerNativeInvokerProps
 
-Extends: `Omit<ComponentPropsWithRef<"button">, "command" | "commandFor">`
+Extends: `Omit<ComponentPropsWithRef<"button">, | "type" | "command" | "commandfor" | "commandFor" | "popoverTarget" | "popoverTargetAction" | "data-part" | "data-variant" | "data-uiify-button" | "data-uiify-drawer" | "dangerouslySetInnerHTML">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -225,3 +246,7 @@ Extends: `ComponentPropsWithRef<"div">`
 | `onPointerDown` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |
 | `onPointerMove` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |
 | `onPointerUp` | `(event: PointerEvent<HTMLDivElement>) => void` | no |  |
+
+## Other types
+
+- `DrawerProps`: `DrawerOwnProps & Omit<DrawerSlotElementProps<"div", "data-part" | "data-side" | "data-uiify-drawer">, keyof DrawerOwnProps>`

@@ -15,6 +15,8 @@ import type { FocusEvent, KeyboardEvent, PointerEvent, ReactElement } from "reac
 import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { VisuallyHidden } from "@gunkin/uiify/core/visually-hidden";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
+import { omitProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import { createToastStore } from "./toast-store.js";
 import {
   ToastAction as ToastActionElement,
@@ -48,6 +50,14 @@ export type {
   ToastStore,
   ToastTitleOwnProps,
   ToastViewportOwnProps,
+  ToastProviderSlotProps,
+  ToastRootSlotProps,
+  ToastItemSlotProps,
+  ToastTitleSlotProps,
+  ToastDescriptionSlotProps,
+  ToastActionSlotProps,
+  ToastCloseSlotProps,
+  ToastViewportSlotProps,
 } from "./types.js";
 
 const DEFAULT_TOAST_LABELS: ToastLabels = {
@@ -67,7 +77,7 @@ const [ToastStoreProvider, useToastStoreContext] = createPartContext<ToastContex
 export { ToastDescription, ToastTitle };
 
 export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null {
-  const { children, limit = 3, labels } = props;
+  const { children, limit = 3, labels, slotProps } = props;
   const resolvedLabels = useMemo(() => ({ ...DEFAULT_TOAST_LABELS, ...labels }), [labels]);
   const storeRef = useRef<ToastStore | null>(null);
   storeRef.current ??= createToastStore({ limit });
@@ -91,14 +101,26 @@ export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null
     () => ({ dismiss, pause, resume, store, labels: resolvedLabels }),
     [dismiss, pause, resume, store, resolvedLabels],
   );
+  const politeLiveRegionProps = omitProps(slotProps?.politeLiveRegion, [
+    "aria-atomic",
+    "aria-live",
+    "children",
+    "dangerouslySetInnerHTML",
+  ]);
+  const assertiveLiveRegionProps = omitProps(slotProps?.assertiveLiveRegion, [
+    "aria-atomic",
+    "aria-live",
+    "children",
+    "dangerouslySetInnerHTML",
+  ]);
 
   return (
     <ToastStoreProvider value={contextValue}>
       {children}
-      <VisuallyHidden aria-atomic="true" aria-live="polite">
+      <VisuallyHidden {...politeLiveRegionProps} aria-atomic="true" aria-live="polite">
         {announcement}
       </VisuallyHidden>
-      <VisuallyHidden aria-atomic="true" aria-live="assertive">
+      <VisuallyHidden {...assertiveLiveRegionProps} aria-atomic="true" aria-live="assertive">
         {assertiveAnnouncement}
       </VisuallyHidden>
     </ToastStoreProvider>
@@ -121,9 +143,11 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
     sync();
     return unsubscribe;
   }, [store]);
-  const [consumerRef, domProps] = splitRef<HTMLElement, ToastViewportOwnProps>(props);
+  const { slotProps, ...viewportProps } = props;
+  const [consumerRef, domProps] = splitRef<HTMLElement, ToastViewportOwnProps>(viewportProps);
   const { labels } = useToastStoreContext("Viewport");
   const resolvedLabels = { ...labels, ...props.labels };
+  const { item: itemSlotProps, ...rootSlotProps } = slotProps ?? {};
   const viewportRef = useRef<HTMLElement | null>(null);
   const mergedRef = useMergedRefs(viewportRef, consumerRef);
   const hasToasts = toasts.length > 0;
@@ -147,7 +171,18 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
     <ToastViewportElement {...domProps} labels={resolvedLabels} popover="manual" ref={mergedRef}>
       {toasts.map((toast) => (
         <ViewTransition default={TOAST_TRANSITION} key={toast.id}>
-          <ToastRoot toast={toast} />
+          <ToastRoot
+            {...resolveRepeatedSlotProps(itemSlotProps, toast.id, [
+              "aria-label",
+              "data-part",
+              "data-state",
+              "data-uiify-toast",
+              "role",
+              "tabIndex",
+            ])}
+            toast={toast}
+            slotProps={rootSlotProps}
+          />
         </ViewTransition>
       ))}
     </ToastViewportElement>
@@ -156,64 +191,121 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
 ToastViewport.displayName = "ToastViewport";
 
 export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
-  const { toast, labels: labelOverrides } = props;
+  const { toast, labels: labelOverrides, slotProps, ...consumerRootProps } = props;
   const { dismiss, pause, resume, labels: providerLabels } = useToastStoreContext("Root");
   const labels = { ...providerLabels, ...labelOverrides };
   const swipeRef = useRef<PointerEvent<HTMLDivElement> | null>(null);
   const endSwipe = (event: PointerEvent<HTMLDivElement>) => {
     if (swipeRef.current?.pointerId === event.pointerId) swipeRef.current = null;
   };
+  const rootProps = omitProps(consumerRootProps, [
+    "aria-label",
+    "children",
+    "dangerouslySetInnerHTML",
+    "data-part",
+    "data-state",
+    "data-uiify-toast",
+    "role",
+    "tabIndex",
+  ]);
+  const titleProps = resolveRepeatedSlotProps(slotProps?.title, toast.id, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "data-part",
+    "data-uiify-toast",
+  ]);
+  const descriptionProps = resolveRepeatedSlotProps(slotProps?.description, toast.id, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "data-part",
+    "data-uiify-toast",
+  ]);
+  const actionProps = resolveRepeatedSlotProps(slotProps?.action, toast.id, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "type",
+    "data-part",
+    "data-uiify-toast",
+  ]);
+  const closeProps = resolveRepeatedSlotProps(slotProps?.close, toast.id, [
+    "aria-label",
+    "children",
+    "dangerouslySetInnerHTML",
+    "type",
+    "data-part",
+    "data-uiify-toast",
+  ]);
 
   /* oxlint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/prefer-tag-over-role -- pause/swipe on toast card */
   return (
     <div
+      {...rootProps}
       aria-label={typeof toast.title === "string" ? toast.title : labels.notification}
       data-state="open"
       data-part="item"
       data-uiify-toast=""
       role="group"
       tabIndex={0}
-      onFocus={() => pause(toast.id)}
-      onBlur={(event: FocusEvent<HTMLDivElement>) => {
+      onFocus={composeEventHandlers(rootProps.onFocus, () => pause(toast.id))}
+      onBlur={composeEventHandlers(rootProps.onBlur, (event: FocusEvent<HTMLDivElement>) => {
         if (!event.currentTarget.matches(":hover, :focus-within")) resume(toast.id);
-      }}
-      onKeyDown={(event: KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "Escape") {
-          event.preventDefault();
+      })}
+      onKeyDown={composeEventHandlers(
+        rootProps.onKeyDown,
+        (event: KeyboardEvent<HTMLDivElement>) => {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            dismiss(toast.id);
+          }
+        },
+      )}
+      onPointerEnter={composeEventHandlers(rootProps.onPointerEnter, () => pause(toast.id))}
+      onPointerLeave={composeEventHandlers(
+        rootProps.onPointerLeave,
+        (event: PointerEvent<HTMLDivElement>) => {
+          if (!event.currentTarget.matches(":focus-within")) resume(toast.id);
+        },
+      )}
+      onPointerCancel={composeEventHandlers(rootProps.onPointerCancel, endSwipe)}
+      onPointerDown={composeEventHandlers(
+        rootProps.onPointerDown,
+        (event: PointerEvent<HTMLDivElement>) => {
+          if (!swipeRef.current && event.isPrimary) swipeRef.current = event;
+        },
+      )}
+      onPointerMove={composeEventHandlers(
+        rootProps.onPointerMove,
+        (event: PointerEvent<HTMLDivElement>) => {
+          const swipe = swipeRef.current;
+          if (swipe?.pointerId !== event.pointerId) return;
+          const deltaX = event.clientX - swipe.clientX;
+          const deltaY = event.clientY - swipe.clientY;
+          if (Math.abs(deltaX) <= 80 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
           dismiss(toast.id);
-        }
-      }}
-      onPointerEnter={() => pause(toast.id)}
-      onPointerLeave={(event: PointerEvent<HTMLDivElement>) => {
-        if (!event.currentTarget.matches(":focus-within")) resume(toast.id);
-      }}
-      onPointerCancel={endSwipe}
-      onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-        if (!swipeRef.current && event.isPrimary) swipeRef.current = event;
-      }}
-      onPointerMove={(event: PointerEvent<HTMLDivElement>) => {
-        const swipe = swipeRef.current;
-        if (swipe?.pointerId !== event.pointerId) return;
-        const deltaX = event.clientX - swipe.clientX;
-        const deltaY = event.clientY - swipe.clientY;
-        if (Math.abs(deltaX) <= 80 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
-        dismiss(toast.id);
-      }}
-      onPointerUp={endSwipe}
+        },
+      )}
+      onPointerUp={composeEventHandlers(rootProps.onPointerUp, endSwipe)}
     >
-      {toast.title ? <ToastTitle>{toast.title}</ToastTitle> : null}
-      {toast.description ? <ToastDescription>{toast.description}</ToastDescription> : null}
+      {toast.title ? <ToastTitle {...titleProps}>{toast.title}</ToastTitle> : null}
+      {toast.description ? (
+        <ToastDescription {...descriptionProps}>{toast.description}</ToastDescription>
+      ) : null}
       {toast.action ? (
         <ToastAction
-          onClick={() => {
+          {...actionProps}
+          onClick={composeEventHandlers(actionProps?.onClick, () => {
             toast.action?.onClick();
             dismiss(toast.id);
-          }}
+          })}
         >
           {toast.action.label}
         </ToastAction>
       ) : null}
-      <ToastClose labels={labels} onClick={() => dismiss(toast.id)} />
+      <ToastClose
+        {...closeProps}
+        labels={labels}
+        onClick={composeEventHandlers(closeProps?.onClick, () => dismiss(toast.id))}
+      />
     </div>
   );
   /* oxlint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/prefer-tag-over-role */

@@ -28,4 +28,17 @@ describe("RatingClient", () => {
       (screen.getByRole("radio", { name: "2 stars", hidden: true }) as HTMLInputElement).checked,
     ).toBe(false);
   });
+
+  it("forwards native root props and repeated slot props", () => {
+    render(
+      <RatingClient
+        data-testid="rating-client-root"
+        id="movie"
+        slotProps={{ input: { byItemValue: { "4": { "data-testid": "rating-client-input" } } } }}
+      />,
+    );
+
+    expect(screen.getByTestId("rating-client-root").hasAttribute("data-uiify-rating")).toBe(true);
+    expect(screen.getByTestId("rating-client-input").getAttribute("type")).toBe("radio");
+  });
 });

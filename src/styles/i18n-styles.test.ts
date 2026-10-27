@@ -8,8 +8,6 @@ const normalizedI18nCss = i18nCss.replace(/\s+/g, " ");
 const indexCss = readFileSync(resolve(stylesDirectory, "index.css"), "utf8");
 const docsCssPath = resolve(stylesDirectory, "../../../catalog/src/docs/docs.css");
 const hasDocsCss = existsSync(docsCssPath);
-const docsCss = hasDocsCss ? readFileSync(docsCssPath, "utf8") : "";
-const normalizedDocsCss = docsCss.replace(/\s+/g, " ");
 
 describe("script-aware typography", () => {
   it("sets Japanese and Chinese text behavior and Japanese font stack", () => {
@@ -45,6 +43,14 @@ describe("script-aware typography", () => {
   });
 
   it.skipIf(!hasDocsCss)("applies the script stacks and prose behavior to docs", () => {
+    const docsCss = readFileSync(docsCssPath, "utf8");
+    const normalizedDocsCss = docsCss.replace(/\s+/g, " ");
+    const docsTokensCss = readFileSync(
+      resolve(stylesDirectory, "../../../catalog/src/styles/tokens.css"),
+      "utf8",
+    );
+    const normalizedDocsTokensCss = docsTokensCss.replace(/\s+/g, " ");
+
     expect(docsCss).toMatch(
       /\.docs-body:lang\(ja\)\s*\{\s*font-family:\s*var\(\s*--font-sans-ja,\s*"Hiragino Sans",\s*"Hiragino Kaku Gothic ProN",\s*"Yu Gothic UI",\s*"Noto Sans JP",\s*var\(--font-sans\)\s*\);/,
     );
@@ -52,8 +58,9 @@ describe("script-aware typography", () => {
       /\.docs-body:lang\(zh-Hans\)\s*\{\s*font-family:\s*var\(\s*--font-sans-zh-hans,\s*"PingFang SC",\s*"Microsoft YaHei UI",\s*"Noto Sans SC",\s*var\(--font-sans\)\s*\);/,
     );
     expect(normalizedDocsCss).toContain(
-      '.docs-body:lang(ar) { letter-spacing: normal; font-family: var(--font-sans-ar, "SF Arabic", "Segoe UI", "Noto Sans Arabic", var(--font-sans));',
+      '.docs-body:lang(ar) { letter-spacing: var(--docs-tracking-normal); font-family: var(--font-sans-ar, "SF Arabic", "Segoe UI", "Noto Sans Arabic", var(--font-sans));',
     );
+    expect(normalizedDocsTokensCss).toMatch(/--docs-tracking-normal:\s*0;/);
     expect(normalizedDocsCss).toContain(".docs-body:lang(ar) .docs-prose__p { line-height: 1.8;");
     expect(normalizedDocsCss).toContain(
       ".docs-body:lang(ru) .docs-prose, .docs-body:lang(es) .docs-prose, .docs-body:lang(pt-BR) .docs-prose { hyphens: auto;",

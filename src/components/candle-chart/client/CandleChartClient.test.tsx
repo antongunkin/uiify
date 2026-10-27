@@ -1,4 +1,5 @@
 import { act, createEvent, fireEvent, render } from "@testing-library/react";
+import { createRef } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CandleChartClient } from "./CandleChartClient.js";
 
@@ -96,6 +97,77 @@ describe("CandleChartClient", () => {
       expect(chart.querySelector("tbody th")?.textContent).toBe(DATA[80]?.time);
       expect(chart.querySelector('[data-part="readout"]')?.getAttribute("aria-live")).toBe("off");
       expect(chart.querySelector('[data-part="readout"]')?.textContent).toContain("C 204");
+    });
+
+    it("forwards slots to the live scrollport, row shells, candles, and absolute table rows", () => {
+      stubResizeObserver();
+      const scrollportRef = createRef<HTMLDivElement>();
+      const { container, rerender } = render(
+        <CandleChartClient
+          data={DATA}
+          visibleCount={20}
+          slotProps={{
+            liveScrollport: { className: "live-scrollport", ref: scrollportRef },
+            liveSpacer: { className: "live-spacer", "data-testid": "live-spacer" },
+            liveCandleRow: { className: "live-row" },
+            candle: { className: "live-candle" },
+          }}
+        />,
+      );
+      const element = scrollport(container);
+      const visibleCandle = container.querySelector('[data-part="candle"]');
+      const candleIndex = DATA.findIndex(
+        (candle) => String(candle.time) === visibleCandle?.getAttribute("data-time"),
+      );
+      const firstTableRow = container.querySelector("tbody tr");
+      const tableIndex = DATA.findIndex(
+        (candle) => String(candle.time) === firstTableRow?.querySelector("th")?.textContent,
+      );
+
+      rerender(
+        <CandleChartClient
+          data={DATA}
+          visibleCount={20}
+          slotProps={{
+            liveScrollport: { className: "live-scrollport", ref: scrollportRef },
+            liveSpacer: { className: "live-spacer", "data-testid": "live-spacer" },
+            liveCandleRow: {
+              className: "live-row",
+              byItemIndex: {
+                [candleIndex]: { className: "indexed-row", "data-testid": "row-index" },
+              },
+            },
+            candle: {
+              className: "live-candle",
+              byItemIndex: {
+                [candleIndex]: { className: "indexed-candle", "data-testid": "candle-index" },
+              },
+            },
+            dataTableRow: {
+              byItemIndex: {
+                [tableIndex]: { className: "indexed-table-row", "data-testid": "table-row-index" },
+              },
+            },
+          }}
+        />,
+      );
+
+      expect(element.className).toContain("live-scrollport");
+      expect(scrollportRef.current).toBe(element);
+      expect(container.querySelector('[data-testid="live-spacer"]')?.className).toContain(
+        "live-spacer",
+      );
+      expect(container.querySelector('[data-part="row"]')?.className).toContain("live-row");
+      expect(container.querySelector('[data-part="candle"]')?.className).toContain("live-candle");
+      expect(container.querySelector('[data-testid="row-index"]')?.className).toContain(
+        "indexed-row",
+      );
+      expect(container.querySelector('[data-testid="candle-index"]')?.className).toContain(
+        "indexed-candle",
+      );
+      expect(container.querySelector('[data-testid="table-row-index"]')?.className).toContain(
+        "indexed-table-row",
+      );
     });
 
     it("disables zoom so visibleCount candles always fill the viewport", () => {

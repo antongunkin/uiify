@@ -26,7 +26,7 @@
     /* Never narrower than tall: an icon size only has to drop the padding to be a circle. */
     min-inline-size: 44px;
     padding-block: 0;
-    padding-inline: 1.125rem;
+    padding-inline: 1.25rem;
     border: var(--border-width) solid transparent;
     border-radius: var(--radius-full);
     background-color: var(--foreground);

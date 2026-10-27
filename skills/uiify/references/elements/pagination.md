@@ -16,7 +16,7 @@ Do not paginate a small result set that is easier to scan as one list, or imply 
 
 ## Structure
 
-Use Pagination.Root with a specific navigation label and the documented count. Provide descriptive names for previous/next controls, expose the current page with selected, and use getPageHref when pages are navigable URLs.
+Use Pagination.Root with a specific navigation label and the documented count. Provide descriptive names for previous/next controls, expose the current page with selected, and use getPageHref when pages are navigable URLs. To style or annotate its generated markup, pass native props through `slotProps.list`, `item`, `link`, `control`, and `ellipsis`; repeated parts use `byItemValue` keys such as `page:5`, `previous`, or `ellipsis:2`.
 
 ## Responsive
 

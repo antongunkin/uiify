@@ -378,6 +378,10 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
           "data-part": "handle",
           "data-uiify-drawer": "",
           ...(className ? { className } : {}),
+          onPointerDown,
+          onPointerMove,
+          onPointerUp,
+          onPointerCancel,
         },
     state: { dragging },
   });

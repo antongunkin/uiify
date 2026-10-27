@@ -14,8 +14,12 @@ export { TableCell, TableCaption, TableHeader, TableFooter, TableRowHeader } fro
 export type {
   TableClientRootProps,
   TableClientRootOwnProps,
+  TableClientColumnHeaderProps,
+  TableClientColumnHeaderSlotProps,
   TableExpandTriggerProps,
   TableExpandedRowProps,
+  TableSelectAllOwnProps,
+  TableSelectionSlotProps,
   SortDescriptor,
   SelectionMode,
 } from "./types.js";

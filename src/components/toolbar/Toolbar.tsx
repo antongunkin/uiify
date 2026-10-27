@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import { useDirectionOverride, type Direction } from "@gunkin/uiify/core/direction";
+import { useCallback, useEffect, useRef } from "react";
+import type { ReactElement } from "react";
+import { useDirectionOverride } from "@gunkin/uiify/core/direction";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
-import type { RovingFocusOrientation } from "@gunkin/uiify/core/roving-focus";
 
 import {
   ToolbarButton as ServerToolbarButton,
@@ -15,16 +14,10 @@ import {
 import type {
   ToolbarButtonProps,
   ToolbarLinkProps,
+  ToolbarRootProps,
   ToolbarSeparatorProps,
   ToolbarToggleGroupProps,
 } from "./types.js";
-
-interface ToolbarRootClientProps extends HTMLAttributes<HTMLDivElement> {
-  readonly children?: ReactNode;
-  readonly dir?: Direction;
-  readonly loop?: boolean;
-  readonly orientation?: RovingFocusOrientation;
-}
 
 function getToolbarItems(root: HTMLDivElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>('[data-uiify-toolbar][data-part="item"]'));
@@ -67,11 +60,31 @@ export function ToolbarRootClient({
   dir: localDir,
   loop = true,
   orientation = "horizontal",
+  ref,
   ...consumerProps
-}: ToolbarRootClientProps): ReactElement {
+}: ToolbarRootProps): ReactElement {
   const dir = useDirectionOverride(localDir);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const currentRef = useRef<HTMLElement | null>(null);
+  const setRootRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      rootRef.current = node;
+      if (typeof ref === "function") {
+        const cleanup = ref(node);
+        if (node) {
+          return () => {
+            rootRef.current = null;
+            if (cleanup) cleanup();
+            else ref(null);
+          };
+        }
+        return;
+      }
+      if (ref) ref.current = node;
+      return;
+    },
+    [ref],
+  );
 
   useEffect(() => {
     const root = rootRef.current;
@@ -144,7 +157,7 @@ export function ToolbarRootClient({
       data-part="root"
       data-uiify-toolbar=""
       {...(dir ? { dir } : {})}
-      ref={rootRef}
+      ref={setRootRef}
       role="toolbar"
     >
       {children}

@@ -18,6 +18,7 @@ export type PopoverMode = "auto" | "manual" | "hint";
 export type PopoverChangeHandler = UseControllableOpenChangeOptions["onOpenChange"];
 
 export interface UsePopoverOptions extends UseControllableOpenChangeOptions {
+  readonly id?: string;
   readonly mode?: PopoverMode;
 }
 
@@ -39,11 +40,13 @@ interface ToggleEventLike extends Event {
 
 export function usePopover({
   defaultOpen = false,
+  id: requestedId,
   mode = "auto",
   onOpenChange,
   open: controlledOpen,
 }: UsePopoverOptions = {}): UsePopoverReturn {
-  const id = useId();
+  const generatedId = useId();
+  const id = requestedId ?? generatedId;
   const [popup, setPopup] = useState<HTMLElement | null>(null);
   const { open, requestChange } = useControllableOpenChange({
     defaultOpen,

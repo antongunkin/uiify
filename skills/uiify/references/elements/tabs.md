@@ -14,7 +14,7 @@ Use links for navigation, a stepper for sequential tasks, and side-by-side conte
 
 ## Structure
 
-UIify `Tabs` takes an `id`, `items` with a `value`, `label`, and `panel`, and an optional `defaultValue` and `orientation`. It renders a native radio group with one label and panel per item; it does not implement the ARIA tablist pattern. Set `defaultValue` so a useful panel is selected initially. Keep labels short and make each panel's content match its label.
+UIify `Tabs` takes an `id`, `items` with a `value`, `label`, and `panel`, and an optional `defaultValue` and `orientation`. It renders a native radio group with one label and panel per item; it does not implement the ARIA tablist pattern. Use `slotProps.item`, `slotProps.input`, `slotProps.trigger`, and `slotProps.panel` to pass native props, `className`, `style`, refs, events or `data-*` to generated nodes; `slotProps.append` targets the wrapper around optional appended content. Repeated slots support `byItemValue`. Put Tailwind utilities on the slot they style. For custom markup, compose public `Choice.Group` and `Choice.Item` parts directly. Set `defaultValue` so a useful panel is selected initially. Keep labels short and make each panel's content match its label.
 
 ## Responsive
 

@@ -1,5 +1,9 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
 
+export interface ConsumerDataAttributes {
+  readonly [attribute: `data-${string}`]: string | number | boolean | undefined;
+}
+
 /** `"single"` renders `type="radio"`; `"multiple"` renders `type="checkbox"`. */
 export type ChoiceKind = "single" | "multiple";
 
@@ -26,7 +30,47 @@ export interface ChoiceGroupOwnProps {
 }
 
 export type ChoiceGroupProps = ChoiceGroupOwnProps &
-  Omit<ComponentPropsWithRef<"div">, keyof ChoiceGroupOwnProps>;
+  Omit<ComponentPropsWithRef<"div">, keyof ChoiceGroupOwnProps | "dangerouslySetInnerHTML">;
+
+export type ChoiceInputSlotProps = Omit<
+  ComponentPropsWithRef<"input">,
+  | "children"
+  | "dangerouslySetInnerHTML"
+  | "aria-labelledby"
+  | "checked"
+  | "defaultChecked"
+  | "disabled"
+  | "id"
+  | "name"
+  | "type"
+  | "value"
+  | "data-part"
+  | "data-uiify-choice"
+  | "data-uiify-radio"
+> &
+  ConsumerDataAttributes & {
+    readonly "data-part"?: never;
+    readonly "data-uiify-choice"?: never;
+    readonly "data-uiify-radio"?: never;
+  };
+
+export type ChoiceLabelSlotProps = Omit<
+  ComponentPropsWithRef<"label">,
+  "children" | "dangerouslySetInnerHTML" | "htmlFor" | "id" | "data-part"
+> &
+  ConsumerDataAttributes & { readonly "data-part"?: never };
+
+export type ChoicePanelSlotProps = Omit<
+  ComponentPropsWithRef<"div">,
+  "children" | "dangerouslySetInnerHTML" | "id" | "data-part"
+> &
+  ConsumerDataAttributes & { readonly "data-part"?: never };
+
+export interface ChoiceItemSlotProps {
+  readonly input?: ChoiceInputSlotProps;
+  readonly label?: ChoiceLabelSlotProps;
+  readonly panel?: ChoicePanelSlotProps;
+}
 
 export interface ChoiceItemOwnProps {
   readonly value: string;
@@ -46,14 +90,10 @@ export interface ChoiceItemOwnProps {
   readonly disabled?: boolean;
   /** Wrapper `data-part`. Defaults to `"item"`. */
   readonly part?: string;
-  /** Adds `data-part="label"` to the `<label>`. */
-  readonly labelPart?: boolean;
-  /** Escape hatch: extra attributes spread onto the `<input>` (for example, `data-part="control"`). */
-  readonly inputProps?: Record<string, unknown>;
-  /** Escape hatch: extra attributes spread onto the `<label>`. */
-  readonly labelProps?: Record<string, unknown>;
-  /** Escape hatch: extra attributes spread onto the panel `<div>`. */
-  readonly panelProps?: Record<string, unknown>;
+  /** Adds an owned `data-part` marker to the `<label>`; `true` means `"label"`. */
+  readonly labelPart?: boolean | string;
+  /** Native props for the generated input, label and optional panel. */
+  readonly slotProps?: ChoiceItemSlotProps;
   /**
    * Client-only: attaches to the input's native `change`. Passing it does not make this
    * element a client component — the *caller* must already be one. Omitted by every
@@ -63,4 +103,7 @@ export interface ChoiceItemOwnProps {
 }
 
 export type ChoiceItemProps = ChoiceItemOwnProps &
-  Omit<ComponentPropsWithRef<"div">, keyof ChoiceItemOwnProps | "children">;
+  Omit<
+    ComponentPropsWithRef<"div">,
+    keyof ChoiceItemOwnProps | "children" | "dangerouslySetInnerHTML"
+  >;

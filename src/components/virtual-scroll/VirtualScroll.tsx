@@ -12,6 +12,12 @@ import {
 } from "react";
 import { flushSync } from "react-dom";
 import { useResizeObserver } from "@gunkin/uiify/hooks";
+import { useMergedRefs } from "../../hooks/use-merged-refs.js";
+import {
+  mergeRepeatedSlotProps,
+  omitProps,
+  resolveRepeatedSlotProps,
+} from "../../core/slot-props.js";
 import { resolveVirtualScrollAnchorAdjustment } from "./virtual-scroll-anchor.js";
 import { readScrollOffset, writeScrollOffset } from "./virtual-scroll-axis.js";
 import {
@@ -81,6 +87,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 ): ReactElement {
   const {
     items,
+    ref: consumerRef,
     height: suppliedHeight,
     style: consumerStyle,
     rowHeight = VIRTUAL_SCROLL_ROW_HEIGHT,
@@ -97,6 +104,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     followAppend = false,
     onScrollStateChange,
     isScrollingResetDelay = VIRTUAL_SCROLL_SCROLL_RESET_DELAY,
+    slotProps,
     ...consumerProps
   } = props;
 
@@ -104,6 +112,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   const dynamicLayout = estimateRowHeight !== undefined;
   const horizontal = orientation === "horizontal";
   const ref = useRef<HTMLDivElement>(null);
+  const rootRef = useMergedRefs(ref, consumerRef);
   const scrollOffsetRef = useRef(0);
   const programmaticScrollRef = useRef(false);
   const itemsRef = useRef(items);
@@ -527,7 +536,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   return (
     <div
       {...consumerProps}
-      ref={ref}
+      ref={rootRef}
       data-testid={testId ?? consumerProps["data-testid" as keyof typeof consumerProps]}
       data-uiify-virtual-scroll=""
       data-dynamic-layout={dynamicLayout ? "" : undefined}
@@ -536,7 +545,11 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       className={className}
       style={scrollportStyle}
     >
-      <div data-part="spacer" style={spacerStyle}>
+      <div
+        {...omitProps(slotProps?.spacer, ["children", "dangerouslySetInnerHTML", "data-part"])}
+        data-part="spacer"
+        style={{ ...slotProps?.spacer?.style, ...spacerStyle }}
+      >
         {rowSlots.map((slot) => {
           const store = measurementStoreRef.current;
           const rowOffset = dynamicLayout ? store.getRowOffset(slot.index) : undefined;
@@ -544,6 +557,21 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
           return (
             <VirtualScrollRowShell
+              {...(() => {
+                if (!slot.item) return {};
+                const { byItemIndex, ...byItemValueProps } = slotProps?.row ?? {};
+                const commonProps = resolveRepeatedSlotProps(byItemValueProps, slot.item.id);
+                return omitProps(mergeRepeatedSlotProps(commonProps, byItemIndex?.[slot.index]), [
+                  "children",
+                  "dangerouslySetInnerHTML",
+                  "aria-posinset",
+                  "aria-setsize",
+                  "data-dynamic-row",
+                  "data-part",
+                  "data-row-index",
+                  "role",
+                ]);
+              })()}
               key={`slot-${slot.slotIndex}`}
               slotIndex={slot.slotIndex}
               index={slot.index}

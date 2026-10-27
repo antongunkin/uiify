@@ -15,6 +15,7 @@ Use checkboxes for independent options and a select when the choice set is too l
 ## Structure
 
 Use RadioGroup with a stable id, a name, and items that each have a value and descriptive label. Give the group a visible legend or an accessible name that describes the question.
+Style generated item wrappers, radios, and labels with `slotProps.item`, `slotProps.input`, and `slotProps.label`. Use `byItemValue` when one option needs its own props or `data-testid`.
 
 ## Responsive
 

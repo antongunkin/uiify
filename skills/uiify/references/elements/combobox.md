@@ -14,7 +14,7 @@ Do not use a combobox when people need to compare all options at once or when ty
 
 ## Structure
 
-`Combobox.Root` receives `items` with `label` and `value`. Give `Combobox.Input` a visible associated label or accessible name. Render filtered items with `Combobox.Content` and `Combobox.Item`; render `Combobox.Empty` only when the filtered list is empty. The multi-value mode uses `multiple` and supports tags.
+`Combobox.Root` receives `items` with `label` and `value`. Give `Combobox.Input` a visible associated label or accessible name. Render filtered items with `Combobox.Content` and `Combobox.Item`; render `Combobox.Empty` only when the filtered list is empty. The multi-value mode uses `multiple` and supports tags. Style the generated tags and remove buttons, or add native attributes such as `data-testid`, with `Combobox.Tags` `slotProps`; address repeated nodes by selected item value.
 
 ## Responsive
 

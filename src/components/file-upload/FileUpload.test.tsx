@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { createEvent, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
@@ -49,6 +50,79 @@ describe("file-upload-store", () => {
 });
 
 describe("FileUpload", () => {
+  it("forwards classes, native data props, and refs through every public DOM part", () => {
+    const file = createFile("notes.txt", "text/plain", 12);
+    const rootRef = createRef<HTMLDivElement>();
+    const inputRef = createRef<HTMLInputElement>();
+    const triggerRef = createRef<HTMLLabelElement>();
+    const dropzoneRef = createRef<HTMLDivElement>();
+    const listRef = createRef<HTMLUListElement>();
+    const itemRef = createRef<HTMLLIElement>();
+    const removeRef = createRef<HTMLButtonElement>();
+
+    render(
+      <ClientFileUpload.Root
+        className="upload-root"
+        data-testid="upload-root"
+        defaultValue={[file]}
+        ref={rootRef}
+      >
+        <ClientFileUpload.HiddenInput
+          className="upload-input"
+          data-testid="upload-input"
+          ref={inputRef}
+        />
+        <ClientFileUpload.Trigger
+          className="upload-trigger"
+          data-testid="upload-trigger"
+          ref={triggerRef}
+        >
+          Upload
+        </ClientFileUpload.Trigger>
+        <ClientFileUpload.Dropzone
+          className="upload-dropzone"
+          data-testid="upload-dropzone"
+          ref={dropzoneRef}
+        >
+          Drop files
+        </ClientFileUpload.Dropzone>
+        <ClientFileUpload.List className="upload-list" data-testid="upload-list" ref={listRef}>
+          <ClientFileUpload.Item
+            className="upload-item"
+            data-testid="upload-item"
+            index={0}
+            ref={itemRef}
+          >
+            <ClientFileUpload.ItemRemove
+              className="upload-remove"
+              data-testid="upload-remove"
+              index={0}
+              ref={removeRef}
+            >
+              Remove
+            </ClientFileUpload.ItemRemove>
+          </ClientFileUpload.Item>
+        </ClientFileUpload.List>
+      </ClientFileUpload.Root>,
+    );
+
+    const parts = [
+      ["upload-root", "upload-root", rootRef],
+      ["upload-input", "upload-input", inputRef],
+      ["upload-trigger", "upload-trigger", triggerRef],
+      ["upload-dropzone", "upload-dropzone", dropzoneRef],
+      ["upload-list", "upload-list", listRef],
+      ["upload-item", "upload-item", itemRef],
+      ["upload-remove", "upload-remove", removeRef],
+    ] as const;
+
+    for (const [testId, className, ref] of parts) {
+      const element = screen.getByTestId(testId);
+      expect(element.className).toBe(className);
+      expect(ref.current).toBe(element);
+    }
+  });
+
   it("keeps controlled files authoritative and follows external replacements", () => {
     const first = createFile("one.txt", "text/plain", 10);
     const second = createFile("two.txt", "text/plain", 20);

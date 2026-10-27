@@ -14,11 +14,18 @@
 ## Exports
 
 - Runtime: `Toggle`
-- Types: `ToggleProps`
+- Types: `ToggleControlSlotProps`, `ToggleLabelSlotProps`, `ToggleProps`, `ToggleSlotProps`
 
 ## Props and shapes
 
-### ToggleProps
+### ToggleSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `control` | `ToggleControlSlotProps` | no |  |
+| `label` | `ToggleLabelSlotProps` | no |  |
+
+### ToggleOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -27,4 +34,10 @@
 | `pressed` | `boolean` | no |  |
 | `defaultPressed` | `boolean` | no |  |
 | `disabled` | `boolean` | no |  |
-| `className` | `string` | no |  |
+| `slotProps` | `ToggleSlotProps` | no |  |
+
+## Other types
+
+- `ToggleControlSlotProps`: `Omit<ComponentPropsWithRef<"input">, | "aria-labelledby" | "checked" | "data-disabled" | "data-part" | "data-state" | "data-uiify-toggle" | "defaultChecked" | "disabled" | "id" | "type"> & ToggleControlOwnedAttributes & ConsumerDataAttributes`
+- `ToggleLabelSlotProps`: `Omit<ComponentPropsWithRef<"label">, "children" | "data-part" | "data-uiify-button" | "data-variant" | "htmlFor" | "id"> & ToggleLabelOwnedAttributes & ConsumerDataAttributes`
+- `ToggleProps`: `ToggleOwnProps & Omit<ComponentPropsWithRef<"div">, | keyof ToggleOwnProps | "children" | "dangerouslySetInnerHTML" | "data-disabled" | "data-uiify-toggle" | "id">`

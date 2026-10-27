@@ -1,2 +1,7 @@
 export { Toggle } from "./Toggle.js";
-export type { ToggleProps } from "./types.js";
+export type {
+  ToggleControlSlotProps,
+  ToggleLabelSlotProps,
+  ToggleProps,
+  ToggleSlotProps,
+} from "./types.js";

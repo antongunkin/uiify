@@ -109,8 +109,11 @@
     box-shadow: none;
   }
 
-  [data-uiify-combobox] [data-part="content"] {
+  [data-uiify-combobox] [data-part="content"]:where(:not([popover]), :popover-open) {
     display: flex;
+  }
+
+  [data-uiify-combobox] [data-part="content"] {
     flex-direction: column;
     min-inline-size: 12rem;
     max-block-size: min(24rem, calc(100dvb - 2rem));

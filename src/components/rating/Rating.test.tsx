@@ -16,6 +16,30 @@ describe("Rating", () => {
     expect(screen.getAllByRole("radio", { hidden: true })).toHaveLength(10);
   });
 
+  it("forwards root props and exposes repeated item slots", () => {
+    const rootRef = { current: null as HTMLDivElement | null };
+    render(
+      <Rating
+        data-testid="rating-root"
+        id="movie"
+        ref={rootRef}
+        slotProps={{
+          item: {
+            byItemValue: { "3": { className: "third-item", "data-testid": "rating-item-3" } },
+          },
+          input: { byItemValue: { "3": { "data-testid": "rating-input-3" } } },
+          label: { byItemValue: { "3": { "data-testid": "rating-label-3" } } },
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("rating-root").hasAttribute("data-uiify-rating")).toBe(true);
+    expect(rootRef.current).toBe(screen.getByTestId("rating-root"));
+    expect(screen.getByTestId("rating-item-3").classList.contains("third-item")).toBe(true);
+    expect(screen.getByTestId("rating-input-3").getAttribute("type")).toBe("radio");
+    expect(screen.getByTestId("rating-label-3").getAttribute("for")).toBe("movie-control-3");
+  });
+
   it("checks only the single radio matching defaultValue — the fill-through is CSS, not multiple checked inputs", () => {
     render(<Rating defaultValue={3} id="movie" />);
     const radios = screen.getAllByRole("radio", { hidden: true }) as HTMLInputElement[];

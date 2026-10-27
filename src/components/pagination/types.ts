@@ -1,5 +1,6 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes, RepeatedSlotProps } from "../../core/slot-props.js";
 
 export type PaginationItemType = "page" | "ellipsis" | "previous" | "next" | "first" | "last";
 
@@ -56,6 +57,50 @@ export interface PaginationContextValue {
   readonly locale?: string;
   readonly page: number;
   readonly setPage: (page: number) => void;
+  readonly slotProps?: PaginationRootSlotProps;
+}
+
+type PaginationRepeatedSlotProps<
+  TTag extends ElementType,
+  TOwned extends object = object,
+> = RepeatedSlotProps<
+  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
+  TOwned
+>;
+
+export interface PaginationRootSlotProps {
+  readonly list?: Omit<ComponentPropsWithRef<"ol">, "children" | "dangerouslySetInnerHTML"> &
+    ConsumerDataAttributes;
+  readonly item?: PaginationRepeatedSlotProps<"li">;
+  readonly link?: PaginationRepeatedSlotProps<
+    "button",
+    {
+      readonly "aria-current"?: never;
+      readonly "aria-label"?: never;
+      readonly disabled?: never;
+      readonly "data-selected"?: never;
+      readonly "data-size"?: never;
+      readonly "data-type"?: never;
+      readonly "data-uiify-button"?: never;
+      readonly "data-variant"?: never;
+      readonly type?: never;
+    }
+  >;
+  readonly control?: PaginationRepeatedSlotProps<
+    "button",
+    {
+      readonly "aria-label"?: never;
+      readonly disabled?: never;
+      readonly "data-type"?: never;
+      readonly "data-uiify-button"?: never;
+      readonly "data-variant"?: never;
+      readonly type?: never;
+    }
+  >;
+  readonly ellipsis?: PaginationRepeatedSlotProps<
+    "span",
+    { readonly "aria-hidden"?: never; readonly "data-type"?: never }
+  >;
 }
 
 export interface PaginationRootOwnProps extends UsePaginationParams {
@@ -64,6 +109,7 @@ export interface PaginationRootOwnProps extends UsePaginationParams {
   readonly getPageHref?: (page: number) => string;
   readonly labels?: Partial<PaginationLabels>;
   readonly locale?: string;
+  readonly slotProps?: PaginationRootSlotProps;
 }
 
 export type PaginationRootProps<TAs extends ElementType = "nav"> = RenderableProps<

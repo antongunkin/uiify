@@ -1,12 +1,14 @@
 // API research: Radix UI Aspect Ratio; independently authored from UIify design notes.
 import type { CSSProperties, ElementType, ReactElement } from "react";
+import { omitProps } from "../../core/slot-props.js";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import type { AspectRatioProps } from "./types.js";
 
 export function AspectRatio<TAs extends ElementType = "div">(
   props: AspectRatioProps<TAs>,
 ): ReactElement | null {
-  const { as, render, ratio, children, ...consumerProps } = props as AspectRatioProps<"div">;
+  const { as, render, ratio, children, slotProps, ...consumerProps } =
+    props as AspectRatioProps<"div">;
   const style = (consumerProps as { style?: CSSProperties }).style;
 
   return useRenderElement({
@@ -21,7 +23,14 @@ export function AspectRatio<TAs extends ElementType = "div">(
           ? { "--uiify-aspect-ratio": Number.isFinite(ratio) && ratio > 0 ? ratio : 1 }
           : {}),
       } as CSSProperties,
-      children: <div data-part="content">{children}</div>,
+      children: (
+        <div
+          {...omitProps(slotProps?.content, ["data-part", "data-uiify-aspect-ratio"])}
+          data-part="content"
+        >
+          {children}
+        </div>
+      ),
     },
     render,
     state: {},

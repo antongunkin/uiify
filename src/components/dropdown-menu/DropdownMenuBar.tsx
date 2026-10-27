@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { ReactElement } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent, ReactElement } from "react";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useDirectionOverride } from "@gunkin/uiify/core/direction";
+import { useMergedRefs } from "@gunkin/uiify/hooks";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import type { DropdownMenuBarProps } from "./types.js";
 
@@ -43,10 +45,54 @@ function moveIndex(
  * Toolbar.Button drops any prop it does not itself destructure, so neither can host this directly.
  */
 export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
-  const { children, className, dir: localDir, loop = true } = props;
+  const {
+    children,
+    className,
+    dir: localDir,
+    loop = true,
+    onKeyDown: consumerOnKeyDown,
+    ref: consumerRef,
+    tabIndex,
+    ...consumerProps
+  } = props;
   const dir = useDirectionOverride(localDir);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const mergedRootRef = useMergedRefs(rootRef, consumerRef);
   const currentRef = useRef<HTMLElement | null>(null);
+  const safeConsumerProps = Object.fromEntries(
+    Object.entries(consumerProps).filter(([name]) => name !== "dangerouslySetInnerHTML"),
+  ) as typeof consumerProps;
+
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const root = rootRef.current;
+    if (!root || event.defaultPrevented) return;
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const item = target.closest<HTMLElement>(ITEM_SELECTOR);
+    if (!item || !root.contains(item)) return;
+
+    const enabled = getItems(root).filter((entry) => !isDisabledItem(entry));
+    const currentIndex = enabled.indexOf(item);
+    if (currentIndex === -1) return;
+
+    let nextIndex: number | null = null;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = enabled.length - 1;
+    const rtl = resolveDirection(item, dir) === "rtl";
+    if (event.key === "ArrowRight") {
+      nextIndex = moveIndex(currentIndex, rtl ? -1 : 1, enabled.length, loop);
+    }
+    if (event.key === "ArrowLeft") {
+      nextIndex = moveIndex(currentIndex, rtl ? 1 : -1, enabled.length, loop);
+    }
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const nextItem = enabled[nextIndex];
+    if (!nextItem) return;
+    currentRef.current = syncTabStops(root, nextItem);
+    nextItem.focus();
+  };
 
   useEffect(() => {
     const root = rootRef.current;
@@ -66,50 +112,22 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
       currentRef.current = syncTabStops(root, item);
     };
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target;
-      if (!(target instanceof HTMLElement)) return;
-      const item = target.closest<HTMLElement>(ITEM_SELECTOR);
-      if (!item || !root.contains(item)) return;
-
-      const enabled = getItems(root).filter((entry) => !isDisabledItem(entry));
-      const currentIndex = enabled.indexOf(item);
-      if (currentIndex === -1) return;
-
-      let nextIndex: number | null = null;
-      if (event.key === "Home") nextIndex = 0;
-      if (event.key === "End") nextIndex = enabled.length - 1;
-      const rtl = resolveDirection(item, dir) === "rtl";
-      if (event.key === "ArrowRight") {
-        nextIndex = moveIndex(currentIndex, rtl ? -1 : 1, enabled.length, loop);
-      }
-      if (event.key === "ArrowLeft") {
-        nextIndex = moveIndex(currentIndex, rtl ? 1 : -1, enabled.length, loop);
-      }
-
-      if (nextIndex === null) return;
-      event.preventDefault();
-      const nextItem = enabled[nextIndex];
-      if (!nextItem) return;
-      currentRef.current = syncTabStops(root, nextItem);
-      nextItem.focus();
-    };
-
     root.addEventListener("focusin", handleFocusIn);
-    root.addEventListener("keydown", handleKeyDown);
     return () => {
       root.removeEventListener("focusin", handleFocusIn);
-      root.removeEventListener("keydown", handleKeyDown);
     };
   }, [dir, loop]);
 
   return (
     <div
+      {...safeConsumerProps}
       {...(className ? { className } : {})}
       data-uiify-menu-bar=""
       {...(dir ? { dir } : {})}
-      ref={rootRef}
+      ref={mergedRootRef}
       role="menubar"
+      tabIndex={tabIndex ?? -1}
+      onKeyDown={composeEventHandlers(consumerOnKeyDown, handleKeyDown)}
     >
       {children}
     </div>

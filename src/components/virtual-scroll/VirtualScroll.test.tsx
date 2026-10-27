@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { createRenderCounter } from "../test-utils/RenderCounter.js";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
@@ -185,6 +186,13 @@ describe("computeActiveVirtualScrollSlotCount", () => {
 });
 
 describe("VirtualScroll", () => {
+  it("forwards a native ref to the scrollport", () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<VirtualScroll items={createSongs(2)} ref={ref} renderRow={(song) => song.title} />);
+
+    expect(ref.current?.getAttribute("data-uiify-virtual-scroll")).toBe("");
+  });
+
   it("renders only the visible window plus overscan rows", () => {
     renderSongList(createSongs(10_000));
 
@@ -450,6 +458,58 @@ describe("VirtualScroll", () => {
     const viewport = screen.getByTestId("virtual-scroll-viewport");
     expect(viewport.className).toContain("team-list");
     expect(viewport.dataset.uiifyVirtualScroll).toBe("");
+  });
+
+  it("forwards native props and stable item slots to generated row shells", () => {
+    const items = createSongs(3);
+    const { container } = render(
+      <VirtualScroll
+        items={items}
+        renderRow={(song) => song.title}
+        slotProps={{
+          spacer: { className: "spacer", style: { color: "blue" }, "data-testid": "spacer-slot" },
+          row: {
+            className: "row-shell",
+            style: { color: "red" },
+            "data-testid": "row-common",
+            byItemValue: { "2": { className: "row-two", "data-testid": "row-two" } },
+            byItemIndex: { 1: { className: "row-index-one", "data-indexed": "true" } },
+          },
+        }}
+      />,
+    );
+
+    const firstRow = container.querySelector<HTMLElement>('[aria-posinset="1"]')!;
+    const secondRow = screen.getByTestId("row-two");
+    const spacer = screen.getByTestId("spacer-slot");
+    expect(spacer.className).toContain("spacer");
+    expect(spacer.style.color).toBe("blue");
+    expect(spacer.style.getPropertyValue("--uiify-range-start")).toBe("0");
+    expect(firstRow.className).toContain("row-shell");
+    expect(firstRow.style.color).toBe("red");
+    expect(firstRow.style.getPropertyValue("--uiify-slot-index")).toBe("0");
+    expect(secondRow.className).toContain("row-shell row-two row-index-one");
+    expect(secondRow.getAttribute("data-indexed")).toBe("true");
+    expect(secondRow.getAttribute("data-part")).toBe("row");
+    expect(secondRow.getAttribute("aria-posinset")).toBe("2");
+  });
+
+  it("strips generated-content overrides from indexed JavaScript slot props", () => {
+    const { container } = render(
+      <VirtualScroll
+        items={createSongs(1)}
+        renderRow={(song) => song.title}
+        slotProps={
+          {
+            row: {
+              byItemIndex: { 0: { dangerouslySetInnerHTML: { __html: "replaced" } } },
+            },
+          } as never
+        }
+      />,
+    );
+
+    expect(container.querySelector('[data-part="row"]')?.textContent).toBe("Song 1");
   });
 
   it("respects custom rowHeight and overscan", async () => {

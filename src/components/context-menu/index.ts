@@ -23,6 +23,7 @@ export type {
   ContextMenuRootShellOwnProps,
   ContextMenuRootShellProps,
   ContextMenuRootProps,
+  ContextMenuRootSlotProps,
   ContextMenuSubContentOwnProps,
   ContextMenuSubOwnProps,
   ContextMenuSubTriggerOwnProps,

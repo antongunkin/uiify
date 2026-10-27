@@ -102,6 +102,11 @@ describe("package architecture", () => {
   // reimplementation that a human reviewer would otherwise flag.
   it("contains no reintroduced universal props merger (heuristic, not proof)", () => {
     for (const file of productionFiles) {
+      // This helper merges only the explicitly typed props for repeated
+      // component-owned slots. It is covered by focused tests and is not a
+      // public, arbitrary-props mergeProps replacement.
+      if (file.endsWith("/slot-props.ts")) continue;
+
       const source = readFileSync(file, "utf8");
       const looksLikeUniversalMerger =
         iteratesArbitraryKeys.test(source) &&

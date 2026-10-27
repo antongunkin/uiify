@@ -12,7 +12,9 @@ export type {
   AlertModalCancelProps,
   AlertModalContentOwnProps,
   AlertModalContentProps,
+  AlertModalOwnProps,
   AlertModalProps,
+  AlertModalSlotProps,
   AlertModalTriggerOwnProps,
   AlertModalTriggerProps,
 } from "./types.js";

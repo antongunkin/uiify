@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `TagsInput`, `TagsInputInput`, `TagsInputList`, `TagsInputRoot`, `TagsInputTag`, `TagsInputTagRemove`, `splitTags`
-- Types: `TagsInputInputOwnProps`, `TagsInputInputProps`, `TagsInputRootControlledOwnProps`, `TagsInputRootShellOwnProps`, `TagsInputRootShellProps`, `TagsInputRootProps`, `TagsInputTagOwnProps`, `TagsInputTagProps`, `TagsInputStore`
+- Types: `TagsInputInputOwnProps`, `TagsInputInputProps`, `TagsInputListOwnProps`, `TagsInputListSlotProps`, `TagsInputRootControlledOwnProps`, `TagsInputRootShellOwnProps`, `TagsInputRootShellProps`, `TagsInputRootProps`, `TagsInputTagOwnProps`, `TagsInputTagRemoveOwnProps`, `TagsInputTagProps`, `TagsInputStore`
 
 ## Props and shapes
 
@@ -55,8 +55,12 @@
 
 ### TagsInputRootShellOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"div">, | "children" | "className" | "data-disabled" | "data-uiify-tags-input" | "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `"data-disabled"` | `never` | no |  |
+| `"data-uiify-tags-input"` | `never` | no |  |
 | `className` | `string` | no |  |
 | `addOnPaste` | `boolean` | no |  |
 | `allowDuplicates` | `boolean` | no |  |
@@ -98,12 +102,24 @@ Extends: `TagsInputRootShellOwnProps`, `TagsInputRootControlledOwnProps`
 | `className` | `string` | no |  |
 | `placeholder` | `string` | no |  |
 
-### TagsInputListOwnProps
+### TagsInputListSlotProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `input` | `TagsInputPartSlotProps<"li">` | no |  |
+| `tag` | `TagsInputIndexedSlotProps<"li", { readonly "data-index"?: never; readonly "data-value"?: never }>` | no |  |
+
+### TagsInputListOwnProps
+
+Extends: `Omit<ComponentPropsWithRef<"ul">, "children" | "className" | "data-orientation" | "data-part" | "dangerouslySetInnerHTML" | "id">`, `ConsumerDataAttributes`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `"data-orientation"` | `never` | no |  |
+| `"data-part"` | `never` | no |  |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
+| `slotProps` | `TagsInputListSlotProps` | no |  |
 
 ### TagsInputTagOwnProps
 
@@ -116,10 +132,15 @@ Extends: `TagsInputRootShellOwnProps`, `TagsInputRootControlledOwnProps`
 
 ### TagsInputTagRemoveOwnProps
 
+Extends: `Omit<ComponentPropsWithRef<"button">, "children" | "data-part" | "disabled" | "type">`, `ConsumerDataAttributes`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `className` | `string` | no |  |
+| `"data-part"` | `never` | no |  |
+| `disabled` | `never` | no |  |
 | `index` | `number` | yes |  |
+| `type` | `never` | no |  |
 
 ## Other types
 

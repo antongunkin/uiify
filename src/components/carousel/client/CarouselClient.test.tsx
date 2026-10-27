@@ -1,4 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { createRef } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
@@ -142,6 +143,46 @@ describe("CarouselClient hydration and presentation", () => {
         ?.hasAttribute("inert"),
     ).toBe(false);
     expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
+  });
+  it("keeps client options off the root and allows slot click handlers to cancel controls", () => {
+    vi.stubGlobal("matchMedia", () => ({
+      matches: false,
+      addEventListener() {},
+      removeEventListener() {},
+    }));
+    const nextClick = vi.fn((event: ReactMouseEvent<HTMLButtonElement>) => event.preventDefault());
+    const dotClick = vi.fn((event: ReactMouseEvent<HTMLAnchorElement>) => event.preventDefault());
+    const { container } = render(
+      <CarouselClient
+        id="slot-events"
+        aria-label="Gallery"
+        items={items}
+        autoplay
+        mouseDrag
+        rewind
+        value={0}
+        slotProps={{
+          nextControl: { onClick: nextClick },
+          dot: { onClick: dotClick },
+        }}
+      />,
+    );
+    const root = container.querySelector("section")!;
+    expect(root.hasAttribute("autoplay")).toBe(false);
+    expect(root.hasAttribute("mouseDrag")).toBe(false);
+    expect(root.hasAttribute("rewind")).toBe(false);
+    expect(root.hasAttribute("value")).toBe(false);
+
+    deliver();
+    fireEvent.click(screen.getByRole("button", { name: "Next slide" }));
+    deliver();
+    expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("link", { name: "Go to Two" }));
+    deliver();
+    expect(nextClick).toHaveBeenCalledOnce();
+    expect(dotClick).toHaveBeenCalledOnce();
+    expect(Element.prototype.scrollBy).not.toHaveBeenCalled();
+    expect(location.hash).toBe("");
   });
   it("deduplicates end pages after readiness while preserving a focused duplicate dot until blur", () => {
     const { container } = render(<CarouselClient id="g" aria-label="Gallery" items={items} />);

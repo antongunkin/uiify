@@ -5,4 +5,6 @@ export type {
   SpinnerOwnProps,
   SpinnerProps,
   SpinnerSize,
+  SpinnerLabelSlotProps,
+  SpinnerSlotProps,
 } from "./types.js";

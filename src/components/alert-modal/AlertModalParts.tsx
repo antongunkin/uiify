@@ -1,4 +1,5 @@
 import type { ElementType, ReactElement } from "react";
+import { omitProps } from "../../core/slot-props.js";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
 import type {
   AlertModalActionProps,
@@ -7,18 +8,35 @@ import type {
   AlertModalTriggerProps,
 } from "./types.js";
 
+const ALERT_MODAL_TRIGGER_OWNED_PROPS = [
+  "type",
+  "command",
+  "commandfor",
+  "commandFor",
+  "popoverTarget",
+  "popoverTargetAction",
+  "data-part",
+  "data-uiify-button",
+  "data-uiify-alert-modal",
+  "dangerouslySetInnerHTML",
+] as const;
+const ALERT_MODAL_CHOICE_OWNED_PROPS = [
+  ...ALERT_MODAL_TRIGGER_OWNED_PROPS,
+  "data-variant",
+] as const;
+
 /** Native alert modal invoker with alert-modal identity and trigger anatomy. */
 export function AlertModalTrigger<TAs extends ElementType = "button">(
   props: AlertModalTriggerProps<TAs>,
 ): ReactElement {
-  const { as, target, ...consumerProps } = props as AlertModalTriggerProps<"button">;
+  const { as, target, ...consumerProps } = props as unknown as AlertModalTriggerProps<"button">;
   return renderNativeInvoker(
     as,
     "data-uiify-alert-modal",
     "trigger",
     "show-modal",
     target,
-    consumerProps as Record<string, unknown>,
+    omitProps(consumerProps, ALERT_MODAL_TRIGGER_OWNED_PROPS) as Record<string, unknown>,
     { button: true },
   );
 }
@@ -28,7 +46,19 @@ AlertModalTrigger.displayName = "AlertModalTrigger";
 export function AlertModalContent(props: AlertModalContentProps): ReactElement {
   const { children, ...dialogProps } = props;
   return (
-    <dialog {...dialogProps} data-part="content" data-uiify-alert-modal="" role="alertdialog">
+    <dialog
+      {...omitProps(dialogProps, [
+        "open",
+        "popover",
+        "role",
+        "data-part",
+        "data-uiify-alert-modal",
+        "dangerouslySetInnerHTML",
+      ])}
+      data-part="content"
+      data-uiify-alert-modal=""
+      role="alertdialog"
+    >
       {children}
     </dialog>
   );
@@ -39,14 +69,14 @@ AlertModalContent.displayName = "AlertModalContent";
 export function AlertModalAction<TAs extends ElementType = "button">(
   props: AlertModalActionProps<TAs>,
 ): ReactElement {
-  const { as, target, ...consumerProps } = props as AlertModalActionProps<"button">;
+  const { as, target, ...consumerProps } = props as unknown as AlertModalActionProps<"button">;
   return renderNativeInvoker(
     as,
     "data-uiify-alert-modal",
     "action",
     "request-close",
     target,
-    consumerProps as Record<string, unknown>,
+    omitProps(consumerProps, ALERT_MODAL_CHOICE_OWNED_PROPS) as Record<string, unknown>,
     { button: true, variant: "destructive" },
   );
 }
@@ -56,14 +86,14 @@ AlertModalAction.displayName = "AlertModalAction";
 export function AlertModalCancel<TAs extends ElementType = "button">(
   props: AlertModalCancelProps<TAs>,
 ): ReactElement {
-  const { as, target, ...consumerProps } = props as AlertModalCancelProps<"button">;
+  const { as, target, ...consumerProps } = props as unknown as AlertModalCancelProps<"button">;
   return renderNativeInvoker(
     as,
     "data-uiify-alert-modal",
     "cancel",
     "request-close",
     target,
-    consumerProps as Record<string, unknown>,
+    omitProps(consumerProps, ALERT_MODAL_CHOICE_OWNED_PROPS) as Record<string, unknown>,
     { button: true, variant: "secondary" },
   );
 }

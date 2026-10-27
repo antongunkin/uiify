@@ -10,8 +10,10 @@ export function SegmentedControl({
   orientation = "horizontal",
   fullWidth = false,
   className,
+  slotProps,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
+  ...rootProps
 }: SegmentedControlProps): ReactElement {
   const resolvedItems = items.map((item) => ({
     ...item,
@@ -21,6 +23,7 @@ export function SegmentedControl({
   return (
     <ChoiceGroup<SegmentedControlItem>
       {...(className !== undefined ? { className } : {})}
+      rootProps={rootProps}
       id={id}
       items={resolvedItems}
       isChecked={(item) => item.value === defaultValue}
@@ -28,6 +31,7 @@ export function SegmentedControl({
       namespace="segmented-control"
       labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost", "data-size": "sm" }}
       orientation={orientation}
+      {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{
         role: "radiogroup",
         "aria-label": ariaLabel,

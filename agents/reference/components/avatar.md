@@ -30,7 +30,17 @@
 | `src` | `string` | no |  |
 | `size` | `AvatarSize` | no |  |
 | `children` | `never` | no |  |
+| `slotProps` | `AvatarSlotProps` | no |  |
+
+### AvatarSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `image` | `AvatarImageSlotProps` | no |  |
+| `fallback` | `AvatarFallbackSlotProps` | no |  |
 
 ## Other types
 
 - `AvatarProps<TAs>`: `RenderableProps<TAs, AvatarOwnProps, Record<string, never>, HTMLElement>`
+- `AvatarImageSlotProps`: `Omit<ComponentPropsWithRef<"img">, "alt" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-avatar" | "src"> & AvatarImageOwnedAttributes & ConsumerDataAttributes`
+- `AvatarFallbackSlotProps`: `Omit<ComponentPropsWithRef<"span">, "aria-hidden" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-avatar"> & AvatarFallbackOwnedAttributes & ConsumerDataAttributes`

@@ -60,6 +60,30 @@ describe("ToggleGroup", () => {
     expect(screen.getByLabelText("Left")).toBeTruthy();
   });
 
+  it("forwards slot props to each repeated item part", () => {
+    render(
+      <ToggleGroup
+        id="align"
+        type="multiple"
+        items={[{ value: "left", label: "Left" }]}
+        slotProps={
+          {
+            item: { byItemValue: { left: { "data-testid": "left-item" } } },
+            input: {
+              byItemValue: { left: { "data-testid": "left-input", "data-uiify-radio": "bad" } },
+            },
+            label: { byItemValue: { left: { title: "Left alignment" } } },
+          } as never
+        }
+      />,
+    );
+
+    expect(screen.getByTestId("left-item")).toBeTruthy();
+    expect(screen.getByTestId("left-input")).toBeTruthy();
+    expect(screen.getByTestId("left-input").hasAttribute("data-uiify-radio")).toBe(false);
+    expect(screen.getByText("Left").closest("label")?.getAttribute("title")).toBe("Left alignment");
+  });
+
   it("renders a labeled single-selection radiogroup and disables every item", () => {
     render(
       <ToggleGroup

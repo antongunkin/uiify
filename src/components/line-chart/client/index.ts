@@ -7,4 +7,5 @@ export type {
   LineChartOwnProps,
   LineChartPointerPosition,
   LineChartProps,
+  LineChartSlotProps,
 } from "../types.js";

@@ -1,7 +1,9 @@
 import { Profiler, useState } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
+import type { DropdownMenuBarProps, DropdownMenuRootProps } from "./types.js";
 import { DropdownMenu } from "./DropdownMenu.js";
 
 function RtlSubmenu({ side }: { readonly side?: "left" | "right" }) {
@@ -24,6 +26,129 @@ function RtlSubmenu({ side }: { readonly side?: "left" | "right" }) {
 RtlSubmenu.displayName = "RtlSubmenu";
 
 describe("DropdownMenu", () => {
+  it("forwards native props, class, style, and ref to Root while protecting its marker", () => {
+    const rootRef = { current: null as HTMLDivElement | null };
+    const rootProps = {
+      className: "menu-root",
+      "data-testid": "menu-root",
+      "data-uiify-menu": "consumer",
+      dangerouslySetInnerHTML: { __html: "<b>unwanted root markup</b>" },
+      style: { color: "red" },
+      ref: rootRef,
+    } as unknown as DropdownMenuRootProps;
+    render(
+      <DropdownMenu.Root {...rootProps}>
+        <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item>Cut</DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>,
+    );
+
+    const root = screen.getByTestId("menu-root");
+    expect(root.className).toBe("menu-root");
+    expect(root.style.color).toBe("red");
+    expect(root.getAttribute("data-uiify-menu")).toBe("");
+    expect(root.querySelector("b")).toBeNull();
+    expect(rootRef.current).toBe(root);
+  });
+
+  it("uses Root id for the popup and its trigger relationship", () => {
+    render(
+      <DropdownMenu.Root id="actions-popup">
+        <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item>Cut</DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>,
+    );
+
+    expect(screen.getByRole("button", { name: "Menu" }).getAttribute("aria-controls")).toBe(
+      "actions-popup",
+    );
+    expect(document.getElementById("actions-popup")?.getAttribute("role")).toBe("menu");
+  });
+
+  it("forwards native props, class, and ref to Bar", () => {
+    const barRef = { current: null as HTMLDivElement | null };
+    const barProps = {
+      className: "bar",
+      "data-testid": "menu-bar",
+      dangerouslySetInnerHTML: { __html: "<b>unwanted bar markup</b>" },
+      ref: barRef,
+    } as unknown as DropdownMenuBarProps;
+    render(
+      <DropdownMenu.Bar {...barProps}>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item>Cut</DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      </DropdownMenu.Bar>,
+    );
+
+    const bar = screen.getByTestId("menu-bar");
+    expect(bar.className).toBe("bar");
+    expect(bar.getAttribute("role")).toBe("menubar");
+    expect(bar.tabIndex).toBe(-1);
+    expect(bar.querySelector("b")).toBeNull();
+    expect(barRef.current).toBe(bar);
+  });
+
+  it("lets the Bar key handler veto delegated arrow navigation", () => {
+    const onKeyDown = vi.fn((event: ReactKeyboardEvent<HTMLDivElement>) => event.preventDefault());
+    render(
+      <DropdownMenu.Bar onKeyDown={onKeyDown}>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>File</DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item>New</DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>Edit</DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item>Undo</DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      </DropdownMenu.Bar>,
+    );
+
+    const file = screen.getByRole("button", { name: "File" });
+    const edit = screen.getByRole("button", { name: "Edit" });
+    file.focus();
+    fireEvent.keyDown(file, { key: "ArrowRight" });
+    expect(onKeyDown).toHaveBeenCalledOnce();
+    expect(document.activeElement).toBe(file);
+    expect(edit.tabIndex).toBe(-1);
+  });
+
+  it("marks handled Bar navigation as prevented for ancestor handlers", () => {
+    const parentOnKeyDown = vi.fn();
+    render(
+      <div aria-label="Commands" onKeyDown={parentOnKeyDown} role="toolbar" tabIndex={-1}>
+        <DropdownMenu.Bar>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>File</DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item>New</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>Edit</DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item>Undo</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        </DropdownMenu.Bar>
+      </div>,
+    );
+
+    fireEvent.keyDown(screen.getByRole("button", { name: "File" }), { key: "ArrowRight" });
+    expect(parentOnKeyDown.mock.calls[0]?.[0].defaultPrevented).toBe(true);
+  });
+
   it("opens from the trigger and selects an item", () => {
     const onSelect = vi.fn();
     render(

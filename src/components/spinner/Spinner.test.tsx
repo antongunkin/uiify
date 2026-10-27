@@ -43,6 +43,14 @@ describe("Spinner", () => {
     expect(screen.getByRole("status").className).toBe("docs-spinner docs-spinner--small");
   });
 
+  it("renders a static progressbar when value is set", () => {
+    render(<Spinner label="Usage" value={140} />);
+    const bar = screen.getByRole("progressbar", { name: "Usage" });
+    expect(bar.getAttribute("aria-valuenow")).toBe("100");
+    expect(bar.getAttribute("data-value")).toBe("100");
+    expect(bar.getAttribute("aria-live")).toBeNull();
+  });
+
   it("renders a visible label when showLabel is true", () => {
     render(<Spinner label="Loading content" showLabel />);
     const status = screen.getByRole("status", { name: "Loading content" });
@@ -50,6 +58,18 @@ describe("Spinner", () => {
     const visibleLabel = status.querySelector('[data-part="label"]');
     expect(visibleLabel?.getAttribute("data-part")).toBe("label");
     expect(visibleLabel?.textContent).toBe("Loading content");
+  });
+
+  it("forwards slot props to the generated visible label", () => {
+    render(
+      <Spinner
+        showLabel
+        slotProps={{ label: { className: "spinner-label", "data-testid": "spinner-label" } }}
+      />,
+    );
+    const label = screen.getByTestId("spinner-label");
+    expect(label.className).toBe("spinner-label");
+    expect(label.getAttribute("data-part")).toBe("label");
   });
 
   it("exposes the reference loader sizes and alignment without SVG markup", () => {

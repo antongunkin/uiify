@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { omitProps } from "../../core/slot-props.js";
 import { DetailsContent, DetailsRoot, DetailsSummary } from "../../elements/details/index.js";
 import type { CollapsibleProps } from "./types.js";
 
@@ -13,20 +14,44 @@ export function Collapsible({
   content,
   defaultOpen = false,
   disabled = false,
-  className,
+  slotProps,
+  ...rootProps
 }: CollapsibleProps): ReactElement {
   return (
     <DetailsRoot
-      className={className}
+      {...omitProps(rootProps, [
+        "children",
+        "dangerouslySetInnerHTML",
+        "data-disabled",
+        "data-uiify-collapsible",
+        "data-uiify-details",
+        "open",
+      ])}
       data-uiify-collapsible=""
       defaultOpen={defaultOpen}
       disabled={disabled}
       id={id}
     >
-      <DetailsSummary disabled={disabled} part="trigger">
+      <DetailsSummary
+        {...omitProps(slotProps?.trigger, [
+          "aria-disabled",
+          "data-part",
+          "data-uiify-details",
+          "disabled",
+          "part",
+          "tabIndex",
+        ])}
+        disabled={disabled}
+        part="trigger"
+      >
         {label}
       </DetailsSummary>
-      <DetailsContent part="panel">{content}</DetailsContent>
+      <DetailsContent
+        {...omitProps(slotProps?.panel, ["data-part", "data-uiify-details", "part"])}
+        part="panel"
+      >
+        {content}
+      </DetailsContent>
     </DetailsRoot>
   );
 }

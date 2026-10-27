@@ -15,11 +15,13 @@
 ## Exports
 
 - Runtime: `ToggleGroup`
-- Types: `ToggleGroupClientProps`, `ToggleGroupItem`, `ToggleGroupProps`
+- Types: `ToggleGroupClientProps`, `ToggleGroupItem`, `ToggleGroupProps`, `ToggleGroupSlotProps`
 
 ## Props and shapes
 
 ### ToggleGroupProps
+
+Extends: `ChoiceGroupRootProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -31,8 +33,7 @@
 | `orientation` | `ChoiceOrientation` | no |  |
 | `size` | `"sm" \| "md" \| "lg"` | no | Button size of each item; `md` metrics when omitted. |
 | `className` | `string` | no |  |
-| `"aria-label"` | `string` | no |  |
-| `"aria-labelledby"` | `string` | no |  |
+| `slotProps` | `ToggleGroupSlotProps` | no |  |
 
 ### ToggleGroupClientProps
 
@@ -45,6 +46,7 @@ Extends: `ToggleGroupProps`
 
 ## Other types
 
+- `ToggleGroupSlotProps`: `ChoiceOptionSlotProps`
 - `ToggleGroupItem`: `ChoiceItem`
 
 ## Sub-entries

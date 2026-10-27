@@ -22,7 +22,7 @@ Keep the indicator near the task it describes, reserve enough space to prevent l
 
 ## States
 
-The delay prop writes a delayed state marker; shipped CSS disables animation in that state, but does not hide the element or schedule a timer. The component supports sm/md/lg sizes and center/fixed/absolute alignment. Motion respects reduced-motion preferences in UIify styles.
+The value prop (0–100) renders a static arc with role=progressbar instead of the animation. The delay prop writes a delayed state marker; shipped CSS disables animation in that state, but does not hide the element or schedule a timer. The component supports sm/md/lg sizes and center/fixed/absolute alignment. Motion respects reduced-motion preferences in UIify styles.
 
 ## Verify
 

@@ -1,7 +1,8 @@
-import type { ElementType, ReactNode, RefObject } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode, RefObject } from "react";
 import type { AnchorAlign, AnchorSide } from "@gunkin/uiify/core/anchor-position";
 import type { Direction } from "@gunkin/uiify/core/direction";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes } from "@gunkin/uiify/core/slot-props";
 import type {
   MenuGroupProps,
   MenuLabelProps,
@@ -37,14 +38,26 @@ export interface DropdownMenuContextValue extends UseMenuSurfaceReturn {
 
 export interface DropdownMenuBarOwnProps {
   readonly children?: ReactNode;
-  readonly className?: string;
   readonly dir?: Direction;
   readonly loop?: boolean;
 }
-export type DropdownMenuBarProps = DropdownMenuBarOwnProps;
+export type DropdownMenuBarProps = Omit<
+  ComponentPropsWithRef<"div">,
+  keyof DropdownMenuBarOwnProps | "dangerouslySetInnerHTML" | "role" | "data-uiify-menu-bar"
+> &
+  ConsumerDataAttributes &
+  DropdownMenuBarOwnProps & {
+    readonly "data-uiify-menu-bar"?: never;
+  };
 
-export interface DropdownMenuRootOwnProps {
-  readonly className?: string;
+export interface DropdownMenuRootOwnProps
+  extends
+    Omit<
+      ComponentPropsWithRef<"div">,
+      "children" | "dangerouslySetInnerHTML" | "dir" | "data-uiify-menu"
+    >,
+    ConsumerDataAttributes {
+  readonly "data-uiify-menu"?: never;
   readonly children?: ReactNode;
   readonly defaultOpen?: boolean;
   readonly dir?: Direction;

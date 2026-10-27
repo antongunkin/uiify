@@ -1,6 +1,6 @@
-import { render } from "@testing-library/react";
-import type { ReactElement } from "react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render } from "@testing-library/react";
+import { createRef, type MouseEvent, type ReactElement } from "react";
+import { describe, expect, it, vi } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { CandleChart } from "./CandleChart.js";
 import type { CandleChartData } from "./types.js";
@@ -135,6 +135,98 @@ describe("CandleChart", () => {
     expect(table?.textContent).toContain("2026-09-01");
     expect(table?.textContent).toContain("112");
     expect(table?.textContent).toContain("96");
+  });
+
+  it("forwards slot props to generated candles, axes, hit targets, and table rows", () => {
+    const onCandleHitClick = vi.fn();
+    const candleRef = createRef<HTMLElement>();
+    const { container } = render(
+      <CandleChart
+        data={DATA}
+        interactive
+        slotProps={{
+          caption: { className: "caption", "data-testid": "caption" },
+          candle: {
+            className: "all-candles",
+            ref: candleRef,
+            byItemIndex: { 1: { className: "second-candle", "data-testid": "candle-1" } },
+          },
+          candleHit: {
+            onClick: onCandleHitClick,
+            byItemIndex: { 1: { "data-testid": "candle-hit-1" } },
+          },
+          timeAxisLabel: {
+            className: "month-label",
+            byItemIndex: { 0: { "data-testid": "month-0" } },
+          },
+          dataTableRow: {
+            byItemIndex: { 1: { className: "second-row", "data-testid": "row-1" } },
+          },
+          dataTableCloseCell: { className: "close-cell" },
+        }}
+      />,
+    );
+
+    expect(container.querySelector('[data-testid="caption"]')?.className).toContain("caption");
+    expect(container.querySelectorAll('[data-part="candle"]')[0]?.className).toContain(
+      "all-candles",
+    );
+    expect(container.querySelector('[data-testid="candle-1"]')?.className).toContain(
+      "second-candle",
+    );
+    expect(container.querySelector('[data-testid="month-0"]')?.className).toContain("month-label");
+    expect(container.querySelector('[data-testid="row-1"]')?.className).toContain("second-row");
+    expect(container.querySelector("tbody tr td:last-child")?.className).toContain("close-cell");
+    expect(candleRef.current?.tagName).toBe("LI");
+
+    fireEvent.click(container.querySelector('[data-testid="candle-hit-1"]') as HTMLButtonElement);
+    expect(onCandleHitClick).toHaveBeenCalledOnce();
+  });
+
+  it("lets a candle-hit native click handler cancel chart activation", () => {
+    const onCandleClick = vi.fn();
+    const onClick = vi.fn((event: MouseEvent<HTMLButtonElement>) => event.preventDefault());
+    const { container } = render(
+      <CandleChart
+        data={DATA}
+        interactive
+        onCandleClick={onCandleClick}
+        slotProps={{ candleHit: { onClick } }}
+      />,
+    );
+
+    fireEvent.click(container.querySelector('[data-part="candle-hit"]') as HTMLButtonElement);
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(onCandleClick).not.toHaveBeenCalled();
+  });
+
+  it("keeps generated candle content and anatomy markers owned", () => {
+    const { container } = render(
+      <CandleChart
+        data={DATA}
+        slotProps={
+          {
+            candle: {
+              byItemIndex: {
+                0: {
+                  children: "replacement",
+                  dangerouslySetInnerHTML: { __html: "unsafe" },
+                  "data-direction": "down",
+                },
+              },
+            },
+            priceAxis: { "data-part": "other" },
+          } as never
+        }
+      />,
+    );
+
+    expect(container.querySelector('[data-part="candle"]')?.textContent).toBe("");
+    expect(container.querySelector('[data-part="candle"]')?.getAttribute("data-direction")).toBe(
+      "up",
+    );
+    expect(container.querySelector('[data-part="price-axis"]')).not.toBeNull();
+    expect(container.querySelector('[data-part="other"]')).toBeNull();
   });
 
   it("renders the active candle readout with React values", () => {

@@ -188,6 +188,85 @@ describe("Breadcrumb", () => {
     expect(screen.getAllByText("/")).toHaveLength(1);
   });
 
+  it("routes generated item and link props by each item's key", () => {
+    render(
+      <Breadcrumb.Root>
+        <Breadcrumb.List
+          items={[
+            { href: "/", key: "home", label: "Home" },
+            { current: true, href: "/docs", key: "docs", label: "Docs" },
+          ]}
+          slotProps={{
+            item: { byItemValue: { docs: { className: "docs-item", "data-testid": "docs-item" } } },
+            link: { byItemValue: { docs: { className: "docs-link", "data-testid": "docs-link" } } },
+          }}
+        />
+      </Breadcrumb.Root>,
+    );
+
+    expect(screen.getByTestId("docs-item").classList.contains("docs-item")).toBe(true);
+    expect(screen.getByTestId("docs-link").classList.contains("docs-link")).toBe(true);
+    expect(screen.getByTestId("docs-link").getAttribute("href")).toBe("/docs");
+    expect(screen.getByTestId("docs-link").getAttribute("aria-current")).toBe("page");
+  });
+
+  it("routes props to the collapsed wrapper, disclosure and hidden item links", () => {
+    render(
+      <Breadcrumb.Root>
+        <Breadcrumb.List
+          items={[
+            { href: "/", key: "home", label: "Home" },
+            { href: "/one", key: "one", label: "One" },
+            { href: "/two", key: "two", label: "Two" },
+            { current: true, href: "/docs", key: "docs", label: "Docs" },
+          ]}
+          itemsAfterCollapse={1}
+          itemsBeforeCollapse={1}
+          maxItems={3}
+          slotProps={{
+            ellipsisItem: { "data-testid": "ellipsis-item" },
+            ellipsis: { className: "ellipsis-details", "data-testid": "ellipsis-details" },
+            ellipsisTrigger: { className: "ellipsis-trigger", "data-testid": "ellipsis-trigger" },
+            ellipsisContent: { "data-testid": "ellipsis-content" },
+            link: {
+              byItemValue: { one: { "data-testid": "hidden-link" } },
+            },
+          }}
+        />
+      </Breadcrumb.Root>,
+    );
+
+    expect(screen.getByTestId("ellipsis-item").tagName).toBe("LI");
+    expect(screen.getByTestId("ellipsis-details").classList.contains("ellipsis-details")).toBe(
+      true,
+    );
+    expect(screen.getByTestId("ellipsis-trigger").tagName).toBe("SUMMARY");
+    expect(screen.getByTestId("ellipsis-content").tagName).toBe("OL");
+    expect(screen.getByTestId("hidden-link").getAttribute("href")).toBe("/one");
+  });
+
+  it("lets the standalone ellipsis style its generated list item and glyph", () => {
+    render(
+      <Breadcrumb.Root>
+        <Breadcrumb.List>
+          <Breadcrumb.Ellipsis
+            slotProps={{
+              item: { className: "ellipsis-item", "data-testid": "standalone-ellipsis-item" },
+              ellipsis: { className: "ellipsis-glyph", "data-testid": "standalone-ellipsis-glyph" },
+            }}
+          />
+        </Breadcrumb.List>
+      </Breadcrumb.Root>,
+    );
+
+    expect(screen.getByTestId("standalone-ellipsis-item").classList.contains("ellipsis-item")).toBe(
+      true,
+    );
+    expect(
+      screen.getByTestId("standalone-ellipsis-glyph").classList.contains("ellipsis-glyph"),
+    ).toBe(true);
+  });
+
   it("marks the current item from data-driven items", () => {
     render(
       <Breadcrumb.Root>

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Toolbar, Toolbar as ClientToolbar } from "./Toolbar.js";
@@ -16,6 +17,37 @@ describe("Toolbar", () => {
     const buttons = screen.getAllByRole("button");
     expect(toolbar).toBeTruthy();
     expect(buttons.filter((button) => button.tabIndex === 0)).toHaveLength(1);
+  });
+
+  it("forwards the root ref while keeping the internal roving-focus ref", () => {
+    const rootRef = { current: null as HTMLDivElement | null };
+    render(
+      <ClientToolbar.Root ref={rootRef} aria-label="Formatting" data-testid="toolbar-root">
+        <ClientToolbar.Button>One</ClientToolbar.Button>
+      </ClientToolbar.Root>,
+    );
+
+    expect(rootRef.current).toBe(screen.getByTestId("toolbar-root"));
+  });
+
+  it("forwards refs to generated compound toolbar parts", () => {
+    const buttonRef = createRef<HTMLButtonElement>();
+    const linkRef = createRef<HTMLAnchorElement>();
+    const separatorRef = createRef<HTMLHRElement>();
+    render(
+      <Toolbar.Root aria-label="Actions">
+        <Toolbar.Button ref={buttonRef} data-testid="toolbar-button">
+          Save
+        </Toolbar.Button>
+        <Toolbar.Link ref={linkRef} href="/docs" data-testid="toolbar-link">
+          Docs
+        </Toolbar.Link>
+        <Toolbar.Separator ref={separatorRef} data-testid="toolbar-separator" />
+      </Toolbar.Root>,
+    );
+    expect(buttonRef.current).toBe(screen.getByTestId("toolbar-button"));
+    expect(linkRef.current).toBe(screen.getByTestId("toolbar-link"));
+    expect(separatorRef.current).toBe(screen.getByTestId("toolbar-separator"));
   });
 
   it("moves focus with arrow keys and loops horizontally", () => {

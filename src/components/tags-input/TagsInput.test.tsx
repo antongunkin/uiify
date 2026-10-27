@@ -11,6 +11,59 @@ describe("tags-input-store", () => {
 });
 
 describe("TagsInput", () => {
+  it("forwards native props and slotProps to generated list entries", () => {
+    render(
+      <TagsInput.Root defaultValue={["Design", "React"]} data-testid="tag-root" title="Root">
+        <TagsInput.List
+          data-testid="tag-list"
+          slotProps={{
+            tag: {
+              className: "generated-tag",
+              byItemIndex: { 1: { "data-testid": "generated-react" } },
+            },
+            input: { className: "input-slot", "data-testid": "generated-input-slot" },
+          }}
+        >
+          <TagsInput.Input placeholder="Add tag" />
+        </TagsInput.List>
+      </TagsInput.Root>,
+    );
+
+    expect(screen.getByTestId("tag-root").getAttribute("title")).toBe("Root");
+    expect(screen.getByTestId("tag-list").tagName).toBe("UL");
+    expect(screen.getAllByText(/Design|React/).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByTestId("generated-react").className).toContain("generated-tag");
+    expect(screen.getByTestId("generated-input-slot").className).toContain("input-slot");
+  });
+
+  it("forwards native props and events to TagRemove", () => {
+    const onClick = vi.fn();
+    const onValueChange = vi.fn();
+    render(
+      <TagsInput.Root defaultValue={["React"]} onValueChange={onValueChange}>
+        <TagsInput.List>
+          <TagsInput.Tag index={0} value="React">
+            React
+            <TagsInput.TagRemove
+              index={0}
+              aria-label="Remove React tag"
+              data-testid="remove-react"
+              title="Remove React"
+              onClick={onClick}
+            />
+          </TagsInput.Tag>
+        </TagsInput.List>
+      </TagsInput.Root>,
+    );
+
+    const remove = screen.getByTestId("remove-react");
+    expect(remove.getAttribute("title")).toBe("Remove React");
+    expect(remove.getAttribute("aria-label")).toBe("Remove React tag");
+    fireEvent.click(remove);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onValueChange).toHaveBeenCalledWith([]);
+  });
+
   it("renders the initial tags in the server output", () => {
     render(
       <TagsInput.Root defaultValue={["Design", "React"]}>

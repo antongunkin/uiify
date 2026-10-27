@@ -80,6 +80,9 @@ export function attachCarouselControls(
     event.preventDefault();
     controller.goTo(index, "dot");
   }
-  root.addEventListener("click", click);
-  return () => root.removeEventListener("click", click);
+  // React delegates consumer slot clicks at its root container, which can be outside
+  // this section. Handle the native event after that dispatch so preventDefault() from
+  // a slot's onClick can cancel the built-in action reliably.
+  root.ownerDocument.addEventListener("click", click);
+  return () => root.ownerDocument.removeEventListener("click", click);
 }

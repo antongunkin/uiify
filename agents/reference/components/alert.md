@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `Alert`, `AlertDescription`, `AlertTitle`
-- Types: `AlertDescriptionOwnProps`, `AlertDescriptionProps`, `AlertOwnProps`, `AlertProps`, `AlertTitleOwnProps`, `AlertTitleProps`, `AlertVariant`
+- Types: `AlertDescriptionOwnProps`, `AlertDescriptionProps`, `AlertOwnProps`, `AlertProps`, `AlertSlotProps`, `AlertSymbolSlotProps`, `AlertTitleOwnProps`, `AlertTitleProps`, `AlertVariant`
 
 ## Values
 
@@ -28,6 +28,7 @@
 | `children` | `ReactNode` | no |  |
 | `variant` | `AlertVariant` | no | Visual status. Defaults to secondary without adding a live role. |
 | `symbol` | `string \| false` | no | Override the decorative text symbol, or hide it with false. |
+| `slotProps` | `AlertSlotProps` | no |  |
 
 ### AlertTitleOwnProps
 
@@ -41,8 +42,15 @@
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 
+### AlertSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `symbol` | `AlertSymbolSlotProps` | no |  |
+
 ## Other types
 
 - `AlertProps<TAs>`: `RenderableProps<TAs, AlertOwnProps, Record<string, never>, HTMLElement>`
 - `AlertTitleProps<TAs>`: `RenderableProps<TAs, AlertTitleOwnProps, Record<string, never>, HTMLElement>`
 - `AlertDescriptionProps<TAs>`: `RenderableProps<TAs, AlertDescriptionOwnProps, Record<string, never>, HTMLElement>`
+- `AlertSymbolSlotProps`: `Omit<ComponentPropsWithRef<"span">, "aria-hidden" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-alert"> & { readonly "aria-hidden"?: never; readonly "data-part"?: never; readonly "data-uiify-alert"?: never; } & ConsumerDataAttributes`

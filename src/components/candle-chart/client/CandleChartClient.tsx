@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { CSSProperties, ElementType, ReactElement, Ref } from "react";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
+import { omitProps } from "../../../core/slot-props.js";
 import { CandleChart, CandleChartCandle, getPriceBounds } from "../CandleChart.js";
 import type {
   CandleChartClientProps,
@@ -54,6 +55,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     onCandleClick: consumerOnCandleClick,
     onCandlePointerLeave: consumerOnCandlePointerLeave,
     onCandlePointerMove: consumerOnCandlePointerMove,
+    slotProps,
     ...consumerProps
   } = props as CandleChartClientProps<"figure"> & {
     ref?: Ref<HTMLElement>;
@@ -122,6 +124,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
       onCandleClick: handleCandleClick,
       onCandlePointerLeave: handleCandlePointerLeave,
       onCandlePointerMove: handleCandlePointerMove,
+      ...(slotProps ? { slotProps } : {}),
       ref: chartRef,
       selectedCandleIndex,
       style,
@@ -134,6 +137,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
   const { min, max } = getPriceBounds(slice);
   const toSliceIndex = (index: number | undefined): number | undefined =>
     index !== undefined && index >= sliceStart && index < sliceEnd ? index - sliceStart : undefined;
+  const { ref: liveScrollportRef, ...liveScrollportProps } = slotProps?.liveScrollport ?? {};
   const candleLayer = (
     <VirtualScroll
       height={plotHeight}
@@ -164,8 +168,23 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
             onCandleClick={handleCandleClick}
             onCandlePointerLeave={handleCandlePointerLeave}
             onCandlePointerMove={handleCandlePointerMove}
+            slotProps={slotProps}
           />
         );
+      }}
+      {...omitProps(liveScrollportProps, [
+        "children",
+        "dangerouslySetInnerHTML",
+        "data-dynamic-layout",
+        "data-orientation",
+        "data-part",
+        "data-uiify-virtual-scroll",
+        "role",
+      ])}
+      {...(liveScrollportRef ? { ref: liveScrollportRef } : {})}
+      slotProps={{
+        ...(slotProps?.liveSpacer ? { spacer: slotProps.liveSpacer } : {}),
+        ...(slotProps?.liveCandleRow ? { row: slotProps.liveCandleRow } : {}),
       }}
     />
   );
@@ -185,6 +204,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     candleLayer,
     cursorY: cursor?.offsetY,
     interactive: true,
+    ...(slotProps ? { slotProps } : {}),
     ref: chartRef,
     selectedCandleIndex: toSliceIndex(selectedCandleIndex),
     slotCount: data.length,

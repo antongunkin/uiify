@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `Breadcrumb`, `BreadcrumbEllipsis`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbList`, `BreadcrumbRoot`, `BreadcrumbSeparator`
-- Types: `BreadcrumbItemData`, `BreadcrumbLabels`, `BreadcrumbItemProps`, `BreadcrumbLinkOwnProps`, `BreadcrumbLinkProps`, `BreadcrumbListOwnProps`, `BreadcrumbListProps`, `BreadcrumbRootOwnProps`, `BreadcrumbRootProps`, `BreadcrumbSeparatorOwnProps`, `BreadcrumbSeparatorProps`
+- Types: `BreadcrumbItemData`, `BreadcrumbEllipsisPartProps`, `BreadcrumbLabels`, `BreadcrumbItemProps`, `BreadcrumbLinkOwnProps`, `BreadcrumbLinkProps`, `BreadcrumbListOwnProps`, `BreadcrumbListProps`, `BreadcrumbListSlotProps`, `BreadcrumbRootOwnProps`, `BreadcrumbRootProps`, `BreadcrumbSeparatorOwnProps`, `BreadcrumbSeparatorProps`
 
 ## Props and shapes
 
@@ -55,6 +55,18 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | `itemsBeforeCollapse` | `number` | no |  |
 | `maxItems` | `number` | no |  |
 | `separator` | `ReactNode` | no |  |
+| `slotProps` | `BreadcrumbListSlotProps` | no |  |
+
+### BreadcrumbListSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `item` | `BreadcrumbRepeatedSlotProps<"li">` | no | Generated item wrappers and links use `byItemValue[item.key]`. |
+| `link` | `BreadcrumbLinkSlotProps` | no |  |
+| `ellipsisItem` | `BreadcrumbDirectSlotProps<"li">` | no |  |
+| `ellipsis` | `BreadcrumbDirectSlotProps<"details", { readonly "data-uiify-breadcrumb"?: never; readonly "data-uiify-details"?: never }>` | no |  |
+| `ellipsisTrigger` | `BreadcrumbDirectSlotProps<"summary", { readonly "aria-label"?: never }>` | no |  |
+| `ellipsisContent` | `BreadcrumbDirectSlotProps<"ol", { readonly "data-uiify-details"?: never }>` | no |  |
 
 ### BreadcrumbLinkOwnProps
 
@@ -77,6 +89,13 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | `hiddenItems` | `readonly BreadcrumbItemData[]` | yes |  |
 | `labels` | `BreadcrumbLabels` | yes |  |
 | `separator` | `ReactNode` | no |  |
+| `slotProps` | `BreadcrumbListSlotProps` | no |  |
+
+### BreadcrumbEllipsisPartProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `slotProps` | `{ readonly item?: BreadcrumbDirectSlotProps<"li">; readonly ellipsis?: BreadcrumbDirectSlotProps<"span">; }` | no |  |
 
 ## Other types
 

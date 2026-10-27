@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `Tabs`
-- Types: `TabsItem`, `TabsProps`
+- Types: `TabsInputSlotProps`, `TabsItem`, `TabsItemSlotProps`, `TabsPanelSlotProps`, `TabsProps`, `TabsSlotProps`, `TabsTriggerSlotProps`
 
 ## Props and shapes
 
@@ -35,7 +35,17 @@ Extends: `ChoicePanelItem`
 
 No own members.
 
-### TabsProps
+### TabsSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `item` | `TabsItemSlotProps` | no |  |
+| `input` | `TabsInputSlotProps` | no |  |
+| `trigger` | `TabsTriggerSlotProps` | no |  |
+| `panel` | `TabsPanelSlotProps` | no |  |
+| `append` | `Omit<ComponentPropsWithRef<"div">, "children" \| "dangerouslySetInnerHTML" \| "data-part" \| "data-uiify-tabs"> & ConsumerDataAttributes & TabsPartOwnedAttributes` | no |  |
+
+### TabsOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -43,5 +53,13 @@ No own members.
 | `items` | `readonly TabsItem[]` | yes |  |
 | `defaultValue` | `string` | no |  |
 | `orientation` | `ChoiceOrientation` | no |  |
-| `className` | `string` | no |  |
 | `append` | `ReactNode` | no | Optional control rendered at the end of the tab bar. |
+| `slotProps` | `TabsSlotProps` | no |  |
+
+## Other types
+
+- `TabsItemSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-choice" | "data-uiify-tabs">, TabsItemOwnedAttributes>`
+- `TabsInputSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"input">, | "aria-labelledby" | "checked" | "defaultChecked" | "disabled" | "id" | "name" | "type" | "value" | "data-part" | "data-uiify-choice" | "data-uiify-radio" | "data-uiify-tabs">, TabsControlOwnedAttributes>`
+- `TabsTriggerSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"label">, "children" | "dangerouslySetInnerHTML" | "htmlFor" | "id" | "data-part" | "data-uiify-tabs">, TabsPartOwnedAttributes>`
+- `TabsPanelSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "id" | "data-part" | "data-uiify-tabs">, TabsPartOwnedAttributes>`
+- `TabsProps`: `TabsOwnProps & Omit<ComponentPropsWithRef<"div">, | keyof TabsOwnProps | "children" | "dangerouslySetInnerHTML" | "data-uiify-choice" | "data-uiify-tabs">`

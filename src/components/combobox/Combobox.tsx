@@ -26,6 +26,7 @@ import { DismissableLayer } from "@gunkin/uiify/core/dismissable-layer";
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { usePopover } from "@gunkin/uiify/core/popover";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import {
   createComboboxActiveStore,
   defaultComboboxFilter,
@@ -346,21 +347,31 @@ ComboboxControl.displayName = "ComboboxControl";
 function ComboboxTagsMultiple<TAs extends ElementType = "div">(
   props: ComboboxTagsProps<TAs>,
 ): ReactElement | null {
-  const { as, render, children, className, ...consumerProps } =
+  const { as, render, children, className, slotProps, ...consumerProps } =
     props as ComboboxTagsProps<ElementType>;
   const { getValueLabel, removeValue, selectedValues } = useComboboxContext("Tags");
 
   const tags = selectedValues.map((value) => {
     const label = getValueLabel(value);
+    const tagProps = resolveRepeatedSlotProps(slotProps?.tag, value, ["data-part"]);
+    const removeProps = resolveRepeatedSlotProps(slotProps?.remove, value, [
+      "aria-label",
+      "data-part",
+      "type",
+    ]);
     return (
-      <span data-part="tag" key={value}>
+      <span {...tagProps} data-part="tag" key={value}>
         {label}
         <button
+          {...removeProps}
           aria-label={`Remove ${label}`}
           data-part="tag-remove"
           type="button"
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => removeValue(value)}
+          onMouseDown={(event) => {
+            removeProps.onMouseDown?.(event);
+            event.preventDefault();
+          }}
+          onClick={composeEventHandlers(removeProps.onClick, () => removeValue(value))}
         >
           ×
         </button>
@@ -544,7 +555,7 @@ export function ComboboxTrigger<TAs extends ElementType = "button">(
 }
 
 export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | null {
-  const { align = "start", children, className, side = "bottom" } = props;
+  const { align = "start", children, className, side = "bottom", ...consumerProps } = props;
   const {
     close,
     filterFn,
@@ -567,11 +578,13 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
     if (inputNode) set.add(inputNode);
     return set;
   }, [inputNode]);
-  const mergedRef = useMergedRefs(popupRef, positionerRef);
+  const [consumerRef, domProps] = splitRef<HTMLDivElement, typeof consumerProps>(consumerProps);
+  const mergedRef = useMergedRefs(popupRef, positionerRef, consumerRef);
 
   return (
     <DismissableLayer
       branches={branches}
+      {...domProps}
       onDismiss={() => close()}
       {...popupProps}
       {...positionerProps}
@@ -594,10 +607,18 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
 ComboboxContent.displayName = "ComboboxContent";
 
 export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
-  const { className, item } = props;
+  const {
+    className,
+    item,
+    onClick: consumerOnClick,
+    onMouseDown: consumerOnMouseDown,
+    ref: consumerRef,
+    ...consumerProps
+  } = props;
   const { activeStore, isValueSelected, multiple, selectItem } = useComboboxContext("Item");
   const id = useId();
-  const ref = useCollectionItem({ data: item, id });
+  const collectionRef = useCollectionItem({ data: item, id });
+  const ref = useMergedRefs(collectionRef, consumerRef);
   const active = useSyncExternalStore(
     (onStoreChange) => activeStore.subscribeItem(id, onStoreChange),
     () => activeStore.isActive(id),
@@ -608,6 +629,7 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
   return useRenderElement({
     defaultTag: "div",
     props: {
+      ...consumerProps,
       ref,
       id,
       role: "option",
@@ -619,22 +641,21 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
       "data-part": "item",
       ...(className ? { className } : {}),
       children: item.label,
-      onMouseDown(event: SyntheticEvent<HTMLElement>) {
-        event.preventDefault();
-      },
-      onClick: () => {
+      onMouseDown: composeEventHandlers(consumerOnMouseDown, (event) => event.preventDefault()),
+      onClick: composeEventHandlers(consumerOnClick, () => {
         if (!item.disabled) selectItem(item);
-      },
+      }),
     },
     state: { active, disabled: Boolean(item.disabled), selected },
   });
 }
 
 export function ComboboxEmpty(props: ComboboxEmptyOwnProps): ReactElement | null {
-  const { children, className } = props;
+  const { children, className, ...consumerProps } = props;
   return useRenderElement({
     defaultTag: "div",
     props: {
+      ...consumerProps,
       role: "presentation",
       "data-part": "empty",
       ...(className ? { className } : {}),

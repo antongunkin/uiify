@@ -19,6 +19,24 @@ describe("SegmentedControl", () => {
     expect(screen.getByLabelText("Day")).toBeTruthy();
   });
 
+  it("lets consumers style and identify each generated part", () => {
+    render(
+      <SegmentedControl
+        id="range"
+        items={[{ value: "day", label: "Day" }]}
+        slotProps={{
+          item: { byItemValue: { day: { "data-testid": "day-item" } } },
+          input: { byItemValue: { day: { "data-testid": "day-input" } } },
+          label: { byItemValue: { day: { className: "day-trigger" } } },
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("day-item")).toBeTruthy();
+    expect(screen.getByTestId("day-input")).toBeTruthy();
+    expect(screen.getByText("Day").closest("label")?.className).toBe("day-trigger");
+  });
+
   it("renders a labeled radiogroup and disables every segment", () => {
     render(
       <SegmentedControl

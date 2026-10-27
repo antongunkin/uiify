@@ -3,4 +3,5 @@ export type {
   FormErrorSummaryError,
   FormErrorSummaryOwnProps,
   FormErrorSummaryProps,
+  FormErrorSummarySlotProps,
 } from "./types.js";

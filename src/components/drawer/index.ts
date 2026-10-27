@@ -34,4 +34,6 @@ export type {
   DrawerAppearanceProps,
   DrawerNativeContentProps,
   DrawerNativeInvokerProps,
+  DrawerOwnProps,
+  DrawerSlotProps,
 } from "./types.js";

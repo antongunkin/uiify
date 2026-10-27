@@ -14,7 +14,7 @@
 ## Exports
 
 - Runtime: `FormErrorSummary`
-- Types: `FormErrorSummaryError`, `FormErrorSummaryOwnProps`, `FormErrorSummaryProps`
+- Types: `FormErrorSummaryError`, `FormErrorSummaryOwnProps`, `FormErrorSummaryProps`, `FormErrorSummarySlotProps`
 
 ## Props and shapes
 
@@ -25,12 +25,22 @@
 | `href` | `string` | yes |  |
 | `message` | `ReactNode` | yes |  |
 
+### FormErrorSummarySlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | `FormErrorSummaryPartSlotProps<"h2">` | no |  |
+| `list` | `FormErrorSummaryPartSlotProps<"ul">` | no |  |
+| `item` | `FormErrorSummaryRepeatedSlotProps<"li">` | no | Repeated error props may target an error by its stable href value. |
+| `link` | `FormErrorSummaryRepeatedSlotProps<"a", { readonly href?: never }>` | no |  |
+
 ### FormErrorSummaryOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `title` | `ReactNode` | yes |  |
 | `errors` | `readonly FormErrorSummaryError[]` | yes |  |
+| `slotProps` | `FormErrorSummarySlotProps` | no |  |
 
 ## Other types
 

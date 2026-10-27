@@ -53,6 +53,65 @@ describe("native TableOfContents", () => {
     expect(container.querySelector('[data-part="rail"]')?.getAttribute("aria-hidden")).toBe("true");
     expect(container.querySelector('[data-part="rail"]')?.tagName).toBe("SPAN");
   });
+  it("forwards native classes, data props, and refs through every public part", () => {
+    const refs = {
+      root: createRef<HTMLElement>(),
+      trigger: createRef<HTMLButtonElement>(),
+      rail: createRef<HTMLSpanElement>(),
+      indicator: createRef<HTMLSpanElement>(),
+      content: createRef<HTMLDivElement>(),
+      list: createRef<HTMLDivElement>(),
+      link: createRef<HTMLAnchorElement>(),
+    };
+    render(
+      <TableOfContents.Root
+        aria-label="On this page"
+        className="toc-root"
+        data-testid="toc-root"
+        ref={refs.root}
+      >
+        <TableOfContents.Trigger
+          className="toc-trigger"
+          data-testid="toc-trigger"
+          ref={refs.trigger}
+          target="toc-panel"
+        >
+          Contents
+          <TableOfContents.Rail className="toc-rail" data-testid="toc-rail" ref={refs.rail}>
+            <TableOfContents.Indicator
+              className="toc-indicator"
+              data-testid="toc-indicator"
+              ref={refs.indicator}
+              value="intro"
+            />
+          </TableOfContents.Rail>
+        </TableOfContents.Trigger>
+        <TableOfContents.Content
+          className="toc-content"
+          data-testid="toc-content"
+          id="toc-panel"
+          ref={refs.content}
+        >
+          <TableOfContents.List className="toc-list" data-testid="toc-list" ref={refs.list}>
+            <TableOfContents.Link
+              className="toc-link"
+              data-testid="toc-link"
+              href="#intro"
+              ref={refs.link}
+            >
+              Introduction
+            </TableOfContents.Link>
+          </TableOfContents.List>
+        </TableOfContents.Content>
+      </TableOfContents.Root>,
+    );
+
+    for (const [part, ref] of Object.entries(refs)) {
+      const element = screen.getByTestId(`toc-${part}`);
+      expect(element.className).toBe(`toc-${part}`);
+      expect(ref.current).toBe(element);
+    }
+  });
   it("owns selection attributes while preserving native styling, refs and events", () => {
     const ref = createRef<HTMLAnchorElement>();
     const click = vi.fn();

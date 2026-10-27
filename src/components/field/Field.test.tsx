@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
@@ -10,6 +11,28 @@ function Wrapper({ children }: { children: ReactNode }) {
 Wrapper.displayName = "Wrapper";
 
 describe("Field", () => {
+  it("forwards refs to generated label, description, and error parts", () => {
+    const labelRef = createRef<HTMLLabelElement>();
+    const descriptionRef = createRef<HTMLParagraphElement>();
+    const errorRef = createRef<HTMLParagraphElement>();
+    render(
+      <Field.Root id="ref-field" invalid>
+        <Field.Label fieldId="ref-field" ref={labelRef} data-testid="field-label">
+          Name
+        </Field.Label>
+        <Field.Control fieldId="ref-field" as="input" aria-label="Name" />
+        <Field.Description fieldId="ref-field" ref={descriptionRef} data-testid="field-description">
+          Help
+        </Field.Description>
+        <Field.Error fieldId="ref-field" ref={errorRef} invalid data-testid="field-error">
+          Required
+        </Field.Error>
+      </Field.Root>,
+    );
+    expect(labelRef.current).toBe(screen.getByTestId("field-label"));
+    expect(descriptionRef.current).toBe(screen.getByTestId("field-description"));
+    expect(errorRef.current).toBe(screen.getByTestId("field-error"));
+  });
   it("applies native required validation and excludes disabled controls from FormData", () => {
     const { container } = render(
       <form>

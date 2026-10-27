@@ -1,5 +1,6 @@
 import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { NativeButtonProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes } from "../../core/slot-props.js";
 
 export type ModalSize = "sm" | "md" | "lg" | "full";
 export type ModalAlign = "center" | "start";
@@ -25,7 +26,7 @@ export interface ModalAppearanceProps {
   readonly backdrop?: ModalBackdrop | undefined;
 }
 
-export interface ModalProps extends ModalAppearanceProps {
+export interface ModalOwnProps extends ModalAppearanceProps {
   readonly id: string;
   readonly trigger: ReactNode;
   readonly title: ReactNode;
@@ -36,8 +37,65 @@ export interface ModalProps extends ModalAppearanceProps {
   readonly labels?: Partial<ModalLabels>;
   /** Actions row pinned under the body. */
   readonly footer?: ReactNode;
-  readonly className?: string;
+  /** Native props for the elements created by this convenience component. */
+  readonly slotProps?: ModalSlotProps;
 }
+
+type ModalSlotElementProps<T extends ElementType, TProtected extends string = never> = Omit<
+  ComponentPropsWithRef<T>,
+  "children" | "dangerouslySetInnerHTML" | TProtected
+> &
+  ConsumerDataAttributes & { readonly [K in TProtected]?: never };
+
+/** Native props for Modal's generated inner elements. Owned ids and markers stay internal. */
+export interface ModalSlotProps {
+  readonly trigger?: ModalSlotElementProps<
+    "button",
+    | "type"
+    | "command"
+    | "commandfor"
+    | "popoverTarget"
+    | "popoverTargetAction"
+    | "data-part"
+    | "data-uiify-modal"
+    | "data-uiify-button"
+  >;
+  readonly content?: ModalSlotElementProps<
+    "dialog",
+    | "id"
+    | "open"
+    | "popover"
+    | "closedby"
+    | "data-part"
+    | "data-uiify-modal"
+    | "aria-describedby"
+    | "aria-labelledby"
+  >;
+  readonly grabber?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal" | "aria-hidden">;
+  readonly header?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">;
+  readonly title?: ModalSlotElementProps<"h2", "id" | "data-part" | "data-uiify-modal">;
+  readonly description?: ModalSlotElementProps<"p", "id" | "data-part" | "data-uiify-modal">;
+  readonly close?: ModalSlotElementProps<
+    "button",
+    | "type"
+    | "command"
+    | "commandfor"
+    | "popoverTarget"
+    | "popoverTargetAction"
+    | "data-part"
+    | "data-uiify-modal"
+    | "data-uiify-button"
+    | "aria-label"
+  >;
+  readonly closeIcon?: ModalSlotElementProps<"svg", "aria-hidden" | "focusable">;
+  readonly closeIconPath?: ModalSlotElementProps<"path">;
+  readonly body?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">;
+  readonly footer?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">;
+}
+
+/** Native props for Modal's root div plus its dialog and trigger contract. */
+export type ModalProps = ModalOwnProps &
+  Omit<ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">, keyof ModalOwnProps>;
 
 export interface ModalLabels {
   readonly close: string;

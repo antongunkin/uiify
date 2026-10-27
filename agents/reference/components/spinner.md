@@ -13,7 +13,7 @@
 ## Exports
 
 - Runtime: `Spinner`
-- Types: `SpinnerAlign`, `SpinnerLabels`, `SpinnerOwnProps`, `SpinnerProps`, `SpinnerSize`
+- Types: `SpinnerAlign`, `SpinnerLabels`, `SpinnerOwnProps`, `SpinnerProps`, `SpinnerSize`, `SpinnerLabelSlotProps`, `SpinnerSlotProps`
 
 ## Values
 
@@ -39,7 +39,16 @@
 | `labels` | `Partial<SpinnerLabels>` | no |  |
 | `showLabel` | `boolean` | no |  |
 | `size` | `SpinnerSize` | no |  |
+| `value` | `number` | no |  |
+| `slotProps` | `SpinnerSlotProps` | no |  |
+
+### SpinnerSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `label` | `SpinnerLabelSlotProps` | no |  |
 
 ## Other types
 
 - `SpinnerProps<TAs>`: `RenderableProps<TAs, SpinnerOwnProps, { visible: boolean }, HTMLElement>`
+- `SpinnerLabelSlotProps`: `Omit<ComponentPropsWithRef<"span">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-spinner"> & { readonly "data-part"?: never; readonly "data-uiify-spinner"?: never; } & ConsumerDataAttributes`

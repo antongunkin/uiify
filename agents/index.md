@@ -18,7 +18,7 @@ exist here.
 | `asChild` | `as="a"` or `render={...}` | There is no Slot. Polymorphism is `as` or `render`. |
 | `cva(...)` or another class-string builder | `variant` / `size` props, and CSS on `[data-variant]` / `[data-size]` | Props only write a `data-*` attribute; the rules live in CSS. |
 | `className={(state) => ...}` | A plain string `className`; select state with `[data-state]`, `[data-disabled]` and friends | `className` is never a function. |
-| `contentClassName`, `triggerClassName`, `itemClassName`, `contentStyle` | `className` / `style` on the part itself | Every public part takes its own `className`. |
+| `contentClassName`, `triggerClassName`, `itemClassName`, `contentStyle` | `className` / `style` on the part itself; typed `slotProps` for nodes created inside a ready-made component | Public parts take their own props; generated nodes use the component's documented slot names. |
 | `onChange={(value) => ...}` on a root or control | `onValueChange`, `onOpenChange`, `onCheckedChange`, `onPageChange` | `onChange` is the native DOM `change` event and receives the event. |
 | English built-in labels in a non-English UI | `labels` and `locale` props; set `lang` and `dir` on `<html>` | Labels are serializable string values; locale formats embedded numbers. |
 | `isOpen`, `isDisabled`, `isChecked` | `open`, `disabled`, `checked` | No `is` prefix. |

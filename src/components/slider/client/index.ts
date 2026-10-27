@@ -3,6 +3,7 @@ export type {
   SliderClientOwnProps,
   SliderClientProps,
   SliderClientRenderState,
+  SliderClientSlotProps,
   SliderClientValue,
   SliderMark,
 } from "../types.js";

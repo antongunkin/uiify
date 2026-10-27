@@ -1,5 +1,6 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes, RepeatedSlotProps } from "../../core/slot-props.js";
 
 export interface BreadcrumbLabels {
   readonly root: string;
@@ -44,6 +45,54 @@ export interface BreadcrumbListOwnProps {
   readonly itemsBeforeCollapse?: number;
   readonly maxItems?: number;
   readonly separator?: ReactNode;
+  readonly slotProps?: BreadcrumbListSlotProps;
+}
+
+type BreadcrumbPartProps<TTag extends ElementType> = Omit<
+  ComponentPropsWithRef<TTag>,
+  "children" | "dangerouslySetInnerHTML" | "key"
+>;
+
+type BreadcrumbDirectSlotProps<
+  TTag extends ElementType,
+  TOwned extends object = object,
+> = BreadcrumbPartProps<TTag> &
+  ConsumerDataAttributes & {
+    readonly "data-part"?: never;
+  } & TOwned;
+
+type BreadcrumbRepeatedSlotProps<
+  TTag extends ElementType,
+  TOwned extends object = object,
+> = RepeatedSlotProps<BreadcrumbPartProps<TTag>, { readonly "data-part"?: never } & TOwned>;
+
+type BreadcrumbLinkSlotProps = BreadcrumbRepeatedSlotProps<
+  "a",
+  {
+    readonly "aria-current"?: never;
+    readonly current?: never;
+    readonly "data-current"?: never;
+    readonly href?: never;
+  }
+>;
+
+export interface BreadcrumbListSlotProps {
+  /** Generated item wrappers and links use `byItemValue[item.key]`. */
+  readonly item?: BreadcrumbRepeatedSlotProps<"li">;
+  readonly link?: BreadcrumbLinkSlotProps;
+  readonly ellipsisItem?: BreadcrumbDirectSlotProps<"li">;
+  readonly ellipsis?: BreadcrumbDirectSlotProps<
+    "details",
+    { readonly "data-uiify-breadcrumb"?: never; readonly "data-uiify-details"?: never }
+  >;
+  readonly ellipsisTrigger?: BreadcrumbDirectSlotProps<
+    "summary",
+    { readonly "aria-label"?: never }
+  >;
+  readonly ellipsisContent?: BreadcrumbDirectSlotProps<
+    "ol",
+    { readonly "data-uiify-details"?: never }
+  >;
 }
 
 export type BreadcrumbListProps<TAs extends ElementType = "ol"> = RenderableProps<
@@ -88,4 +137,12 @@ export interface BreadcrumbEllipsisProps {
   readonly hiddenItems: readonly BreadcrumbItemData[];
   readonly labels: BreadcrumbLabels;
   readonly separator?: ReactNode;
+  readonly slotProps?: BreadcrumbListSlotProps;
+}
+
+export interface BreadcrumbEllipsisPartProps {
+  readonly slotProps?: {
+    readonly item?: BreadcrumbDirectSlotProps<"li">;
+    readonly ellipsis?: BreadcrumbDirectSlotProps<"span">;
+  };
 }

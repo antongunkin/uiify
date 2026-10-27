@@ -1,10 +1,11 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { ReactElement } from "react";
+import type { ElementType, ReactElement } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
+import { omitProps } from "../../../core/slot-props.js";
 import { TableColumnHeader as TableColumnHeaderElement } from "../TableShell.js";
-import type { SortDescriptor } from "../types.js";
+import type { SortDescriptor, TableClientColumnHeaderProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
 
 function ariaSortForColumn(
@@ -15,10 +16,18 @@ function ariaSortForColumn(
   return descriptor.direction;
 }
 
-export function TableColumnHeader(
-  props: React.ComponentProps<typeof TableColumnHeaderElement>,
+export function TableColumnHeader<TAs extends ElementType = "th">(
+  props: TableClientColumnHeaderProps<TAs>,
 ): ReactElement | null {
-  const { allowsSorting = false, id, onClick, as, render, ...rest } = props;
+  const {
+    allowsSorting = false,
+    id,
+    onClick,
+    as,
+    render,
+    slotProps,
+    ...rest
+  } = props as TableClientColumnHeaderProps<ElementType>;
   const { store } = useTableContext("ColumnHeader");
   const sortDescriptor = useSyncExternalStore(
     store.subscribeSort,
@@ -30,7 +39,22 @@ export function TableColumnHeader(
     ...rest,
     allowsSorting,
     id,
-    children: allowsSorting ? <button type="button">{rest.children}</button> : rest.children,
+    children: allowsSorting ? (
+      <button
+        {...omitProps(slotProps?.sortButton, [
+          "children",
+          "dangerouslySetInnerHTML",
+          "data-part",
+          "type",
+        ])}
+        data-part="sort-button"
+        type="button"
+      >
+        {rest.children}
+      </button>
+    ) : (
+      rest.children
+    ),
     sortDirection: allowsSorting ? (ariaSortForColumn(sortDescriptor, id) ?? null) : null,
   };
 

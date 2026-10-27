@@ -131,6 +131,19 @@ Extends: `TableStickyCellOwnProps`
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `rowId` | `string` | yes |  |
+| `slotProps` | `TableSelectionSlotProps` | no |  |
+
+### TableSelectAllOwnProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `slotProps` | `TableSelectionSlotProps` | no |  |
+
+### TableClientColumnHeaderSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `sortButton` | `Omit<ComponentPropsWithRef<"button">, "children" \| "dangerouslySetInnerHTML" \| "type" \| "data-part"> & ConsumerDataAttributes & TableSortButtonOwnedAttributes` | no |  |
 
 ### TableClientRootOwnProps
 
@@ -186,6 +199,8 @@ Extends: `Omit<ComponentPropsWithRef<"tr">, "hidden" | "id">`
 - `TableHeaderProps<TAs>`: `RenderableProps<TAs, TableStickySectionOwnProps, Record<string, never>, HTMLTableSectionElement>`
 - `TableBodyProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLTableSectionElement>`
 - `TableRowProps<TAs>`: `RenderableProps<TAs, TableRowOwnProps, { selected: boolean }, HTMLTableRowElement>`
+- `TableSelectionSlotProps`: `NativeCheckControlSlotProps`
+- `TableClientColumnHeaderProps<TAs>`: `TableColumnHeaderProps<TAs> & { readonly slotProps?: TableClientColumnHeaderSlotProps; }`
 - `TableColumnHeaderProps<TAs>`: `RenderableProps<TAs, TableColumnHeaderOwnProps, Record<string, never>, HTMLTableCellElement>`
 - `TableCellProps<TAs>`: `RenderableProps<TAs, TableStickyCellOwnProps, Record<string, never>, HTMLTableCellElement>`
 - `TableCaptionProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLTableCaptionElement>`

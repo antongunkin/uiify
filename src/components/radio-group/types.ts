@@ -1,4 +1,10 @@
 import type { ReactNode } from "react";
+import type {
+  ChoiceGroupRootProps,
+  ChoiceOptionSlotProps,
+} from "../internal/choice-family/types.js";
+
+export type RadioGroupSlotProps = ChoiceOptionSlotProps;
 
 export interface RadioGroupItem {
   readonly value: string;
@@ -7,7 +13,7 @@ export interface RadioGroupItem {
   readonly className?: string;
 }
 
-export interface RadioGroupProps {
+export interface RadioGroupProps extends ChoiceGroupRootProps {
   readonly id: string;
   readonly items: readonly RadioGroupItem[];
   readonly defaultValue?: string;
@@ -15,5 +21,5 @@ export interface RadioGroupProps {
   readonly disabled?: boolean;
   readonly orientation?: "horizontal" | "vertical";
   readonly className?: string;
-  readonly "aria-label"?: string;
+  readonly slotProps?: RadioGroupSlotProps;
 }

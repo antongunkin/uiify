@@ -14,7 +14,7 @@ Do not make right-click the only way to reach an action, or use this for general
 
 ## Structure
 
-Wrap the object with `ContextMenu` Root, Trigger, Content, and concise action items. Use checkbox/radio items only for state choices and provide clear labels that make sense without pointer coordinates.
+Wrap the object with `ContextMenu` Root, Trigger, Content, and concise action items. Use checkbox/radio items only for state choices and provide clear labels that make sense without pointer coordinates. `Root.id` sets the popup id. Use `slotProps.virtualAnchor` to pass classes, styles, refs, events, and native attributes to the generated anchor; the component retains ownership of its position and accessibility markers.
 
 ## Responsive
 

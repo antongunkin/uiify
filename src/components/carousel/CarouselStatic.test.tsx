@@ -1,10 +1,11 @@
 import { readFileSync } from "node:fs";
+import { createRef } from "react";
 import { render, screen, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Carousel } from "./Carousel.js";
 import { CarouselMarkup } from "./CarouselMarkup.js";
-import type { CarouselPresentation } from "./types.js";
+import type { CarouselPresentation, CarouselProps } from "./types.js";
 
 const twoItems = [
   { id: "one", label: "One", children: <p>First</p> },
@@ -34,6 +35,86 @@ const readyPresentation: CarouselPresentation = {
 };
 
 describe("Carousel server renderer", () => {
+  it("forwards native root props and its element ref", () => {
+    const ref = createRef<HTMLElement>();
+    render(
+      <Carousel
+        id="native-root"
+        aria-label="Gallery"
+        items={twoItems}
+        title="Native carousel"
+        data-testid="native-carousel"
+        ref={ref}
+      />,
+    );
+
+    expect(screen.getByTestId("native-carousel").getAttribute("title")).toBe("Native carousel");
+    expect(ref.current?.tagName).toBe("SECTION");
+  });
+
+  it("strips runtime attempts to override generated state and children", () => {
+    const unsafeProps = {
+      id: "owned-state",
+      "aria-label": "Gallery",
+      items: twoItems,
+      "data-mode": "fade",
+      "data-enhanced": "",
+      dangerouslySetInnerHTML: { __html: "<p>replace children</p>" },
+      slotProps: {
+        viewport: { dangerouslySetInnerHTML: { __html: "<p>replace viewport</p>" } },
+        dots: { dangerouslySetInnerHTML: { __html: "<p>replace dots</p>" } },
+        status: { dangerouslySetInnerHTML: { __html: "<p>replace status</p>" } },
+      },
+    } as unknown as CarouselProps;
+    const { container } = render(<Carousel {...unsafeProps} />);
+    const root = container.querySelector("section")!;
+
+    expect(root.hasAttribute("data-mode")).toBe(false);
+    expect(root.hasAttribute("data-enhanced")).toBe(false);
+    expect(container.textContent).toContain("First");
+    expect(container.textContent).not.toContain("replace");
+  });
+
+  it("forwards slotProps to its generated controls, viewport, slides and dots", () => {
+    render(
+      <CarouselMarkup
+        base={{
+          id: "slots",
+          "aria-label": "Slot gallery",
+          title: "Gallery title",
+          "data-testid": "carousel-root",
+          items: twoItems,
+          slotProps: {
+            viewport: { className: "viewport", "data-testid": "carousel-viewport" },
+            slide: {
+              className: "slide",
+              byItemValue: { two: { "data-testid": "slide-two" } },
+            },
+            slideContent: {
+              byItemValue: { two: { className: "slide-content", "data-testid": "content-two" } },
+            },
+            previousControl: { "data-testid": "previous-control" },
+            nextControl: { "data-testid": "next-control" },
+            dots: { className: "dots", "data-testid": "carousel-dots" },
+            dot: { byItemValue: { two: { className: "dot", "data-testid": "dot-two" } } },
+          },
+        }}
+        presentation={readyPresentation}
+      />,
+    );
+
+    expect(screen.getByTestId("carousel-root").getAttribute("title")).toBe("Gallery title");
+    expect(screen.getByTestId("carousel-viewport").className).toContain("viewport");
+    expect(screen.getByTestId("slide-two").className).toContain("slide");
+    expect(screen.getByTestId("content-two").className).toContain("slide-content");
+    expect(screen.getByTestId("previous-control").getAttribute("data-carousel-action")).toBe(
+      "previous",
+    );
+    expect(screen.getByTestId("next-control").getAttribute("data-carousel-action")).toBe("next");
+    expect(screen.getByTestId("carousel-dots").className).toContain("dots");
+    expect(screen.getByTestId("dot-two").getAttribute("href")).toBe("#slots--slide-two");
+  });
+
   it("renders usable fragment destinations without current-state fiction", () => {
     render(<Carousel id="g" aria-label="Gallery" items={twoItems} />);
 

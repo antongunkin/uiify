@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/react";
-import type { ReactElement } from "react";
+import { createRef, type MouseEvent, type ReactElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { LineChart } from "./LineChart.js";
@@ -98,6 +98,94 @@ describe("LineChart", () => {
 
     fireEvent.click(hit);
     expect(onPointClick).toHaveBeenCalledWith(2);
+  });
+
+  it("forwards slot props to generated chart parts and repeated data nodes", () => {
+    const onPointHitClick = vi.fn();
+    const onPointHitClickAtIndex = vi.fn();
+    const pointRef = createRef<HTMLElement>();
+    const { container } = render(
+      <LineChart
+        data={DATA}
+        interactive
+        slotProps={{
+          caption: { className: "caption", "data-testid": "caption" },
+          plot: { className: "plot-custom" },
+          point: {
+            className: "all-points",
+            ref: pointRef,
+            byItemIndex: {
+              1: { className: "middle-point", "data-testid": "middle-point" },
+            },
+          },
+          pointHit: {
+            onClick: onPointHitClick,
+            "data-testid": "point-hit",
+            byItemIndex: { 1: { onClick: onPointHitClickAtIndex } },
+          },
+          timeAxisLabel: {
+            className: "axis-label",
+            byItemIndex: { 0: { "data-testid": "first-time-label" } },
+          },
+          dataTableRow: {
+            byItemIndex: { 1: { className: "selected-row", "data-testid": "row" } },
+          },
+          dataTableValueCell: { className: "value-cell" },
+        }}
+      />,
+    );
+
+    expect(container.querySelector("figcaption")?.className).toContain("caption");
+    expect(container.querySelector('[data-part="plot"]')?.className).toContain("plot-custom");
+    expect(container.querySelectorAll('[data-part="point"]')[0]?.className).toContain("all-points");
+    expect(container.querySelector('[data-testid="middle-point"]')?.className).toContain(
+      "middle-point",
+    );
+    expect(container.querySelector('[data-testid="first-time-label"]')?.className).toContain(
+      "axis-label",
+    );
+    expect(container.querySelector('[data-testid="row"]')?.className).toContain("selected-row");
+    expect(container.querySelector("tbody td")?.className).toContain("value-cell");
+    expect(pointRef.current?.tagName).toBe("LI");
+
+    fireEvent.click(container.querySelector('[data-testid="point-hit"]') as HTMLButtonElement);
+    expect(onPointHitClick).toHaveBeenCalledOnce();
+    const indexedHit = container.querySelectorAll('[data-part="point-hit"]')[1];
+    fireEvent.click(indexedHit as HTMLButtonElement);
+    expect(onPointHitClickAtIndex).toHaveBeenCalledOnce();
+  });
+
+  it("keeps generated content and anatomy markers owned by LineChart", () => {
+    const { container } = render(
+      <LineChart
+        data={DATA}
+        slotProps={{
+          plot: { "data-part": "consumer-plot" } as never,
+          point: { children: "replaced" } as never,
+        }}
+      />,
+    );
+
+    expect(container.querySelector('[data-part="plot"]')).not.toBeNull();
+    expect(container.querySelector('[data-part="consumer-plot"]')).toBeNull();
+    expect(container.querySelector('[data-part="point"]')?.textContent).toBe("");
+  });
+
+  it("allows a point-hit native click handler to cancel chart activation", () => {
+    const onPointClick = vi.fn();
+    const onClick = vi.fn((event: MouseEvent<HTMLButtonElement>) => event.preventDefault());
+    const { container } = render(
+      <LineChart
+        data={DATA}
+        interactive
+        onPointClick={onPointClick}
+        slotProps={{ pointHit: { onClick } }}
+      />,
+    );
+
+    fireEvent.click(container.querySelector('[data-part="point-hit"]') as HTMLButtonElement);
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(onPointClick).not.toHaveBeenCalled();
   });
 
   it("formats axis labels with the locale prop and defaults to en-US", () => {

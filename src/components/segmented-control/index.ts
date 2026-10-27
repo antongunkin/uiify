@@ -3,4 +3,5 @@ export type {
   SegmentedControlClientProps,
   SegmentedControlItem,
   SegmentedControlProps,
+  SegmentedControlSlotProps,
 } from "./types.js";

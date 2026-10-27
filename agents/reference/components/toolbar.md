@@ -27,7 +27,7 @@
 
 ### ToolbarRootProps
 
-Extends: `ToolbarRootOwnProps`, `Omit<HTMLAttributes<HTMLDivElement>, keyof ToolbarRootOwnProps>`
+Extends: `ToolbarRootOwnProps`, `Omit<ComponentPropsWithRef<"div">, keyof ToolbarRootOwnProps>`
 
 No own members.
 
@@ -42,7 +42,7 @@ No own members.
 
 ### ToolbarButtonProps
 
-Extends: `ToolbarButtonOwnProps`, `Omit<HTMLAttributes<HTMLButtonElement>, keyof ToolbarButtonOwnProps | "disabled">`
+Extends: `ToolbarButtonOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof ToolbarButtonOwnProps | "disabled">`
 
 No own members.
 
@@ -56,7 +56,7 @@ No own members.
 
 ### ToolbarLinkProps
 
-Extends: `ToolbarLinkOwnProps`, `Omit<HTMLAttributes<HTMLAnchorElement>, keyof ToolbarLinkOwnProps | "href">`
+Extends: `ToolbarLinkOwnProps`, `Omit<ComponentPropsWithRef<"a">, keyof ToolbarLinkOwnProps | "href">`
 
 No own members.
 
@@ -69,5 +69,5 @@ No own members.
 
 ## Other types
 
-- `ToolbarSeparatorProps`: `ToolbarSeparatorOwnProps & Omit<HTMLAttributes<HTMLHRElement>, keyof ToolbarSeparatorOwnProps>`
+- `ToolbarSeparatorProps`: `ToolbarSeparatorOwnProps & Omit<ComponentPropsWithRef<"hr">, keyof ToolbarSeparatorOwnProps>`
 - `ToolbarToggleGroupProps`: `ToggleGroupProps`

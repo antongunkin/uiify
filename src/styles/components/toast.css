@@ -7,13 +7,17 @@
    motion; the snapshots hang off the root, so they read root tokens only. */
 
 @layer components {
+  [data-uiify-toast] [data-part="viewport"]:where(:not([popover]), :popover-open),
+  [data-uiify-toast][data-part="viewport"]:where(:not([popover]), :popover-open) {
+    display: flex;
+  }
+
   [data-uiify-toast] [data-part="viewport"],
   [data-uiify-toast][data-part="viewport"] {
     position: fixed;
     inset: auto;
     inset-block-end: var(--space-lg);
     inset-inline-end: var(--space-lg);
-    display: flex;
     flex-direction: column;
     gap: var(--space-sm);
     inline-size: min(24rem, calc(100vw - 2 * var(--space-lg)));

@@ -25,7 +25,7 @@ describe("Toast server shell", () => {
   it("renders authored toast markup inside the viewport without live announcers", () => {
     render(
       <Toast.Provider>
-        <Toast.Viewport>
+        <Toast.Viewport slotProps={{ item: { className: "client-generated-card" } }}>
           <Toast.Root
             toast={{
               id: "saved",
@@ -44,6 +44,9 @@ describe("Toast server shell", () => {
     );
 
     expect(screen.getByRole("region", { name: "Notifications" })).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Notifications" }).hasAttribute("slotprops")).toBe(
+      false,
+    );
     expect(screen.getByText("Saved")).toBeTruthy();
     expect(screen.getByText("Profile updated")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Undo" })).toBeTruthy();
@@ -76,6 +79,51 @@ describe("Toast server shell", () => {
     expect(markup).toContain("Saved");
     expect(markup).toContain("Profile updated");
     expect(markup).not.toContain("aria-live");
+  });
+
+  it("forwards slot props to server-authored toast nodes and protects owned markers", () => {
+    const unsafeRootProps = {
+      dangerouslySetInnerHTML: { __html: "<b>unsafe root</b>" },
+    } as unknown as Parameters<typeof Toast.Root>[0];
+    render(
+      <Toast.Root
+        {...unsafeRootProps}
+        toast={{
+          id: "static-toast",
+          duration: 0,
+          priority: "polite",
+          title: "Static toast",
+          description: "Static description",
+          action: { label: "Undo", onClick: vi.fn() },
+        }}
+        className="static-item"
+        style={{ order: 2 }}
+        data-testid="static-item"
+        data-part={"consumer-override" as never}
+        slotProps={
+          {
+            title: {
+              className: "static-title-common",
+              dangerouslySetInnerHTML: { __html: "<b>unsafe title</b>" },
+              byItemValue: {
+                "static-toast": { className: "static-title", "data-testid": "static-title" },
+              },
+            },
+            description: { "data-testid": "static-description" },
+            action: { "data-testid": "static-action" },
+            close: { "data-testid": "static-close" },
+          } as never
+        }
+      />,
+    );
+
+    expect(screen.getByTestId("static-item").getAttribute("data-part")).toBe("item");
+    expect(screen.getByTestId("static-item").className).toBe("static-item");
+    expect(screen.getByTestId("static-item").getAttribute("style")).toContain("order: 2");
+    expect(screen.getByTestId("static-title").className).toBe("static-title-common static-title");
+    expect(screen.getByTestId("static-description")).toBeTruthy();
+    expect(screen.getByTestId("static-action")).toBeTruthy();
+    expect(screen.getByTestId("static-close")).toBeTruthy();
   });
 
   it("allows localized labels while keeping explicit viewport labels and toast titles ahead", () => {

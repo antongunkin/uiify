@@ -14,7 +14,7 @@ Do not hide the page's main explanation or an action that is the only way to con
 
 ## Structure
 
-`Accordion` takes an `id`, `items` with a `value`, `label`, and `panel`, and `type="single"` or `"multiple"`. The visible summary is the question or section title; make it describe the revealed content. Single mode uses native `<details name>` grouping, so opening one section closes the other.
+`Accordion` takes an `id`, `items` with a `value`, `label`, and `panel`, and `type="single"` or `"multiple"`. The id is placed on the root and names the native `<details>` group in single mode. Use `slotProps.item`, `slotProps.trigger`, and `slotProps.panel` to pass native props, `className`, `style`, refs, events or `data-*` to each generated element; use `byItemValue` to customize one item. Put Tailwind utilities on the slot they style. When composing custom markup, use public `Details.Root`, `Details.Summary`, and `Details.Content` parts directly. The visible summary is the question or section title; make it describe the revealed content.
 
 ## Responsive
 

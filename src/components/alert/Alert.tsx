@@ -1,5 +1,6 @@
 import type { ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { omitProps } from "../../core/slot-props.js";
 import type { AlertDescriptionProps, AlertProps, AlertTitleProps } from "./types.js";
 
 const symbols = { secondary: "ⓘ", success: "✓", warning: "⚠︎", destructive: "×" };
@@ -12,6 +13,7 @@ export function Alert<TAs extends ElementType = "div">(
     render,
     variant = "secondary",
     symbol = symbols[variant],
+    slotProps,
     children,
     ...consumerProps
   } = props as AlertProps<"div">;
@@ -25,7 +27,11 @@ export function Alert<TAs extends ElementType = "div">(
       children: (
         <>
           {symbol !== false && (
-            <span data-part="symbol" aria-hidden="true">
+            <span
+              {...omitProps(slotProps?.symbol, ["aria-hidden", "data-part", "data-uiify-alert"])}
+              data-part="symbol"
+              aria-hidden="true"
+            >
               {symbol}
             </span>
           )}

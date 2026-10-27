@@ -1,6 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { createRef } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Accordion } from "./Accordion.js";
+import type { AccordionProps } from "./types.js";
 
 const items = [
   { value: "shipping", label: "Shipping", panel: <>Ships in 2-3 days.</> },
@@ -75,5 +78,107 @@ describe("Accordion", () => {
     );
     expect(markup).not.toContain("aria-disabled");
     expect(markup).not.toContain("tabindex");
+  });
+
+  it("forwards root props and per-slot props to their corresponding nodes", () => {
+    const markup = renderToStaticMarkup(
+      <Accordion
+        data-testid="faq-root"
+        id="faq"
+        items={items}
+        slotProps={{
+          item: {
+            className: "item-base",
+            style: { color: "red" },
+            byItemValue: {
+              shipping: {
+                className: "shipping-item",
+                style: { backgroundColor: "blue" },
+                "data-testid": "shipping",
+              },
+            },
+          },
+          trigger: { className: "trigger", "data-testid": "faq-trigger" },
+          panel: { className: "panel", "aria-label": "answer" },
+        }}
+        style={{ color: "red" }}
+        title="Frequently asked questions"
+      />,
+    );
+
+    expect(markup).toContain('id="faq"');
+    expect(markup).toContain('data-testid="faq-root"');
+    expect(markup).toContain('style="color:red"');
+    expect(markup).toContain('title="Frequently asked questions"');
+    expect(markup).toContain('class="item-base shipping-item"');
+    expect(markup).toContain('style="color:red;background-color:blue"');
+    expect(markup).toContain('data-testid="shipping"');
+    expect(markup).toContain('class="trigger"');
+    expect(markup).toContain('data-testid="faq-trigger"');
+    expect(markup).toContain('class="panel"');
+    expect(markup).toContain('aria-label="answer"');
+  });
+
+  it("keeps per-item slot classes, refs, and events attached by value after reordering", () => {
+    const shippingRef = createRef<HTMLDetailsElement>();
+    const returnsRef = createRef<HTMLDetailsElement>();
+    const onShippingToggle = vi.fn();
+    const onReturnsToggle = vi.fn();
+    const slotProps = {
+      item: {
+        byItemValue: {
+          shipping: {
+            className: "shipping-item",
+            ref: shippingRef,
+            onToggle: onShippingToggle,
+            "data-testid": "shipping-item",
+          },
+          returns: {
+            className: "returns-item",
+            ref: returnsRef,
+            onToggle: onReturnsToggle,
+            "data-testid": "returns-item",
+          },
+        },
+      },
+    };
+    const view = render(<Accordion id="faq" items={items} slotProps={slotProps} />);
+
+    expect(screen.getByTestId("shipping-item").className).toContain("shipping-item");
+    expect(screen.getByTestId("returns-item").className).toContain("returns-item");
+    expect(shippingRef.current).toBe(screen.getByTestId("shipping-item"));
+    expect(returnsRef.current).toBe(screen.getByTestId("returns-item"));
+    fireEvent(screen.getByTestId("shipping-item"), new Event("toggle"));
+    expect(onShippingToggle).toHaveBeenCalledOnce();
+    expect(onReturnsToggle).not.toHaveBeenCalled();
+
+    view.rerender(<Accordion id="faq" items={[...items].reverse()} slotProps={slotProps} />);
+
+    expect(screen.getByTestId("shipping-item").className).toContain("shipping-item");
+    expect(screen.getByTestId("returns-item").className).toContain("returns-item");
+    expect(shippingRef.current).toBe(screen.getByTestId("shipping-item"));
+    expect(returnsRef.current).toBe(screen.getByTestId("returns-item"));
+  });
+
+  it("filters state and group props from untyped slot values", () => {
+    const unsafeProps = {
+      id: "faq",
+      items,
+      children: "untrusted child",
+      dangerouslySetInnerHTML: { __html: "untrusted html" },
+      type: "multiple",
+      slotProps: {
+        item: {
+          open: true,
+          name: "wrong-common",
+          byItemValue: { shipping: { open: true, name: "wrong-item" } },
+        },
+      },
+    } as unknown as AccordionProps;
+    const markup = renderToStaticMarkup(<Accordion {...unsafeProps} />);
+
+    expect(markup).not.toContain(" name=");
+    expect(markup).not.toContain(" open=");
+    expect(markup).not.toContain("untrusted");
   });
 });

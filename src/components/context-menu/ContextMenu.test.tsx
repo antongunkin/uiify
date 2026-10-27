@@ -1,9 +1,133 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import type {
+  ContextMenuCheckboxItemOwnProps,
+  ContextMenuRootProps,
+  ContextMenuSubContentOwnProps,
+} from "./types.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { ContextMenu } from "./ContextMenu.js";
 
 describe("ContextMenu", () => {
+  it("forwards slot props to the generated virtual anchor while protecting its positioning contract", () => {
+    const anchorRef = { current: null as HTMLSpanElement | null };
+    const slotProps = {
+      virtualAnchor: {
+        className: "virtual-anchor",
+        "data-testid": "context-anchor",
+        "data-virtual-anchor": "consumer",
+        "data-anchor": "consumer-anchor",
+        "data-uiify-menu": "consumer-menu",
+        children: "unwanted child",
+        dangerouslySetInnerHTML: { __html: "<b>unwanted markup</b>" },
+        style: { color: "red", position: "absolute" },
+        ref: anchorRef,
+      },
+    } as unknown as NonNullable<ContextMenuRootProps["slotProps"]>;
+    const { container } = render(
+      <ContextMenu.Root slotProps={slotProps}>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>Copy</ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+
+    const anchor = container.querySelector("[data-testid=context-anchor]");
+    expect(anchor?.className).toBe("virtual-anchor");
+    expect(anchor?.getAttribute("data-virtual-anchor")).toBe("");
+    expect(anchor?.getAttribute("data-anchor")).toBeNull();
+    expect(anchor?.getAttribute("data-uiify-menu")).toBeNull();
+    expect(anchor?.textContent).toBe("");
+    expect(anchor?.querySelector("b")).toBeNull();
+    expect(anchor?.getAttribute("aria-hidden")).toBe("true");
+    expect(anchorRef.current).toBe(anchor);
+    expect((anchor as HTMLElement | null)?.style.color).toBe("red");
+    expect((anchor as HTMLElement | null)?.style.position).toBe("fixed");
+  });
+
+  it("uses Root id for the popup", () => {
+    render(
+      <ContextMenu.Root id="context-popup" defaultOpen>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>Copy</ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+
+    expect(document.getElementById("context-popup")?.getAttribute("role")).toBe("menu");
+  });
+
+  it("forwards native props, class, and ref to each generated submenu and selection part", () => {
+    const checkboxRef = { current: null as HTMLDivElement | null };
+    const radioRef = { current: null as HTMLDivElement | null };
+    const subTriggerRef = { current: null as HTMLDivElement | null };
+    const subContentRef = { current: null as HTMLDivElement | null };
+    const unsafeCheckboxProps = {
+      dangerouslySetInnerHTML: { __html: "<b>unwanted item markup</b>" },
+    } as unknown as ContextMenuCheckboxItemOwnProps;
+    const unsafeSubContentProps = {
+      dangerouslySetInnerHTML: { __html: "<b>unwanted submenu markup</b>" },
+    } as unknown as ContextMenuSubContentOwnProps;
+    render(
+      <ContextMenu.Root defaultOpen>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.CheckboxItem
+            {...unsafeCheckboxProps}
+            className="checkbox-item"
+            data-testid="checkbox-item"
+            ref={checkboxRef}
+          >
+            Bold
+          </ContextMenu.CheckboxItem>
+          <ContextMenu.RadioItem
+            value="compact"
+            className="radio-item"
+            data-testid="radio-item"
+            ref={radioRef}
+          >
+            Compact
+          </ContextMenu.RadioItem>
+          <ContextMenu.Sub>
+            <ContextMenu.Sub.Trigger
+              className="sub-trigger"
+              data-testid="sub-trigger"
+              ref={subTriggerRef}
+            >
+              More
+            </ContextMenu.Sub.Trigger>
+            <ContextMenu.Sub.Content
+              {...unsafeSubContentProps}
+              className="sub-content"
+              data-testid="sub-content"
+              ref={subContentRef}
+            >
+              <ContextMenu.Item>Nested</ContextMenu.Item>
+            </ContextMenu.Sub.Content>
+          </ContextMenu.Sub>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+
+    const subTrigger = screen.getByTestId("sub-trigger");
+    fireEvent.focus(subTrigger);
+    const checkbox = screen.getByTestId("checkbox-item");
+    const radio = screen.getByTestId("radio-item");
+    const subContent = screen.getByTestId("sub-content");
+    expect(checkbox.className).toBe("checkbox-item");
+    expect(radio.className).toBe("radio-item");
+    expect(subTrigger.className).toBe("sub-trigger");
+    expect(subContent.className).toBe("sub-content");
+    expect(checkbox.querySelector("b")).toBeNull();
+    expect(subContent.querySelector("b")).toBeNull();
+    expect(checkboxRef.current).toBe(checkbox);
+    expect(radioRef.current).toBe(radio);
+    expect(subTriggerRef.current).toBe(subTrigger);
+    expect(subContentRef.current).toBe(subContent);
+  });
+
   it("opens at pointer coordinates on contextmenu", () => {
     const { container } = render(
       <ContextMenu.Root>

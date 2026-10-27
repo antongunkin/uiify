@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "41980 B",
+    "limit": "45980 B",
     "import": "*"
   },
   {
@@ -48,13 +48,13 @@
   {
     "name": "checkbox",
     "path": "dist/components/checkbox.js",
-    "limit": "460 B",
+    "limit": "1050 B",
     "import": "*"
   },
   {
     "name": "radio-group",
     "path": "dist/components/radio-group.js",
-    "limit": "970 B",
+    "limit": "1600 B",
     "import": "*"
   },
   {
@@ -66,13 +66,13 @@
   {
     "name": "toggle",
     "path": "dist/components/toggle.js",
-    "limit": "310 B",
+    "limit": "410 B",
     "import": "*"
   },
   {
     "name": "toggle-group",
     "path": "dist/components/toggle-group.js",
-    "limit": "1030 B",
+    "limit": "1660 B",
     "import": "*"
   },
   {
@@ -84,7 +84,7 @@
   {
     "name": "modal",
     "path": "dist/components/modal.js",
-    "limit": "970 B",
+    "limit": "1180 B",
     "import": "*"
   },
   {
@@ -102,25 +102,25 @@
   {
     "name": "dropdown-menu",
     "path": "dist/components/dropdown-menu.js",
-    "limit": "6570 B",
+    "limit": "6680 B",
     "import": "*"
   },
   {
     "name": "tabs",
     "path": "dist/components/tabs.js",
-    "limit": "920 B",
+    "limit": "1630 B",
     "import": "*"
   },
   {
     "name": "accordion",
     "path": "dist/components/accordion.js",
-    "limit": "530 B",
+    "limit": "940 B",
     "import": "*"
   },
   {
     "name": "toast",
     "path": "dist/components/toast.js",
-    "limit": "2470 B",
+    "limit": "3060 B",
     "import": "*"
   },
   {
@@ -132,13 +132,13 @@
   {
     "name": "combobox",
     "path": "dist/components/combobox.js",
-    "limit": "5290 B",
+    "limit": "5690 B",
     "import": "*"
   },
   {
     "name": "spinner",
     "path": "dist/components/spinner.js",
-    "limit": "400 B",
+    "limit": "510 B",
     "import": "*"
   },
   {
@@ -150,19 +150,19 @@
   {
     "name": "collapsible",
     "path": "dist/components/collapsible.js",
-    "limit": "440 B",
+    "limit": "550 B",
     "import": "*"
   },
   {
     "name": "breadcrumb",
     "path": "dist/components/breadcrumb.js",
-    "limit": "1150 B",
+    "limit": "1510 B",
     "import": "*"
   },
   {
     "name": "pagination",
     "path": "dist/components/pagination.js",
-    "limit": "2640 B",
+    "limit": "3200 B",
     "import": "*"
   },
   {
@@ -174,7 +174,7 @@
   {
     "name": "alert-modal",
     "path": "dist/components/alert-modal.js",
-    "limit": "570 B",
+    "limit": "790 B",
     "import": "*"
   },
   {
@@ -186,25 +186,25 @@
   {
     "name": "toolbar",
     "path": "dist/components/toolbar.js",
-    "limit": "2080 B",
+    "limit": "2750 B",
     "import": "*"
   },
   {
     "name": "drawer",
     "path": "dist/components/drawer.js",
-    "limit": "4100 B",
+    "limit": "4370 B",
     "import": "*"
   },
   {
     "name": "context-menu",
     "path": "dist/components/context-menu.js",
-    "limit": "5010 B",
+    "limit": "5150 B",
     "import": "*"
   },
   {
     "name": "tags-input",
     "path": "dist/components/tags-input.js",
-    "limit": "3640 B",
+    "limit": "4000 B",
     "import": "*"
   },
   {
@@ -216,26 +216,26 @@
   {
     "name": "color-picker",
     "path": "dist/components/color-picker.js",
-    "limit": "1240 B",
+    "limit": "1870 B",
     "import": "*"
   },
   {
     "name": "carousel",
     "path": "dist/components/carousel.js",
-    "limit": "1370 B",
+    "limit": "2030 B",
     "import": "*"
   },
   {
     "name": "carousel/client",
     "path": "dist/components/carousel/client.js",
-    "limit": "7320 B",
+    "limit": "7990 B",
     "gzip": true,
     "import": "*"
   },
   {
     "name": "carousel/fade",
     "path": "dist/components/carousel/fade.js",
-    "limit": "6060 B",
+    "limit": "6770 B",
     "gzip": true,
     "import": "*"
   },
@@ -248,25 +248,25 @@
   {
     "name": "otp-input",
     "path": "dist/components/otp-input.js",
-    "limit": "1560 B",
+    "limit": "1700 B",
     "import": "*"
   },
   {
     "name": "segmented-control",
     "path": "dist/components/segmented-control.js",
-    "limit": "1020 B",
+    "limit": "1630 B",
     "import": "*"
   },
   {
     "name": "rating",
     "path": "dist/components/rating.js",
-    "limit": "1250 B",
+    "limit": "1890 B",
     "import": "*"
   },
   {
     "name": "rating/client",
     "path": "dist/components/rating/client.js",
-    "limit": "1510 B",
+    "limit": "2150 B",
     "import": "*"
   },
   {
@@ -296,7 +296,7 @@
   {
     "name": "virtual-scroll",
     "path": "dist/components/virtual-scroll.js",
-    "limit": "4250 B",
+    "limit": "4810 B",
     "import": "*"
   },
   {
@@ -326,19 +326,19 @@
   {
     "name": "elements/choice",
     "path": "dist/elements/choice.js",
-    "limit": "540 B",
+    "limit": "700 B",
     "import": "*"
   },
   {
     "name": "elements barrel",
     "path": "dist/elements/index.js",
-    "limit": "1300 B",
+    "limit": "1470 B",
     "import": "*"
   },
   {
     "name": "table/client",
     "path": "dist/components/table/client.js",
-    "limit": "5150 B",
+    "limit": "5560 B",
     "import": "*"
   },
   {
@@ -356,7 +356,7 @@
   {
     "name": "aspect-ratio",
     "path": "dist/components/aspect-ratio.js",
-    "limit": "280 B",
+    "limit": "330 B",
     "import": "*"
   },
   {
@@ -380,13 +380,13 @@
   {
     "name": "avatar",
     "path": "dist/components/avatar.js",
-    "limit": "300 B",
+    "limit": "380 B",
     "import": "*"
   },
   {
     "name": "alert",
     "path": "dist/components/alert.js",
-    "limit": "400 B",
+    "limit": "470 B",
     "import": "*"
   }
 ]

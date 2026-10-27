@@ -2,6 +2,15 @@ import type { ReactElement } from "react";
 import { choiceGroupName, choiceIds } from "./ids.js";
 import type { ChoiceGroupProps, ChoiceItemProps } from "./types.js";
 
+function omitOwnedProps<TProps extends object>(
+  props: TProps | undefined,
+  keys: readonly string[],
+): TProps {
+  const result = { ...props } as Record<string, unknown>;
+  for (const key of keys) delete result[key];
+  return result as TProps;
+}
+
 /**
  * A group of `Choice.Item`s. Purely a marked, oriented `<div>` — the actual `<input>`s are
  * siblings-by-id, not parent/child data flow (no `useContext`, no `cloneElement`: Tier 0 bans
@@ -15,8 +24,9 @@ export function ChoiceGroup(props: ChoiceGroupProps): ReactElement {
     orientation = "horizontal",
     ...consumerProps
   } = props;
+  const nativeProps = omitOwnedProps(consumerProps, ["children", "dangerouslySetInnerHTML"]);
   return (
-    <div {...consumerProps} data-orientation={orientation} data-uiify-choice="">
+    <div {...nativeProps} data-orientation={orientation} data-uiify-choice="">
       {children}
     </div>
   );
@@ -35,28 +45,57 @@ export function ChoiceItem(props: ChoiceItemProps): ReactElement {
     checked,
     disabled = false,
     groupId,
-    inputProps,
     kind,
     label,
     labelPart = false,
-    labelProps,
     name,
     onValueChange,
     panel,
-    panelProps,
+    slotProps,
     part = "item",
     value,
     ...consumerProps
   } = props;
 
   const isControlled = checked !== undefined;
+  const wrapperProps = omitOwnedProps(consumerProps, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "data-part",
+    "data-uiify-choice",
+  ]);
+  const inputProps = omitOwnedProps(slotProps?.input, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "aria-labelledby",
+    "checked",
+    "defaultChecked",
+    "disabled",
+    "id",
+    "name",
+    "type",
+    "value",
+  ]);
+  const labelProps = omitOwnedProps(slotProps?.label, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "htmlFor",
+    "id",
+    "data-part",
+  ]);
+  const panelProps = omitOwnedProps(slotProps?.panel, [
+    "children",
+    "dangerouslySetInnerHTML",
+    "id",
+    "data-part",
+  ]);
 
   const { controlId, labelId, panelId } = choiceIds(groupId, value);
   const groupName = name ?? choiceGroupName(groupId, kind);
   const inputType = kind === "single" ? "radio" : "checkbox";
 
   return (
-    <div {...consumerProps} data-part={part} data-uiify-choice="">
+    <div {...wrapperProps} data-part={part} data-uiify-choice="">
       <input
         {...inputProps}
         aria-labelledby={labelId}
@@ -66,13 +105,20 @@ export function ChoiceItem(props: ChoiceItemProps): ReactElement {
         name={groupName}
         type={inputType}
         value={value}
-        {...(onValueChange ? { onChange: () => onValueChange(value) } : {})}
+        {...(onValueChange
+          ? {
+              onChange: (event) => {
+                slotProps?.input?.onChange?.(event);
+                if (!event.defaultPrevented) onValueChange(event.currentTarget.value);
+              },
+            }
+          : {})}
       />
       <label
         {...labelProps}
         htmlFor={controlId}
         id={labelId}
-        {...(labelPart ? { "data-part": "label" } : {})}
+        {...(labelPart ? { "data-part": labelPart === true ? "label" : labelPart } : {})}
       >
         {label}
       </label>

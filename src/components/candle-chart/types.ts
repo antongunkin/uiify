@@ -1,5 +1,168 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, HTMLAttributes, ReactNode, Ref } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+
+type CandleChartPartSlotProps<
+  TTag extends ElementType,
+  TOwned extends object = { readonly "data-part"?: never },
+> = Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML" | keyof TOwned> &
+  ConsumerDataAttributes &
+  TOwned;
+
+type CandleChartIndexedSlotProps<TProps extends object, TOwned extends object = object> = Omit<
+  TProps,
+  "children" | "dangerouslySetInnerHTML"
+> &
+  ConsumerDataAttributes &
+  TOwned & {
+    readonly byItemIndex?: Readonly<
+      Record<
+        number,
+        Omit<TProps, "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes & TOwned
+      >
+    >;
+  };
+
+type CandleChartRepeatedSlotProps<
+  TTag extends ElementType,
+  TOwned extends object = { readonly "data-part"?: never },
+> = CandleChartIndexedSlotProps<
+  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
+  TOwned
+>;
+
+type CandleChartCandleElementProps = HTMLAttributes<HTMLElement> & {
+  readonly ref?: Ref<HTMLElement>;
+};
+
+type CandleChartCandleOwnedProps = {
+  readonly "aria-hidden"?: never;
+  readonly "data-crosshair-active"?: never;
+  readonly "data-direction"?: never;
+  readonly "data-part"?: never;
+  readonly "data-time"?: never;
+};
+
+type CandleChartLiveRowOwnedProps = {
+  readonly "aria-posinset"?: never;
+  readonly "aria-setsize"?: never;
+  readonly "data-dynamic-row"?: never;
+  readonly "data-part"?: never;
+  readonly "data-row-index"?: never;
+  readonly role?: never;
+};
+
+type CandleChartLiveRowSlotProps = Omit<CandleChartRepeatedSlotProps<"div">, "byItemIndex"> &
+  CandleChartLiveRowOwnedProps & {
+    readonly byItemIndex?: Readonly<
+      Record<
+        number,
+        Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML"> &
+          ConsumerDataAttributes &
+          CandleChartLiveRowOwnedProps
+      >
+    >;
+  };
+
+export interface CandleChartSlotProps {
+  readonly caption?: CandleChartPartSlotProps<"figcaption">;
+  readonly readout?: CandleChartPartSlotProps<
+    "div",
+    { readonly "aria-live"?: never; readonly "data-part"?: never }
+  >;
+  readonly readoutTime?: CandleChartPartSlotProps<"span">;
+  readonly readoutOpen?: CandleChartPartSlotProps<"span">;
+  readonly readoutHigh?: CandleChartPartSlotProps<"span">;
+  readonly readoutLow?: CandleChartPartSlotProps<"span">;
+  readonly readoutClose?: CandleChartPartSlotProps<"span">;
+  readonly plot?: CandleChartPartSlotProps<
+    "div",
+    { readonly "aria-hidden"?: never; readonly "data-part"?: never }
+  >;
+  readonly scrollViewport?: CandleChartPartSlotProps<"div">;
+  readonly canvas?: CandleChartPartSlotProps<"div">;
+  readonly viewport?: CandleChartPartSlotProps<"div">;
+  readonly candles?: CandleChartPartSlotProps<
+    "ol",
+    { readonly "aria-label"?: never; readonly "data-part"?: never }
+  >;
+  readonly candle?: CandleChartIndexedSlotProps<
+    CandleChartCandleElementProps,
+    CandleChartCandleOwnedProps
+  >;
+  readonly candleHit?: CandleChartRepeatedSlotProps<
+    "button",
+    {
+      readonly "aria-label"?: never;
+      readonly "aria-pressed"?: never;
+      readonly "data-part"?: never;
+      readonly type?: never;
+    }
+  >;
+  readonly crosshair?: CandleChartPartSlotProps<
+    "div",
+    { readonly "aria-hidden"?: never; readonly "data-part"?: never }
+  >;
+  readonly crosshairMarker?: CandleChartPartSlotProps<"span">;
+  readonly timeViewport?: CandleChartPartSlotProps<"div">;
+  readonly timeAxis?: CandleChartPartSlotProps<
+    "ol",
+    { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never }
+  >;
+  readonly timeAxisLabel?: CandleChartRepeatedSlotProps<"li">;
+  readonly crosshairTime?: CandleChartPartSlotProps<"li">;
+  readonly priceAxis?: CandleChartPartSlotProps<
+    "ol",
+    { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never }
+  >;
+  readonly priceAxisLabel?: CandleChartRepeatedSlotProps<"li">;
+  readonly crosshairPrice?: CandleChartPartSlotProps<"li">;
+  readonly liveScrollport?: CandleChartPartSlotProps<
+    "div",
+    {
+      readonly "data-dynamic-layout"?: never;
+      readonly "data-orientation"?: never;
+      readonly "data-part"?: never;
+      readonly "data-uiify-virtual-scroll"?: never;
+      readonly role?: never;
+    }
+  >;
+  readonly liveSpacer?: CandleChartPartSlotProps<"div">;
+  readonly liveCandleRow?: CandleChartLiveRowSlotProps;
+  readonly dataTable?: CandleChartPartSlotProps<
+    "table",
+    { readonly "aria-label"?: never; readonly "data-part"?: never }
+  >;
+  readonly dataTableHead?: CandleChartPartSlotProps<"thead">;
+  readonly dataTableHeaderRow?: CandleChartPartSlotProps<"tr">;
+  readonly dataTableTimeHeader?: CandleChartPartSlotProps<
+    "th",
+    { readonly scope?: never; readonly "data-part"?: never }
+  >;
+  readonly dataTableOpenHeader?: CandleChartPartSlotProps<
+    "th",
+    { readonly scope?: never; readonly "data-part"?: never }
+  >;
+  readonly dataTableHighHeader?: CandleChartPartSlotProps<
+    "th",
+    { readonly scope?: never; readonly "data-part"?: never }
+  >;
+  readonly dataTableLowHeader?: CandleChartPartSlotProps<
+    "th",
+    { readonly scope?: never; readonly "data-part"?: never }
+  >;
+  readonly dataTableCloseHeader?: CandleChartPartSlotProps<
+    "th",
+    { readonly scope?: never; readonly "data-part"?: never }
+  >;
+  readonly dataTableBody?: CandleChartPartSlotProps<"tbody">;
+  readonly dataTableRow?: CandleChartRepeatedSlotProps<"tr">;
+  readonly dataTableTimeCell?: CandleChartRepeatedSlotProps<"th", { readonly scope?: never }>;
+  readonly dataTableOpenCell?: CandleChartRepeatedSlotProps<"td">;
+  readonly dataTableHighCell?: CandleChartRepeatedSlotProps<"td">;
+  readonly dataTableLowCell?: CandleChartRepeatedSlotProps<"td">;
+  readonly dataTableCloseCell?: CandleChartRepeatedSlotProps<"td">;
+}
 
 export interface CandleChartData {
   readonly time: string | number;
@@ -34,6 +197,7 @@ export interface CandleChartOwnProps {
   readonly onCandlePointerLeave?: () => void;
   readonly onCandlePointerMove?: (position: CandleChartPointerPosition) => void;
   readonly selectedCandleIndex?: number;
+  readonly slotProps?: CandleChartSlotProps;
   readonly xAxis?: readonly CandleChartAxisLabel[];
   readonly yAxis?: readonly CandleChartAxisLabel[];
 }
@@ -106,4 +270,5 @@ export interface CandleChartCandleProps {
   readonly onCandleClick?: ((index: number) => void) | undefined;
   readonly onCandlePointerLeave?: (() => void) | undefined;
   readonly onCandlePointerMove?: ((position: CandleChartPointerPosition) => void) | undefined;
+  readonly slotProps?: Pick<CandleChartSlotProps, "candle" | "candleHit"> | undefined;
 }

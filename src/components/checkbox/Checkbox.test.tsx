@@ -1,9 +1,69 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { createRef, type ChangeEvent } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Checkbox } from "./Checkbox.js";
+import type { CheckboxProps } from "./types.js";
 
 describe("Checkbox", () => {
+  it("forwards slot props to its generated input and label", () => {
+    const inputRef = createRef<HTMLInputElement>();
+    const labelRef = createRef<HTMLLabelElement>();
+    const props = {
+      id: "terms",
+      label: "Terms",
+      slotProps: {
+        input: { className: "checkbox-input", "data-testid": "checkbox-input", ref: inputRef },
+        label: { className: "checkbox-label", "data-testid": "checkbox-label", ref: labelRef },
+      },
+    };
+
+    render(<Checkbox {...props} />);
+
+    const input = screen.getByTestId("checkbox-input");
+    const label = screen.getByTestId("checkbox-label");
+    expect(input.className).toBe("checkbox-input");
+    expect(label.className).toBe("checkbox-label");
+    expect(inputRef.current).toBe(input);
+    expect(labelRef.current).toBe(label);
+  });
+
+  it("lets the input slot prevent the checked-state update", () => {
+    const onCheckedChange = vi.fn();
+    const onChange = vi.fn((event: ChangeEvent<HTMLInputElement>) => event.preventDefault());
+    render(
+      <Checkbox
+        id="terms"
+        label="Terms"
+        onCheckedChange={onCheckedChange}
+        slotProps={{ input: { onChange } }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Terms" }));
+
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onCheckedChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps checkbox identity and checked state owned over runtime slot payloads", () => {
+    const hostileProps = {
+      slotProps: {
+        input: { checked: true, "data-state": "hostile", id: "wrong", type: "text" },
+        label: { "data-uiify-checkbox": "wrong", htmlFor: "wrong", id: "wrong" },
+      },
+    } as unknown as Pick<CheckboxProps, "slotProps">;
+
+    render(<Checkbox id="terms" label="Terms" {...hostileProps} />);
+
+    const input = screen.getByRole("checkbox", { name: "Terms" });
+    expect(input.id).toBe("terms");
+    expect((input as HTMLInputElement).checked).toBe(false);
+    expect(input.getAttribute("data-state")).toBeNull();
+    expect(input.parentElement?.id).toBe("terms-label");
+    expect(input.parentElement?.getAttribute("data-uiify-checkbox")).toBe("");
+  });
+
   it("renders a native checkbox and label from data props", () => {
     render(<Checkbox id="terms" label="Accept terms" defaultChecked />);
 

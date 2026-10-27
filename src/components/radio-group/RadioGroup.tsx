@@ -10,7 +10,9 @@ export function RadioGroup({
   disabled = false,
   orientation = "vertical",
   className,
+  slotProps,
   "aria-label": ariaLabel,
+  ...rootProps
 }: RadioGroupProps): ReactElement {
   const resolvedItems = items.map((item) => ({
     ...item,
@@ -21,6 +23,7 @@ export function RadioGroup({
     <ChoiceGroup<RadioGroupItem>
       {...(className !== undefined ? { className } : {})}
       {...(name !== undefined ? { name } : {})}
+      rootProps={rootProps}
       id={id}
       items={resolvedItems}
       isChecked={(item) => item.value === defaultValue}
@@ -28,6 +31,7 @@ export function RadioGroup({
       kind="single"
       namespace="radio-group"
       orientation={orientation}
+      {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{ "aria-label": ariaLabel, "data-disabled": disabled ? "" : undefined }}
     />
   );

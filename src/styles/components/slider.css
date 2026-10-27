@@ -149,7 +149,7 @@
   [data-uiify-slider-client] [data-part="mark"] {
     position: absolute;
     z-index: 1;
-    inset-block-start: calc(50% + 0.8rem);
+    inset-block-start: calc(50% + 0.75rem);
     inset-inline-start: var(--uiify-slider-position);
     display: grid;
     justify-items: center;
@@ -230,7 +230,7 @@
 
   [data-uiify-slider-client][data-orientation="vertical"] [data-part="mark"] {
     inset-block-start: var(--uiify-slider-position);
-    inset-inline: calc(50% + 0.8rem) auto;
+    inset-inline: calc(50% + 0.75rem) auto;
     justify-items: start;
     writing-mode: horizontal-tb;
     translate: 0 -50%;

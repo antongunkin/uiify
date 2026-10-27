@@ -4,6 +4,8 @@ export type {
   AlertDescriptionProps,
   AlertOwnProps,
   AlertProps,
+  AlertSlotProps,
+  AlertSymbolSlotProps,
   AlertTitleOwnProps,
   AlertTitleProps,
   AlertVariant,

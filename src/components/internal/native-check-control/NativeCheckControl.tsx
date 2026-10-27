@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
+import { useMergedRefs } from "@gunkin/uiify/hooks";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
+import { mergeRepeatedSlotProps, omitProps } from "../../../core/slot-props.js";
 import type { NativeCheckControlProps } from "./types.js";
 
 export function NativeCheckControl(props: NativeCheckControlProps): ReactElement {
@@ -14,12 +17,40 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
     name,
     onCheckedChange,
     className,
+    slotProps,
     value,
     "aria-label": ariaLabel,
   } = props;
   const isControlled = checked !== undefined;
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked ?? false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputProps = omitProps(slotProps?.input, [
+    "aria-checked",
+    "aria-label",
+    "aria-labelledby",
+    "checked",
+    "children",
+    "dangerouslySetInnerHTML",
+    "data-disabled",
+    "data-part",
+    "data-state",
+    "data-uiify-checkbox",
+    "defaultChecked",
+    "defaultValue",
+    "disabled",
+    "id",
+    "name",
+    "type",
+    "value",
+  ]);
+  const labelProps = omitProps(mergeRepeatedSlotProps({ className }, slotProps?.label), [
+    "children",
+    "dangerouslySetInnerHTML",
+    "data-uiify-checkbox",
+    "htmlFor",
+    "id",
+  ]);
+  const mergedInputRef = useMergedRefs(inputProps.ref, inputRef);
   const checkedValue = isControlled ? checked === true : uncontrolledChecked;
 
   useEffect(() => {
@@ -36,6 +67,7 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
 
   const input = (
     <input
+      {...inputProps}
       aria-checked={checked === "indeterminate" ? "mixed" : undefined}
       aria-label={label === undefined ? ariaLabel : undefined}
       aria-labelledby={label !== undefined ? `${id}-label` : undefined}
@@ -54,8 +86,8 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
       disabled={disabled || undefined}
       id={id}
       name={name}
-      onChange={handleChange}
-      ref={inputRef}
+      onChange={composeEventHandlers(inputProps.onChange, handleChange)}
+      ref={mergedInputRef}
       type="checkbox"
       value={value}
       {...(label === undefined ? { "data-uiify-checkbox": "" } : { "data-part": "control" })}
@@ -65,7 +97,7 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
   return label === undefined ? (
     input
   ) : (
-    <label className={className} data-uiify-checkbox="" id={`${id}-label`}>
+    <label {...labelProps} data-uiify-checkbox="" id={`${id}-label`}>
       {input}
       {label}
     </label>

@@ -11,7 +11,9 @@ export function Rating({
   readOnly = false,
   disabled = false,
   className,
+  slotProps,
   "aria-label": ariaLabel,
+  ...rootProps
 }: RatingProps): ReactElement {
   return (
     <ChoiceGroup<ChoiceItem>
@@ -22,6 +24,8 @@ export function Rating({
       kind="single"
       namespace="rating"
       orientation="horizontal"
+      rootProps={rootProps}
+      {...(slotProps ? { slotProps } : {})}
       rootAttributes={{
         "aria-label": ariaLabel,
         "data-disabled": disabled ? "" : undefined,

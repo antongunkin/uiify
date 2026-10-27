@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { Pagination } from "./Pagination.js";
 import {
@@ -9,6 +9,49 @@ import {
 } from "./PaginationShell.js";
 
 describe("Pagination", () => {
+  it("forwards slotProps to generated list, item, page, control and ellipsis parts", () => {
+    render(
+      <Pagination.Root
+        count={10}
+        page={5}
+        slotProps={{
+          list: { className: "page-list", "data-testid": "page-list" },
+          item: {
+            className: "page-item",
+            byItemValue: { "page:5": { "data-testid": "current-page-item" } },
+          },
+          link: { byItemValue: { "page:5": { "data-testid": "current-page-link" } } },
+          control: { byItemValue: { next: { "data-testid": "next-page" } } },
+          ellipsis: { className: "page-ellipsis", "data-testid": "page-ellipsis" },
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("page-list").className).toContain("page-list");
+    expect(screen.getByTestId("current-page-item").className).toContain("page-item");
+    expect(screen.getByTestId("current-page-link").getAttribute("aria-current")).toBe("page");
+    expect(screen.getByTestId("next-page").getAttribute("data-type")).toBe("next");
+    expect(screen.getAllByTestId("page-ellipsis")).toHaveLength(2);
+    expect(screen.getAllByTestId("page-ellipsis")[0]?.className).toContain("page-ellipsis");
+  });
+
+  it("lets a generated control handler veto pagination while preserving the native event", () => {
+    const onPageChange = vi.fn();
+    const onClick = vi.fn((event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault());
+    render(
+      <Pagination.Root
+        count={5}
+        page={1}
+        onPageChange={onPageChange}
+        slotProps={{ control: { byItemValue: { next: { onClick } } } }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onPageChange).not.toHaveBeenCalled();
+  });
+
   it("renders nav with list of page controls", () => {
     render(<Pagination.Root count={5} page={1} />);
     expect(screen.getByRole("navigation", { name: "Pagination" })).toBeTruthy();

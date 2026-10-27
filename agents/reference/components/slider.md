@@ -53,6 +53,17 @@
 | `thumbLabels` | `readonly [string, string]` | no |  |
 | `"aria-label"` | `string` | no |  |
 | `"aria-labelledby"` | `string` | no |  |
+| `slotProps` | `SliderClientSlotProps` | no |  |
+
+### SliderClientSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `track` | `Omit<ComponentPropsWithRef<"div">, "aria-hidden" \| "children" \| "dangerouslySetInnerHTML" \| "data-part"> & ConsumerDataAttributes & { readonly "aria-hidden"?: never; readonly "data-part"?: never; }` | no |  |
+| `range` | `SliderClientPartSlotProps<"span">` | no |  |
+| `mark` | `SliderMarkSlotProps` | no |  |
+| `visualThumb` | `SliderRepeatedSlotProps<"span", { readonly "data-part"?: never }>` | no |  |
+| `input` | `SliderRepeatedSlotProps<"input", { readonly "aria-label"?: never; readonly "aria-labelledby"?: never; readonly "aria-orientation"?: never; readonly "data-disabled"?: never; readonly "data-orientation"?: never; readonly "data-part"?: never; readonly "data-state"?: never; readonly defaultChecked?: never; readonly defaultValue?: never; readonly disabled?: never; readonly max?: never; readonly min?: never; readonly step?: never; readonly type?: never; readonly value?: never; }>` | no |  |
 
 ### SliderLabels
 
@@ -72,6 +83,7 @@
 ## Other types
 
 - `SliderClientValue`: `number | readonly [number, number]`
+- `SliderClientPartSlotProps<TTag>`: `Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML" | "data-part"> & ConsumerDataAttributes & { readonly "data-part"?: never }`
 - `SliderClientProps<TAs>`: `RenderableProps<TAs, SliderClientOwnProps, SliderClientRenderState, HTMLDivElement>`
 - `SliderProps<TAs>`: `RenderableProps<TAs, SliderOwnProps, SliderOwnProps, HTMLInputElement>`
 
@@ -80,4 +92,4 @@
 ### `@gunkin/uiify/components/slider/client`
 
 - Runtime: `SliderClient`
-- Types: `SliderClientOwnProps`, `SliderClientProps`, `SliderClientRenderState`, `SliderClientValue`, `SliderMark`
+- Types: `SliderClientOwnProps`, `SliderClientProps`, `SliderClientRenderState`, `SliderClientSlotProps`, `SliderClientValue`, `SliderMark`

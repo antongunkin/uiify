@@ -66,6 +66,120 @@ describe("ColorPicker", () => {
     expect((root as HTMLElement).style.inlineSize).toBe("12rem");
   });
 
+  it("forwards slot props to generated label, surface, value control, and native input", () => {
+    const labelRef = createRef<HTMLLabelElement>();
+    const fieldRef = createRef<HTMLDivElement>();
+    const surfaceRef = createRef<HTMLDivElement>();
+    const controlRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
+    const onSlotChange = vi.fn();
+    const onValueChange = vi.fn();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { container } = render(
+      <ColorPicker
+        className="picker-root"
+        defaultValue="#2563eb"
+        label="Brand color"
+        onValueChange={onValueChange}
+        required
+        slotProps={
+          {
+            field: {
+              className: "picker-field-slot",
+              "data-testid": "picker-field-slot",
+              ref: fieldRef,
+              style: { marginBlockStart: "1rem" },
+            },
+            label: {
+              className: "picker-label",
+              "data-testid": "picker-label",
+              "data-part": "override",
+              children: "Unsafe label override",
+              ref: labelRef,
+            },
+            surface: {
+              className: "picker-surface",
+              "data-testid": "picker-surface",
+              "data-part": "override",
+              "data-value": "#000000",
+              dangerouslySetInnerHTML: { __html: "<b>unsafe surface</b>" },
+              ref: surfaceRef,
+              style: { outlineWidth: "1px" },
+            },
+            control: {
+              className: "picker-control",
+              "data-testid": "picker-control",
+              defaultValue: "#000000",
+              type: "password",
+              value: "unsafe",
+              ref: controlRef,
+            },
+            input: {
+              className: "picker-input",
+              "data-testid": "picker-input",
+              "data-part": "override",
+              dangerouslySetInnerHTML: { __html: "<b>unsafe input</b>" },
+              defaultValue: "#000000",
+              required: false,
+              type: "text",
+              value: "#000000",
+              onChange: onSlotChange,
+              ref: inputRef,
+            },
+          } as never
+        }
+      />,
+    );
+
+    const field = container.querySelector("[data-uiify-color-picker]") as HTMLDivElement;
+    expect(field.className).toBe("picker-root picker-field-slot");
+    expect(field.style.inlineSize).toBe("");
+    expect(field.style.marginBlockStart).toBe("1rem");
+    expect(fieldRef.current).toBe(field);
+    expect(container.querySelector("label")?.className).toBe("picker-label");
+    expect(container.querySelector("label")?.getAttribute("data-part")).toBe("label");
+    expect(container.querySelector("[data-testid='picker-surface']")?.className).toBe(
+      "picker-surface",
+    );
+    expect(
+      container.querySelector("[data-testid='picker-surface']")?.getAttribute("style"),
+    ).toContain("outline-width: 1px");
+    expect(
+      container.querySelector("[data-testid='picker-surface']")?.getAttribute("style"),
+    ).toContain("--uiify-color-picker-value: #2563eb");
+    expect(
+      container.querySelector("[data-testid='picker-surface']")?.getAttribute("data-value"),
+    ).toBe("#2563eb");
+    expect(container.querySelector("[data-testid='picker-control']")?.className).toBe(
+      "picker-control",
+    );
+    expect(
+      (container.querySelector("[data-testid='picker-control']") as HTMLInputElement).type,
+    ).toBe("text");
+    expect(
+      (container.querySelector("[data-testid='picker-control']") as HTMLInputElement).value,
+    ).toBe("#2563eb");
+    expect(
+      (container.querySelector("[data-testid='picker-control']") as HTMLInputElement).defaultValue,
+    ).toBe("#2563eb");
+    expect(consoleError).not.toHaveBeenCalledWith(
+      expect.stringContaining("must be either controlled or uncontrolled"),
+    );
+    consoleError.mockRestore();
+    const input = container.querySelector("input[type='color']") as HTMLInputElement;
+    expect(input.className).toBe("picker-input");
+    expect(input.getAttribute("data-part")).toBe("native-input");
+    expect(input.required).toBe(true);
+    expect(labelRef.current).toBe(container.querySelector("label"));
+    expect(surfaceRef.current).toBe(container.querySelector("[data-testid='picker-surface']"));
+    expect(controlRef.current).toBe(container.querySelector("[data-testid='picker-control']"));
+    expect(inputRef.current).toBe(input);
+
+    fireEvent.change(input, { target: { value: "#dc2626" } });
+    expect(onValueChange).toHaveBeenCalledWith("#dc2626");
+    expect(onSlotChange).toHaveBeenCalledOnce();
+  });
+
   it("keeps native color hints on the actual picker input", () => {
     const { container } = render(
       <ColorPicker alpha colorSpace="display-p3" label="Brand color" list="brand-colors" />,
@@ -76,6 +190,29 @@ describe("ColorPicker", () => {
     expect(input.hasAttribute("alpha")).toBe(true);
     expect(input.getAttribute("colorspace")).toBe("display-p3");
     expect(input.getAttribute("list")).toBe("brand-colors");
+  });
+
+  it("lets native-input slot handlers cancel the internal value update", () => {
+    const onChange = vi.fn((event: ChangeEvent<HTMLInputElement>) => event.preventDefault());
+    const onSlotChange = vi.fn();
+    const onValueChange = vi.fn();
+    const { container } = render(
+      <ColorPicker
+        defaultValue="#2563eb"
+        label="Brand color"
+        onChange={onChange}
+        onValueChange={onValueChange}
+        slotProps={{ input: { onChange: onSlotChange } }}
+      />,
+    );
+
+    fireEvent.change(container.querySelector("input[type='color']") as HTMLInputElement, {
+      target: { value: "#dc2626" },
+    });
+
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(onSlotChange).toHaveBeenCalledOnce();
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 
   it("forwards the ref to the native color input", () => {

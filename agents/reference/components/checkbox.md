@@ -14,7 +14,7 @@
 ## Exports
 
 - Runtime: `Checkbox`
-- Types: `CheckboxProps`, `CheckedState`
+- Types: `CheckboxProps`, `CheckboxSlotProps`, `CheckedState`
 
 ## Props and shapes
 
@@ -31,8 +31,10 @@
 | `value` | `string` | no |  |
 | `className` | `string` | no |  |
 | `onCheckedChange` | `(checked: boolean) => void` | no |  |
+| `slotProps` | `CheckboxSlotProps` | no |  |
 | `"aria-label"` | `string` | no |  |
 
 ## Other types
 
 - `CheckedState`: `boolean | "indeterminate"`
+- `CheckboxSlotProps`: `NativeCheckControlSlotProps`

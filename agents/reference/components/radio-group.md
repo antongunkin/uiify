@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `RadioGroup`
-- Types: `RadioGroupItem`, `RadioGroupProps`
+- Types: `RadioGroupItem`, `RadioGroupProps`, `RadioGroupSlotProps`
 
 ## Props and shapes
 
@@ -30,6 +30,8 @@
 
 ### RadioGroupProps
 
+Extends: `ChoiceGroupRootProps`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | yes |  |
@@ -39,4 +41,8 @@
 | `disabled` | `boolean` | no |  |
 | `orientation` | `"horizontal" \| "vertical"` | no |  |
 | `className` | `string` | no |  |
-| `"aria-label"` | `string` | no |  |
+| `slotProps` | `RadioGroupSlotProps` | no |  |
+
+## Other types
+
+- `RadioGroupSlotProps`: `ChoiceOptionSlotProps`

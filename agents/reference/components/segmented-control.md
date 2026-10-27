@@ -15,7 +15,7 @@
 ## Exports
 
 - Runtime: `SegmentedControl`
-- Types: `SegmentedControlClientProps`, `SegmentedControlItem`, `SegmentedControlProps`
+- Types: `SegmentedControlClientProps`, `SegmentedControlItem`, `SegmentedControlProps`, `SegmentedControlSlotProps`
 
 ## Props and shapes
 
@@ -27,6 +27,8 @@ No own members.
 
 ### SegmentedControlProps
 
+Extends: `ChoiceGroupRootProps`
+
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | yes |  |
@@ -36,8 +38,7 @@ No own members.
 | `orientation` | `ChoiceOrientation` | no |  |
 | `fullWidth` | `boolean` | no |  |
 | `className` | `string` | no |  |
-| `"aria-label"` | `string` | no |  |
-| `"aria-labelledby"` | `string` | no |  |
+| `slotProps` | `SegmentedControlSlotProps` | no |  |
 
 ### SegmentedControlClientProps
 
@@ -47,6 +48,10 @@ Extends: `SegmentedControlProps`
 | --- | --- | --- | --- |
 | `value` | `string` | no |  |
 | `onValueChange` | `(value: string) => void` | no |  |
+
+## Other types
+
+- `SegmentedControlSlotProps`: `ChoiceOptionSlotProps`
 
 ## Sub-entries
 

@@ -1,7 +1,7 @@
 "use client";
 
-import type { CSSProperties, ReactElement, ReactNode } from "react";
-import type { VirtualScrollListRole } from "./types.js";
+import type { CSSProperties, ReactElement } from "react";
+import type { VirtualScrollRowShellProps } from "./types.js";
 
 export function computeVirtualScrollSlotCount(
   viewportHeight: number,
@@ -23,17 +23,6 @@ export function computeActiveVirtualScrollSlotCount(
   return Math.min(slotCount, Math.max(0, itemCount - rangeStart));
 }
 
-interface VirtualScrollRowShellProps {
-  readonly slotIndex: number;
-  readonly index: number;
-  readonly itemCount: number;
-  readonly listRole: VirtualScrollListRole;
-  readonly rowOffset?: number;
-  readonly rowHeight?: number;
-  readonly dynamicLayout: boolean;
-  readonly children: ReactNode;
-}
-
 /**
  * Row shell — static `--uiify-slot-index` in fixed mode; per-row offset in dynamic mode.
  *
@@ -50,9 +39,11 @@ export function VirtualScrollRowShell({
   rowOffset,
   rowHeight,
   dynamicLayout,
+  style: consumerStyle,
   children,
+  ...consumerProps
 }: VirtualScrollRowShellProps): ReactElement {
-  const style = {
+  const generatedStyle = {
     "--uiify-slot-index": slotIndex,
     ...(dynamicLayout && rowOffset !== undefined ? { "--uiify-row-offset": `${rowOffset}px` } : {}),
     ...(dynamicLayout && rowHeight !== undefined ? { "--uiify-row-height": `${rowHeight}px` } : {}),
@@ -60,13 +51,14 @@ export function VirtualScrollRowShell({
 
   return (
     <div
+      {...consumerProps}
       data-part="row"
       data-dynamic-row={dynamicLayout ? "" : undefined}
       data-row-index={index}
       role={listRole === "list" ? "listitem" : "row"}
       aria-setsize={itemCount}
       aria-posinset={index + 1}
-      style={style}
+      style={{ ...consumerStyle, ...generatedStyle }}
     >
       {children}
     </div>

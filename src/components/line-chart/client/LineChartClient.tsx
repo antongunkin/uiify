@@ -10,6 +10,7 @@ import {
   useLiveChartWindow,
 } from "../../internal/live-chart/use-live-chart-window.js";
 import { useScrollbarReserve } from "../../internal/chart-scrollbar/use-scrollbar-reserve.js";
+import { omitProps } from "../../../core/slot-props.js";
 import { VirtualScroll } from "../../virtual-scroll/VirtualScroll.js";
 import { LineChart, LineChartPoint } from "../LineChart.js";
 import { getValueBounds } from "../line-chart-geometry.js";
@@ -55,6 +56,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
     onPointClick: consumerOnPointClick,
     onPointPointerLeave: consumerOnPointPointerLeave,
     onPointPointerMove: consumerOnPointPointerMove,
+    slotProps,
     ...consumerProps
   } = props as LineChartClientProps<"figure"> & {
     ref?: Ref<HTMLElement>;
@@ -123,6 +125,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
       onPointClick: handlePointClick,
       onPointPointerLeave: handlePointPointerLeave,
       onPointPointerMove: handlePointPointerMove,
+      ...(slotProps ? { slotProps } : {}),
       ref: chartRef,
       selectedPointIndex,
       style,
@@ -135,6 +138,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
   const { min, max } = getValueBounds(slice);
   const toSliceIndex = (index: number | undefined): number | undefined =>
     index !== undefined && index >= sliceStart && index < sliceEnd ? index - sliceStart : undefined;
+  const { ref: liveScrollportRef, ...liveScrollportProps } = slotProps?.liveScrollport ?? {};
   const pointLayer = (
     <VirtualScroll
       height={plotHeight}
@@ -164,8 +168,23 @@ export function LineChartClient<TAs extends ElementType = "figure">(
             onPointClick={handlePointClick}
             onPointPointerLeave={handlePointPointerLeave}
             onPointPointerMove={handlePointPointerMove}
+            slotProps={slotProps}
           />
         );
+      }}
+      {...omitProps(liveScrollportProps, [
+        "children",
+        "dangerouslySetInnerHTML",
+        "data-dynamic-layout",
+        "data-orientation",
+        "data-part",
+        "data-uiify-virtual-scroll",
+        "role",
+      ])}
+      {...(liveScrollportRef ? { ref: liveScrollportRef } : {})}
+      slotProps={{
+        ...(slotProps?.liveSpacer ? { spacer: slotProps.liveSpacer } : {}),
+        ...(slotProps?.livePointRow ? { row: slotProps.livePointRow } : {}),
       }}
     />
   );
@@ -186,6 +205,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
     pointLayer,
     cursorY: cursor?.offsetY,
     interactive: true,
+    ...(slotProps ? { slotProps } : {}),
     ref: chartRef,
     selectedPointIndex: toSliceIndex(selectedPointIndex),
     slotCount: data.length,

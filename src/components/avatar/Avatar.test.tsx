@@ -24,6 +24,26 @@ describe("Avatar", () => {
     expect(avatar.getAttribute("data-size")).toBe("lg");
   });
 
+  it("forwards slot props to the generated image and fallback", () => {
+    const { rerender } = render(
+      <Avatar
+        fallback="AL"
+        name="Ada Lovelace"
+        slotProps={{ fallback: { className: "fallback", "data-testid": "avatar-fallback" } }}
+      />,
+    );
+    expect(screen.getByTestId("avatar-fallback").className).toBe("fallback");
+    rerender(
+      <Avatar
+        fallback="AL"
+        name="Ada Lovelace"
+        slotProps={{ image: { className: "image", "data-testid": "avatar-image" } }}
+        src="/ada.png"
+      />,
+    );
+    expect(screen.getByTestId("avatar-image").className).toBe("image");
+  });
+
   it("allows adjacent text to make the avatar decorative", () => {
     render(
       <>

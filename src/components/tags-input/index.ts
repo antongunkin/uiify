@@ -9,11 +9,14 @@ export {
 export type {
   TagsInputInputOwnProps,
   TagsInputInputProps,
+  TagsInputListOwnProps,
+  TagsInputListSlotProps,
   TagsInputRootControlledOwnProps,
   TagsInputRootShellOwnProps,
   TagsInputRootShellProps,
   TagsInputRootProps,
   TagsInputTagOwnProps,
+  TagsInputTagRemoveOwnProps,
   TagsInputTagProps,
   TagsInputStore,
 } from "./types.js";

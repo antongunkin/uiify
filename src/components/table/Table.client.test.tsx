@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from "react";
+import { createRef, type KeyboardEvent, type MouseEvent } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createTableStore } from "./table-store.js";
@@ -88,6 +88,67 @@ describe("createTableStore", () => {
 });
 
 describe("Table client", () => {
+  it("forwards slot props to its generated sort button and selection controls", () => {
+    const onSortChange = vi.fn();
+    const sortButtonRef = createRef<HTMLButtonElement>();
+    const sortButtonProps = {
+      className: "sort-button",
+      "data-testid": "sort-button",
+      onClick: (event: MouseEvent<HTMLButtonElement>) => event.preventDefault(),
+      ref: sortButtonRef,
+    };
+    const selectAllProps = {
+      slotProps: {
+        input: { className: "select-all-input", "data-testid": "select-all-input" },
+        label: { className: "select-all-label", "data-testid": "select-all-label" },
+      },
+    };
+    const rowSelectProps = {
+      rowId: "r1",
+      slotProps: {
+        input: { className: "row-select-input", "data-testid": "row-select-input" },
+        label: { className: "row-select-label", "data-testid": "row-select-label" },
+      },
+    };
+
+    render(
+      <Table.Root aria-label="Data" onSortChange={onSortChange} selectionMode="multiple">
+        <Table.Header>
+          <tr>
+            <Table.ColumnHeader allowsSorting id="name" slotProps={{ sortButton: sortButtonProps }}>
+              Name
+            </Table.ColumnHeader>
+            <Table.ColumnHeader id="selection">
+              <Table.SelectAll {...selectAllProps} />
+            </Table.ColumnHeader>
+          </tr>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row id="r1">
+            <Table.Cell>Alice</Table.Cell>
+            <Table.Cell>
+              <Table.RowSelect {...rowSelectProps} />
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>,
+    );
+
+    for (const [testId, className] of [
+      ["sort-button", "sort-button"],
+      ["select-all-input", "select-all-input"],
+      ["select-all-label", "select-all-label"],
+      ["row-select-input", "row-select-input"],
+      ["row-select-label", "row-select-label"],
+    ] as const) {
+      expect(screen.getByTestId(testId).className).toBe(className);
+    }
+    expect(sortButtonRef.current).toBe(screen.getByTestId("sort-button"));
+
+    fireEvent.click(screen.getByTestId("sort-button"));
+    expect(onSortChange).not.toHaveBeenCalled();
+  });
+
   it("selects row on click in multiple mode", () => {
     render(
       <Table.Root aria-label="Data" selectionMode="multiple">

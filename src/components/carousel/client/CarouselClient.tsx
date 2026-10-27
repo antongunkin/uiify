@@ -24,6 +24,7 @@ import {
 } from "./CarouselClientView.js";
 
 export function CarouselClient(props: CarouselClientProps): ReactElement | null {
+  const { ref: clientRef, ...base } = props;
   const [root, setRoot] = useState<HTMLElement | null>(null);
   const [controller, setController] = useState<CarouselController>();
   const [autoplay, setAutoplay] = useState<CarouselAutoplayController>();
@@ -94,7 +95,7 @@ export function CarouselClient(props: CarouselClientProps): ReactElement | null 
     return attachCarouselDrag(root, controller);
   }, [root, controller, props.mouseDrag]);
   useImperativeHandle(
-    props.ref,
+    clientRef,
     () => ({
       next: () => controller?.next("next"),
       previous: () => controller?.previous("previous"),
@@ -107,7 +108,7 @@ export function CarouselClient(props: CarouselClientProps): ReactElement | null 
   );
   return (
     <CarouselClientView
-      base={props}
+      base={base}
       rootRef={setRoot}
       mode="scroll"
       {...(controller ? { controller } : {})}
