@@ -129,4 +129,40 @@ describe("Popover", () => {
     expect(Popover.Surface).toBe(PopoverSurface);
     expect(Popover.Close).toBe(PopoverClose);
   });
+  it("lets consumer native invoker and surface values replace defaults", () => {
+    render(
+      <>
+        <PopoverTrigger
+          target="help"
+          type="submit"
+          popoverTarget="other"
+          popoverTargetAction="show"
+          data-part={undefined}
+        >
+          Help
+        </PopoverTrigger>
+        <PopoverSurface
+          id="help"
+          popover="manual"
+          data-side="custom"
+          data-uiify-popover={undefined}
+        >
+          Body
+        </PopoverSurface>
+        <PopoverClose target="help" popoverTarget={undefined} type="reset">
+          Close
+        </PopoverClose>
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "Help" });
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("popovertarget")).toBe("other");
+    expect(trigger.getAttribute("popovertargetaction")).toBe("show");
+    expect(trigger.hasAttribute("data-part")).toBe(false);
+    const surface = screen.getByText("Body");
+    expect(surface.getAttribute("popover")).toBe("manual");
+    expect(surface.getAttribute("data-side")).toBe("custom");
+    expect(surface.hasAttribute("data-uiify-popover")).toBe(false);
+    expect(screen.getByRole("button", { name: "Close" }).hasAttribute("popovertarget")).toBe(false);
+  });
 });

@@ -1,5 +1,5 @@
-import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { ElementType, ReactNode } from "react";
+import type { SlotProps } from "../../core/slot-props.js";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
 export type SpinnerAlign = "center" | "fixed" | "absolute";
@@ -28,13 +28,7 @@ export type SpinnerProps<TAs extends ElementType = "div"> = RenderableProps<
   HTMLElement
 >;
 
-export type SpinnerLabelSlotProps = Omit<
-  ComponentPropsWithRef<"span">,
-  "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-spinner"
-> & {
-  readonly "data-part"?: never;
-  readonly "data-uiify-spinner"?: never;
-} & ConsumerDataAttributes;
+export type SpinnerLabelSlotProps = SlotProps<"span">;
 
 export interface SpinnerSlotProps {
   readonly label?: SpinnerLabelSlotProps;

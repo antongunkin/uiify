@@ -51,4 +51,4 @@
 ## Other types
 
 - `SpinnerProps<TAs>`: `RenderableProps<TAs, SpinnerOwnProps, { visible: boolean }, HTMLElement>`
-- `SpinnerLabelSlotProps`: `Omit<ComponentPropsWithRef<"span">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-spinner"> & { readonly "data-part"?: never; readonly "data-uiify-spinner"?: never; } & ConsumerDataAttributes`
+- `SpinnerLabelSlotProps`: `SlotProps<"span">`

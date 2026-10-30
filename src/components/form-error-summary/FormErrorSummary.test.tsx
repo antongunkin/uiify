@@ -66,7 +66,7 @@ describe("FormErrorSummary", () => {
     ).toBe("#password");
   });
 
-  it("preserves consumer attributes and makes the identity marker immutable", () => {
+  it("preserves consumer attributes including the identity marker", () => {
     render(
       <FormErrorSummary
         title="There is a problem"
@@ -80,7 +80,7 @@ describe("FormErrorSummary", () => {
     const summary = screen.getByText("There is a problem").parentElement;
     expect(summary?.className).toBe("consumer-summary");
     expect(summary?.getAttribute("data-context")).toBe("signup");
-    expect(summary?.getAttribute("data-uiify-form-error-summary")).toBe("");
+    expect(summary?.getAttribute("data-uiify-form-error-summary")).toBe("changed");
     expect(summary?.style.marginBlock).toBe("1rem");
   });
 });

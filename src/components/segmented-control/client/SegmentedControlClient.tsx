@@ -14,6 +14,7 @@ export function SegmentedControlClient({
   disabled = false,
   orientation = "horizontal",
   fullWidth = false,
+  size,
   className,
   slotProps,
   "aria-label": ariaLabel,
@@ -42,7 +43,7 @@ export function SegmentedControlClient({
       isControlled={controlledValue !== undefined}
       kind="single"
       namespace="segmented-control"
-      labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost", "data-size": "sm" }}
+      labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost" }}
       onItemChange={(item) => setSelectedValue(item.value)}
       orientation={orientation}
       {...(slotProps !== undefined ? { slotProps } : {})}
@@ -52,6 +53,7 @@ export function SegmentedControlClient({
         "aria-labelledby": ariaLabelledBy,
         "data-disabled": disabled ? "" : undefined,
         "data-full-width": fullWidth ? "" : undefined,
+        "data-size": size,
       }}
     />
   );

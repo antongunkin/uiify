@@ -16,7 +16,6 @@
     padding: var(--space-lg);
     border: 2px dashed var(--input);
     border-radius: var(--radius-xl);
-    corner-shape: squircle;
     background-color: var(--secondary);
     color: var(--muted-foreground);
     font-size: var(--text-sm);
@@ -51,7 +50,6 @@
     padding: var(--space-sm) var(--space-md);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-lg);
-    corner-shape: squircle;
     background-color: var(--card);
     font-size: var(--text-sm);
   }

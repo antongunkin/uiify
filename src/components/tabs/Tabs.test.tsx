@@ -134,4 +134,24 @@ describe("Tabs", () => {
     expect(overviewRef.current).toBe(screen.getByTestId("overview-input"));
     expect(settingsRef.current).toBe(screen.getByTestId("settings-input"));
   });
+
+  it("lets slot props override generated defaults per item", () => {
+    render(
+      <Tabs
+        id="t"
+        items={[
+          { value: "a", label: "A", panel: "Panel A" },
+          { value: "b", label: "B", panel: "Panel B" },
+        ]}
+        defaultValue="a"
+        slotProps={{
+          panel: { byItemValue: { b: { id: "custom-panel", "data-part": "sheet" } } },
+        }}
+      />,
+    );
+    const panel = screen.getByText("Panel B");
+    expect(panel.id).toBe("custom-panel");
+    expect(panel.getAttribute("data-part")).toBe("sheet");
+    expect(screen.getByText("Panel A").getAttribute("data-part")).toBe("panel");
+  });
 });

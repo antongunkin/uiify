@@ -3,7 +3,6 @@ import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { AlertModal } from "./AlertModal.js";
-import type { AlertModalProps, AlertModalSlotProps } from "./types.js";
 
 describe("AlertModal", () => {
   it("renders an alertdialog opened modally by a native invoker", () => {
@@ -123,70 +122,64 @@ describe("AlertModal", () => {
     expect(screen.getByTestId("description").getAttribute("data-part")).toBe("description");
   });
 
-  it("filters hostile JavaScript props without losing native alertdialog behavior", () => {
-    const dangerousHtml = { dangerouslySetInnerHTML: { __html: "injected" } };
-    const hostileSlots = {
-      trigger: {
-        ...dangerousHtml,
-        command: "request-close",
-        commandfor: "wrong",
-        popoverTarget: "wrong",
-        type: "submit",
-      },
-      content: {
-        ...dangerousHtml,
-        "aria-describedby": "wrong-description",
-        "aria-labelledby": "wrong-title",
-        id: "wrong-id",
-        open: true,
-        popover: "auto",
-        role: "dialog",
-      },
-      title: { ...dangerousHtml, id: "wrong-title" },
-      description: { ...dangerousHtml, id: "wrong-description" },
-      cancel: { ...dangerousHtml, command: "show-modal", type: "submit", value: "confirm" },
-      action: { ...dangerousHtml, command: "show-modal", type: "submit", value: "cancel" },
-    } as unknown as AlertModalSlotProps;
-    const hostileRoot = {
-      className: "root-class",
-      "data-testid": "safe-root",
-      "data-part": "wrong",
-      "data-uiify-alert-modal": "wrong",
-      ...dangerousHtml,
-    } as unknown as AlertModalProps;
+  it("lets slots override native defaults and remove markers", () => {
     render(
       <AlertModal
-        {...hostileRoot}
-        description="Description"
-        id="safe-alert"
-        slotProps={hostileSlots}
-        title="Confirm deletion"
+        id="alert"
         trigger="Delete"
-      >
-        Body
-      </AlertModal>,
+        title="Delete item"
+        description="Description"
+        data-testid="root"
+        data-part="custom-root"
+        data-uiify-alert-modal="custom"
+        slotProps={{
+          trigger: {
+            type: "submit",
+            command: "request-close",
+            commandfor: "other",
+            "data-part": undefined,
+          },
+          content: {
+            role: "dialog",
+            "aria-labelledby": "custom-title",
+            "aria-describedby": undefined,
+          },
+          title: { id: "custom-title" },
+          description: { id: "custom-description" },
+          cancel: { value: "custom-cancel", "data-variant": "outline" },
+          action: { command: "show-modal", value: "custom-action" },
+        }}
+      />,
     );
-
-    const root = screen.getByTestId("safe-root");
+    expect(screen.getByTestId("root").getAttribute("data-part")).toBe("custom-root");
     const trigger = screen.getByRole("button", { name: "Delete" });
-    const dialog = screen.getByRole("alertdialog", { hidden: true });
-    const cancel = screen.getByRole("button", { name: "Cancel", hidden: true });
-    const action = screen.getByRole("button", { name: "Confirm", hidden: true });
-    expect(root.textContent).not.toContain("injected");
-    expect(root.getAttribute("data-part")).toBe("root");
-    expect(trigger.getAttribute("command")).toBe("show-modal");
-    expect(trigger.getAttribute("commandfor")).toBe("safe-alert");
-    expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.hasAttribute("popovertarget")).toBe(false);
-    expect(dialog.id).toBe("safe-alert");
-    expect(dialog.getAttribute("role")).toBe("alertdialog");
-    expect(dialog.hasAttribute("open")).toBe(false);
-    expect(dialog.hasAttribute("popover")).toBe(false);
-    expect(dialog.getAttribute("aria-labelledby")).toBe("safe-alert-title");
-    expect(dialog.getAttribute("aria-describedby")).toBe("safe-alert-description");
-    expect(cancel.getAttribute("value")).toBe("cancel");
-    expect(cancel.getAttribute("command")).toBe("request-close");
-    expect(action.getAttribute("value")).toBe("confirm");
-    expect(action.getAttribute("command")).toBe("request-close");
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("command")).toBe("request-close");
+    expect(trigger.getAttribute("commandfor")).toBe("other");
+    expect(trigger.hasAttribute("data-part")).toBe(false);
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog.getAttribute("aria-labelledby")).toBe("custom-title");
+    expect(dialog.hasAttribute("aria-describedby")).toBe(false);
+    expect(screen.getByText("Delete item").id).toBe("custom-title");
+    expect(screen.getByText("Description").id).toBe("custom-description");
+    expect(screen.getByRole("button", { name: "Cancel", hidden: true }).getAttribute("value")).toBe(
+      "custom-cancel",
+    );
+    expect(
+      screen.getByRole("button", { name: "Confirm", hidden: true }).getAttribute("command"),
+    ).toBe("show-modal");
+  });
+  it("lets explicit undefined remove native invoker defaults", () => {
+    render(
+      <AlertModal
+        id="alert"
+        trigger="Open"
+        title="Title"
+        slotProps={{ trigger: { command: undefined, commandfor: undefined } }}
+      />,
+    );
+    const trigger = screen.getByRole("button", { name: "Open" });
+    expect(trigger.hasAttribute("command")).toBe(false);
+    expect(trigger.hasAttribute("commandfor")).toBe(false);
   });
 });

@@ -1,3 +1,4 @@
+import type { ControlSize } from "../internal/control-size/types.js";
 import type {
   ChoiceGroupRootProps,
   ChoiceOptionSlotProps,
@@ -16,6 +17,8 @@ export interface SegmentedControlProps extends ChoiceGroupRootProps {
   readonly disabled?: boolean;
   readonly orientation?: ChoiceOrientation;
   readonly fullWidth?: boolean;
+  /** Sets the control's height and text size; `md` is the default. */
+  readonly size?: ControlSize;
   readonly className?: string;
   readonly slotProps?: SegmentedControlSlotProps;
 }

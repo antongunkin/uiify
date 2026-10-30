@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default collapsible DOM 1`] = `
+[
+  "details data-uiify-collapsible="" data-uiify-details="" id="closed"",
+  "summary data-part="trigger"",
+  "div data-part="panel"",
+  "details data-disabled="" data-uiify-collapsible="" data-uiify-details="" id="open" open=""",
+  "summary aria-disabled="true" data-part="trigger" tabindex="-1"",
+  "div data-part="panel"",
+]
+`;

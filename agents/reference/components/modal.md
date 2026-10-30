@@ -53,21 +53,19 @@ Extends: `ModalAppearanceProps`
 
 ### ModalSlotProps
 
-Native props for Modal's generated inner elements. Owned ids and markers stay internal.
+Native props for Modal's generated inner elements; consumer values replace the defaults.
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `trigger` | `ModalSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "popoverTarget" \| "popoverTargetAction" \| "data-part" \| "data-uiify-modal" \| "data-uiify-button">` | no |  |
-| `content` | `ModalSlotElementProps<"dialog", \| "id" \| "open" \| "popover" \| "closedby" \| "data-part" \| "data-uiify-modal" \| "aria-describedby" \| "aria-labelledby">` | no |  |
-| `grabber` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal" \| "aria-hidden">` | no |  |
-| `header` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal">` | no |  |
-| `title` | `ModalSlotElementProps<"h2", "id" \| "data-part" \| "data-uiify-modal">` | no |  |
-| `description` | `ModalSlotElementProps<"p", "id" \| "data-part" \| "data-uiify-modal">` | no |  |
-| `close` | `ModalSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "popoverTarget" \| "popoverTargetAction" \| "data-part" \| "data-uiify-modal" \| "data-uiify-button" \| "aria-label">` | no |  |
-| `closeIcon` | `ModalSlotElementProps<"svg", "aria-hidden" \| "focusable">` | no |  |
-| `closeIconPath` | `ModalSlotElementProps<"path">` | no |  |
-| `body` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal">` | no |  |
-| `footer` | `ModalSlotElementProps<"div", "data-part" \| "data-uiify-modal">` | no |  |
+| `trigger` | `CommandInvokerSlotProps` | no |  |
+| `content` | `Omit<SlotProps<"dialog">, "id" \| "open" \| "popover">` | no |  |
+| `grabber` | `SlotProps<"div">` | no |  |
+| `header` | `SlotProps<"div">` | no |  |
+| `title` | `SlotProps<"h2">` | no |  |
+| `description` | `SlotProps<"p">` | no |  |
+| `close` | `CommandInvokerSlotProps` | no |  |
+| `body` | `SlotProps<"div">` | no |  |
+| `footer` | `SlotProps<"div">` | no |  |
 
 ### ModalLabels
 
@@ -117,11 +115,11 @@ Extends: `ModalAppearanceProps`
 
 ## Other types
 
-- `ModalProps`: `ModalOwnProps & Omit<ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">, keyof ModalOwnProps>` — Native props for Modal's root div plus its dialog and trigger contract.
+- `ModalProps`: `ModalOwnProps & Omit<SlotProps<"div">, keyof ModalOwnProps>` — Native props for Modal's root div plus its dialog and trigger contract.
 - `ModalTriggerProps<TAs>`: `NativeButtonProps<TAs, ModalTriggerOwnProps>`
 - `ModalCloseProps<TAs>`: `NativeButtonProps<TAs, ModalCloseOwnProps>`
-- `ModalContentProps`: `ModalContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof ModalContentOwnProps | "open" | "popover" | "closedby">` — A plain, initially closed `<dialog>`: `open` and `popover` are not part of the native contract.
-- `ModalClientContentProps`: `ModalClientContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof ModalClientContentOwnProps | "popover" | "closedby">` — Props of the client adapter; `popover` is excluded because the adapter is always modal.
+- `ModalContentProps`: `ModalContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof ModalContentOwnProps | "open" | "popover">` — A plain, initially closed `<dialog>`: `open` and `popover` are not part of the native contract.
+- `ModalClientContentProps`: `ModalClientContentOwnProps & Omit<ComponentPropsWithRef<"dialog">, keyof ModalClientContentOwnProps | "popover">` — Props of the client adapter; `popover` is excluded because the adapter is always modal.
 - `ModalHeaderProps`: `ComponentPropsWithRef<"div">`
 - `ModalTitleProps`: `ComponentPropsWithRef<"h2">`
 - `ModalDescriptionProps`: `ComponentPropsWithRef<"p">`

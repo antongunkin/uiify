@@ -169,7 +169,7 @@ describe("TagsInput", () => {
     expect(onChange).toHaveBeenCalledWith(["one", "two"]);
   });
 
-  it("owns Input's role, aria-controls, aria-expanded, and value regardless of consumer override", () => {
+  it("accepts native input overrides", () => {
     render(
       <TagsInput.Root>
         <TagsInput.List>
@@ -185,10 +185,10 @@ describe("TagsInput", () => {
     );
 
     const input = screen.getByPlaceholderText("Add tag") as HTMLInputElement;
-    expect(input.getAttribute("role")).toBe("combobox");
-    expect(input.getAttribute("aria-controls")).not.toBe("bogus");
-    expect(input.getAttribute("aria-expanded")).toBe("false");
-    expect(input.value).toBe("");
+    expect(input.getAttribute("role")).toBe("textbox");
+    expect(input.getAttribute("aria-controls")).toBe("bogus");
+    expect(input.getAttribute("aria-expanded")).toBe("true");
+    expect(input.value).toBe("bogus");
   });
 
   it("lets a consumer onChange veto input sync, leaving the committed value unchanged (policy #1: form-control change veto)", () => {
@@ -254,7 +254,7 @@ describe("TagsInput", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("owns Tag's role and data-value regardless of consumer override", () => {
+  it("accepts native tag overrides", () => {
     const { container } = render(
       <TagsInput.Root defaultValue={["react"]}>
         <TagsInput.List>
@@ -272,8 +272,8 @@ describe("TagsInput", () => {
     );
 
     const tag = container.querySelector("[data-testid='tag-react']");
-    expect(tag?.getAttribute("role")).toBe("listitem");
-    expect(tag?.getAttribute("data-value")).toBe("react");
+    expect(tag?.getAttribute("role")).toBe("button");
+    expect(tag?.getAttribute("data-value")).toBe("bogus");
   });
 
   it("lets a consumer onKeyDown veto Backspace/Delete tag removal without suppressing roving-focus arrow navigation (policy #2: roving-focus arrow-nav veto)", () => {

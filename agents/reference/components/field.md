@@ -24,9 +24,9 @@
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | yes | Stable id for deterministic label/control/error wiring. Required. |
-| `invalid` | `boolean` | no |  |
-| `required` | `boolean` | no |  |
-| `disabled` | `boolean` | no |  |
+| `invalid` | `boolean \| undefined` | no |  |
+| `required` | `boolean \| undefined` | no |  |
+| `disabled` | `boolean \| undefined` | no |  |
 | `name` | `string` | no |  |
 
 ### FieldPartOwnProps
@@ -43,8 +43,8 @@ Extends: `FieldPartOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `disabled` | `boolean` | no |  |
-| `required` | `boolean` | no |  |
+| `disabled` | `boolean \| undefined` | no |  |
+| `required` | `boolean \| undefined` | no |  |
 
 ### FieldControlOwnProps
 
@@ -52,9 +52,9 @@ Extends: `FieldPartOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `disabled` | `boolean` | no |  |
-| `invalid` | `boolean` | no |  |
-| `required` | `boolean` | no |  |
+| `disabled` | `boolean \| undefined` | no |  |
+| `invalid` | `boolean \| undefined` | no |  |
+| `required` | `boolean \| undefined` | no |  |
 
 ### FieldDescriptionOwnProps
 
@@ -62,7 +62,7 @@ Extends: `FieldPartOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `disabled` | `boolean` | no |  |
+| `disabled` | `boolean \| undefined` | no |  |
 
 ### FieldErrorOwnProps
 
@@ -70,12 +70,12 @@ Extends: `FieldPartOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `invalid` | `boolean` | no |  |
+| `invalid` | `boolean \| undefined` | no |  |
 
 ## Other types
 
 - `FieldRootProps<TAs>`: `RenderableProps<TAs, FieldRootOwnProps, FieldRootOwnProps, HTMLElement>`
-- `FieldLabelProps`: `FieldLabelOwnProps & Omit<ComponentPropsWithRef<"label">, "htmlFor" | keyof FieldLabelOwnProps>`
+- `FieldLabelProps`: `FieldLabelOwnProps & Omit<ComponentPropsWithRef<"label">, keyof FieldLabelOwnProps>`
 - `FieldControlProps<TAs>`: `RenderableProps<TAs, FieldControlOwnProps, { disabled: boolean; invalid: boolean; required: boolean }, HTMLElement>`
 - `FieldDescriptionProps`: `FieldDescriptionOwnProps & Omit<ComponentPropsWithRef<"p">, keyof FieldDescriptionOwnProps>`
 - `FieldErrorProps`: `FieldErrorOwnProps & Omit<ComponentPropsWithRef<"p">, keyof FieldErrorOwnProps>`

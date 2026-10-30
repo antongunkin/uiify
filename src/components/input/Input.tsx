@@ -15,6 +15,7 @@ export function Input<TAs extends ElementType = "input">(
     disabled = false,
     readOnly = false,
     invalid = false,
+    size,
     ...consumerProps
   } = props as InputProps<"input">;
 
@@ -36,6 +37,7 @@ export function Input<TAs extends ElementType = "input">(
     props: {
       ...consumerProps,
       "data-uiify-input": "",
+      ...(size !== undefined ? { "data-size": size } : {}),
       "aria-invalid": invalid || undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-readonly": readOnly ? "" : undefined,

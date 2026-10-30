@@ -1,163 +1,61 @@
-import type { ComponentPropsWithRef, ElementType, HTMLAttributes, ReactNode, Ref } from "react";
+import type { ElementType, DOMAttributes, ReactNode, Ref } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { SlotProps } from "../../core/slot-props.js";
 
-type CandleChartPartSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = { readonly "data-part"?: never },
-> = Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML" | keyof TOwned> &
-  ConsumerDataAttributes &
-  TOwned;
+type CandleChartIndexedSlotProps<TProps extends object> = TProps & {
+  readonly byItemIndex?: Readonly<Record<number, TProps>>;
+};
 
-type CandleChartIndexedSlotProps<TProps extends object, TOwned extends object = object> = Omit<
-  TProps,
-  "children" | "dangerouslySetInnerHTML"
-> &
-  ConsumerDataAttributes &
-  TOwned & {
-    readonly byItemIndex?: Readonly<
-      Record<
-        number,
-        Omit<TProps, "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes & TOwned
-      >
-    >;
-  };
-
-type CandleChartRepeatedSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = { readonly "data-part"?: never },
-> = CandleChartIndexedSlotProps<
-  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
-  TOwned
+type CandleChartRepeatedSlotProps<TTag extends ElementType> = CandleChartIndexedSlotProps<
+  SlotProps<TTag>
 >;
 
-type CandleChartCandleElementProps = HTMLAttributes<HTMLElement> & {
-  readonly ref?: Ref<HTMLElement>;
-};
-
-type CandleChartCandleOwnedProps = {
-  readonly "aria-hidden"?: never;
-  readonly "data-crosshair-active"?: never;
-  readonly "data-direction"?: never;
-  readonly "data-part"?: never;
-  readonly "data-time"?: never;
-};
-
-type CandleChartLiveRowOwnedProps = {
-  readonly "aria-posinset"?: never;
-  readonly "aria-setsize"?: never;
-  readonly "data-dynamic-row"?: never;
-  readonly "data-part"?: never;
-  readonly "data-row-index"?: never;
-  readonly role?: never;
-};
-
-type CandleChartLiveRowSlotProps = Omit<CandleChartRepeatedSlotProps<"div">, "byItemIndex"> &
-  CandleChartLiveRowOwnedProps & {
-    readonly byItemIndex?: Readonly<
-      Record<
-        number,
-        Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML"> &
-          ConsumerDataAttributes &
-          CandleChartLiveRowOwnedProps
-      >
-    >;
+type CandleChartCandleElementProps = Omit<
+  SlotProps<"div">,
+  keyof DOMAttributes<HTMLElement> | "ref"
+> &
+  Omit<DOMAttributes<HTMLElement>, "children" | "dangerouslySetInnerHTML"> & {
+    readonly ref?: Ref<HTMLElement> | undefined;
   };
 
 export interface CandleChartSlotProps {
-  readonly caption?: CandleChartPartSlotProps<"figcaption">;
-  readonly readout?: CandleChartPartSlotProps<
-    "div",
-    { readonly "aria-live"?: never; readonly "data-part"?: never }
-  >;
-  readonly readoutTime?: CandleChartPartSlotProps<"span">;
-  readonly readoutOpen?: CandleChartPartSlotProps<"span">;
-  readonly readoutHigh?: CandleChartPartSlotProps<"span">;
-  readonly readoutLow?: CandleChartPartSlotProps<"span">;
-  readonly readoutClose?: CandleChartPartSlotProps<"span">;
-  readonly plot?: CandleChartPartSlotProps<
-    "div",
-    { readonly "aria-hidden"?: never; readonly "data-part"?: never }
-  >;
-  readonly scrollViewport?: CandleChartPartSlotProps<"div">;
-  readonly canvas?: CandleChartPartSlotProps<"div">;
-  readonly viewport?: CandleChartPartSlotProps<"div">;
-  readonly candles?: CandleChartPartSlotProps<
-    "ol",
-    { readonly "aria-label"?: never; readonly "data-part"?: never }
-  >;
-  readonly candle?: CandleChartIndexedSlotProps<
-    CandleChartCandleElementProps,
-    CandleChartCandleOwnedProps
-  >;
-  readonly candleHit?: CandleChartRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-label"?: never;
-      readonly "aria-pressed"?: never;
-      readonly "data-part"?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly crosshair?: CandleChartPartSlotProps<
-    "div",
-    { readonly "aria-hidden"?: never; readonly "data-part"?: never }
-  >;
-  readonly crosshairMarker?: CandleChartPartSlotProps<"span">;
-  readonly timeViewport?: CandleChartPartSlotProps<"div">;
-  readonly timeAxis?: CandleChartPartSlotProps<
-    "ol",
-    { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never }
-  >;
+  readonly caption?: SlotProps<"figcaption">;
+  readonly readout?: SlotProps<"div">;
+  readonly readoutTime?: SlotProps<"span">;
+  readonly readoutOpen?: SlotProps<"span">;
+  readonly readoutHigh?: SlotProps<"span">;
+  readonly readoutLow?: SlotProps<"span">;
+  readonly readoutClose?: SlotProps<"span">;
+  readonly plot?: SlotProps<"div">;
+  readonly scrollViewport?: SlotProps<"div">;
+  readonly canvas?: SlotProps<"div">;
+  readonly viewport?: SlotProps<"div">;
+  readonly candles?: SlotProps<"ol">;
+  readonly candle?: CandleChartIndexedSlotProps<CandleChartCandleElementProps>;
+  readonly candleHit?: CandleChartRepeatedSlotProps<"button">;
+  readonly crosshair?: SlotProps<"div">;
+  readonly crosshairMarker?: SlotProps<"span">;
+  readonly timeViewport?: SlotProps<"div">;
+  readonly timeAxis?: SlotProps<"ol">;
   readonly timeAxisLabel?: CandleChartRepeatedSlotProps<"li">;
-  readonly crosshairTime?: CandleChartPartSlotProps<"li">;
-  readonly priceAxis?: CandleChartPartSlotProps<
-    "ol",
-    { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never }
-  >;
+  readonly crosshairTime?: SlotProps<"li">;
+  readonly priceAxis?: SlotProps<"ol">;
   readonly priceAxisLabel?: CandleChartRepeatedSlotProps<"li">;
-  readonly crosshairPrice?: CandleChartPartSlotProps<"li">;
-  readonly liveScrollport?: CandleChartPartSlotProps<
-    "div",
-    {
-      readonly "data-dynamic-layout"?: never;
-      readonly "data-orientation"?: never;
-      readonly "data-part"?: never;
-      readonly "data-uiify-virtual-scroll"?: never;
-      readonly role?: never;
-    }
-  >;
-  readonly liveSpacer?: CandleChartPartSlotProps<"div">;
-  readonly liveCandleRow?: CandleChartLiveRowSlotProps;
-  readonly dataTable?: CandleChartPartSlotProps<
-    "table",
-    { readonly "aria-label"?: never; readonly "data-part"?: never }
-  >;
-  readonly dataTableHead?: CandleChartPartSlotProps<"thead">;
-  readonly dataTableHeaderRow?: CandleChartPartSlotProps<"tr">;
-  readonly dataTableTimeHeader?: CandleChartPartSlotProps<
-    "th",
-    { readonly scope?: never; readonly "data-part"?: never }
-  >;
-  readonly dataTableOpenHeader?: CandleChartPartSlotProps<
-    "th",
-    { readonly scope?: never; readonly "data-part"?: never }
-  >;
-  readonly dataTableHighHeader?: CandleChartPartSlotProps<
-    "th",
-    { readonly scope?: never; readonly "data-part"?: never }
-  >;
-  readonly dataTableLowHeader?: CandleChartPartSlotProps<
-    "th",
-    { readonly scope?: never; readonly "data-part"?: never }
-  >;
-  readonly dataTableCloseHeader?: CandleChartPartSlotProps<
-    "th",
-    { readonly scope?: never; readonly "data-part"?: never }
-  >;
-  readonly dataTableBody?: CandleChartPartSlotProps<"tbody">;
+  readonly crosshairPrice?: SlotProps<"li">;
+  readonly liveScrollport?: SlotProps<"div">;
+  readonly liveSpacer?: SlotProps<"div">;
+  readonly liveCandleRow?: CandleChartRepeatedSlotProps<"div">;
+  readonly dataTable?: SlotProps<"table">;
+  readonly dataTableHead?: SlotProps<"thead">;
+  readonly dataTableHeaderRow?: SlotProps<"tr">;
+  readonly dataTableTimeHeader?: SlotProps<"th">;
+  readonly dataTableOpenHeader?: SlotProps<"th">;
+  readonly dataTableHighHeader?: SlotProps<"th">;
+  readonly dataTableLowHeader?: SlotProps<"th">;
+  readonly dataTableCloseHeader?: SlotProps<"th">;
+  readonly dataTableBody?: SlotProps<"tbody">;
   readonly dataTableRow?: CandleChartRepeatedSlotProps<"tr">;
-  readonly dataTableTimeCell?: CandleChartRepeatedSlotProps<"th", { readonly scope?: never }>;
+  readonly dataTableTimeCell?: CandleChartRepeatedSlotProps<"th">;
   readonly dataTableOpenCell?: CandleChartRepeatedSlotProps<"td">;
   readonly dataTableHighCell?: CandleChartRepeatedSlotProps<"td">;
   readonly dataTableLowCell?: CandleChartRepeatedSlotProps<"td">;
@@ -185,7 +83,7 @@ export interface CandleChartPointerPosition {
 }
 
 export interface CandleChartOwnProps {
-  readonly "aria-label"?: string;
+  readonly "aria-label"?: string | undefined;
   readonly labels?: Partial<CandleChartLabels>;
   readonly activeCandleIndex?: number;
   readonly cursorY?: number;

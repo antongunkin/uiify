@@ -143,7 +143,7 @@ Extends: `TableStickyCellOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `sortButton` | `Omit<ComponentPropsWithRef<"button">, "children" \| "dangerouslySetInnerHTML" \| "type" \| "data-part"> & ConsumerDataAttributes & TableSortButtonOwnedAttributes` | no |  |
+| `sortButton` | `SlotProps<"button">` | no |  |
 
 ### TableClientRootOwnProps
 

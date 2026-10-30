@@ -15,11 +15,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-inline-size: 44px;
-    min-block-size: 44px;
+    min-inline-size: var(--control-md);
+    min-block-size: var(--control-md);
     padding: 0.75rem;
     border: 0;
-    border-radius: var(--radius-2);
+    border-radius: var(--radius-md);
     background: transparent;
     color: inherit;
     font: inherit;
@@ -75,7 +75,7 @@
     overscroll-behavior: contain;
     padding: 0.5rem;
     border: 1px solid var(--border);
-    border-radius: var(--radius-3);
+    border-radius: var(--radius-lg);
     background: var(--popover);
     color: var(--popover-foreground);
   }
@@ -87,7 +87,7 @@
     padding-block: 0.625rem;
     padding-inline: calc(0.75rem + max(0, var(--uiify-toc-level, 2) - 2) * var(--uiify-toc-indent))
       0.75rem;
-    border-radius: var(--radius-2);
+    border-radius: var(--radius-md);
     color: var(--muted-foreground);
     text-decoration: none;
     overflow-wrap: anywhere;

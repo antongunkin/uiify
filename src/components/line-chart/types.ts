@@ -1,174 +1,52 @@
-import type { ComponentPropsWithRef, ElementType, HTMLAttributes, ReactNode, Ref } from "react";
+import type { ElementType, DOMAttributes, ReactNode, Ref } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { SlotProps } from "../../core/slot-props.js";
 
-type LineChartPartSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = { readonly "data-part"?: never },
-> = Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML" | keyof TOwned> &
-  ConsumerDataAttributes &
-  TOwned;
+type LineChartIndexedSlotProps<TProps extends object> = TProps & {
+  readonly byItemIndex?: Readonly<Record<number, TProps>>;
+};
 
-type LineChartIndexedSlotProps<TProps extends object, TOwned extends object = object> = Omit<
-  TProps,
-  "children" | "dangerouslySetInnerHTML"
-> &
-  ConsumerDataAttributes &
-  TOwned & {
-    readonly byItemIndex?: Readonly<
-      Record<
-        number,
-        Omit<TProps, "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes & TOwned
-      >
-    >;
-  };
-
-type LineChartRepeatedSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = { readonly "data-part"?: never },
-> = LineChartIndexedSlotProps<
-  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
-  TOwned
+type LineChartRepeatedSlotProps<TTag extends ElementType> = LineChartIndexedSlotProps<
+  SlotProps<TTag>
 >;
 
-type LineChartPointElementProps = HTMLAttributes<HTMLElement> & { readonly ref?: Ref<HTMLElement> };
-
-type LineChartPointOwnedProps = {
-  readonly "aria-hidden"?: never;
-  readonly "data-crosshair-active"?: never;
-  readonly "data-first"?: never;
-  readonly "data-part"?: never;
-  readonly "data-point-selected"?: never;
-  readonly "data-time"?: never;
-  readonly "data-trend"?: never;
-};
-
-type LineChartLiveRowOwnedProps = {
-  readonly "aria-posinset"?: never;
-  readonly "aria-setsize"?: never;
-  readonly "data-dynamic-row"?: never;
-  readonly "data-part"?: never;
-  readonly "data-row-index"?: never;
-  readonly role?: never;
-};
-
-type LineChartLiveRowSlotProps = Omit<LineChartRepeatedSlotProps<"div">, "byItemIndex"> &
-  LineChartLiveRowOwnedProps & {
-    readonly byItemIndex?: Readonly<
-      Record<
-        number,
-        Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML"> &
-          ConsumerDataAttributes &
-          LineChartLiveRowOwnedProps
-      >
-    >;
+type LineChartPointElementProps = Omit<SlotProps<"div">, keyof DOMAttributes<HTMLElement> | "ref"> &
+  Omit<DOMAttributes<HTMLElement>, "children" | "dangerouslySetInnerHTML"> & {
+    readonly ref?: Ref<HTMLElement> | undefined;
   };
 
 export interface LineChartSlotProps {
-  readonly caption?: LineChartPartSlotProps<"figcaption">;
-  readonly readout?: LineChartPartSlotProps<
-    "div",
-    {
-      readonly "aria-live"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly readoutTime?: LineChartPartSlotProps<"span">;
-  readonly readoutValue?: LineChartPartSlotProps<"span">;
-  readonly plot?: LineChartPartSlotProps<
-    "div",
-    {
-      readonly "aria-hidden"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly scrollViewport?: LineChartPartSlotProps<"div">;
-  readonly canvas?: LineChartPartSlotProps<"div">;
-  readonly viewport?: LineChartPartSlotProps<"div">;
-  readonly points?: LineChartPartSlotProps<
-    "ol",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly point?: LineChartIndexedSlotProps<LineChartPointElementProps, LineChartPointOwnedProps>;
-  readonly pointHit?: LineChartRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-label"?: never;
-      readonly "aria-pressed"?: never;
-      readonly "data-part"?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly crosshair?: LineChartPartSlotProps<
-    "div",
-    {
-      readonly "aria-hidden"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly crosshairMarker?: LineChartPartSlotProps<"span">;
-  readonly timeViewport?: LineChartPartSlotProps<"div">;
-  readonly timeAxis?: LineChartPartSlotProps<
-    "ol",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-axis"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
+  readonly caption?: SlotProps<"figcaption">;
+  readonly readout?: SlotProps<"div">;
+  readonly readoutTime?: SlotProps<"span">;
+  readonly readoutValue?: SlotProps<"span">;
+  readonly plot?: SlotProps<"div">;
+  readonly scrollViewport?: SlotProps<"div">;
+  readonly canvas?: SlotProps<"div">;
+  readonly viewport?: SlotProps<"div">;
+  readonly points?: SlotProps<"ol">;
+  readonly point?: LineChartIndexedSlotProps<LineChartPointElementProps>;
+  readonly pointHit?: LineChartRepeatedSlotProps<"button">;
+  readonly crosshair?: SlotProps<"div">;
+  readonly crosshairMarker?: SlotProps<"span">;
+  readonly timeViewport?: SlotProps<"div">;
+  readonly timeAxis?: SlotProps<"ol">;
   readonly timeAxisLabel?: LineChartRepeatedSlotProps<"li">;
-  readonly crosshairTime?: LineChartPartSlotProps<"li">;
-  readonly valueAxis?: LineChartPartSlotProps<
-    "ol",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-axis"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
+  readonly crosshairTime?: SlotProps<"li">;
+  readonly valueAxis?: SlotProps<"ol">;
   readonly valueAxisLabel?: LineChartRepeatedSlotProps<"li">;
-  readonly crosshairValue?: LineChartPartSlotProps<"li">;
-  readonly liveScrollport?: LineChartPartSlotProps<
-    "div",
-    {
-      readonly "data-dynamic-layout"?: never;
-      readonly "data-orientation"?: never;
-      readonly "data-part"?: never;
-      readonly "data-uiify-virtual-scroll"?: never;
-      readonly role?: never;
-    }
-  >;
-  readonly liveSpacer?: LineChartPartSlotProps<"div">;
-  readonly livePointRow?: LineChartLiveRowSlotProps;
-  readonly dataTable?: LineChartPartSlotProps<
-    "table",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly dataTableHead?: LineChartPartSlotProps<"thead">;
-  readonly dataTableHeaderRow?: LineChartPartSlotProps<"tr">;
-  readonly dataTableTimeHeader?: LineChartPartSlotProps<
-    "th",
-    {
-      readonly scope?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly dataTableValueHeader?: LineChartPartSlotProps<
-    "th",
-    {
-      readonly scope?: never;
-      readonly "data-part"?: never;
-    }
-  >;
-  readonly dataTableBody?: LineChartPartSlotProps<"tbody">;
+  readonly crosshairValue?: SlotProps<"li">;
+  readonly liveScrollport?: SlotProps<"div">;
+  readonly liveSpacer?: SlotProps<"div">;
+  readonly livePointRow?: LineChartRepeatedSlotProps<"div">;
+  readonly dataTable?: SlotProps<"table">;
+  readonly dataTableHead?: SlotProps<"thead">;
+  readonly dataTableHeaderRow?: SlotProps<"tr">;
+  readonly dataTableTimeHeader?: SlotProps<"th">;
+  readonly dataTableValueHeader?: SlotProps<"th">;
+  readonly dataTableBody?: SlotProps<"tbody">;
   readonly dataTableRow?: LineChartRepeatedSlotProps<"tr">;
-  readonly dataTableTimeCell?: LineChartRepeatedSlotProps<"th", { readonly scope?: never }>;
+  readonly dataTableTimeCell?: LineChartRepeatedSlotProps<"th">;
   readonly dataTableValueCell?: LineChartRepeatedSlotProps<"td">;
 }
 
@@ -190,7 +68,7 @@ export interface LineChartPointerPosition {
 }
 
 export interface LineChartOwnProps {
-  readonly "aria-label"?: string;
+  readonly "aria-label"?: string | undefined;
   readonly activePointIndex?: number;
   readonly cursorY?: number;
   readonly data: readonly LineChartData[];

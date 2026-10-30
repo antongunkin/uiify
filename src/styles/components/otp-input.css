@@ -12,14 +12,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 2.5rem;
-    block-size: 2.5rem;
+    inline-size: var(--uiify-control-size, var(--control-md));
+    block-size: var(--uiify-control-size, var(--control-md));
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--text-lg);
+    font-size: var(--uiify-control-font, var(--text-base));
     font-weight: var(--weight-medium);
     transition: var(--transition-colors);
   }

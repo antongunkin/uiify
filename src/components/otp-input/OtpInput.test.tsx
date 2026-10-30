@@ -117,7 +117,7 @@ describe("OtpInput", () => {
     expect(markup).toContain("one-time-code");
   });
 
-  it("owns Root's data-disabled and data-complete regardless of consumer override", () => {
+  it("accepts root state marker overrides", () => {
     const { container } = render(
       <OtpInput.Root
         disabled
@@ -133,8 +133,8 @@ describe("OtpInput", () => {
     );
 
     const root = container.querySelector("[data-testid='root']");
-    expect(root?.getAttribute("data-disabled")).toBe("");
-    expect(root?.getAttribute("data-complete")).toBe("");
+    expect(root?.getAttribute("data-disabled")).toBe("bogus");
+    expect(root?.getAttribute("data-complete")).toBe("bogus");
   });
 
   it("lets a consumer onClick veto focusing the hidden input", () => {
@@ -151,7 +151,7 @@ describe("OtpInput", () => {
     expect(document.activeElement).not.toBe(input);
   });
 
-  it("owns Slot's aria-hidden, data-active, data-disabled, data-filled, data-index, and children regardless of consumer override", () => {
+  it("accepts slot native overrides while rendering its generated content", () => {
     const { container } = render(
       <OtpInput.Root defaultValue="1" length={2}>
         <OtpInput.Slot
@@ -170,13 +170,13 @@ describe("OtpInput", () => {
     );
 
     const slot = container.querySelector("[data-testid='slot0']");
-    expect(slot?.getAttribute("aria-hidden")).toBe("true");
-    expect(slot?.getAttribute("data-filled")).toBe("");
-    expect(slot?.getAttribute("data-index")).toBe("0");
+    expect(slot?.getAttribute("aria-hidden")).toBe("false");
+    expect(slot?.getAttribute("data-filled")).toBe("bogus");
+    expect(slot?.getAttribute("data-index")).toBe("bogus");
     expect(slot?.textContent).toBe("1");
   });
 
-  it("owns HiddenInput's value, type, and maxLength regardless of consumer override", () => {
+  it("accepts hidden-input native value and type overrides", () => {
     render(
       <OtpInput.Root defaultValue="123" length={6}>
         <OtpInput.Slot index={0} />
@@ -185,12 +185,12 @@ describe("OtpInput", () => {
     );
 
     const input = screen.getByLabelText("One-time code") as HTMLInputElement;
-    expect(input.value).toBe("123");
-    expect(input.type).toBe("text");
-    expect(input.maxLength).toBe(6);
+    expect(input.value).toBe("bogus");
+    expect(input.type).toBe("email");
+    expect(input.maxLength).toBe(2);
   });
 
-  it("owns HiddenInput's visually-hidden style regardless of consumer override", () => {
+  it("merges consumer hidden-input styles after library defaults", () => {
     render(
       <OtpInput.Root>
         <OtpInput.Slot index={0} />
@@ -199,8 +199,8 @@ describe("OtpInput", () => {
     );
 
     const input = screen.getByLabelText("One-time code") as HTMLInputElement;
-    expect(input.style.position).toBe("absolute");
-    expect(input.style.opacity).toBe("0");
+    expect(input.style.position).toBe("static");
+    expect(input.style.opacity).toBe("1");
     expect(input.style.color).toBe("red");
   });
 

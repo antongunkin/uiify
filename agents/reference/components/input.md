@@ -27,6 +27,7 @@
 | `disabled` | `boolean` | no |  |
 | `readOnly` | `boolean` | no |  |
 | `invalid` | `boolean` | no |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 
 ## Other types
 

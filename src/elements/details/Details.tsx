@@ -8,14 +8,13 @@ import type { DetailsContentProps, DetailsRootProps, DetailsSummaryProps } from 
  * `disabled`.
  */
 export function DetailsRoot(props: DetailsRootProps): ReactElement {
-  const { children, defaultOpen, disabled, name, ...consumerProps } = props;
+  const { children, defaultOpen, disabled, ...consumerProps } = props;
   return (
     <details
-      {...consumerProps}
       data-disabled={disabled ? "" : undefined}
       data-uiify-details=""
-      {...(name === undefined ? {} : { name })}
       {...(defaultOpen ? { open: true } : {})}
+      {...consumerProps}
     >
       {children}
     </details>
@@ -33,9 +32,9 @@ export function DetailsSummary(props: DetailsSummaryProps): ReactElement {
   const { children, disabled, part, ...consumerProps } = props;
   return (
     <summary
-      {...consumerProps}
       {...(part === undefined ? {} : { "data-part": part })}
       {...(disabled ? { "aria-disabled": "true", tabIndex: -1 } : {})}
+      {...consumerProps}
     >
       {children}
     </summary>
@@ -55,7 +54,7 @@ export function DetailsContent<TAs extends ElementType = "div">(
   return useRenderElement({
     as,
     defaultTag: "div",
-    props: { ...consumerProps, ...(part === undefined ? {} : { "data-part": part }) },
+    props: { ...(part === undefined ? {} : { "data-part": part }), ...consumerProps },
     render,
     state: {},
   });

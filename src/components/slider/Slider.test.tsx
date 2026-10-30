@@ -39,11 +39,11 @@ describe("Slider", () => {
     expect(slider.getAttribute("data-uiify-slider")).toBe("");
   });
 
-  it("owns data-disabled and data-state; consumer cannot override them", () => {
+  it("lets consumers override data-disabled and data-state", () => {
     render(<Slider value={55} disabled data-disabled="no" data-state="0" aria-label="Volume" />);
     const slider = screen.getByRole("slider", { name: "Volume" });
-    expect(slider.getAttribute("data-disabled")).toBe("");
-    expect(slider.getAttribute("data-state")).toBe("55");
+    expect(slider.getAttribute("data-disabled")).toBe("no");
+    expect(slider.getAttribute("data-state")).toBe("0");
   });
 
   it("lets a consumer onChange veto the internal value sync (policy #1: form-control change veto)", () => {

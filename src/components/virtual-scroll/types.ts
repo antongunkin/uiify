@@ -1,5 +1,9 @@
-import type { ComponentPropsWithRef, ComponentPropsWithoutRef, ReactNode, Ref } from "react";
-import type { ConsumerDataAttributes, RepeatedSlotProps } from "../../core/slot-props.js";
+import type { ComponentPropsWithoutRef, ReactNode, Ref } from "react";
+import type {
+  ConsumerDataAttributes,
+  RepeatedSlotProps,
+  SlotProps,
+} from "../../core/slot-props.js";
 
 /** Fixed row height — default for scroll math when `estimateRowHeight` is omitted. */
 export const VIRTUAL_SCROLL_ROW_HEIGHT = 64;
@@ -17,38 +21,11 @@ export interface VirtualScrollItem {
   readonly id: string;
 }
 
-type VirtualScrollRowOwnedProps = {
-  readonly "aria-posinset"?: never;
-  readonly "aria-setsize"?: never;
-  readonly "data-dynamic-row"?: never;
-  readonly "data-part"?: never;
-  readonly "data-row-index"?: never;
-  readonly role?: never;
+export type VirtualScrollRowSlotProps = RepeatedSlotProps<SlotProps<"div">> & {
+  readonly byItemIndex?: Readonly<Record<number, SlotProps<"div">>>;
 };
 
-type VirtualScrollRowNativeProps = Omit<
-  ComponentPropsWithRef<"div">,
-  "children" | "dangerouslySetInnerHTML"
->;
-
-export type VirtualScrollRowSlotProps = RepeatedSlotProps<
-  VirtualScrollRowNativeProps,
-  VirtualScrollRowOwnedProps
-> & {
-  readonly byItemIndex?: Readonly<
-    Record<
-      number,
-      VirtualScrollRowNativeProps & ConsumerDataAttributes & VirtualScrollRowOwnedProps
-    >
-  >;
-};
-
-export type VirtualScrollSpacerSlotProps = Omit<
-  ComponentPropsWithRef<"div">,
-  "children" | "dangerouslySetInnerHTML" | "data-part"
-> & {
-  readonly "data-part"?: never;
-} & ConsumerDataAttributes;
+export type VirtualScrollSpacerSlotProps = SlotProps<"div">;
 
 export interface VirtualScrollSlotProps {
   readonly row?: VirtualScrollRowSlotProps;
@@ -96,10 +73,8 @@ export interface VirtualScrollHandle {
   scrollToEnd(options?: VirtualScrollScrollBehaviorOptions): void;
 }
 
-export interface VirtualScrollOwnProps<T extends VirtualScrollItem> extends Omit<
-  ComponentPropsWithoutRef<"div">,
-  "children" | "role"
-> {
+export interface VirtualScrollOwnProps<T extends VirtualScrollItem>
+  extends Omit<ComponentPropsWithoutRef<"div">, "children">, ConsumerDataAttributes {
   readonly ref?: Ref<HTMLDivElement>;
   readonly items: readonly T[];
   /** Scrollport height; also the viewport extent used before the first resize measurement. */
@@ -114,7 +89,6 @@ export interface VirtualScrollOwnProps<T extends VirtualScrollItem> extends Omit
   readonly scrollRef?: Ref<VirtualScrollHandle>;
   readonly estimateRowHeight?: (index: number) => number;
   readonly onRangeChange?: (range: VirtualScrollRangeChange) => void;
-  readonly role?: VirtualScrollListRole;
   readonly anchor?: VirtualScrollAnchor;
   readonly followAppend?: boolean | "smooth";
   readonly onScrollStateChange?: (state: VirtualScrollScrollState) => void;
@@ -122,17 +96,7 @@ export interface VirtualScrollOwnProps<T extends VirtualScrollItem> extends Omit
   readonly slotProps?: VirtualScrollSlotProps;
 }
 
-export interface VirtualScrollRowShellProps extends Omit<
-  ComponentPropsWithRef<"div">,
-  | "aria-posinset"
-  | "aria-setsize"
-  | "children"
-  | "data-dynamic-row"
-  | "data-part"
-  | "data-row-index"
-  | "dangerouslySetInnerHTML"
-  | "role"
-> {
+export interface VirtualScrollRowShellProps extends SlotProps<"div"> {
   readonly children: ReactNode;
   readonly dynamicLayout: boolean;
   readonly index: number;

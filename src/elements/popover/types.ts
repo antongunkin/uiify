@@ -8,6 +8,11 @@ export type AnchorSide = "top" | "right" | "bottom" | "left";
 
 export type AnchorAlign = "start" | "center" | "end";
 
+type PopoverInvokerNativeProps = Pick<
+  ComponentPropsWithRef<"button">,
+  "popoverTarget" | "popoverTargetAction"
+>;
+
 /** What a trigger does to its target popover when activated. */
 export type PopoverTriggerAction = "toggle" | "show" | "hide";
 
@@ -21,7 +26,7 @@ export interface PopoverTriggerOwnProps {
 
 export type PopoverTriggerProps<TAs extends ElementType = "button"> = NativeButtonProps<
   TAs,
-  PopoverTriggerOwnProps
+  PopoverTriggerOwnProps & PopoverInvokerNativeProps
 >;
 
 export interface PopoverCloseOwnProps {
@@ -32,7 +37,7 @@ export interface PopoverCloseOwnProps {
 
 export type PopoverCloseProps<TAs extends ElementType = "button"> = NativeButtonProps<
   TAs,
-  PopoverCloseOwnProps
+  PopoverCloseOwnProps & PopoverInvokerNativeProps
 >;
 
 export interface PopoverSurfaceOwnProps {
@@ -44,6 +49,6 @@ export interface PopoverSurfaceOwnProps {
   readonly side?: AnchorSide;
 }
 
-/** `popover`, `data-side`, `data-align` and `data-positioning` are owned by the element. */
+/** Native props can override the surface defaults. */
 export type PopoverSurfaceProps = PopoverSurfaceOwnProps &
-  Omit<ComponentPropsWithRef<"div">, keyof PopoverSurfaceOwnProps | "popover">;
+  Omit<ComponentPropsWithRef<"div">, keyof PopoverSurfaceOwnProps>;

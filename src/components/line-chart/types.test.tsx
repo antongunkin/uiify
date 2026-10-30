@@ -18,22 +18,15 @@ it("accepts native slot props and item-index overrides", () => {
   expect(chart.slotProps).toBe(slots);
 });
 
-it("protects LineChart-owned point state and generated content", () => {
-  const invalidMarker: LineChartProps = {
+it("accepts native point state and marker overrides", () => {
+  const chart: LineChartProps = {
     data: [],
-    // @ts-expect-error The plot anatomy marker is owned by LineChart.
-    slotProps: { plot: { "data-part": "other" } },
+    "aria-label": undefined,
+    slotProps: {
+      plot: { "data-part": "other" },
+      point: { byItemIndex: { 0: { "data-crosshair-active": "", "aria-hidden": undefined } } },
+      pointHit: { type: "submit", "aria-pressed": undefined },
+    },
   };
-  const invalidPointState: LineChartProps = {
-    data: [],
-    // @ts-expect-error Point state attributes are computed from chart state.
-    slotProps: { point: { byItemIndex: { 0: { "data-crosshair-active": "" } } } },
-  };
-  const invalidContent: LineChartProps = {
-    data: [],
-    // @ts-expect-error Generated points and readout content cannot be replaced.
-    slotProps: { caption: { children: "replacement" } },
-  };
-
-  expect([invalidMarker, invalidPointState, invalidContent]).toHaveLength(3);
+  expect(chart.slotProps?.pointHit?.type).toBe("submit");
 });

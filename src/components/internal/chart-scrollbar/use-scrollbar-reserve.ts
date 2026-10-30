@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type RefObject } from "react";
+import { useEffect, useRef, type CSSProperties, type RefObject } from "react";
 
 /**
  * Publishes the horizontal scrollbar thickness of a chart's
@@ -13,7 +13,10 @@ import { useEffect, type RefObject } from "react";
 export function useScrollbarReserve(
   chartRef: RefObject<HTMLElement | null>,
   variable: `--${string}`,
+  consumerStyle?: CSSProperties | undefined,
 ): void {
+  const consumerStyleRef = useRef(consumerStyle);
+  consumerStyleRef.current = consumerStyle;
   useEffect(() => {
     const chart = chartRef.current;
     const scroller = chart?.querySelector<HTMLElement>('[data-part="scroll-viewport"]');
@@ -23,7 +26,13 @@ export function useScrollbarReserve(
       const content = entry?.contentBoxSize[0]?.blockSize;
       if (border === undefined || content === undefined) return;
       // The scroll viewport has no padding or border, so the difference is the scrollbar.
-      chart.style.setProperty(variable, `${Math.max(0, border - content)}px`);
+      const style: CSSProperties & Record<`--${string}`, string | number | undefined> = {
+        [variable]: `${Math.max(0, border - content)}px`,
+        ...consumerStyleRef.current,
+      };
+      const value = style[variable];
+      if (value === undefined) chart.style.removeProperty(variable);
+      else chart.style.setProperty(variable, String(value));
     });
     observer.observe(scroller);
     return () => observer.disconnect();

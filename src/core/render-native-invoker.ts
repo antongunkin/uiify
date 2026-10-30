@@ -17,6 +17,7 @@ interface NativeInvokerOptions {
  * command semantics; Popup uses `popoverTarget`/`popoverTargetAction` instead
  * and keeps its own renderer (see popup/PopupParts.tsx).
  *
+ * The invoker attributes, `type="button"` and markers are defaults: consumer props replace them.
  */
 export function renderNativeInvoker(
   as: ElementType | undefined,
@@ -28,13 +29,13 @@ export function renderNativeInvoker(
   options: NativeInvokerOptions = {},
 ): ReactElement {
   return createElement(as ?? "button", {
-    ...consumerProps,
-    ...(options.button ? { "data-uiify-button": "" } : {}),
-    [marker]: "",
-    "data-part": part,
-    ...(options.variant ? { "data-variant": options.variant } : {}),
+    type: "button",
     command,
     commandfor: target,
-    type: "button",
+    "data-part": part,
+    [marker]: "",
+    ...(options.button ? { "data-uiify-button": "" } : {}),
+    ...(options.variant ? { "data-variant": options.variant } : {}),
+    ...consumerProps,
   });
 }

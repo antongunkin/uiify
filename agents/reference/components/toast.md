@@ -117,8 +117,8 @@ Extends: `ToastRootSlotProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `politeLiveRegion` | `Omit<ComponentPropsWithRef<"span">, "children" \| "dangerouslySetInnerHTML" \| "aria-atomic" \| "aria-live"> & ConsumerDataAttributes` | no |  |
-| `assertiveLiveRegion` | `Omit<ComponentPropsWithRef<"span">, "children" \| "dangerouslySetInnerHTML" \| "aria-atomic" \| "aria-live"> & ConsumerDataAttributes` | no |  |
+| `politeLiveRegion` | `SlotProps<"span">` | no |  |
+| `assertiveLiveRegion` | `SlotProps<"span">` | no |  |
 
 ### ToastProviderOwnProps
 
@@ -131,26 +131,19 @@ Extends: `ToastRootSlotProps`
 
 ### ToastViewportOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"section">, "children" | "dangerouslySetInnerHTML" | "popover" | "data-part" | "data-uiify-toast">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithRef<"section">, "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"data-part"` | `never` | no |  |
-| `"data-uiify-toast"` | `never` | no |  |
-| `children` | `ReactNode` | no |  |
 | `labels` | `Partial<ToastLabels>` | no |  |
-| `popover` | `"manual"` | no | Set by the live client viewport (@gunkin/uiify/components/toast/Toast.js) to `"manual"` so the queue's rendered surface sits in the top layer. The structural shell (this file's own re-exported ToastViewport, used directly by "Toast server shell" tests and any no-JS render) leaves it unset, since there is no queue-driven show/hide to wire up there. |
 | `slotProps` | `ToastViewportSlotProps` | no |  |
 
 ### ToastRootOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, | "children" | "dangerouslySetInnerHTML" | "aria-label" | "data-part" | "data-state" | "data-uiify-toast" | "role" | "tabIndex">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"data-part"` | `never` | no |  |
-| `"data-state"` | `never` | no |  |
-| `"data-uiify-toast"` | `never` | no |  |
 | `labels` | `Partial<ToastLabels>` | no |  |
 | `slotProps` | `ToastRootSlotProps` | no |  |
 | `toast` | `ToastRecord` | yes |  |
@@ -206,8 +199,8 @@ Extends: `ToastCloseOwnProps`
 
 ## Other types
 
-- `ToastItemSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-state" | "data-uiify-toast" | "aria-label" | "role" | "tabIndex">, ToastItemOwnedAttributes>`
-- `ToastTitleSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-toast">, ToastPartOwnedAttributes>`
+- `ToastItemSlotProps`: `RepeatedSlotProps<SlotProps<"div">>`
+- `ToastTitleSlotProps`: `RepeatedSlotProps<SlotProps<"div">>`
 - `ToastDescriptionSlotProps`: `ToastTitleSlotProps`
-- `ToastActionSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"button">, "children" | "dangerouslySetInnerHTML" | "type" | "data-part" | "data-uiify-toast">, ToastPartOwnedAttributes>`
-- `ToastCloseSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"button">, | "children" | "dangerouslySetInnerHTML" | "type" | "aria-label" | "data-part" | "data-uiify-toast">, ToastPartOwnedAttributes & { readonly "aria-label"?: never }>`
+- `ToastActionSlotProps`: `RepeatedSlotProps<SlotProps<"button">>`
+- `ToastCloseSlotProps`: `RepeatedSlotProps<SlotProps<"button">>`

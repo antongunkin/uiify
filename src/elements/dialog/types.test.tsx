@@ -28,11 +28,11 @@ it("only accepts a native button or a button-forwarding component as `as`", () =
     </DialogTrigger>,
     // @ts-expect-error -- target is the native relationship; it is required.
     <DialogTrigger key="missing-target">Open</DialogTrigger>,
-    // @ts-expect-error -- the library owns type=button.
+    // type="button" is a default; consumers may replace it.
     <DialogTrigger key="submit" target="settings" type="submit">
       Open
     </DialogTrigger>,
-    // @ts-expect-error -- the library owns the invoker attributes.
+    // @ts-expect-error -- popover invoker attributes are not part of a command invoker.
     <DialogTrigger key="popover" target="settings" popoverTarget="other">
       Open
     </DialogTrigger>,

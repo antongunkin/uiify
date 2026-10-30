@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default spinner DOM 1`] = `
+[
+  "div aria-label="Loading" aria-live="polite" data-size="md" data-state="visible" data-uiify-spinner="" role="status"",
+  "span data-part="label"",
+  "div aria-label="Loading" aria-valuemax="100" aria-valuemin="0" aria-valuenow="70" data-align="center" data-delay="500ms" data-size="sm" data-state="delayed" data-uiify-spinner="" data-value="70" role="progressbar"",
+]
+`;

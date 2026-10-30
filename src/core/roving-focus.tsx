@@ -1,5 +1,4 @@
 "use client";
-
 import { createContext, useCallback, useContext, useRef, useSyncExternalStore } from "react";
 import { useId, useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import type {
@@ -20,22 +19,20 @@ import {
 } from "./roving-focus-store.js";
 import { resolveDirection } from "./text-direction.js";
 import { useRenderElement } from "./use-render-element.js";
-
 const RovingFocusContext = createContext<RovingFocusStore | null>(null);
-
 export interface RovingFocusRootOwnProps {
   readonly direction?: Direction;
   readonly loop?: boolean;
   readonly orientation?: RovingFocusOrientation;
 }
-
 export type RovingFocusRootProps<TAs extends ElementType = "div"> = RenderableProps<
   TAs,
   RovingFocusRootOwnProps,
-  { orientation: RovingFocusOrientation },
+  {
+    orientation: RovingFocusOrientation;
+  },
   HTMLElement
 >;
-
 export function RovingFocusRoot<TAs extends ElementType = "div">(
   props: RovingFocusRootProps<TAs>,
 ): ReactElement | null {
@@ -51,14 +48,13 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
   const storeRef = useRef<RovingFocusStore | null>(null);
   storeRef.current ??= createRovingFocusStore({ direction, loop, orientation });
   storeRef.current.updateConfig({ direction, loop, orientation });
-
   const element = useRenderElement({
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       ...(direction ? { dir: direction } : {}),
       "data-orientation": orientation,
+      ...consumerProps,
     },
     render,
     state: { orientation },
@@ -66,39 +62,40 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
   return <RovingFocusContext value={storeRef.current}>{element}</RovingFocusContext>;
 }
 RovingFocusRoot.displayName = "RovingFocusRoot";
-
 export interface RovingFocusItemOwnProps {
-  readonly ref?: Ref<HTMLElement>;
+  readonly ref?: Ref<HTMLElement> | undefined;
   readonly disabled?: boolean;
-  readonly id?: string;
+  readonly id?: string | undefined;
   readonly textValue?: string;
 }
-
 export type RovingFocusItemProps<TAs extends ElementType = "div"> = RenderableProps<
   TAs,
   RovingFocusItemOwnProps,
-  { current: boolean; disabled: boolean },
+  {
+    current: boolean;
+    disabled: boolean;
+  },
   HTMLElement
 >;
-
 export function RovingFocusItem<TAs extends ElementType = "div">(
   props: RovingFocusItemProps<TAs>,
 ): ReactElement | null {
   const {
     as,
     disabled = false,
-    id: providedId,
     ref: consumerRef,
     render,
     textValue = "",
     ...consumerProps
-  } = props as RovingFocusItemProps<ElementType> & { ref?: Ref<HTMLElement> };
+  } = props as RovingFocusItemProps<ElementType> & {
+    ref?: Ref<HTMLElement>;
+  };
   const { onFocus: consumerOnFocus, onKeyDown: consumerOnKeyDown } = consumerProps as {
     onFocus?: (event: ReactFocusEvent<HTMLElement>) => void;
     onKeyDown?: (event: ReactKeyboardEvent<HTMLElement>) => void;
   };
   const generatedId = useId();
-  const id = providedId ?? generatedId;
+  const id = props.id ?? generatedId;
   const store = useContext(RovingFocusContext);
   if (!store) throw new Error("RovingFocusItem must be used inside RovingFocusRoot");
   const elementRef = useRef<HTMLElement | null>(null);
@@ -112,7 +109,6 @@ export function RovingFocusItem<TAs extends ElementType = "div">(
     [id, store],
   );
   const mergedRef = useMergedRefs(elementRef, consumerRef, setElement);
-
   useIsomorphicLayoutEffect(
     () =>
       store.register({
@@ -129,13 +125,10 @@ export function RovingFocusItem<TAs extends ElementType = "div">(
       textValue: textValue || elementRef.current?.textContent?.trim() || "",
     });
   }, [disabled, id, store, textValue]);
-
   const nativeButton = as === "button";
-
   const handleFocus = () => {
     if (!disabled) store.setCurrentId(id);
   };
-
   const handleKeyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
     if (isComposingKeyEvent(event)) return;
     if (event.key === "Home" || event.key === "End" || event.key.startsWith("Arrow")) {
@@ -146,26 +139,24 @@ export function RovingFocusItem<TAs extends ElementType = "div">(
       store.search(event.key);
     }
   };
-
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       id,
       "aria-disabled": disabled || undefined,
       "data-current": current ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,
       ...(nativeButton ? { disabled: disabled || undefined } : {}),
+      tabIndex: current && !disabled ? 0 : -1,
+      ...consumerProps,
       onFocus: composeEventHandlers(consumerOnFocus, handleFocus),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       ref: mergedRef,
-      tabIndex: current && !disabled ? 0 : -1,
     },
     render,
     state: { current, disabled },
   });
 }
-
 export { createRovingFocusStore };
 export type { RovingFocusOrientation, RovingFocusStore };

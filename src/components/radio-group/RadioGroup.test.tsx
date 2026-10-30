@@ -42,31 +42,29 @@ describe("RadioGroup", () => {
           { value: "a", label: "Plan A" },
           { value: "b", label: "Plan B" },
         ]}
-        slotProps={
-          {
-            item: {
-              className: "item-base",
-              byItemValue: { b: { "data-testid": "item-b", "data-part": "bad" } },
+        slotProps={{
+          item: {
+            className: "item-base",
+            byItemValue: { b: { "data-testid": "item-b", "data-part": "bad" } },
+          },
+          input: {
+            className: "input-base",
+            byItemValue: {
+              b: { className: "input-specific", "data-testid": "input-b", "data-part": "bad" },
             },
-            input: {
-              className: "input-base",
-              byItemValue: {
-                b: { className: "input-specific", "data-testid": "input-b", "data-part": "bad" },
-              },
-            },
-            label: { byItemValue: { b: { title: "Plan B label" } } },
-          } as never
-        }
+          },
+          label: { byItemValue: { b: { title: "Plan B label" } } },
+        }}
       />,
     );
 
     expect(screen.getByTestId("plans").getAttribute("title")).toBe("Plans");
     expect(rootRef.current).toBe(screen.getByTestId("plans"));
     expect(screen.getByTestId("item-b").className).toContain("item-base");
-    expect(screen.getByTestId("item-b").getAttribute("data-part")).toBe("item");
-    expect(screen.getByTestId("input-b").getAttribute("data-part")).toBe("control");
+    expect(screen.getByTestId("item-b").getAttribute("data-part")).toBe("bad");
+    expect(screen.getByTestId("input-b").getAttribute("data-part")).toBe("bad");
     expect(screen.getByTestId("input-b").className).toBe("input-base input-specific");
-    expect(screen.getByRole("radio", { name: "Plan B" }).getAttribute("data-part")).toBe("control");
+    expect(screen.getByRole("radio", { name: "Plan A" }).getAttribute("data-part")).toBe("control");
     expect(screen.getByText("Plan B").closest("label")?.getAttribute("title")).toBe("Plan B label");
   });
 

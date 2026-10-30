@@ -1,6 +1,5 @@
 import type { ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { omitProps } from "../../core/slot-props.js";
 import type { PolymorphicProps } from "@gunkin/uiify/core/render";
 import type { SpinnerLabels, SpinnerOwnProps, SpinnerProps } from "./types.js";
 
@@ -33,7 +32,6 @@ export function Spinner<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "aria-label": resolvedLabel,
       "aria-live": determinate ? undefined : "polite",
       "aria-valuemax": determinate ? 100 : undefined,
@@ -46,13 +44,11 @@ export function Spinner<TAs extends ElementType = "div">(
       "data-uiify-spinner": "",
       "data-value": percent,
       role: determinate ? "progressbar" : "status",
+      ...consumerProps,
       children: (
         <>
           {showLabel ? (
-            <span
-              {...omitProps(slotProps?.label, ["data-part", "data-uiify-spinner"])}
-              data-part="label"
-            >
+            <span data-part="label" {...slotProps?.label}>
               {resolvedLabel}
             </span>
           ) : null}

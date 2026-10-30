@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default field DOM 1`] = `
+[
+  "div data-disabled="" data-invalid="" data-required="" data-uiify-field="" id="field"",
+  "label data-disabled="" data-part="label" data-required="" for="field-control" id="field-label"",
+  "input aria-describedby="field-description field-error" aria-invalid="true" aria-labelledby="field-label" aria-required="true" data-disabled="" data-invalid="" data-part="control" data-required="" data-uiify-input="" disabled="" id="field-control" required=""",
+  "p data-part="description" id="field-description"",
+  "p data-invalid="" data-part="error" id="field-error" role="alert"",
+]
+`;

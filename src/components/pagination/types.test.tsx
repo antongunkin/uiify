@@ -17,20 +17,17 @@ it("accepts native props for generated pagination parts by stable item key", () 
   expect(props.count).toBe(20);
 });
 
-it("protects pagination state, behavior and generated labels", () => {
+it("accepts native overrides for pagination defaults", () => {
   const invalidSelected: PaginationRootProps = {
     count: 20,
-    // @ts-expect-error The page link's selected state is owned by Pagination.
     slotProps: { link: { "data-selected": "false" } },
   };
   const invalidControlType: PaginationRootProps = {
     count: 20,
-    // @ts-expect-error Pagination controls always render buttons.
     slotProps: { control: { type: "submit" } },
   };
   const invalidEllipsisLabel: PaginationRootProps = {
     count: 20,
-    // @ts-expect-error Ellipses are hidden from assistive technology.
     slotProps: { ellipsis: { "aria-hidden": false } },
   };
 

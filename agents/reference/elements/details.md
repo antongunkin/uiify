@@ -20,7 +20,7 @@
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `defaultOpen` | `boolean` | no | Applies the native `open` attribute on first render. |
-| `name` | `string` | no | Groups sibling `<details name>` into an exclusive, single-open set — the browser enforces it, no JS. Must be unique per group and stable across SSR. |
+| `name` | `string \| undefined` | no | Groups sibling `<details name>` into an exclusive, single-open set — the browser enforces it, no JS. Must be unique per group and stable across SSR. |
 | `disabled` | `boolean` | no |  |
 
 ### DetailsSummaryOwnProps
@@ -40,6 +40,6 @@
 
 ## Other types
 
-- `DetailsRootProps`: `DetailsRootOwnProps & Omit<ComponentPropsWithRef<"details">, keyof DetailsRootOwnProps | "open">` — `open` is not part of the contract — use `defaultOpen`; the browser owns state after that.
+- `DetailsRootProps`: `DetailsRootOwnProps & Omit<ComponentPropsWithRef<"details">, keyof DetailsRootOwnProps>` — Native props may override the initial open state.
 - `DetailsSummaryProps`: `DetailsSummaryOwnProps & Omit<ComponentPropsWithRef<"summary">, keyof DetailsSummaryOwnProps>`
 - `DetailsContentProps<TAs>`: `RenderableProps<TAs, DetailsContentOwnProps, Record<string, never>, HTMLElement>`

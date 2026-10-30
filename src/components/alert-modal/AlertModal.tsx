@@ -1,5 +1,4 @@
 import type { ReactElement } from "react";
-import { omitProps } from "../../core/slot-props.js";
 import {
   AlertModalAction,
   AlertModalCancel,
@@ -7,7 +6,6 @@ import {
   AlertModalTrigger,
 } from "./AlertModalParts.js";
 import type { AlertModalProps } from "./types.js";
-
 /** Convenience shell over the native parts: one trigger, one modal alertdialog, cancel and action. */
 export function AlertModal({
   id,
@@ -22,124 +20,35 @@ export function AlertModal({
 }: AlertModalProps): ReactElement {
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
-
   return (
-    <div
-      {...omitProps(rootProps, [
-        "children",
-        "dangerouslySetInnerHTML",
-        "data-part",
-        "data-uiify-alert-modal",
-      ])}
-      data-part="root"
-      data-uiify-alert-modal=""
-    >
-      <AlertModalTrigger
-        {...omitProps(slotProps?.trigger, [
-          "children",
-          "dangerouslySetInnerHTML",
-          "type",
-          "command",
-          "commandfor",
-          "commandFor",
-          "popoverTarget",
-          "popoverTargetAction",
-          "data-part",
-          "data-uiify-button",
-          "data-uiify-alert-modal",
-        ])}
-        target={id}
-      >
+    <div data-part="root" data-uiify-alert-modal="" {...rootProps}>
+      <AlertModalTrigger target={id} {...slotProps?.trigger}>
         {trigger}
       </AlertModalTrigger>
       <AlertModalContent
-        {...omitProps(slotProps?.content, [
-          "children",
-          "dangerouslySetInnerHTML",
-          "id",
-          "open",
-          "popover",
-          "role",
-          "aria-describedby",
-          "aria-labelledby",
-          "data-part",
-          "data-uiify-alert-modal",
-        ])}
         aria-describedby={description === undefined ? undefined : descriptionId}
         aria-labelledby={titleId}
         id={id}
+        {...slotProps?.content}
       >
-        <h2
-          {...omitProps(slotProps?.title, [
-            "children",
-            "dangerouslySetInnerHTML",
-            "id",
-            "data-part",
-            "data-uiify-alert-modal",
-          ])}
-          id={titleId}
-          data-part="title"
-          data-uiify-alert-modal=""
-        >
+        <h2 id={titleId} data-part="title" data-uiify-alert-modal="" {...slotProps?.title}>
           {title}
         </h2>
         {description === undefined ? null : (
           <p
-            {...omitProps(slotProps?.description, [
-              "children",
-              "dangerouslySetInnerHTML",
-              "id",
-              "data-part",
-              "data-uiify-alert-modal",
-            ])}
             id={descriptionId}
             data-part="description"
             data-uiify-alert-modal=""
+            {...slotProps?.description}
           >
             {description}
           </p>
         )}
         {children}
-        <AlertModalCancel
-          {...omitProps(slotProps?.cancel, [
-            "children",
-            "dangerouslySetInnerHTML",
-            "type",
-            "value",
-            "command",
-            "commandfor",
-            "commandFor",
-            "popoverTarget",
-            "popoverTargetAction",
-            "data-part",
-            "data-variant",
-            "data-uiify-button",
-            "data-uiify-alert-modal",
-          ])}
-          target={id}
-          value="cancel"
-        >
+        <AlertModalCancel target={id} value="cancel" {...slotProps?.cancel}>
           {cancelLabel}
         </AlertModalCancel>
-        <AlertModalAction
-          {...omitProps(slotProps?.action, [
-            "children",
-            "dangerouslySetInnerHTML",
-            "type",
-            "value",
-            "command",
-            "commandfor",
-            "commandFor",
-            "popoverTarget",
-            "popoverTargetAction",
-            "data-part",
-            "data-variant",
-            "data-uiify-button",
-            "data-uiify-alert-modal",
-          ])}
-          target={id}
-          value="confirm"
-        >
+        <AlertModalAction target={id} value="confirm" {...slotProps?.action}>
           {actionLabel}
         </AlertModalAction>
       </AlertModalContent>

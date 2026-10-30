@@ -19,14 +19,42 @@
   [data-uiify-pagination] [data-type="ellipsis"] {
     display: inline-grid;
     place-items: center;
-    min-inline-size: 2.75rem;
+    min-inline-size: var(--control-md);
     color: var(--muted-foreground);
   }
   [data-uiify-pagination] span[data-uiify-button]:not([data-disabled]) {
     cursor: default;
   }
-  [data-uiify-pagination] svg {
-    inline-size: 1rem;
-    block-size: 1rem;
+
+  /* Previous/next chevron: a rotated corner of a bordered box on the empty control's
+     ::before (the ghost Button leaves it free). Mirrors in RTL through --turn. */
+  [data-uiify-pagination] :is([data-type="previous"], [data-type="next"]):empty {
+    --uiify-pagination-turn: 1;
+
+    &:dir(rtl) {
+      --uiify-pagination-turn: -1;
+    }
+
+    &::before {
+      all: unset;
+      content: "";
+      box-sizing: border-box;
+      inline-size: 0.5rem;
+      block-size: 0.5rem;
+      border: 0 solid currentcolor;
+      rotate: calc(-45deg * var(--uiify-pagination-turn));
+    }
+
+    &[data-type="previous"]::before {
+      border-block-start-width: 2px;
+      border-inline-start-width: 2px;
+      translate: calc(0.14rem * var(--uiify-pagination-turn));
+    }
+
+    &[data-type="next"]::before {
+      border-block-end-width: 2px;
+      border-inline-end-width: 2px;
+      translate: calc(-0.14rem * var(--uiify-pagination-turn));
+    }
   }
 }

@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { omitProps } from "../../core/slot-props.js";
+import { composeEventHandlers } from "../../core/compose-event-handlers.js";
 import type { ToggleProps } from "./types.js";
 
 export function Toggle({
@@ -7,6 +7,7 @@ export function Toggle({
   label,
   pressed,
   defaultPressed = false,
+  onPressedChange,
   disabled = false,
   slotProps,
   ...rootProps
@@ -17,30 +18,8 @@ export function Toggle({
   const labelId = `${id}-label`;
 
   return (
-    <div
-      {...omitProps(rootProps, [
-        "children",
-        "dangerouslySetInnerHTML",
-        "data-disabled",
-        "data-uiify-toggle",
-        "id",
-      ])}
-      data-disabled={disabled ? "" : undefined}
-      data-uiify-toggle=""
-    >
+    <div data-disabled={disabled ? "" : undefined} data-uiify-toggle="" {...rootProps}>
       <input
-        {...omitProps(slotProps?.control, [
-          "aria-labelledby",
-          "checked",
-          "data-disabled",
-          "data-part",
-          "data-state",
-          "data-uiify-toggle",
-          "defaultChecked",
-          "disabled",
-          "id",
-          "type",
-        ])}
         aria-labelledby={labelId}
         checked={checked}
         data-disabled={disabled ? "" : undefined}
@@ -50,20 +29,23 @@ export function Toggle({
         disabled={disabled || undefined}
         id={id}
         type="checkbox"
+        readOnly={isControlled && !onPressedChange && !slotProps?.control?.onChange}
+        {...slotProps?.control}
+        onChange={
+          onPressedChange
+            ? composeEventHandlers(slotProps?.control?.onChange, (event) =>
+                onPressedChange(event.currentTarget.checked),
+              )
+            : slotProps?.control?.onChange
+        }
       />
       <label
-        {...omitProps(slotProps?.label, [
-          "data-part",
-          "data-uiify-button",
-          "data-variant",
-          "htmlFor",
-          "id",
-        ])}
         data-part="label"
         data-uiify-button=""
         data-variant="outline"
         htmlFor={id}
         id={labelId}
+        {...slotProps?.label}
       >
         {label}
       </label>

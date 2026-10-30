@@ -1,5 +1,4 @@
 "use client";
-
 import { useRef } from "react";
 import type {
   CSSProperties,
@@ -31,7 +30,6 @@ import type {
   TooltipRootProps,
   TooltipTriggerProps,
 } from "./types.js";
-
 interface TooltipClientContextValue {
   readonly anchorId: string;
   readonly closeTooltip: () => void;
@@ -42,10 +40,8 @@ interface TooltipClientContextValue {
   readonly pointerFocusRef: React.RefObject<boolean>;
   readonly setContentId: (id: string) => void;
 }
-
 const [TooltipProviderStoreProvider, useTooltipProviderStore] =
   createPartContext<TooltipProviderStore>("Tooltip", "Provider");
-
 // Root name "Root" (the default): Trigger/Content require <Tooltip.Root>, a
 // distinct nesting requirement from TooltipRoot itself requiring
 // <Tooltip.Provider> above. Keeping the two contexts' root names accurate
@@ -53,22 +49,18 @@ const [TooltipProviderStoreProvider, useTooltipProviderStore] =
 // correct, non-misleading error for the "Trigger without Root" case.
 const [TooltipContextProvider, useTooltipContext] =
   createPartContext<TooltipClientContextValue>("Tooltip");
-
 export function TooltipProvider(props: TooltipProviderOwnProps): ReactElement | null {
   const { children, delayDuration = 300, skipDelayDuration = 300 } = props;
   const storeRef = useRef<TooltipProviderStore | null>(null);
   storeRef.current ??= createTooltipProviderStore({ delayDuration, skipDelayDuration });
-
   useIsomorphicLayoutEffect(() => {
     storeRef.current?.updateOptions({ delayDuration, skipDelayDuration });
   }, [delayDuration, skipDelayDuration]);
-
   return (
     <TooltipProviderStoreProvider value={storeRef.current}>{children}</TooltipProviderStoreProvider>
   );
 }
 TooltipProvider.displayName = "TooltipProvider";
-
 export function TooltipRoot(props: TooltipRootProps): ReactElement | null {
   const { children, defaultOpen = false, id, onOpenChange, open } = props;
   const provider = useTooltipProviderStore("Root");
@@ -84,7 +76,6 @@ export function TooltipRoot(props: TooltipRootProps): ReactElement | null {
     openDelay: provider.getDelayDuration(),
     shouldSkipDelay: provider.shouldSkipDelay,
   });
-
   const contextValue: TooltipClientContextValue = {
     anchorId: overlay.anchorId,
     closeTooltip: overlay.closeOverlay,
@@ -95,11 +86,9 @@ export function TooltipRoot(props: TooltipRootProps): ReactElement | null {
     pointerFocusRef,
     setContentId: overlay.setContentId,
   };
-
   return <TooltipContextProvider value={contextValue}>{children}</TooltipContextProvider>;
 }
 TooltipRoot.displayName = "TooltipRoot";
-
 export function TooltipTrigger<TAs extends ElementType = "button">(
   props: TooltipTriggerProps<TAs>,
 ): ReactElement | null {
@@ -107,7 +96,11 @@ export function TooltipTrigger<TAs extends ElementType = "button">(
   const { anchorId, closeTooltip, contentId, intent, open, openTooltip, pointerFocusRef } =
     useTooltipContext("Trigger");
   const nativeButton = !as || as === "button";
-  const consumerStyle = (consumerProps as { style?: CSSProperties }).style;
+  const consumerStyle = (
+    consumerProps as {
+      style?: CSSProperties;
+    }
+  ).style;
   const anchorProps = {
     ...createAnchorTriggerProps(anchorNameForId(anchorId)),
     ...(consumerStyle ? { style: consumerStyle } : {}),
@@ -127,16 +120,15 @@ export function TooltipTrigger<TAs extends ElementType = "button">(
     onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
     onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
   };
-
   return useRenderElement({
     as,
     defaultTag: "button",
     props: {
-      ...consumerProps,
-      ...anchorProps,
       "aria-describedby": open ? contentId : undefined,
       ...(nativeButton ? { type: "button", "data-uiify-button": "" } : {}),
       ...(className ? { className } : {}),
+      ...anchorProps,
+      ...consumerProps,
       onBlur: composeEventHandlers(consumerOnBlur, () => {
         closeTooltip();
       }),
@@ -169,7 +161,6 @@ export function TooltipTrigger<TAs extends ElementType = "button">(
     state: { open },
   });
 }
-
 export function TooltipContent<TAs extends ElementType = "div">(
   props: TooltipContentProps<TAs>,
 ): ReactElement | null {
@@ -186,17 +177,18 @@ export function TooltipContent<TAs extends ElementType = "div">(
   const [consumerRef, domProps] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
   const popupRef = useRef<HTMLElement | null>(null);
   const mergedRef = useMergedRefs(popupRef, consumerRef);
-  const consumerDomProps = domProps as { id?: string; style?: CSSProperties };
+  const consumerDomProps = domProps as {
+    id?: string;
+    style?: CSSProperties;
+  };
   const resolvedId =
     typeof consumerDomProps.id === "string" && consumerDomProps.id.length > 0
       ? consumerDomProps.id
       : contentId;
   const consumerStyle = consumerDomProps.style;
-
   useIsomorphicLayoutEffect(() => {
     setContentId(resolvedId);
   }, [resolvedId, setContentId]);
-
   // Same technique as core/use-popover.ts: guard with .matches(":popover-open")
   // so a StrictMode double-invoke or an unrelated re-run doesn't call
   // showPopover/hidePopover on a popover already in that state (both throw).
@@ -211,25 +203,21 @@ export function TooltipContent<TAs extends ElementType = "div">(
       // The node may have disconnected between render and layout effect.
     }
   }, [open]);
-
   const { onPointerEnter: consumerOnPointerEnter, onPointerLeave: consumerOnPointerLeave } =
     domProps as {
       onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
       onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
     };
-
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
-      ...domProps,
       ...createAnchorPositionerProps({
         align,
         anchorName: anchorNameForId(anchorId),
         side,
       }),
       ...(consumerStyle ? { style: consumerStyle } : {}),
-      ref: mergedRef,
       popover: "manual",
       // The consumer's own non-empty `id` wins (computed above as `resolvedId`); otherwise the
       // The consumer's own non-empty `id` wins; otherwise the context-generated id is used.
@@ -239,6 +227,8 @@ export function TooltipContent<TAs extends ElementType = "div">(
       "data-uiify-tooltip": "",
       "data-state": open ? "open" : "closed",
       ...(className ? { className } : {}),
+      ...domProps,
+      ref: mergedRef,
       onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => {
         intent.clearCloseTimer();
       }),
@@ -253,7 +243,6 @@ export function TooltipContent<TAs extends ElementType = "div">(
     state: { open, positioning: "native" as const },
   });
 }
-
 export const Tooltip = {
   Content: TooltipContent,
   Provider: TooltipProvider,

@@ -5,7 +5,7 @@ interface Item extends VirtualScrollItem {
   readonly title: string;
 }
 
-it("types generated virtual rows as native div props without exposing owned semantics", () => {
+it("types generated virtual rows as native div props with consumer-selected semantics", () => {
   const props: VirtualScrollOwnProps<Item> = {
     items: [{ id: "one", title: "One" }],
     renderRow: (item) => item.title,
@@ -17,26 +17,19 @@ it("types generated virtual rows as native div props without exposing owned sema
       },
     },
   };
-  const invalidPart: VirtualScrollOwnProps<Item> = {
+  const overrides: VirtualScrollOwnProps<Item> = {
     items: [],
     renderRow: () => null,
+    role: "note",
     slotProps: {
-      row: {
-        // @ts-expect-error The row part marker belongs to VirtualScroll.
-        "data-part": "other",
-      },
+      row: { "data-part": "other", role: "note", "aria-posinset": undefined },
+      spacer: { "data-part": undefined },
     },
   };
-  const invalidSpacerPart: VirtualScrollOwnProps<Item> = {
+  const removedRole: VirtualScrollOwnProps<Item> = {
     items: [],
     renderRow: () => null,
-    slotProps: {
-      spacer: {
-        // @ts-expect-error The spacer part marker belongs to VirtualScroll.
-        "data-part": "other",
-      },
-    },
+    role: undefined,
   };
-
-  expect([props, invalidPart, invalidSpacerPart]).toHaveLength(3);
+  expect([props, overrides, removedRole]).toHaveLength(3);
 });

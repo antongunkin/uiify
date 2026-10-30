@@ -11,7 +11,6 @@
     padding-inline: var(--space-md);
     border: var(--border-width) solid var(--input);
     border-radius: var(--radius-md);
-    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     font-size: var(--uiify-control-text);
@@ -40,6 +39,17 @@
 
   :where([data-uiify-input], [data-uiify-textarea])[data-invalid]:focus-visible {
     outline-color: var(--destructive);
+  }
+
+  /* Input is a pill sized like Button: --control-md tall and base text. Textarea keeps its own
+     rounded rectangle. */
+  [data-uiify-input] {
+    box-sizing: border-box;
+    block-size: var(--uiify-control-size, var(--control-md));
+    padding-block: 0;
+    padding-inline: var(--space-lg);
+    border-radius: var(--radius-full);
+    font-size: var(--uiify-control-font, var(--text-base));
   }
 
   [data-uiify-textarea] {

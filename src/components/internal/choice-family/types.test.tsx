@@ -4,9 +4,8 @@ import type { SegmentedControlProps } from "../../segmented-control/types.js";
 import type { ToggleGroupProps } from "../../toggle-group/types.js";
 import type { ChoiceInputSlotProps } from "../../../elements/choice/types.js";
 
-it("accepts consumer props and rejects Choice-owned state and relationships", () => {
+it("accepts consumer props, including generated state and relationships", () => {
   const directChoiceInput: ChoiceInputSlotProps = {
-    // @ts-expect-error -- checked state is owned by Choice.Item.
     checked: true,
   };
   const valid: RadioGroupProps = {
@@ -23,7 +22,6 @@ it("accepts consumer props and rejects Choice-owned state and relationships", ()
         byItemValue: {
           basic: {
             "data-testid": "basic-radio",
-            // @ts-expect-error -- checked state is also protected per item.
             checked: true,
           },
         },
@@ -36,23 +34,19 @@ it("accepts consumer props and rejects Choice-owned state and relationships", ()
     items: [],
     slotProps: {
       input: {
-        // @ts-expect-error -- checked state is owned by the group.
         checked: true,
         byItemValue: {
           basic: {
-            // @ts-expect-error -- generated part markers cannot be assigned by consumers.
             "data-part": "other",
           },
         },
       },
       label: {
-        // @ts-expect-error -- native label association is generated from the item's value.
         htmlFor: "other",
       },
       item: {
         byItemValue: {
           basic: {
-            // @ts-expect-error -- generated wrapper markers are library-owned.
             "data-part": "other",
           },
         },

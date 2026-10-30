@@ -21,7 +21,6 @@
     padding: var(--space-md);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-lg);
-    corner-shape: squircle;
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-popover);
@@ -49,7 +48,6 @@
        surface is borderless by design. */
     border: none;
     border-radius: var(--radius-sm);
-    corner-shape: squircle;
     background-color: var(--foreground);
     color: var(--background);
     font-size: var(--text-xs);

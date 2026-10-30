@@ -28,11 +28,11 @@ it("only accepts a native button or a button-forwarding component as `as`", () =
     </ModalTrigger>,
     // @ts-expect-error -- target is the native relationship; it is required.
     <ModalTrigger key="missing-target">Open</ModalTrigger>,
-    // @ts-expect-error -- the library owns type=button.
+    // type="button" is a default; consumers may replace it.
     <ModalTrigger key="submit" target="settings" type="submit">
       Open
     </ModalTrigger>,
-    // @ts-expect-error -- the library owns the invoker attributes.
+    // @ts-expect-error -- popover invoker attributes are not part of a command invoker.
     <ModalTrigger key="popover" target="settings" popoverTarget="other">
       Open
     </ModalTrigger>,

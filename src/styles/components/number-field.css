@@ -6,7 +6,6 @@
     align-items: stretch;
     border: var(--border-width) solid var(--input);
     border-radius: var(--radius-md);
-    corner-shape: squircle;
     background-color: var(--card);
     overflow: hidden;
   }

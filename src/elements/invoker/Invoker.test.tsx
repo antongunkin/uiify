@@ -34,6 +34,18 @@ describe("Invoker", () => {
     expect(button.hasAttribute("data-uiify-invoker")).toBe(true);
   });
 
+  it("lets consumer props replace type and the identity marker", () => {
+    render(
+      <Invoker command="show-modal" commandfor="settings" data-uiify-invoker="custom" type="submit">
+        Open
+      </Invoker>,
+    );
+    const button = screen.getByRole("button", { name: "Open" });
+    expect(button.getAttribute("type")).toBe("submit");
+    expect(button.getAttribute("data-uiify-invoker")).toBe("custom");
+    expect(button.getAttribute("command")).toBe("show-modal");
+  });
+
   it("renders the same attributes during SSR", () => {
     const markup = renderToStaticMarkup(
       <Invoker command="show-modal" commandfor="settings">

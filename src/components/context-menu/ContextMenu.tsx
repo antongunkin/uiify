@@ -1,5 +1,4 @@
 "use client";
-
 import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   ElementType,
@@ -28,44 +27,18 @@ import type {
   ContextMenuTriggerProps,
   ContextMenuContentProps,
   ContextMenuItemProps,
-  ContextMenuRootSlotProps,
   ContextMenuCheckboxItemOwnProps,
   ContextMenuRadioItemOwnProps,
   ContextMenuSubOwnProps,
   ContextMenuSubTriggerOwnProps,
   ContextMenuSubContentOwnProps,
 } from "./types.js";
-
 export type { MenuSelectEvent };
-
 const [ContextMenuProvider, useContextMenuContext] =
   createPartContext<ContextMenuContextValue>("ContextMenu");
-
-const VIRTUAL_ANCHOR_PROTECTED_PROPS = new Set([
-  "children",
-  "dangerouslySetInnerHTML",
-  "data-anchor",
-  "data-uiify-menu",
-  "data-virtual-anchor",
-]);
-
-function getVirtualAnchorProps(
-  props: ContextMenuRootSlotProps["virtualAnchor"],
-): NonNullable<ContextMenuRootSlotProps["virtualAnchor"]> {
-  return Object.fromEntries(
-    Object.entries(props ?? {}).filter(([name]) => !VIRTUAL_ANCHOR_PROTECTED_PROPS.has(name)),
-  ) as NonNullable<ContextMenuRootSlotProps["virtualAnchor"]>;
-}
-
-function withoutDangerousHTML<T extends object>(props: T): Omit<T, "dangerouslySetInnerHTML"> {
-  return Object.fromEntries(
-    Object.entries(props).filter(([name]) => name !== "dangerouslySetInnerHTML"),
-  ) as Omit<T, "dangerouslySetInnerHTML">;
-}
-
 export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | null {
   const { children, defaultOpen, id, onOpenChange, open, slotProps } = props;
-  const virtualAnchorProps = getVirtualAnchorProps(slotProps?.virtualAnchor);
+  const virtualAnchorProps = slotProps?.virtualAnchor;
   const virtualAnchorRef = useRef<HTMLSpanElement | null>(null);
   const mergedVirtualAnchorRef = useMergedRefs(virtualAnchorRef, virtualAnchorProps?.ref);
   const [radioValue, setRadioValue] = useState<string | undefined>();
@@ -80,20 +53,28 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
     ...(onOpenChange ? { onOpenChange } : {}),
   });
   const { contentRef, openPopover, setTriggerElement } = surface;
-
   const openAtPointer = useCallback(
     (event: MouseEvent<HTMLElement>) => {
       event.preventDefault();
-      virtualAnchorRef.current?.style.setProperty("--uiify-context-menu-x", `${event.clientX}px`);
-      virtualAnchorRef.current?.style.setProperty("--uiify-context-menu-y", `${event.clientY}px`);
+      const coordinates = {
+        "--uiify-context-menu-x": `${event.clientX}px`,
+        "--uiify-context-menu-y": `${event.clientY}px`,
+        ...virtualAnchorProps?.style,
+      };
+      for (const property of ["--uiify-context-menu-x", "--uiify-context-menu-y"] as const) {
+        const value = coordinates[property];
+        virtualAnchorRef.current?.style.setProperty(
+          property,
+          value === undefined ? "" : String(value),
+        );
+      }
       setPointerAnchor(true);
       setTriggerElement(event.currentTarget);
       openPopover();
       queueMicrotask(() => focusMenuItem(contentRef.current));
     },
-    [contentRef, openPopover, setTriggerElement],
+    [contentRef, openPopover, setTriggerElement, virtualAnchorProps?.style],
   );
-
   const contextValue = useMemo<ContextMenuContextValue>(
     () => ({
       ...surface,
@@ -104,24 +85,23 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
     }),
     [pointerAnchor, surface, openAtPointer, radioValue],
   );
-
   return (
     <ContextMenuProvider value={contextValue}>
       <span
-        {...virtualAnchorProps}
         aria-hidden
-        ref={mergedVirtualAnchorRef}
         data-virtual-anchor=""
         {...(pointerAnchor ? surface.anchorProps : {})}
+        {...virtualAnchorProps}
+        ref={mergedVirtualAnchorRef}
         style={
           {
-            ...virtualAnchorProps?.style,
             position: "fixed",
             left: "var(--uiify-context-menu-x, 0px)",
             top: "var(--uiify-context-menu-y, 0px)",
             width: 0,
             height: 0,
             pointerEvents: "none",
+            ...virtualAnchorProps?.style,
           } as React.CSSProperties
         }
       />
@@ -130,7 +110,6 @@ export function ContextMenuRoot(props: ContextMenuRootProps): ReactElement | nul
   );
 }
 ContextMenuRoot.displayName = "ContextMenuRoot";
-
 export function ContextMenuTrigger<TAs extends ElementType = "div">(
   props: ContextMenuTriggerProps<TAs>,
 ): ReactElement | null {
@@ -141,22 +120,20 @@ export function ContextMenuTrigger<TAs extends ElementType = "div">(
   const { onContextMenu: consumerOnContextMenu } = withoutRef as {
     onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
   };
-
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
-      ...withoutRef,
       ...anchorProps,
-      ref: mergedRef,
       ...(className ? { className } : {}),
+      ...withoutRef,
+      ref: mergedRef,
       onContextMenu: composeEventHandlers(consumerOnContextMenu, openAtPointer),
     },
     render,
     state: { open },
   });
 }
-
 export function ContextMenuContent<TAs extends ElementType = "div">(
   props: ContextMenuContentProps<TAs>,
 ): ReactElement | null {
@@ -166,27 +143,21 @@ export function ContextMenuContent<TAs extends ElementType = "div">(
     useContextMenuContext("Content");
   const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
   const mergedRef = useMergedRefs(popupRef, contentRef, consumerRef);
-
   useIsomorphicLayoutEffect(() => {
     if (!open) return;
-
     const content = contentRef.current;
     const ownerDocument = content?.ownerDocument;
     if (!content || !ownerDocument) return;
-
     const handlePointerDown = (event: PointerEvent) => {
       if (event.composedPath().includes(content)) return;
       close();
     };
-
     ownerDocument.addEventListener("pointerdown", handlePointerDown, true);
     return () => ownerDocument.removeEventListener("pointerdown", handlePointerDown, true);
   }, [close, contentRef, open]);
-
   const { onKeyDown: consumerOnKeyDown } = withoutRef as {
     onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
   };
-
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -194,21 +165,19 @@ export function ContextMenuContent<TAs extends ElementType = "div">(
       focusTrigger();
     }
   };
-
   const contentProps = {
-    ...withoutRef,
     ...popupProps,
     ...positionerProps,
-    ref: mergedRef,
     role: "menu",
     "data-part": "content",
     "data-uiify-menu": "",
     "data-state": open ? "open" : "closed",
     ...(className ? { className } : {}),
+    ...withoutRef,
+    ref: mergedRef,
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     children,
   };
-
   if (render) {
     return (
       <RovingFocusRoot
@@ -218,11 +187,9 @@ export function ContextMenuContent<TAs extends ElementType = "div">(
       />
     );
   }
-
   return <RovingFocusRoot as={as ?? "div"} orientation="vertical" {...contentProps} />;
 }
 ContextMenuContent.displayName = "ContextMenuContent";
-
 export function ContextMenuItem<TAs extends ElementType = "div">(
   props: ContextMenuItemProps<TAs>,
 ): ReactElement | null {
@@ -241,7 +208,6 @@ export function ContextMenuItem<TAs extends ElementType = "div">(
     onClick?: (event: SyntheticEvent<HTMLElement>) => void;
     onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
   };
-
   const handleSelect = (event: SyntheticEvent<HTMLElement>) => {
     if (disabled) return;
     const selectEvent = createMenuSelectEvent();
@@ -252,21 +218,18 @@ export function ContextMenuItem<TAs extends ElementType = "div">(
     }
     event.preventDefault();
   };
-
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" || event.key === " ") handleSelect(event);
   };
-
   const itemProps = {
-    ...consumerProps,
     role: "menuitem",
     "data-part": "item",
     ...(className ? { className } : {}),
+    ...consumerProps,
     onClick: composeEventHandlers(consumerOnClick, handleSelect),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     children,
   };
-
   if (render) {
     return (
       <RovingFocusItem
@@ -277,7 +240,6 @@ export function ContextMenuItem<TAs extends ElementType = "div">(
       />
     );
   }
-
   return (
     <RovingFocusItem
       as={as ?? "div"}
@@ -288,7 +250,6 @@ export function ContextMenuItem<TAs extends ElementType = "div">(
   );
 }
 ContextMenuItem.displayName = "ContextMenuItem";
-
 /**
  * Shared "activate this menu item" logic for CheckboxItem and RadioItem: run
  * the item-specific action, close the menu, and return focus to the trigger,
@@ -316,7 +277,6 @@ function useItemActivation(
   };
   return { handleKeyDown, handleSelect };
 }
-
 export function ContextMenuCheckboxItem(
   props: ContextMenuCheckboxItemOwnProps,
 ): ReactElement | null {
@@ -325,10 +285,8 @@ export function ContextMenuCheckboxItem(
     children,
     className,
     disabled = false,
-    id,
     onCheckedChange,
     textValue,
-    ref: consumerRef,
     ...consumerProps
   } = props;
   const { close, focusTrigger } = useContextMenuContext("CheckboxItem");
@@ -344,20 +302,17 @@ export function ContextMenuCheckboxItem(
     close,
     focusTrigger,
   );
-
   return (
     <RovingFocusItem
       disabled={disabled}
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
-        ...withoutDangerousHTML(consumerProps),
-        ...(id !== undefined ? { id } : {}),
-        ...(consumerRef ? { ref: consumerRef } : {}),
         role: "menuitemcheckbox",
         "data-part": "item",
         "aria-checked": (isIndeterminate ? "mixed" : isChecked) as boolean | "mixed",
         "data-state": isIndeterminate ? "indeterminate" : isChecked ? "checked" : "unchecked",
         ...(className ? { className } : {}),
+        ...consumerProps,
         onClick: composeEventHandlers(consumerOnClick, handleSelect),
         onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
         children,
@@ -366,18 +321,8 @@ export function ContextMenuCheckboxItem(
   );
 }
 ContextMenuCheckboxItem.displayName = "ContextMenuCheckboxItem";
-
 export function ContextMenuRadioItem(props: ContextMenuRadioItemOwnProps): ReactElement | null {
-  const {
-    children,
-    className,
-    disabled = false,
-    id,
-    ref: consumerRef,
-    textValue,
-    value,
-    ...consumerProps
-  } = props;
+  const { children, className, disabled = false, textValue, value, ...consumerProps } = props;
   const { close, focusTrigger, radioValue, setRadioValue } = useContextMenuContext("RadioItem");
   const checked = radioValue === value;
   const { onClick: consumerOnClick, onKeyDown: consumerOnKeyDown } = consumerProps as {
@@ -390,20 +335,17 @@ export function ContextMenuRadioItem(props: ContextMenuRadioItemOwnProps): React
     close,
     focusTrigger,
   );
-
   return (
     <RovingFocusItem
       disabled={disabled}
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
-        ...withoutDangerousHTML(consumerProps),
-        ...(id !== undefined ? { id } : {}),
-        ...(consumerRef ? { ref: consumerRef } : {}),
         role: "menuitemradio",
         "data-part": "item",
         "aria-checked": checked,
         "data-state": checked ? "checked" : "unchecked",
         ...(className ? { className } : {}),
+        ...consumerProps,
         onClick: composeEventHandlers(consumerOnClick, handleSelect),
         onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
         children,
@@ -412,19 +354,16 @@ export function ContextMenuRadioItem(props: ContextMenuRadioItemOwnProps): React
   );
 }
 ContextMenuRadioItem.displayName = "ContextMenuRadioItem";
-
 interface ContextMenuSubValue {
   readonly open: boolean;
   readonly setOpen: (open: boolean) => void;
   readonly skipFocusOpenRef: RefObject<boolean>;
   readonly triggerRef: RefObject<HTMLElement | null>;
 }
-
 const [ContextMenuSubProvider, useContextMenuSubContext] = createPartContext<ContextMenuSubValue>(
   "ContextMenu",
   "Sub",
 );
-
 export function ContextMenuSub(props: ContextMenuSubOwnProps): ReactElement | null {
   const { children } = props;
   const [open, setOpen] = useState(false);
@@ -434,9 +373,8 @@ export function ContextMenuSub(props: ContextMenuSubOwnProps): ReactElement | nu
   return <ContextMenuSubProvider value={value}>{children}</ContextMenuSubProvider>;
 }
 ContextMenuSub.displayName = "ContextMenuSub";
-
 export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): ReactElement | null {
-  const { children, className, disabled = false, id, textValue, ...consumerProps } = props;
+  const { children, className, disabled = false, textValue, ...consumerProps } = props;
   const sub = useContextMenuSubContext("SubTrigger");
   const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
   const mergedRef = useMergedRefs(sub.triggerRef, consumerRef);
@@ -449,7 +387,6 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
     onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
     onPointerEnter?: (event: ReactPointerEvent<HTMLElement>) => void;
   };
-
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const openKey = resolveDirection(event.currentTarget) === "rtl" ? "ArrowLeft" : "ArrowRight";
     if (event.key === openKey) {
@@ -457,20 +394,18 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
       sub.setOpen(true);
     }
   };
-
   return (
     <RovingFocusItem
       disabled={disabled}
-      {...(id !== undefined ? { id } : {})}
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
-        ...withoutDangerousHTML(withoutRef),
-        ref: mergedRef,
         role: "menuitem",
         "data-part": "item",
         "aria-haspopup": "menu" as const,
         "aria-expanded": sub.open,
         ...(className ? { className } : {}),
+        ...withoutRef,
+        ref: mergedRef,
         onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => sub.setOpen(true)),
         onFocus: composeEventHandlers(consumerOnFocus, () => {
           if (!sub.skipFocusOpenRef.current) sub.setOpen(true);
@@ -482,11 +417,9 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
   );
 }
 ContextMenuSubTrigger.displayName = "ContextMenuSubTrigger";
-
 export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): ReactElement | null {
   const { children, className, onKeyDown: consumerOnKeyDown, ...consumerProps } = props;
   const sub = useContextMenuSubContext("SubContent");
-
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const closeKey = resolveDirection(event.currentTarget) === "rtl" ? "ArrowRight" : "ArrowLeft";
     if (event.key !== closeKey && event.key !== "Escape") return;
@@ -499,31 +432,26 @@ export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): Rea
     sub.triggerRef.current?.focus();
     sub.skipFocusOpenRef.current = false;
   };
-
   const element = useRenderElement({
     defaultTag: "div",
     props: {
-      ...withoutDangerousHTML(consumerProps),
       role: "menu",
       "data-part": "sub-content",
       "data-uiify-menu": "",
       "data-state": sub.open ? "open" : "closed",
       hidden: !sub.open ? true : undefined,
       ...(className ? { className } : {}),
+      ...consumerProps,
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       children: sub.open ? children : null,
     },
     state: { open: sub.open },
   });
-
   if (!sub.open) return null;
   return element;
 }
-
 export const ContextMenuLabel = MenuLabel;
-
 export const ContextMenuSeparator = MenuSeparator;
-
 export const ContextMenu = {
   CheckboxItem: ContextMenuCheckboxItem,
   Content: ContextMenuContent,

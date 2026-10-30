@@ -1,0 +1,32 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default HoverCard DOM 1`] = `
+[
+  [
+    "button",
+    [
+      "aria-controls=profile-content",
+      "aria-expanded=false",
+      "data-anchor=--profile-anchor",
+      "data-uiify-button=",
+      "type=button",
+    ],
+    "Profile",
+  ],
+  [
+    "div",
+    [
+      "data-align=center",
+      "data-anchor=--profile-anchor",
+      "data-part=content",
+      "data-positioning=native",
+      "data-side=top",
+      "data-state=closed",
+      "data-uiify-hover-card=",
+      "id=profile-content",
+      "popover=manual",
+    ],
+    "Details",
+  ],
+]
+`;

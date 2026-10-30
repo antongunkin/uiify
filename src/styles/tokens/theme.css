@@ -1,0 +1,169 @@
+/*
+ * Theme tokens — the single source of design values.
+ *
+ * One flat set of runtime names: the palette (OKLCH) and its semantic roles
+ * (light-dark), spacing, radii, typography, shadows and motion. Component skins
+ * read the semantic roles and the fixed --space-*, --radius-* and --text-* steps.
+ * Tailwind utility names are mapped separately in tailwind.css; component-private
+ * values keep their --uiify- prefix and are not part of this palette.
+ */
+
+@layer tokens {
+  :root {
+    color-scheme: light;
+
+    /* Palette. Neutral ramp (perceptually even lightness steps, hue 0 chroma 0). */
+    --gray-0: oklch(100% 0 0deg);
+    --gray-1: oklch(99% 0 0deg);
+    --gray-2: oklch(97% 0 0deg);
+    --gray-3: oklch(94% 0 0deg);
+    --gray-4: oklch(90% 0 0deg);
+    --gray-5: oklch(83% 0 0deg);
+    --gray-6: oklch(70% 0 0deg);
+    --gray-7: oklch(55% 0 0deg);
+    --gray-8: oklch(45% 0 0deg);
+    --gray-9: oklch(35% 0 0deg);
+    --gray-10: oklch(27% 0 0deg);
+    --gray-11: oklch(21% 0 0deg);
+    --gray-12: oklch(15% 0 0deg);
+
+    /* Accent (blue). */
+    --blue-4: oklch(80% 0.1 255deg);
+    --blue-5: oklch(68% 0.16 255deg);
+    --blue-6: oklch(55% 0.2 255deg);
+    --blue-7: oklch(48% 0.21 255deg);
+
+    /* Danger (red). */
+    --red-5: oklch(68% 0.18 25deg);
+    --red-6: oklch(58% 0.22 25deg);
+    --red-7: oklch(50% 0.22 25deg);
+
+    /* Success (green) — used by a couple of demo states. */
+    --green-6: oklch(62% 0.17 150deg);
+
+    /* Control heights: every interactive control (Button, inputs, select, segmented control)
+       is --control-md tall; --control-sm and --control-lg are the Button sizes around it. */
+    --control-sm: 2rem;
+    --control-md: 2.5rem;
+    --control-lg: 3rem;
+
+    /* Radii — about a quarter of the element height (40px controls → 10px), capped by
+       the pill: a Button is --radius-full (20px at 40px, 24px at 48px, the largest
+       corner in the system). --radius-3 is the base; the semantic steps derive from
+       --radius, so changing it rescales every corner. These raw values mirror the
+       derived steps at the default base:
+       1: checkbox, kbd, skeleton, 2: tooltip and small parts, 3: 40px controls,
+       4: menus, popovers, cards, alerts, 5: dialogs, drawers, large panels. */
+    --radius-1: 4px;
+    --radius-2: 8px;
+    --radius-3: 10px;
+    --radius-4: 16px;
+    --radius-5: 20px;
+    --radius-full: 9999px;
+
+    /* Typography. */
+    --font-sans: system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", monospace;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.5rem;
+    --text-2xl: 2rem;
+    --leading-tight: 1.2;
+    --leading-normal: 1.5;
+    --weight-normal: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+
+    /* Elevation. Plain sRGB alpha — shadows read better than OKLCH here.
+       shadow-2/3 match the 2a/2b handoff's popover/modal elevation exactly. */
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 8%);
+    --shadow-2: 0 12px 32px rgb(20 22 26 / 14%);
+    --shadow-3: 0 24px 60px rgb(20 22 26 / 20%);
+
+    /* Borders / focus. */
+    --border-width: 1px;
+    --ring-width: 3px;
+    --ring-offset: 2px;
+
+    /* Motion. */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --duration-fast: 120ms;
+    --duration-base: 180ms;
+
+    /* Canvas and contained surfaces. */
+    --background: light-dark(oklch(96.1% 0.007 88.6deg), oklch(17.8% 0.006 271deg));
+    --foreground: light-dark(oklch(20% 0.009 264.4deg), oklch(95.2% 0.004 91.4deg));
+    --card: light-dark(var(--gray-0), oklch(21.7% 0.008 264.4deg));
+    --card-foreground: var(--foreground);
+    --popover: light-dark(var(--gray-0), oklch(21.7% 0.008 264.4deg));
+    --popover-foreground: var(--foreground);
+    --secondary: light-dark(oklch(98.5% 0.003 84.6deg), oklch(19.6% 0.006 271.1deg));
+    --secondary-foreground: var(--foreground);
+    --muted: light-dark(var(--gray-3), oklch(26.4% 0.01 260.7deg));
+    --muted-foreground: light-dark(oklch(48.5% 0.012 267.3deg), oklch(64.863% 0.0101 258.447deg));
+
+    /* Brand actions and interaction highlights are intentionally separate. */
+    --primary: light-dark(oklch(48.6% 0.272 267.3deg), oklch(68.1% 0.169 275deg));
+    --primary-foreground: light-dark(var(--gray-0), oklch(17.8% 0.006 271deg));
+    --accent: color-mix(in oklch, var(--primary) 12%, transparent);
+    --accent-foreground: var(--primary);
+
+    /* Borders, fields, and focus. */
+    --border: light-dark(oklch(90.4% 0.013 86.8deg), oklch(30% 0.012 258.4deg));
+    --input: light-dark(oklch(87.1% 0.013 86.8deg), oklch(36.6% 0.015 259.8deg));
+    --ring: light-dark(var(--blue-7), oklch(68.1% 0.169 275deg));
+
+    /* Status and data visualization. */
+    --destructive: light-dark(var(--red-7), var(--red-5));
+    --destructive-foreground: light-dark(var(--gray-0), oklch(17.8% 0.006 271deg));
+    --success: var(--green-6);
+    --success-foreground: var(--gray-0);
+    --warning: light-dark(oklch(72% 0.16 75deg), oklch(80% 0.14 85deg));
+    --warning-foreground: var(--gray-12);
+    --chart-1: var(--primary);
+    --chart-2: var(--blue-5);
+    --chart-3: var(--green-6);
+    --chart-4: var(--red-5);
+    --chart-5: var(--gray-7);
+
+    /* Structural aliases (theme-independent). */
+    --radius: var(--radius-3);
+    --radius-xs: calc(var(--radius) * 0.4);
+    --radius-sm: calc(var(--radius) * 0.8);
+    --radius-md: var(--radius);
+    --radius-lg: calc(var(--radius) * 1.6);
+    --radius-xl: calc(var(--radius) * 2);
+
+    /* Spacing. */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 0.75rem;
+    --space-lg: 1rem;
+    --space-xl: 1.5rem;
+    --shadow-popover: var(--shadow-2);
+    --shadow-modal: var(--shadow-3);
+    --transition-colors:
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+
+    /* One enter/exit motion for everything that appears: fade plus a slight
+       settle from --presence-scale. display/overlay keep a closing surface
+       rendered (and in the top layer) until the fade ends. */
+    --presence-scale: 0.96;
+    --transition-presence:
+      opacity var(--duration-fast) var(--ease-out), scale var(--duration-fast) var(--ease-out),
+      display var(--duration-fast) allow-discrete, overlay var(--duration-fast) allow-discrete;
+  }
+
+  [data-theme="basic-light"] {
+    color-scheme: light;
+  }
+
+  [data-theme="basic-dark"] {
+    color-scheme: dark;
+  }
+}

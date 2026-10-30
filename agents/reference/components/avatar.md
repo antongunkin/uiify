@@ -42,5 +42,5 @@
 ## Other types
 
 - `AvatarProps<TAs>`: `RenderableProps<TAs, AvatarOwnProps, Record<string, never>, HTMLElement>`
-- `AvatarImageSlotProps`: `Omit<ComponentPropsWithRef<"img">, "alt" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-avatar" | "src"> & AvatarImageOwnedAttributes & ConsumerDataAttributes`
-- `AvatarFallbackSlotProps`: `Omit<ComponentPropsWithRef<"span">, "aria-hidden" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-avatar"> & AvatarFallbackOwnedAttributes & ConsumerDataAttributes`
+- `AvatarImageSlotProps`: `SlotProps<"img">`
+- `AvatarFallbackSlotProps`: `SlotProps<"span">`

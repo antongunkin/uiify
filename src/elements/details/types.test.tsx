@@ -2,9 +2,8 @@ import type { ReactElement } from "react";
 import { expect, it } from "vitest";
 import { DetailsContent, DetailsRoot } from "./Details.js";
 
-it("does not expose native `open` — use `defaultOpen`", () => {
+it("accepts native open alongside defaultOpen", () => {
   const root = <DetailsRoot defaultOpen>Body</DetailsRoot>;
-  // @ts-expect-error -- open is native state; the browser owns it after defaultOpen.
   const withOpen = <DetailsRoot open>Body</DetailsRoot>;
   expect([root, withOpen]).toHaveLength(2);
 });

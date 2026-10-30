@@ -8,7 +8,6 @@ import {
   AlertModalContent,
   AlertModalTrigger,
 } from "./AlertModalParts.js";
-import type { AlertModalContentProps, AlertModalTriggerProps } from "./types.js";
 
 describe("AlertModal native parts", () => {
   it("renders an alertdialog opened by show-modal and closed by request-close", () => {
@@ -67,46 +66,38 @@ describe("AlertModal native parts", () => {
     expect(button.getAttribute("data-variant")).toBe("secondary");
   });
 
-  it("keeps direct parts customizable while filtering hostile native behavior props", () => {
-    const triggerProps = {
-      target: "direct-alert",
-      command: "request-close",
-      commandfor: "wrong",
-      dangerouslySetInnerHTML: { __html: "injected trigger" },
-      popoverTarget: "wrong",
-      type: "submit",
-      className: "direct-trigger",
-    } as unknown as AlertModalTriggerProps;
+  it("lets direct parts override defaults", () => {
     const contentRef = createRef<HTMLDialogElement>();
-    const contentProps = {
-      id: "direct-alert",
-      open: true,
-      popover: "auto",
-      role: "dialog",
-      dangerouslySetInnerHTML: { __html: "injected content" },
-      className: "direct-content",
-      ref: contentRef,
-    } as unknown as AlertModalContentProps;
+    const contentRole = "dialog";
     render(
       <>
-        <AlertModalTrigger {...triggerProps}>Open</AlertModalTrigger>
-        <AlertModalContent {...contentProps}>Safe content</AlertModalContent>
+        <AlertModalTrigger
+          target="alert"
+          type="submit"
+          command="request-close"
+          commandfor="other"
+          data-part="custom"
+        >
+          Open
+        </AlertModalTrigger>
+        <AlertModalContent
+          id="alert"
+          role={contentRole}
+          data-uiify-alert-modal="custom"
+          ref={contentRef}
+        >
+          Content
+        </AlertModalContent>
       </>,
     );
-
     const trigger = screen.getByRole("button", { name: "Open" });
-    const dialog = screen.getByRole("alertdialog", { hidden: true });
-    expect(trigger.className).toContain("direct-trigger");
-    expect(trigger.getAttribute("command")).toBe("show-modal");
-    expect(trigger.getAttribute("commandfor")).toBe("direct-alert");
-    expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.hasAttribute("popovertarget")).toBe(false);
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("command")).toBe("request-close");
+    expect(trigger.getAttribute("commandfor")).toBe("other");
+    expect(trigger.getAttribute("data-part")).toBe("custom");
+    const dialog = screen.getByRole("dialog", { hidden: true });
     expect(dialog).toBe(contentRef.current);
-    expect(dialog.className).toContain("direct-content");
-    expect(dialog.getAttribute("role")).toBe("alertdialog");
-    expect(dialog.hasAttribute("open")).toBe(false);
-    expect(dialog.hasAttribute("popover")).toBe(false);
-    expect(dialog.textContent).toBe("Safe content");
+    expect(dialog.getAttribute("data-uiify-alert-modal")).toBe("custom");
   });
 
   it("rejects dangerous HTML on native parts at the type level", () => {

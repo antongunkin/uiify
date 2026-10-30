@@ -16,7 +16,7 @@ import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { VisuallyHidden } from "@gunkin/uiify/core/visually-hidden";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { omitProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
+import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import { createToastStore } from "./toast-store.js";
 import {
   ToastAction as ToastActionElement,
@@ -101,26 +101,16 @@ export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null
     () => ({ dismiss, pause, resume, store, labels: resolvedLabels }),
     [dismiss, pause, resume, store, resolvedLabels],
   );
-  const politeLiveRegionProps = omitProps(slotProps?.politeLiveRegion, [
-    "aria-atomic",
-    "aria-live",
-    "children",
-    "dangerouslySetInnerHTML",
-  ]);
-  const assertiveLiveRegionProps = omitProps(slotProps?.assertiveLiveRegion, [
-    "aria-atomic",
-    "aria-live",
-    "children",
-    "dangerouslySetInnerHTML",
-  ]);
+  const politeLiveRegionProps = slotProps?.politeLiveRegion;
+  const assertiveLiveRegionProps = slotProps?.assertiveLiveRegion;
 
   return (
     <ToastStoreProvider value={contextValue}>
       {children}
-      <VisuallyHidden {...politeLiveRegionProps} aria-atomic="true" aria-live="polite">
+      <VisuallyHidden aria-atomic="true" aria-live="polite" {...politeLiveRegionProps}>
         {announcement}
       </VisuallyHidden>
-      <VisuallyHidden {...assertiveLiveRegionProps} aria-atomic="true" aria-live="assertive">
+      <VisuallyHidden aria-atomic="true" aria-live="assertive" {...assertiveLiveRegionProps}>
         {assertiveAnnouncement}
       </VisuallyHidden>
     </ToastStoreProvider>
@@ -168,18 +158,11 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
   }, [hasToasts]);
 
   return (
-    <ToastViewportElement {...domProps} labels={resolvedLabels} popover="manual" ref={mergedRef}>
+    <ToastViewportElement popover="manual" {...domProps} labels={resolvedLabels} ref={mergedRef}>
       {toasts.map((toast) => (
         <ViewTransition default={TOAST_TRANSITION} key={toast.id}>
           <ToastRoot
-            {...resolveRepeatedSlotProps(itemSlotProps, toast.id, [
-              "aria-label",
-              "data-part",
-              "data-state",
-              "data-uiify-toast",
-              "role",
-              "tabIndex",
-            ])}
+            {...resolveRepeatedSlotProps(itemSlotProps, toast.id)}
             toast={toast}
             slotProps={rootSlotProps}
           />
@@ -198,54 +181,22 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
   const endSwipe = (event: PointerEvent<HTMLDivElement>) => {
     if (swipeRef.current?.pointerId === event.pointerId) swipeRef.current = null;
   };
-  const rootProps = omitProps(consumerRootProps, [
-    "aria-label",
-    "children",
-    "dangerouslySetInnerHTML",
-    "data-part",
-    "data-state",
-    "data-uiify-toast",
-    "role",
-    "tabIndex",
-  ]);
-  const titleProps = resolveRepeatedSlotProps(slotProps?.title, toast.id, [
-    "children",
-    "dangerouslySetInnerHTML",
-    "data-part",
-    "data-uiify-toast",
-  ]);
-  const descriptionProps = resolveRepeatedSlotProps(slotProps?.description, toast.id, [
-    "children",
-    "dangerouslySetInnerHTML",
-    "data-part",
-    "data-uiify-toast",
-  ]);
-  const actionProps = resolveRepeatedSlotProps(slotProps?.action, toast.id, [
-    "children",
-    "dangerouslySetInnerHTML",
-    "type",
-    "data-part",
-    "data-uiify-toast",
-  ]);
-  const closeProps = resolveRepeatedSlotProps(slotProps?.close, toast.id, [
-    "aria-label",
-    "children",
-    "dangerouslySetInnerHTML",
-    "type",
-    "data-part",
-    "data-uiify-toast",
-  ]);
+  const rootProps = consumerRootProps;
+  const titleProps = resolveRepeatedSlotProps(slotProps?.title, toast.id);
+  const descriptionProps = resolveRepeatedSlotProps(slotProps?.description, toast.id);
+  const actionProps = resolveRepeatedSlotProps(slotProps?.action, toast.id);
+  const closeProps = resolveRepeatedSlotProps(slotProps?.close, toast.id);
 
   /* oxlint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/prefer-tag-over-role -- pause/swipe on toast card */
   return (
     <div
-      {...rootProps}
       aria-label={typeof toast.title === "string" ? toast.title : labels.notification}
       data-state="open"
       data-part="item"
       data-uiify-toast=""
       role="group"
       tabIndex={0}
+      {...rootProps}
       onFocus={composeEventHandlers(rootProps.onFocus, () => pause(toast.id))}
       onBlur={composeEventHandlers(rootProps.onBlur, (event: FocusEvent<HTMLDivElement>) => {
         if (!event.currentTarget.matches(":hover, :focus-within")) resume(toast.id);

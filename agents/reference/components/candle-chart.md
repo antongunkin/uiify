@@ -22,43 +22,43 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `caption` | `CandleChartPartSlotProps<"figcaption">` | no |  |
-| `readout` | `CandleChartPartSlotProps<"div", { readonly "aria-live"?: never; readonly "data-part"?: never }>` | no |  |
-| `readoutTime` | `CandleChartPartSlotProps<"span">` | no |  |
-| `readoutOpen` | `CandleChartPartSlotProps<"span">` | no |  |
-| `readoutHigh` | `CandleChartPartSlotProps<"span">` | no |  |
-| `readoutLow` | `CandleChartPartSlotProps<"span">` | no |  |
-| `readoutClose` | `CandleChartPartSlotProps<"span">` | no |  |
-| `plot` | `CandleChartPartSlotProps<"div", { readonly "aria-hidden"?: never; readonly "data-part"?: never }>` | no |  |
-| `scrollViewport` | `CandleChartPartSlotProps<"div">` | no |  |
-| `canvas` | `CandleChartPartSlotProps<"div">` | no |  |
-| `viewport` | `CandleChartPartSlotProps<"div">` | no |  |
-| `candles` | `CandleChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-part"?: never }>` | no |  |
-| `candle` | `CandleChartIndexedSlotProps<CandleChartCandleElementProps, CandleChartCandleOwnedProps>` | no |  |
-| `candleHit` | `CandleChartRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly "aria-pressed"?: never; readonly "data-part"?: never; readonly type?: never; }>` | no |  |
-| `crosshair` | `CandleChartPartSlotProps<"div", { readonly "aria-hidden"?: never; readonly "data-part"?: never }>` | no |  |
-| `crosshairMarker` | `CandleChartPartSlotProps<"span">` | no |  |
-| `timeViewport` | `CandleChartPartSlotProps<"div">` | no |  |
-| `timeAxis` | `CandleChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never }>` | no |  |
+| `caption` | `SlotProps<"figcaption">` | no |  |
+| `readout` | `SlotProps<"div">` | no |  |
+| `readoutTime` | `SlotProps<"span">` | no |  |
+| `readoutOpen` | `SlotProps<"span">` | no |  |
+| `readoutHigh` | `SlotProps<"span">` | no |  |
+| `readoutLow` | `SlotProps<"span">` | no |  |
+| `readoutClose` | `SlotProps<"span">` | no |  |
+| `plot` | `SlotProps<"div">` | no |  |
+| `scrollViewport` | `SlotProps<"div">` | no |  |
+| `canvas` | `SlotProps<"div">` | no |  |
+| `viewport` | `SlotProps<"div">` | no |  |
+| `candles` | `SlotProps<"ol">` | no |  |
+| `candle` | `CandleChartIndexedSlotProps<CandleChartCandleElementProps>` | no |  |
+| `candleHit` | `CandleChartRepeatedSlotProps<"button">` | no |  |
+| `crosshair` | `SlotProps<"div">` | no |  |
+| `crosshairMarker` | `SlotProps<"span">` | no |  |
+| `timeViewport` | `SlotProps<"div">` | no |  |
+| `timeAxis` | `SlotProps<"ol">` | no |  |
 | `timeAxisLabel` | `CandleChartRepeatedSlotProps<"li">` | no |  |
-| `crosshairTime` | `CandleChartPartSlotProps<"li">` | no |  |
-| `priceAxis` | `CandleChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never }>` | no |  |
+| `crosshairTime` | `SlotProps<"li">` | no |  |
+| `priceAxis` | `SlotProps<"ol">` | no |  |
 | `priceAxisLabel` | `CandleChartRepeatedSlotProps<"li">` | no |  |
-| `crosshairPrice` | `CandleChartPartSlotProps<"li">` | no |  |
-| `liveScrollport` | `CandleChartPartSlotProps<"div", { readonly "data-dynamic-layout"?: never; readonly "data-orientation"?: never; readonly "data-part"?: never; readonly "data-uiify-virtual-scroll"?: never; readonly role?: never; }>` | no |  |
-| `liveSpacer` | `CandleChartPartSlotProps<"div">` | no |  |
-| `liveCandleRow` | `CandleChartLiveRowSlotProps` | no |  |
-| `dataTable` | `CandleChartPartSlotProps<"table", { readonly "aria-label"?: never; readonly "data-part"?: never }>` | no |  |
-| `dataTableHead` | `CandleChartPartSlotProps<"thead">` | no |  |
-| `dataTableHeaderRow` | `CandleChartPartSlotProps<"tr">` | no |  |
-| `dataTableTimeHeader` | `CandleChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never }>` | no |  |
-| `dataTableOpenHeader` | `CandleChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never }>` | no |  |
-| `dataTableHighHeader` | `CandleChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never }>` | no |  |
-| `dataTableLowHeader` | `CandleChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never }>` | no |  |
-| `dataTableCloseHeader` | `CandleChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never }>` | no |  |
-| `dataTableBody` | `CandleChartPartSlotProps<"tbody">` | no |  |
+| `crosshairPrice` | `SlotProps<"li">` | no |  |
+| `liveScrollport` | `SlotProps<"div">` | no |  |
+| `liveSpacer` | `SlotProps<"div">` | no |  |
+| `liveCandleRow` | `CandleChartRepeatedSlotProps<"div">` | no |  |
+| `dataTable` | `SlotProps<"table">` | no |  |
+| `dataTableHead` | `SlotProps<"thead">` | no |  |
+| `dataTableHeaderRow` | `SlotProps<"tr">` | no |  |
+| `dataTableTimeHeader` | `SlotProps<"th">` | no |  |
+| `dataTableOpenHeader` | `SlotProps<"th">` | no |  |
+| `dataTableHighHeader` | `SlotProps<"th">` | no |  |
+| `dataTableLowHeader` | `SlotProps<"th">` | no |  |
+| `dataTableCloseHeader` | `SlotProps<"th">` | no |  |
+| `dataTableBody` | `SlotProps<"tbody">` | no |  |
 | `dataTableRow` | `CandleChartRepeatedSlotProps<"tr">` | no |  |
-| `dataTableTimeCell` | `CandleChartRepeatedSlotProps<"th", { readonly scope?: never }>` | no |  |
+| `dataTableTimeCell` | `CandleChartRepeatedSlotProps<"th">` | no |  |
 | `dataTableOpenCell` | `CandleChartRepeatedSlotProps<"td">` | no |  |
 | `dataTableHighCell` | `CandleChartRepeatedSlotProps<"td">` | no |  |
 | `dataTableLowCell` | `CandleChartRepeatedSlotProps<"td">` | no |  |
@@ -92,7 +92,7 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"aria-label"` | `string` | no |  |
+| `"aria-label"` | `string \| undefined` | no |  |
 | `labels` | `Partial<CandleChartLabels>` | no |  |
 | `activeCandleIndex` | `number` | no |  |
 | `cursorY` | `number` | no |  |

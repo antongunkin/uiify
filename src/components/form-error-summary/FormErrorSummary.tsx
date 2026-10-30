@@ -1,6 +1,6 @@
 import type { ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { omitProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
+import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import type { FormErrorSummaryProps } from "./types.js";
 
 export function FormErrorSummary<TAs extends ElementType = "section">(
@@ -13,29 +13,24 @@ export function FormErrorSummary<TAs extends ElementType = "section">(
     as,
     defaultTag: "section",
     props: {
+      "data-uiify-form-error-summary": "",
       ...consumerProps,
       children: (
         <>
-          <h2
-            {...omitProps(slotProps?.title, ["data-part", "children", "dangerouslySetInnerHTML"])}
-            data-part="title"
-          >
+          <h2 data-part="title" {...slotProps?.title}>
             {title}
           </h2>
-          <ul
-            {...omitProps(slotProps?.list, ["data-part", "children", "dangerouslySetInnerHTML"])}
-            data-part="list"
-          >
+          <ul data-part="list" {...slotProps?.list}>
             {errors.map((error, index) => (
               <li
-                {...resolveRepeatedSlotProps(slotProps?.item, error.href, ["data-part"])}
                 data-part="item"
+                {...resolveRepeatedSlotProps(slotProps?.item, error.href)}
                 key={`${error.href}-${index}`}
               >
                 <a
-                  {...resolveRepeatedSlotProps(slotProps?.link, error.href, ["data-part", "href"])}
                   data-part="link"
                   href={error.href}
+                  {...resolveRepeatedSlotProps(slotProps?.link, error.href)}
                 >
                   {error.message}
                 </a>
@@ -44,7 +39,6 @@ export function FormErrorSummary<TAs extends ElementType = "section">(
           </ul>
         </>
       ),
-      "data-uiify-form-error-summary": "",
     },
     render,
     state: {},

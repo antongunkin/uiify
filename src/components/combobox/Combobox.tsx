@@ -83,6 +83,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     onOpenChange,
     onValueChange,
     open: controlledOpen,
+    size,
     validateValue: configuredValidateValue,
     value: controlledValue,
     ...consumerProps
@@ -314,7 +315,13 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
   );
 
   return (
-    <div {...consumerProps} id={id} className={className} data-uiify-combobox="">
+    <div
+      data-uiify-combobox=""
+      {...(size !== undefined ? { "data-size": size } : {})}
+      {...consumerProps}
+      id={id}
+      className={className}
+    >
       <CollectionProvider>
         <ComboboxProvider value={contextValue}>{children}</ComboboxProvider>
       </CollectionProvider>
@@ -333,8 +340,8 @@ export function ComboboxControl<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-part": "control",
+      ...consumerProps,
       ...(className ? { className } : {}),
       children,
     },
@@ -353,24 +360,19 @@ function ComboboxTagsMultiple<TAs extends ElementType = "div">(
 
   const tags = selectedValues.map((value) => {
     const label = getValueLabel(value);
-    const tagProps = resolveRepeatedSlotProps(slotProps?.tag, value, ["data-part"]);
-    const removeProps = resolveRepeatedSlotProps(slotProps?.remove, value, [
-      "aria-label",
-      "data-part",
-      "type",
-    ]);
+    const tagProps = resolveRepeatedSlotProps(slotProps?.tag, value);
+    const removeProps = resolveRepeatedSlotProps(slotProps?.remove, value);
     return (
-      <span {...tagProps} data-part="tag" key={value}>
+      <span data-part="tag" {...tagProps} key={value}>
         {label}
         <button
-          {...removeProps}
           aria-label={`Remove ${label}`}
           data-part="tag-remove"
           type="button"
-          onMouseDown={(event) => {
-            removeProps.onMouseDown?.(event);
-            event.preventDefault();
-          }}
+          {...removeProps}
+          onMouseDown={composeEventHandlers(removeProps.onMouseDown, (event) =>
+            event.preventDefault(),
+          )}
           onClick={composeEventHandlers(removeProps.onClick, () => removeValue(value))}
         >
           ×
@@ -383,8 +385,8 @@ function ComboboxTagsMultiple<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-part": "tags",
+      ...consumerProps,
       ...(className ? { className } : {}),
       children: (
         <>
@@ -498,9 +500,7 @@ export function ComboboxInput<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...withoutRef,
       ...anchorProps,
-      ref: mergedRef,
       role: "combobox",
       "aria-autocomplete": "list",
       "aria-controls": listboxId,
@@ -509,6 +509,8 @@ export function ComboboxInput<TAs extends ElementType = "input">(
       "data-part": "input",
       ...(className ? { className } : {}),
       value: inputValue,
+      ...withoutRef,
+      ref: mergedRef,
       onChange: composeEventHandlers(consumerOnChange, handleChange),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       onPaste: composeEventHandlers(consumerOnPaste, handlePaste),
@@ -539,13 +541,13 @@ export function ComboboxTrigger<TAs extends ElementType = "button">(
     as,
     defaultTag: "button",
     props: {
-      ...consumerProps,
       "aria-expanded": openState,
       "aria-controls": listboxId,
       "aria-haspopup": "listbox",
       ...(nativeButton ? { type: "button" } : {}),
       ...(className ? { className } : {}),
       "data-part": "trigger",
+      ...consumerProps,
       children,
       onClick: composeEventHandlers(consumerOnClick, handleClick),
     },
@@ -584,11 +586,9 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
   return (
     <DismissableLayer
       branches={branches}
-      {...domProps}
       onDismiss={() => close()}
       {...popupProps}
       {...positionerProps}
-      ref={mergedRef}
       id={listboxId}
       // Combobox pattern requires an ARIA listbox; native <select> cannot replace it.
       // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- ARIA combobox popup
@@ -598,6 +598,8 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
       data-part="content"
       data-side={side}
       data-state={openState ? "open" : "closed"}
+      {...domProps}
+      ref={mergedRef}
       {...(className ? { className } : {})}
     >
       {children(filteredItems)}
@@ -629,8 +631,6 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
   return useRenderElement({
     defaultTag: "div",
     props: {
-      ...consumerProps,
-      ref,
       id,
       role: "option",
       "aria-disabled": item.disabled ? true : undefined,
@@ -639,6 +639,8 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
       "data-highlighted": active ? "" : undefined,
       "data-selected": multiple && selected ? "" : undefined,
       "data-part": "item",
+      ...consumerProps,
+      ref,
       ...(className ? { className } : {}),
       children: item.label,
       onMouseDown: composeEventHandlers(consumerOnMouseDown, (event) => event.preventDefault()),
@@ -655,9 +657,9 @@ export function ComboboxEmpty(props: ComboboxEmptyOwnProps): ReactElement | null
   return useRenderElement({
     defaultTag: "div",
     props: {
-      ...consumerProps,
       role: "presentation",
       "data-part": "empty",
+      ...consumerProps,
       ...(className ? { className } : {}),
       children,
     },

@@ -3,7 +3,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Accordion } from "./Accordion.js";
-import type { AccordionProps } from "./types.js";
 
 const items = [
   { value: "shipping", label: "Shipping", panel: <>Ships in 2-3 days.</> },
@@ -160,25 +159,24 @@ describe("Accordion", () => {
     expect(returnsRef.current).toBe(screen.getByTestId("returns-item"));
   });
 
-  it("filters state and group props from untyped slot values", () => {
-    const unsafeProps = {
-      id: "faq",
-      items,
-      children: "untrusted child",
-      dangerouslySetInnerHTML: { __html: "untrusted html" },
-      type: "multiple",
-      slotProps: {
-        item: {
-          open: true,
-          name: "wrong-common",
-          byItemValue: { shipping: { open: true, name: "wrong-item" } },
-        },
-      },
-    } as unknown as AccordionProps;
-    const markup = renderToStaticMarkup(<Accordion {...unsafeProps} />);
-
-    expect(markup).not.toContain(" name=");
-    expect(markup).not.toContain(" open=");
-    expect(markup).not.toContain("untrusted");
+  it("lets slot props replace generated markers per item", () => {
+    const markup = renderToStaticMarkup(
+      <Accordion
+        defaultValue="shipping"
+        id="faq"
+        items={items}
+        slotProps={{
+          item: { byItemValue: { shipping: { "data-part": "card", name: "custom", open: false } } },
+          trigger: { "data-part": undefined, "aria-disabled": false, tabIndex: 0 },
+          panel: { byItemValue: { shipping: { "data-uiify-details": "x" } } },
+        }}
+      />,
+    );
+    const host = document.createElement("div");
+    host.innerHTML = markup;
+    expect(host.querySelector('details[data-part="card"]')?.getAttribute("name")).toBe("custom");
+    expect(host.querySelector("details")?.hasAttribute("open")).toBe(false);
+    expect(host.querySelector("summary")?.hasAttribute("data-part")).toBe(false);
+    expect(host.querySelector('[data-part="panel"][data-uiify-details="x"]')).not.toBeNull();
   });
 });

@@ -55,7 +55,7 @@ describe("Combobox", () => {
     expect(root.className).toBe("fruit-root");
     expect((root as HTMLDivElement).style.color).toBe("red");
     expect(root.getAttribute("data-purpose")).toBe("picker");
-    expect(root.getAttribute("data-uiify-combobox")).toBe("");
+    expect(root.getAttribute("data-uiify-combobox")).toBe("consumer-value");
     expect(rootRef.current).toBe(root);
     fireEvent.click(root);
     expect(onClick).toHaveBeenCalledOnce();
@@ -466,7 +466,7 @@ describe("Combobox", () => {
     expect(markup).toContain('aria-autocomplete="list"');
   });
 
-  it("owns Input's role, aria-autocomplete, aria-controls, aria-expanded, aria-activedescendant, and value regardless of consumer override", () => {
+  it("accepts input native overrides while retaining keyboard behavior", () => {
     render(
       <Combobox.Root defaultOpen inputValue="" items={items} onInputValueChange={() => {}}>
         <Combobox.Input
@@ -485,18 +485,18 @@ describe("Combobox", () => {
       </Combobox.Root>,
     );
 
-    const input = screen.getByRole("combobox") as HTMLInputElement;
-    expect(input.getAttribute("aria-autocomplete")).toBe("list");
-    expect(input.getAttribute("aria-controls")).not.toBe("bogus");
-    expect(input.getAttribute("aria-expanded")).toBe("true");
-    expect(input.value).toBe("");
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+    expect(input.getAttribute("aria-autocomplete")).toBe("both");
+    expect(input.getAttribute("aria-controls")).toBe("bogus");
+    expect(input.getAttribute("aria-expanded")).toBe("false");
+    expect(input.value).toBe("bogus");
 
     fireEvent.keyDown(input, { key: "ArrowDown" });
     const firstOption = screen.getByRole("option", { name: "Apple" });
     expect(input.getAttribute("aria-activedescendant")).toBe(firstOption.id);
   });
 
-  it("owns Input's data-anchor regardless of consumer override", () => {
+  it("accepts input anchor overrides", () => {
     render(
       <Combobox.Root items={items}>
         <Combobox.Input aria-label="Fruit" data-anchor="bogus" />
@@ -504,7 +504,7 @@ describe("Combobox", () => {
       </Combobox.Root>,
     );
 
-    expect(screen.getByRole("combobox").getAttribute("data-anchor")).not.toBe("bogus");
+    expect(screen.getByRole("combobox").getAttribute("data-anchor")).toBe("bogus");
   });
 
   it("lets a consumer onChange veto input sync, leaving the committed value unchanged (policy #1: form-control change veto)", () => {
@@ -552,7 +552,7 @@ describe("Combobox", () => {
     expect(onInputValueChange).toHaveBeenCalledWith("app");
   });
 
-  it("owns Trigger's aria-expanded, aria-controls, aria-haspopup, and type regardless of consumer override", () => {
+  it("accepts trigger native overrides", () => {
     render(
       <Combobox.Root items={items}>
         <Combobox.Input aria-label="Fruit" />
@@ -569,10 +569,10 @@ describe("Combobox", () => {
     );
 
     const trigger = screen.getByRole("button", { name: "Toggle fruit list" });
-    expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(trigger.getAttribute("aria-controls")).not.toBe("bogus");
-    expect(trigger.getAttribute("aria-haspopup")).toBe("listbox");
-    expect(trigger.getAttribute("type")).toBe("button");
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.getAttribute("aria-controls")).toBe("bogus");
+    expect(trigger.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(trigger.getAttribute("type")).toBe("submit");
   });
 
   it("lets a consumer onClick veto the trigger's open/close toggle", () => {

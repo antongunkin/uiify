@@ -2,7 +2,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Choice, ChoiceGroup, ChoiceItem } from "./Choice.js";
-import type { ChoiceItemSlotProps } from "./types.js";
 
 describe("Choice", () => {
   it("renders a radio input, label and panel per item", () => {
@@ -79,7 +78,7 @@ describe("Choice", () => {
     expect(withoutLabelPart).not.toContain('data-part="label"');
   });
 
-  it("spreads slotProps onto their elements without overriding owned attributes", () => {
+  it("spreads slotProps onto their elements", () => {
     render(
       <ChoiceGroup id="plan" kind="single">
         <ChoiceItem
@@ -90,8 +89,6 @@ describe("Choice", () => {
           slotProps={{
             input: {
               "data-consumer-input": "",
-              // @ts-expect-error -- the input's native control type is owned by Choice.Item.
-              type: "hijacked",
             },
             label: { "data-consumer-label": "" },
             panel: { "data-consumer-panel": "free" },
@@ -135,41 +132,26 @@ describe("Choice", () => {
     expect(events).toEqual(["slot"]);
   });
 
-  it("filters behavior-owned input props from untyped slot values", () => {
-    const unsafeSlotProps = {
-      input: {
-        children: "untrusted child",
-        dangerouslySetInnerHTML: { __html: "untrusted html" },
-        checked: false,
-        defaultChecked: false,
-        disabled: true,
-        id: "wrong-id",
-        name: "wrong-name",
-        type: "checkbox",
-        value: "wrong-value",
-        "aria-labelledby": "wrong-label",
-      },
-    } as unknown as ChoiceItemSlotProps;
-    render(
+  it("lets input slot props override the generated name", () => {
+    const { rerender } = render(
+      <ChoiceGroup id="plan" kind="single">
+        <ChoiceItem groupId="plan" kind="single" label="Free" value="free" />
+      </ChoiceGroup>,
+    );
+    expect((screen.getByRole("radio", { name: "Free" }) as HTMLInputElement).name).toBe("plan");
+
+    rerender(
       <ChoiceGroup id="plan" kind="single">
         <ChoiceItem
-          checked
           groupId="plan"
           kind="single"
           label="Free"
-          slotProps={unsafeSlotProps}
+          slotProps={{ input: { name: "custom" } }}
           value="free"
         />
       </ChoiceGroup>,
     );
-
-    const input = screen.getByRole("radio", { name: "Free" }) as HTMLInputElement;
-    expect(input.checked).toBe(true);
-    expect(input.disabled).toBe(false);
-    expect(input.type).toBe("radio");
-    expect(input.name).toBe("plan");
-    expect(input.value).toBe("free");
-    expect(input.id).toBe("plan-control-free");
+    expect((screen.getByRole("radio", { name: "Free" }) as HTMLInputElement).name).toBe("custom");
   });
 
   it("supports a custom wrapper part name", () => {

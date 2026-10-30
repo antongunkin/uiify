@@ -34,10 +34,10 @@ export function ModalContent(props: ModalContentProps): ReactElement {
   const { align, backdrop, children, dismiss, size, ...dialogProps } = props;
   return (
     <dialog
-      {...dialogProps}
       {...modalAppearanceAttributes({ align, backdrop, dismiss, size })}
       data-part="content"
       data-uiify-modal=""
+      {...dialogProps}
     >
       {children}
     </dialog>

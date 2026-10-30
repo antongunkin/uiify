@@ -1,22 +1,18 @@
 "use client";
-
 import { useEffect, useReducer, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { useMergedRefs } from "@gunkin/uiify/hooks";
 import { modalAppearanceAttributes } from "../attributes.js";
 import type { ModalClientContentProps } from "../types.js";
-
 function increment(count: number): number {
   return count + 1;
 }
-
 /** A dialog nested in this one would stay open (and invisible) after its parent closes. */
 function closeNestedDialogs(dialog: HTMLDialogElement): void {
   for (const nested of dialog.querySelectorAll<HTMLDialogElement>("dialog[open]")) {
     nested.close();
   }
 }
-
 /**
  * Runs `done` once the dialog's own transitions have finished; at once when there are none.
  * An `infinite` animation inside (a Spinner or Skeleton) never finishes, so it is not waited on.
@@ -31,7 +27,6 @@ function afterMotion(dialog: HTMLDialogElement, done: () => void): void {
     ).then(done);
   });
 }
-
 /**
  * Controlled/initially-open adapter over a native modal `<dialog>`.
  *
@@ -55,7 +50,6 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
     size,
     ...dialogProps
   } = props;
-
   const elementRef = useRef<HTMLDialogElement | null>(null);
   const mergedRef = useMergedRefs<HTMLDialogElement>(elementRef, ref);
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
@@ -65,7 +59,6 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
   const [nativeVersion, recordNativeToggle] = useReducer(increment, 0);
   const controlled = open !== undefined;
   const wantOpen = controlled ? open : uncontrolledOpen;
-
   const wantOpenRef = useRef(wantOpen);
   wantOpenRef.current = wantOpen;
   const onOpenChangeRef = useRef(onOpenChange);
@@ -74,7 +67,6 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
   onOpenChangeCompleteRef.current = onOpenChangeComplete;
   // One-shot: has the first-mount reconciliation below already run?
   const reconciledRef = useRef(false);
-
   useEffect(() => {
     const dialog = elementRef.current;
     if (!dialog) return;
@@ -109,7 +101,6 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
     // `controlled` is read above (line 66) and must be a dependency; the sibling
     // `toggle`-listener effect below lists it for the same reason.
   }, [nativeVersion, wantOpen, controlled]);
-
   useEffect(() => {
     const dialog = elementRef.current;
     if (!dialog) return;
@@ -132,19 +123,18 @@ export function ModalClientContent(props: ModalClientContentProps): ReactElement
       dialog.removeEventListener("toggle", onToggle);
     };
   }, [controlled]);
-
   return (
     <dialog
-      {...dialogProps}
       {...modalAppearanceAttributes({ align, backdrop, dismiss, size })}
       data-part="content"
       data-uiify-modal=""
-      ref={mergedRef}
       // SSR markup is always closed, but the browser may have already opened this
       // dialog via a native invoker command before hydration (see the effect above,
       // which reconciles exactly that). React's hydration diff otherwise flags the
       // resulting `open` mismatch as an error; it is the documented recovery path.
       suppressHydrationWarning
+      {...dialogProps}
+      ref={mergedRef}
     >
       {children}
     </dialog>

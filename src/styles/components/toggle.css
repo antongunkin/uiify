@@ -23,7 +23,7 @@
 
   [data-uiify-toggle] > input:focus-visible + [data-uiify-button],
   [data-uiify-toggle-group] [data-part="item"] > input:focus-visible + [data-uiify-button] {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 
   [data-uiify-toggle-group] {

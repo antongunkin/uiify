@@ -35,7 +35,6 @@ it("only accepts a native button or a button-forwarding component as `as`", () =
     <PopoverTrigger key="bad-action" action="explode" target="help">
       Help
     </PopoverTrigger>,
-    // @ts-expect-error -- the library owns the popover attribute.
     <PopoverSurface key="popover" id="help" popover="manual">
       Text
     </PopoverSurface>,

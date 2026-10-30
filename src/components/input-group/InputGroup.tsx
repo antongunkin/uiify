@@ -5,7 +5,7 @@ import type { InputGroupAddonProps, InputGroupRootProps } from "./types.js";
 export function InputGroup<TAs extends ElementType = "div">(
   props: InputGroupRootProps<TAs>,
 ): ReactElement | null {
-  const { as, render, children, ...consumerProps } = props as InputGroupRootProps<"div">;
+  const { as, render, children, size, ...consumerProps } = props as InputGroupRootProps<"div">;
   return useRenderElement({
     as,
     defaultTag: "div",
@@ -13,6 +13,7 @@ export function InputGroup<TAs extends ElementType = "div">(
       ...consumerProps,
       children,
       "data-part": "root",
+      ...(size !== undefined ? { "data-size": size } : {}),
       "data-uiify-input-group": "",
     },
     render,

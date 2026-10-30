@@ -16,7 +16,6 @@
        handoff (uiify Components Kit.dc.html), rounder than the --radius-lg
        card scale (12px) that every other bordered container uses. */
     border-radius: var(--radius-xl);
-    corner-shape: squircle;
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-modal);
@@ -151,38 +150,39 @@
   }
 
   [data-uiify-modal][data-part="header"] {
-    position: relative;
     flex: none;
-    padding-inline-end: 2.5rem;
-  }
-
-  /* Every close button shares one soft look: a filled, borderless surface that steps up on
-     hover and press. The header icon is a circle; text closers (footer, body) keep the pill. */
-  [data-uiify-modal][data-part="close"][data-uiify-button] {
-    border-color: transparent;
-    background-color: color-mix(in oklch, var(--foreground) 8%, transparent);
-    color: var(--foreground);
-  }
-
-  [data-uiify-modal][data-part="close"][data-uiify-button]:hover {
-    background-color: color-mix(in oklch, var(--foreground) 14%, transparent);
-  }
-
-  [data-uiify-modal][data-part="close"][data-uiify-button]:active {
-    background-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+    padding-inline-end: var(--control-md);
   }
 
   [data-uiify-modal][data-part="header"] > [data-part="close"] {
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
+    inset-block-start: 10px;
+    inset-inline-end: 10px;
     display: grid;
     place-items: center;
-    inline-size: 2rem;
-    block-size: 2rem;
-    min-block-size: 0;
-    padding: 0;
-    border-radius: 999px;
+  }
+
+  /* Close glyph: two crossed bars on the ghost Button's free pseudo-elements. `all: unset`
+     drops the geometry Button gives them; both share the centred grid cell. */
+  [data-uiify-modal][data-part="header"] > [data-part="close"]:empty {
+    &::before,
+    &::after {
+      all: unset;
+      content: "";
+      grid-area: 1 / 1;
+      inline-size: 0.875rem;
+      block-size: 2px;
+      border-radius: 1px;
+      background-color: currentcolor;
+    }
+
+    &::before {
+      rotate: 45deg;
+    }
+
+    &::after {
+      rotate: -45deg;
+    }
   }
 
   [data-uiify-modal][data-part="body"] {
@@ -198,21 +198,6 @@
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--space-sm);
-  }
-
-  @media (pointer: coarse) {
-    [data-uiify-modal][data-part="header"] {
-      padding-inline-end: 2.75rem;
-    }
-
-    [data-uiify-modal][data-part="header"] > [data-part="close"] {
-      min-inline-size: 2.75rem;
-      min-block-size: 2.75rem;
-    }
-
-    [data-uiify-modal][data-part="footer"] > * {
-      min-block-size: 2.75rem;
-    }
   }
 
   /* Mobile sheet below 40rem (keep in sync with SHEET_QUERY in enhance/sheet-swipe.ts):

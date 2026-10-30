@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default toggle DOM 1`] = `
+[
+  "div data-uiify-toggle=""",
+  "input aria-labelledby="plain-label" data-part="control" id="plain" type="checkbox"",
+  "label data-part="label" data-uiify-button="" data-variant="outline" for="plain" id="plain-label"",
+  "div data-disabled="" data-uiify-toggle=""",
+  "input aria-labelledby="pressed-label" checked="" data-disabled="" data-part="control" disabled="" id="pressed" type="checkbox"",
+  "label data-part="label" data-uiify-button="" data-variant="outline" for="pressed" id="pressed-label"",
+  "div data-uiify-toggle=""",
+  "input aria-labelledby="controlled-label" checked="" data-part="control" data-state="on" id="controlled" readonly="" type="checkbox"",
+  "label data-part="label" data-uiify-button="" data-variant="outline" for="controlled" id="controlled-label"",
+]
+`;

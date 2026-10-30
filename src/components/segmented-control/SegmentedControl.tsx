@@ -9,6 +9,7 @@ export function SegmentedControl({
   disabled = false,
   orientation = "horizontal",
   fullWidth = false,
+  size,
   className,
   slotProps,
   "aria-label": ariaLabel,
@@ -29,7 +30,7 @@ export function SegmentedControl({
       isChecked={(item) => item.value === defaultValue}
       kind="single"
       namespace="segmented-control"
-      labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost", "data-size": "sm" }}
+      labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost" }}
       orientation={orientation}
       {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{
@@ -38,6 +39,7 @@ export function SegmentedControl({
         "aria-labelledby": ariaLabelledBy,
         "data-disabled": disabled ? "" : undefined,
         "data-full-width": fullWidth ? "" : undefined,
+        "data-size": size,
       }}
     />
   );

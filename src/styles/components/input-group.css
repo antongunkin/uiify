@@ -6,14 +6,14 @@
     inline-size: 100%;
     max-inline-size: 24rem;
     min-inline-size: 0;
-    min-block-size: 2.75rem;
-    padding-inline: var(--space-md);
+    box-sizing: border-box;
+    min-block-size: var(--uiify-control-size, var(--control-md));
+    padding-inline: var(--space-lg);
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--text-sm);
+    font-size: var(--uiify-control-font, var(--text-base));
     line-height: var(--leading-normal);
     transition: var(--transition-colors);
   }
@@ -33,6 +33,13 @@
     font: inherit;
     box-shadow: none;
     outline: none;
+  }
+
+  /* A single-line control fills the root exactly: the root's height minus its two borders. */
+  [data-uiify-input-group][data-part="root"] > :is(input, select) {
+    block-size: calc(var(--uiify-control-size, var(--control-md)) - 2 * var(--border-width));
+    min-block-size: 0;
+    padding-block: 0;
   }
 
   [data-uiify-input-group][data-part="root"] > :is(input, textarea, select):focus-visible {

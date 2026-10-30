@@ -80,7 +80,7 @@ describe("ModalClientContent", () => {
         Body
       </ModalClientContent>,
     );
-    expect(html).toContain('<dialog aria-label="Settings"');
+    expect(html).toContain('aria-label="Settings"');
     expect(html).not.toContain("<dialog open");
     expect(html).not.toContain(" open=");
     expect(html).not.toContain("popover=");
@@ -453,5 +453,24 @@ describe("ModalClientContent", () => {
       );
       expect(onOpenChange).toHaveBeenCalledTimes(1);
     });
+  });
+  it("lets consumer attributes replace appearance and anatomy defaults", () => {
+    const view = render(
+      <ModalClientContent
+        id="settings"
+        aria-label="Settings"
+        closedby="none"
+        data-part="custom"
+        data-uiify-modal={undefined}
+        data-size="custom"
+      >
+        Body
+      </ModalClientContent>,
+    );
+    const dialog = view.container.querySelector("dialog")!;
+    expect(dialog.getAttribute("closedby")).toBe("none");
+    expect(dialog.getAttribute("data-part")).toBe("custom");
+    expect(dialog.getAttribute("data-size")).toBe("custom");
+    expect(dialog.hasAttribute("data-uiify-modal")).toBe(false);
   });
 });

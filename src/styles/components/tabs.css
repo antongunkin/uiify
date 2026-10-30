@@ -2,7 +2,7 @@
    Adapts to [data-orientation]; active state from [data-state="active"]. */
 
 @layer components {
-  [data-uiify-tabs] [data-part="trigger"] {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="trigger"] {
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
     border: none;
@@ -17,21 +17,16 @@
     transition: var(--transition-colors);
   }
 
-  [data-uiify-tabs] [data-part="trigger"]:hover {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="trigger"]:hover {
     color: var(--foreground);
   }
 
-  [data-uiify-tabs] [data-part="trigger"][data-state="active"] {
+  [data-uiify-tabs] > [data-part="item"] > [data-part="trigger"][data-state="active"] {
     border-block-end-color: var(--primary);
     color: var(--foreground);
   }
 
   /* Panel visibility is owned by @gunkin/uiify/components/behavior.css (radio :checked). */
-
-  [data-uiify-tabs] [data-part="panel"] {
-    font-size: var(--text-sm);
-    line-height: var(--leading-normal);
-  }
 
   [data-uiify-tabs] > [data-part="item"] {
     display: contents;
@@ -80,7 +75,7 @@
 
   [data-uiify-tabs] > [data-part="item"] > input:focus-visible + label {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 
   [data-uiify-tabs] > [data-part="item"] > [data-part="panel"] {

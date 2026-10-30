@@ -2,28 +2,28 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type {
   ContextMenuCheckboxItemOwnProps,
-  ContextMenuRootProps,
-  ContextMenuSubContentOwnProps,
+  ContextMenuRootSlotProps,
+  ContextMenuRadioItemOwnProps,
+  ContextMenuSubTriggerOwnProps,
 } from "./types.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { ContextMenu } from "./ContextMenu.js";
 
 describe("ContextMenu", () => {
-  it("forwards slot props to the generated virtual anchor while protecting its positioning contract", () => {
+  it("forwards slot props to the generated virtual anchor and lets consumer positioning replace defaults", () => {
     const anchorRef = { current: null as HTMLSpanElement | null };
     const slotProps = {
       virtualAnchor: {
         className: "virtual-anchor",
         "data-testid": "context-anchor",
         "data-virtual-anchor": "consumer",
+        "aria-hidden": false,
         "data-anchor": "consumer-anchor",
         "data-uiify-menu": "consumer-menu",
-        children: "unwanted child",
-        dangerouslySetInnerHTML: { __html: "<b>unwanted markup</b>" },
         style: { color: "red", position: "absolute" },
         ref: anchorRef,
       },
-    } as unknown as NonNullable<ContextMenuRootProps["slotProps"]>;
+    } satisfies ContextMenuRootSlotProps;
     const { container } = render(
       <ContextMenu.Root slotProps={slotProps}>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -35,15 +35,18 @@ describe("ContextMenu", () => {
 
     const anchor = container.querySelector("[data-testid=context-anchor]");
     expect(anchor?.className).toBe("virtual-anchor");
-    expect(anchor?.getAttribute("data-virtual-anchor")).toBe("");
-    expect(anchor?.getAttribute("data-anchor")).toBeNull();
-    expect(anchor?.getAttribute("data-uiify-menu")).toBeNull();
+    expect(anchor?.getAttribute("data-virtual-anchor")).toBe("consumer");
+    expect(anchor?.getAttribute("data-anchor")).toBe("consumer-anchor");
+    expect(anchor?.getAttribute("data-uiify-menu")).toBe("consumer-menu");
     expect(anchor?.textContent).toBe("");
     expect(anchor?.querySelector("b")).toBeNull();
-    expect(anchor?.getAttribute("aria-hidden")).toBe("true");
+    expect(anchor?.getAttribute("aria-hidden")).toBe("false");
     expect(anchorRef.current).toBe(anchor);
     expect((anchor as HTMLElement | null)?.style.color).toBe("red");
-    expect((anchor as HTMLElement | null)?.style.position).toBe("fixed");
+    expect((anchor as HTMLElement | null)?.style.position).toBe("absolute");
+    fireEvent.contextMenu(screen.getByText("Area"), { clientX: 120, clientY: 80 });
+    expect(anchorRef.current?.style.getPropertyValue("--uiify-context-menu-x")).toBe("120px");
+    expect(anchorRef.current?.style.getPropertyValue("--uiify-context-menu-y")).toBe("80px");
   });
 
   it("uses Root id for the popup", () => {
@@ -59,23 +62,65 @@ describe("ContextMenu", () => {
     expect(document.getElementById("context-popup")?.getAttribute("role")).toBe("menu");
   });
 
+  it("keeps the latest consumer coordinate styles when opening at the pointer", () => {
+    const initialStyle = {
+      color: "red",
+      "--uiify-context-menu-x": "17px",
+      "--uiify-context-menu-y": "29px",
+    };
+    const view = render(
+      <ContextMenu.Root slotProps={{ virtualAnchor: { style: initialStyle } }}>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>Copy</ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+    const anchor = view.container.querySelector<HTMLElement>("[data-virtual-anchor]")!;
+    fireEvent.contextMenu(screen.getByText("Area"), { clientX: 120, clientY: 80 });
+    expect(anchor.style.getPropertyValue("--uiify-context-menu-x")).toBe("17px");
+    expect(anchor.style.getPropertyValue("--uiify-context-menu-y")).toBe("29px");
+
+    const updatedStyle = {
+      color: "red",
+      "--uiify-context-menu-x": 0,
+      "--uiify-context-menu-y": undefined,
+    };
+    view.rerender(
+      <ContextMenu.Root slotProps={{ virtualAnchor: { style: updatedStyle } }}>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>Copy</ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+    fireEvent.contextMenu(screen.getByText("Area"), { clientX: 300, clientY: 400 });
+    expect(anchor.style.getPropertyValue("--uiify-context-menu-x")).toBe("0");
+    expect(anchor.style.getPropertyValue("--uiify-context-menu-y")).toBe("");
+
+    view.rerender(
+      <ContextMenu.Root slotProps={{ virtualAnchor: { style: { color: "red" } } }}>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>Copy</ContextMenu.Item>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+    fireEvent.contextMenu(screen.getByText("Area"), { clientX: 300, clientY: 400 });
+    expect(anchor.style.getPropertyValue("--uiify-context-menu-x")).toBe("300px");
+    expect(anchor.style.getPropertyValue("--uiify-context-menu-y")).toBe("400px");
+  });
+
   it("forwards native props, class, and ref to each generated submenu and selection part", () => {
     const checkboxRef = { current: null as HTMLDivElement | null };
     const radioRef = { current: null as HTMLDivElement | null };
     const subTriggerRef = { current: null as HTMLDivElement | null };
     const subContentRef = { current: null as HTMLDivElement | null };
-    const unsafeCheckboxProps = {
-      dangerouslySetInnerHTML: { __html: "<b>unwanted item markup</b>" },
-    } as unknown as ContextMenuCheckboxItemOwnProps;
-    const unsafeSubContentProps = {
-      dangerouslySetInnerHTML: { __html: "<b>unwanted submenu markup</b>" },
-    } as unknown as ContextMenuSubContentOwnProps;
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
         <ContextMenu.Content>
           <ContextMenu.CheckboxItem
-            {...unsafeCheckboxProps}
             className="checkbox-item"
             data-testid="checkbox-item"
             ref={checkboxRef}
@@ -99,7 +144,6 @@ describe("ContextMenu", () => {
               More
             </ContextMenu.Sub.Trigger>
             <ContextMenu.Sub.Content
-              {...unsafeSubContentProps}
               className="sub-content"
               data-testid="sub-content"
               ref={subContentRef}
@@ -227,7 +271,7 @@ describe("ContextMenu", () => {
     expect(screen.queryByRole("menuitem", { name: "Copy" })).toBeNull();
   });
 
-  it("owns Content's role, data-state, and positioning attributes regardless of consumer override", () => {
+  it("lets consumer Content attributes override defaults", () => {
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -243,13 +287,13 @@ describe("ContextMenu", () => {
       </ContextMenu.Root>,
     );
 
-    const content = screen.getByRole("menu");
-    expect(content.getAttribute("data-state")).toBe("open");
+    const content = screen.getByRole("alert");
+    expect(content.getAttribute("data-state")).toBe("bogus");
     expect(content.getAttribute("data-uiify-menu")).toBe("");
     expect(content.getAttribute("data-part")).toBe("content");
-    expect(content.id).not.toBe("my-id");
-    expect(content.getAttribute("data-align")).toBe("start");
-    expect(content.getAttribute("data-side")).toBe("bottom");
+    expect(content.id).toBe("my-id");
+    expect(content.getAttribute("data-align")).toBe("end");
+    expect(content.getAttribute("data-side")).toBe("top");
   });
 
   it("lets a consumer onKeyDown veto Escape-to-close on Content (policy #4)", () => {
@@ -267,7 +311,7 @@ describe("ContextMenu", () => {
     expect(screen.getByRole("menuitem", { name: "Copy" }).getAttribute("data-part")).toBe("item");
   });
 
-  it("owns Item's role regardless of consumer override", () => {
+  it("lets consumer Item role override the default", () => {
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -277,7 +321,7 @@ describe("ContextMenu", () => {
       </ContextMenu.Root>,
     );
 
-    expect(screen.getByRole("menuitem", { name: "Cut" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Cut" })).toBeTruthy();
   });
 
   it("lets a consumer onClick veto item selection (policy #3), leaving the menu open", () => {
@@ -327,16 +371,13 @@ describe("ContextMenu", () => {
     expect(onSelect).toHaveBeenCalledOnce();
   });
 
-  it("owns CheckboxItem's role, aria-checked, and data-state regardless of consumer override", () => {
-    // CheckboxItem's public prop type has no native-attribute pass-through, but the
-    // implementation still spreads unrecognized keys into consumerProps at runtime —
-    // the `as any` below exercises that path the same way an untyped/JS consumer would.
+  it("lets consumer CheckboxItem attributes override defaults", () => {
     const overrides = {
       checked: true,
       role: "menuitem",
       "aria-checked": false,
       "data-state": "unchecked",
-    } as any;
+    } satisfies ContextMenuCheckboxItemOwnProps;
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -346,16 +387,16 @@ describe("ContextMenu", () => {
       </ContextMenu.Root>,
     );
 
-    const item = screen.getByRole("menuitemcheckbox", { name: "Bold" });
-    expect(item.getAttribute("aria-checked")).toBe("true");
-    expect(item.getAttribute("data-state")).toBe("checked");
+    const item = screen.getByRole("menuitem", { name: "Bold" });
+    expect(item.getAttribute("aria-checked")).toBe("false");
+    expect(item.getAttribute("data-state")).toBe("unchecked");
   });
 
   it("lets a consumer onClick veto CheckboxItem selection, leaving checked value unchanged", () => {
     const onCheckedChange = vi.fn();
     const overrides = {
       onClick: (event: { preventDefault: () => void }) => event.preventDefault(),
-    } as any;
+    };
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -378,8 +419,12 @@ describe("ContextMenu", () => {
     ).toBe("false");
   });
 
-  it("owns RadioItem's role, aria-checked, and data-state regardless of consumer override", () => {
-    const overrides = { role: "menuitem", "aria-checked": true, "data-state": "unchecked" } as any;
+  it("lets consumer RadioItem attributes override defaults", () => {
+    const overrides = {
+      role: "menuitem",
+      "aria-checked": true,
+      "data-state": "unchecked",
+    } satisfies Omit<ContextMenuRadioItemOwnProps, "value">;
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -391,15 +436,15 @@ describe("ContextMenu", () => {
       </ContextMenu.Root>,
     );
 
-    const item = screen.getByRole("menuitemradio", { name: "A" });
-    expect(item.getAttribute("aria-checked")).toBe("false");
+    const item = screen.getByRole("menuitem", { name: "A" });
+    expect(item.getAttribute("aria-checked")).toBe("true");
     expect(item.getAttribute("data-state")).toBe("unchecked");
   });
 
   it("lets a consumer onClick veto RadioItem selection, leaving the radio value unchanged", () => {
     const overrides = {
       onClick: (event: { preventDefault: () => void }) => event.preventDefault(),
-    } as any;
+    };
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -418,8 +463,12 @@ describe("ContextMenu", () => {
     );
   });
 
-  it("owns SubTrigger's role, aria-haspopup, and aria-expanded regardless of consumer override", () => {
-    const overrides = { role: "menuitem", "aria-haspopup": false, "aria-expanded": true } as any;
+  it("lets consumer SubTrigger attributes override defaults", () => {
+    const overrides = {
+      role: "menuitem",
+      "aria-haspopup": false,
+      "aria-expanded": true,
+    } satisfies ContextMenuSubTriggerOwnProps;
     render(
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
@@ -439,8 +488,8 @@ describe("ContextMenu", () => {
     );
 
     const trigger = screen.getByRole("menuitem", { name: "More" });
-    expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
-    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(trigger.getAttribute("aria-haspopup")).toBe("false");
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
   });
 
   it("selects a RadioItem, checking it and closing the menu", () => {
@@ -552,5 +601,33 @@ describe("ContextMenu", () => {
       expect(trigger.getAttribute("aria-expanded")).toBe("false");
       expect(document.activeElement).toBe(trigger);
     });
+  });
+  it("lets consumer submenu attributes replace defaults", () => {
+    render(
+      <ContextMenu.Root defaultOpen>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Item>First</ContextMenu.Item>
+          <ContextMenu.Sub>
+            <ContextMenu.Sub.Trigger>More</ContextMenu.Sub.Trigger>
+            <ContextMenu.Sub.Content
+              data-testid="sub"
+              role="note"
+              data-state="custom"
+              data-part="custom-part"
+              hidden
+            >
+              Nested
+            </ContextMenu.Sub.Content>
+          </ContextMenu.Sub>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+    fireEvent.focus(screen.getByRole("menuitem", { name: "More" }));
+    const content = screen.getByTestId("sub");
+    expect(content.getAttribute("role")).toBe("note");
+    expect(content.getAttribute("data-state")).toBe("custom");
+    expect(content.getAttribute("data-part")).toBe("custom-part");
+    expect(content.hidden).toBe(true);
   });
 });

@@ -60,7 +60,7 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | `string` | no |  |
+| `id` | `string \| undefined` | no |  |
 | `onBlur` | `FocusEventHandler<HTMLInputElement>` | no |  |
 | `onChange` | `ChangeEventHandler<HTMLInputElement>` | no |  |
 | `onFocus` | `FocusEventHandler<HTMLInputElement>` | no |  |

@@ -53,4 +53,4 @@
 - `AlertProps<TAs>`: `RenderableProps<TAs, AlertOwnProps, Record<string, never>, HTMLElement>`
 - `AlertTitleProps<TAs>`: `RenderableProps<TAs, AlertTitleOwnProps, Record<string, never>, HTMLElement>`
 - `AlertDescriptionProps<TAs>`: `RenderableProps<TAs, AlertDescriptionOwnProps, Record<string, never>, HTMLElement>`
-- `AlertSymbolSlotProps`: `Omit<ComponentPropsWithRef<"span">, "aria-hidden" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-alert"> & { readonly "aria-hidden"?: never; readonly "data-part"?: never; readonly "data-uiify-alert"?: never; } & ConsumerDataAttributes`
+- `AlertSymbolSlotProps`: `SlotProps<"span">`

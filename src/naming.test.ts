@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, test } from "vitest";
+import { PART_NAMES } from "./core/part-names.js";
 
 const sourceDirectory = import.meta.dirname;
 
@@ -60,4 +61,57 @@ test("label interfaces use the labels prop without competing label bags", () => 
       .map((match) => `${path}: ${match[1]}`);
   });
   expect(competitors).toEqual([]);
+});
+
+const implementationFiles = () =>
+  sourceFiles().filter((path) => /\.(?:tsx?|css)$/.test(path) && !path.includes(".test."));
+
+test("data-part values come from the part vocabulary", () => {
+  const known = new Set<string>(PART_NAMES);
+  const unknown = implementationFiles().flatMap((path) =>
+    [...readFileSync(path, "utf8").matchAll(/data-part"?\s*[:=]\s*"([a-z]+(?:-[a-z]+)*)"/g)]
+      .map((match) => match[1]!)
+      .filter((name) => !known.has(name))
+      .map((name) => `${path}: ${name}`),
+  );
+  expect(unknown).toEqual([]);
+});
+
+// Sub-identities that name a part family rather than a folder. Extend only with a reason.
+const IDENTITY_SUBNAMES = new Set([
+  "alert-description",
+  "alert-title",
+  "description-details",
+  "description-term",
+  "empty-content",
+  "empty-description",
+  "empty-title",
+  "fieldset-legend",
+  "item-actions",
+  "item-content",
+  "item-media",
+  "item-metadata",
+  "menu",
+  "menu-bar",
+  "radio",
+  "slider-client",
+  "surface",
+  "toc-value",
+]);
+
+test("identity markers use full component or element names", () => {
+  const folders = new Set(
+    ["components", "elements"].flatMap((directory) =>
+      readdirSync(resolve(sourceDirectory, directory), { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name),
+    ),
+  );
+  const unknown = implementationFiles().flatMap((path) =>
+    [...readFileSync(path, "utf8").matchAll(/data-uiify-([a-z]+(?:-[a-z]+)*)/g)]
+      .map((match) => match[1]!)
+      .filter((name) => !folders.has(name) && !IDENTITY_SUBNAMES.has(name))
+      .map((name) => `${path}: ${name}`),
+  );
+  expect(unknown).toEqual([]);
 });

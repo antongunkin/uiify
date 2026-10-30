@@ -15,6 +15,7 @@ Use a switch for a persistent on/off setting and ordinary buttons for one-time a
 ## Structure
 
 Use the documented Toggle with its required id and label. It is backed by a native checkbox; keep the label stable so the checked state conveys the change.
+Use `defaultPressed` for browser-owned state that must keep working without JavaScript. For React-controlled state, pass `pressed` together with `onPressedChange`; update `pressed` from that callback so the input stays in sync with the caller.
 
 ## Responsive
 

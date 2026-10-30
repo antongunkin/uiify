@@ -20,6 +20,7 @@ export function SelectRoot<TAs extends ElementType = "select">(
     onValueChange,
     name,
     disabled = false,
+    size,
     children: consumerChildren,
     ...consumerProps
   } = props as SelectRootProps<"select">;
@@ -43,6 +44,7 @@ export function SelectRoot<TAs extends ElementType = "select">(
       ...consumerProps,
       children: consumerChildren,
       "data-uiify-select": "",
+      ...(size !== undefined ? { "data-size": size } : {}),
       "data-disabled": disabled ? "" : undefined,
       disabled: disabled || undefined,
       name,

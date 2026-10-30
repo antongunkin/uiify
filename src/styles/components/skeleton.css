@@ -11,7 +11,6 @@
   }
   [data-uiify-skeleton][data-shape="circle"] {
     border-radius: 50%;
-    corner-shape: round;
   }
   [data-uiify-skeleton][data-variant="shimmer"][data-state="loading"] {
     background: linear-gradient(90deg, var(--muted), var(--secondary), var(--muted));

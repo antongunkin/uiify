@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default combobox DOM 1`] = `
+[
+  "div data-uiify-combobox=""",
+  "div data-part="control"",
+  "div data-part="tags"",
+  "span data-part="tag"",
+  "button aria-label="Remove Apple" data-part="tag-remove" type="button"",
+  "input aria-autocomplete="list" aria-controls="uiify-_R_0_" aria-expanded="false" aria-label="Fruit" data-anchor="--ui-_R_0H2_" data-part="input" role="combobox" value=""",
+  "button aria-controls="uiify-_R_0_" aria-expanded="false" aria-haspopup="listbox" data-part="trigger" type="button"",
+  "div aria-multiselectable="true" data-align="start" data-anchor="--ui-_R_0H2_" data-native="" data-part="content" data-positioning="native" data-side="bottom" data-state="closed" id="uiify-_R_0_" popover="auto" role="listbox"",
+  "div aria-selected="true" data-part="item" data-selected="" id="uiify-_R_d_" role="option"",
+  "div data-part="empty" role="presentation"",
+]
+`;

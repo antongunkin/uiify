@@ -1,4 +1,4 @@
-import type { ReactNode, RefObject } from "react";
+import type { CSSProperties, ReactNode, RefObject } from "react";
 import type { VirtualScrollHandle, VirtualScrollRangeChange } from "../../virtual-scroll/types.js";
 
 export interface LiveChartAxisLabel {
@@ -18,6 +18,8 @@ export interface UseLiveChartWindowOptions {
   readonly figureHeight: number | undefined;
   /** Custom property that receives the scroll offset, e.g. `--candle-scroll-x`. */
   readonly scrollVariable: `--${string}`;
+  /** Native root styles override the computed scroll custom property, including removal. */
+  readonly consumerStyle?: CSSProperties | undefined;
 }
 
 export interface UseLiveChartWindowResult {

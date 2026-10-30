@@ -16,7 +16,7 @@ import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers"
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { mergeRepeatedSlotProps, omitProps } from "../../core/slot-props.js";
+import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import { createTagsInputStore, splitTags } from "./tags-input-store.js";
 import type {
   TagsInputStore,
@@ -35,10 +35,9 @@ const [TagsInputProvider, useTagsInputContext] =
 function resolveIndexedSlotProps<TProps extends object>(
   slotProps: (TProps & { readonly byItemIndex?: Readonly<Record<number, TProps>> }) | undefined,
   index: number,
-  protectedKeys: readonly string[],
 ): TProps {
   const { byItemIndex, ...common } = slotProps ?? {};
-  return omitProps(mergeRepeatedSlotProps(common as TProps, byItemIndex?.[index]), protectedKeys);
+  return mergeRepeatedSlotProps(common as TProps, byItemIndex?.[index]);
 }
 
 export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
@@ -135,11 +134,11 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
   return (
     <TagsInputProvider value={contextValue}>
       <div
+        data-disabled={disabled ? "" : undefined}
+        data-uiify-tags-input=""
         {...consumerProps}
         {...(id !== undefined ? { id } : {})}
         className={className}
-        data-disabled={disabled ? "" : undefined}
-        data-uiify-tags-input=""
       >
         {children}
       </div>
@@ -209,7 +208,6 @@ export function TagsInputInput<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...consumerProps,
       id: inputId,
       type: "text",
       role: "combobox",
@@ -218,6 +216,7 @@ export function TagsInputInput<TAs extends ElementType = "input">(
       disabled: disabled || undefined,
       "data-part": "input",
       value: inputValue,
+      ...consumerProps,
       placeholder,
       ...(className ? { className } : {}),
       onChange: composeEventHandlers(consumerOnChange, handleChange),
@@ -238,19 +237,15 @@ export function TagsInputList(props: TagsInputListOwnProps): ReactElement | null
     <RovingFocusRoot
       as="ul"
       orientation="horizontal"
-      {...consumerProps}
-      {...(className ? { className } : {})}
       id={listId}
       data-part="list"
+      {...consumerProps}
+      {...(className ? { className } : {})}
     >
       {tags.map((tag, index) => {
-        const tagProps = resolveIndexedSlotProps(slotProps?.tag, index, [
-          "data-index",
-          "data-part",
-          "data-value",
-        ]);
+        const tagProps = resolveIndexedSlotProps(slotProps?.tag, index);
         return (
-          <li {...tagProps} data-index={index} data-value={tag} key={`${tag}-${index}`}>
+          <li data-index={index} data-value={tag} {...tagProps} key={`${tag}-${index}`}>
             {tag}
           </li>
         );
@@ -264,12 +259,11 @@ export function TagsInputList(props: TagsInputListOwnProps): ReactElement | null
           child
         ) : (
           <li
+            data-part="input-slot"
             {...resolveIndexedSlotProps<TagsInputListSlotProps["input"] & object>(
               slotProps?.input,
               0,
-              ["data-part"],
             )}
-            data-part="input-slot"
           >
             {child}
           </li>
@@ -298,10 +292,10 @@ export function TagsInputTag<TAs extends ElementType = "li">(
   };
 
   const tagProps = {
-    ...consumerProps,
     role: "listitem",
     "data-part": "tag",
     "data-value": value,
+    ...consumerProps,
     ...(className ? { className } : {}),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     children,
@@ -330,23 +324,17 @@ export function TagsInputTag<TAs extends ElementType = "li">(
 TagsInputTag.displayName = "TagsInputTag";
 
 export function TagsInputTagRemove(props: TagsInputTagRemoveOwnProps): ReactElement | null {
-  const {
-    "aria-label": ariaLabel,
-    className,
-    index,
-    onClick: consumerOnClick,
-    ...consumerProps
-  } = props;
+  const { className, index, onClick: consumerOnClick, ...consumerProps } = props;
   const { disabled, removeAt } = useTagsInputContext("TagRemove");
 
   return useRenderElement({
     defaultTag: "button",
     props: {
-      ...consumerProps,
       type: "button",
-      "aria-label": ariaLabel ?? "Remove tag",
+      "aria-label": "Remove tag",
       "data-part": "tag-remove",
       disabled: disabled || undefined,
+      ...consumerProps,
       ...(className ? { className } : {}),
       onClick: composeEventHandlers(consumerOnClick, () => removeAt(index)),
     },

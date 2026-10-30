@@ -31,18 +31,15 @@ it("accepts native props on the root, list, generated tags and input wrapper", (
   expect([root, list, remove].length).toBe(3);
 });
 
-it("protects generated anatomy and TagRemove button semantics", () => {
+it("accepts native anatomy and remove-button overrides", () => {
   const invalidTagValue: TagsInputListOwnProps = {
-    // @ts-expect-error Generated tag values are controlled by the selected item.
     slotProps: { tag: { "data-value": "other" } },
   };
   const invalidTagIndex: TagsInputListOwnProps = {
-    // @ts-expect-error Generated tag indices are controlled by the selected item.
     slotProps: { tag: { "data-index": "other" } },
   };
   const invalidRemoveType: TagsInputTagRemoveOwnProps = {
     index: 0,
-    // @ts-expect-error The remove button type is owned by TagsInput.
     type: "submit",
   };
   expect([invalidTagValue, invalidTagIndex, invalidRemoveType].length).toBe(3);

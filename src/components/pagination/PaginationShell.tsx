@@ -34,7 +34,6 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
   const {
     as,
     render,
-    "aria-label": ariaLabel,
     boundaryCount = 1,
     count,
     disabled = false,
@@ -79,10 +78,10 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     as,
     defaultTag: "nav",
     props: {
-      ...consumerProps,
-      "aria-label": ariaLabel ?? mergedLabels.root,
-      children: content,
+      "aria-label": mergedLabels.root,
       "data-uiify-pagination": "",
+      ...consumerProps,
+      children: content,
     },
     render,
     state: { page },
@@ -223,7 +222,6 @@ export function PaginationLink<TAs extends ElementType = "a">(
     as: as ?? Tag,
     defaultTag: Tag,
     props: {
-      ...consumerProps,
       "aria-current": selected ? "page" : undefined,
       "aria-label": formatPageLabel(pageLabelTemplate, page, locale),
       "aria-disabled": disabled ? true : undefined,
@@ -234,6 +232,7 @@ export function PaginationLink<TAs extends ElementType = "a">(
       "data-uiify-button": "",
       "data-variant": "ghost",
       href,
+      ...consumerProps,
       children: formatPageNumber(page, locale),
     },
     render,
@@ -302,9 +301,9 @@ export function PaginationEllipsis<TAs extends ElementType = "span">(
     as,
     defaultTag: "span",
     props: {
-      ...consumerProps,
       "aria-hidden": true,
       "data-type": "ellipsis",
+      ...consumerProps,
       children: "…",
     },
     render,

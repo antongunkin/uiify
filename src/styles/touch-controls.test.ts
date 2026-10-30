@@ -14,14 +14,27 @@ function ruleBody(css: string, selector: string): string {
 
 // iOS Safari zooms the page when a text-entry control below 16px takes focus.
 const textEntryControls = [
-  ["components/select.css", "[data-uiify-select]"],
-  ["components/combobox.css", '[data-uiify-combobox] [data-part="input"]'],
   ["components/field.css", ":where([data-uiify-input], [data-uiify-textarea])"],
   ["components/number-field.css", '[data-uiify-number-field] > [role="spinbutton"]'],
   ["components/tags-input.css", '[data-uiify-tags-input] [data-part="input"]'],
 ] as const;
 
+// Pill controls are sized like Button: the base text step, which is already 16px.
+const pillControls = [
+  ["components/select.css", "[data-uiify-select]"],
+  ["components/combobox.css", '[data-uiify-combobox] [data-part="input"]'],
+] as const;
+
 describe("touch text-entry controls", () => {
+  it.each(pillControls)(
+    "%s sizes %s from the control font, defaulting to the base text step",
+    (file, selector) => {
+      expect(ruleBody(read(file), selector)).toMatch(
+        /font-size: var\(--uiify-control-font, var\(--text-base\)\);/,
+      );
+    },
+  );
+
   it.each(textEntryControls)("%s sizes %s from the control text token", (file, selector) => {
     expect(ruleBody(read(file), selector)).toMatch(/font-size: var\(--uiify-control-text\);/);
   });
@@ -38,6 +51,6 @@ describe("touch text-entry controls", () => {
   });
 
   it("keeps the base text step at 1rem, the iOS zoom threshold at the default root size", () => {
-    expect(read("tokens/primitives.css")).toContain("--text-base: 1rem;");
+    expect(read("tokens/theme.css")).toContain("--text-base: 1rem;");
   });
 });

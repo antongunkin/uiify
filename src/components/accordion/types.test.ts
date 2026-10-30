@@ -13,16 +13,14 @@ it("keeps the data-driven accordion types narrow", () => {
   };
   // @ts-expect-error -- slot names are the audited Accordion anatomy.
   const unknownSlot: AccordionProps = { id: "accordion", items: [], slotProps: { control: {} } };
-  const ownedState: AccordionProps = {
+  const nativeState: AccordionProps = {
     id: "accordion",
     items: [],
     slotProps: {
       item: {
         byItemValue: {
           open: {
-            // @ts-expect-error -- browser-owned open state cannot be set through slotProps.
             open: true,
-            // @ts-expect-error -- the single-mode group name is component-owned.
             name: "other",
           },
         },
@@ -36,5 +34,5 @@ it("keeps the data-driven accordion types narrow", () => {
     slotProps: { item: { href: "/not-a-link" } },
   };
 
-  expect([item, props, slotProps, unknownSlot, ownedState, wrongElementProp]).toHaveLength(6);
+  expect([item, props, slotProps, unknownSlot, nativeState, wrongElementProp]).toHaveLength(6);
 });

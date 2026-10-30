@@ -16,11 +16,11 @@ export function Invoker<TAs extends ElementType = "button">(
 ): ReactElement {
   const { as, command, commandfor, ...consumerProps } = props as InvokerProps<"button">;
   return createElement(as ?? "button", {
+    type: "button",
+    "data-uiify-invoker": "",
     ...consumerProps,
     command,
     commandfor,
-    "data-uiify-invoker": "",
-    type: "button",
   });
 }
 Invoker.displayName = "Invoker";

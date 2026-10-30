@@ -37,6 +37,7 @@ Extends: `ChoiceGroupRootProps`
 | `disabled` | `boolean` | no |  |
 | `orientation` | `ChoiceOrientation` | no |  |
 | `fullWidth` | `boolean` | no |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 | `className` | `string` | no |  |
 | `slotProps` | `SegmentedControlSlotProps` | no |  |
 

@@ -3,7 +3,6 @@ import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Modal } from "./Modal.js";
-import type { ModalProps, ModalSlotProps } from "./types.js";
 
 describe("Modal", () => {
   it("renders a native modal dialog with a show-modal invoker", () => {
@@ -67,7 +66,7 @@ describe("Modal", () => {
     expect(markup).not.toContain("popover=");
   });
 
-  it("renders header (title, description, close icon), body and footer in order", () => {
+  it("renders header (title, description, close), body and footer in order", () => {
     render(
       <Modal
         closeLabel="Dismiss"
@@ -88,7 +87,7 @@ describe("Modal", () => {
     const close = header?.querySelector('button[data-part="close"]');
     expect(close?.getAttribute("aria-label")).toBe("Dismiss");
     expect(close?.getAttribute("command")).toBe("request-close");
-    expect(close?.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    expect(close?.childNodes).toHaveLength(0);
     expect(dialog.querySelector('[data-part="body"]')?.textContent).toBe("Body copy");
     expect(dialog.querySelector('[data-part="footer"]')?.textContent).toBe("Actions");
     const order = [...dialog.children].map((child) => child.getAttribute("data-part"));
@@ -146,8 +145,6 @@ describe("Modal", () => {
       title: createRef<HTMLHeadingElement>(),
       description: createRef<HTMLParagraphElement>(),
       close: createRef<HTMLButtonElement>(),
-      closeIcon: createRef<SVGSVGElement>(),
-      closeIconPath: createRef<SVGPathElement>(),
       body: createRef<HTMLDivElement>(),
       footer: createRef<HTMLDivElement>(),
     };
@@ -171,19 +168,6 @@ describe("Modal", () => {
             ref: refs.description,
           },
           close: { className: "close-class", "data-testid": "close", ref: refs.close },
-          closeIcon: {
-            className: "icon-class",
-            "data-testid": "close-icon",
-            height: 20,
-            ref: refs.closeIcon,
-            width: 20,
-          },
-          closeIconPath: {
-            className: "icon-path-class",
-            "data-testid": "close-icon-path",
-            d: "M1 1L15 15",
-            ref: refs.closeIconPath,
-          },
           body: { className: "body-class", "data-testid": "body", ref: refs.body },
           footer: { className: "footer-class", "data-testid": "footer", ref: refs.footer },
         }}
@@ -203,8 +187,6 @@ describe("Modal", () => {
       ["title", "title", "title-class"],
       ["description", "description", "description-class"],
       ["close", "close", "close-class"],
-      ["closeIcon", "close-icon", "icon-class"],
-      ["closeIconPath", "close-icon-path", "icon-path-class"],
       ["body", "body", "body-class"],
       ["footer", "footer", "footer-class"],
     ];
@@ -220,93 +202,44 @@ describe("Modal", () => {
     expect(screen.getByTestId("title").id).toBe("slot-test-title");
     expect(screen.getByTestId("description").id).toBe("slot-test-description");
     expect(screen.getByTestId("close").getAttribute("aria-label")).toBe("Close");
-    expect(screen.getByTestId("close-icon").getAttribute("aria-hidden")).toBe("true");
-    expect(screen.getByTestId("close-icon").getAttribute("width")).toBe("20");
-    expect(screen.getByTestId("close-icon-path").getAttribute("d")).toBe("M1 1L15 15");
   });
 
-  it("filters hostile JavaScript slot payloads without changing owned behavior", () => {
-    const hostile = {
-      root: { dangerouslySetInnerHTML: { __html: "injected root" } },
-      trigger: {
-        command: "request-close",
-        commandfor: "wrong-target",
-        dangerouslySetInnerHTML: { __html: "injected trigger" },
-        popoverTarget: "wrong-popover",
-        popoverTargetAction: "hide",
-        type: "submit",
-      },
-      content: {
-        "aria-describedby": "wrong-description",
-        "aria-labelledby": "wrong-title",
-        closedby: "none",
-        dangerouslySetInnerHTML: { __html: "injected content" },
-        id: "wrong-id",
-        open: true,
-        popover: "auto",
-      },
-      grabber: { "aria-hidden": false, dangerouslySetInnerHTML: { __html: "injected grabber" } },
-      header: { dangerouslySetInnerHTML: { __html: "injected header" } },
-      title: { dangerouslySetInnerHTML: { __html: "injected title" }, id: "wrong-title-id" },
-      description: {
-        dangerouslySetInnerHTML: { __html: "injected description" },
-        id: "wrong-description-id",
-      },
-      close: {
-        "aria-label": "Wrong label",
-        command: "show-modal",
-        commandfor: "wrong-target",
-        dangerouslySetInnerHTML: { __html: "injected close" },
-        popoverTarget: "wrong-popover",
-        popoverTargetAction: "show",
-        type: "submit",
-      },
-      closeIcon: {
-        "aria-hidden": false,
-        dangerouslySetInnerHTML: { __html: "injected icon" },
-        focusable: true,
-      },
-      closeIconPath: { dangerouslySetInnerHTML: { __html: "injected path" } },
-      body: { dangerouslySetInnerHTML: { __html: "injected body" } },
-      footer: { dangerouslySetInnerHTML: { __html: "injected footer" } },
-    } as unknown as ModalSlotProps;
-    const hostileRootProps = {
-      className: "root-class",
-      "data-testid": "root",
-      dangerouslySetInnerHTML: { __html: "injected root" },
-    } as unknown as ModalProps;
-    render(
-      <Modal
-        {...hostileRootProps}
-        description="Details"
-        footer="Actions"
-        id="safe-modal"
-        slotProps={hostile}
-        title="Preferences"
-        trigger="Open"
-      >
-        Content
-      </Modal>,
-    );
-
-    const root = screen.getByTestId("root");
+  it("keeps library defaults when slot props do not override them", () => {
+    render(<Modal id="m" trigger="Open" title="Preferences" description="Details" />);
     const trigger = screen.getByRole("button", { name: "Open" });
     const dialog = screen.getByRole("dialog", { hidden: true });
-    const close = screen.getByRole("button", { name: "Close", hidden: true });
-    expect(root.textContent).not.toContain("injected");
-    expect(root.getAttribute("data-part")).toBe("root");
     expect(trigger.getAttribute("command")).toBe("show-modal");
-    expect(trigger.getAttribute("commandfor")).toBe("safe-modal");
+    expect(trigger.getAttribute("commandfor")).toBe("m");
     expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.hasAttribute("popovertarget")).toBe(false);
-    expect(dialog.id).toBe("safe-modal");
+    expect(dialog.id).toBe("m");
     expect(dialog.hasAttribute("open")).toBe(false);
-    expect(dialog.hasAttribute("popover")).toBe(false);
     expect(dialog.getAttribute("closedby")).toBe("any");
-    expect(dialog.getAttribute("aria-labelledby")).toBe("safe-modal-title");
-    expect(close.getAttribute("command")).toBe("request-close");
-    expect(close.getAttribute("commandfor")).toBe("safe-modal");
-    expect(close.getAttribute("type")).toBe("button");
-    expect(dialog.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+    expect(dialog.getAttribute("aria-labelledby")).toBe("m-title");
+  });
+
+  it("lets slot props override any library default", () => {
+    render(
+      <Modal
+        id="m"
+        trigger="Open"
+        title="Preferences"
+        slotProps={{
+          trigger: { type: "submit", "data-part": "opener" },
+          content: { closedby: "none", "aria-labelledby": "custom-title" },
+          title: { id: "custom-title" },
+          grabber: { "aria-hidden": false, "data-testid": "grabber" },
+          header: { "data-part": undefined, "data-testid": "header" },
+        }}
+      />,
+    );
+    const trigger = screen.getByRole("button", { name: "Open" });
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("data-part")).toBe("opener");
+    expect(dialog.getAttribute("closedby")).toBe("none");
+    expect(dialog.getAttribute("aria-labelledby")).toBe("custom-title");
+    expect(screen.getByText("Preferences").id).toBe("custom-title");
+    expect(screen.getByTestId("grabber").getAttribute("aria-hidden")).toBe("false");
+    expect(screen.getByTestId("header").hasAttribute("data-part")).toBe(false);
   });
 });

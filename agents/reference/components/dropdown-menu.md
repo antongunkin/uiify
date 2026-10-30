@@ -51,11 +51,10 @@ Extends: `UseMenuSurfaceReturn`
 
 ### DropdownMenuRootOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "dir" | "data-uiify-menu">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "dir">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"data-uiify-menu"` | `never` | no |  |
 | `children` | `ReactNode` | no |  |
 | `defaultOpen` | `boolean` | no |  |
 | `dir` | `Direction` | no |  |
@@ -155,7 +154,7 @@ No own members.
 ## Other types
 
 - `DropdownMenuCheckedState`: `boolean | "indeterminate"`
-- `DropdownMenuBarProps`: `Omit<ComponentPropsWithRef<"div">, keyof DropdownMenuBarOwnProps | "dangerouslySetInnerHTML" | "role" | "data-uiify-menu-bar"> & ConsumerDataAttributes & DropdownMenuBarOwnProps & { readonly "data-uiify-menu-bar"?: never; }`
+- `DropdownMenuBarProps`: `Omit<ComponentPropsWithRef<"div">, keyof DropdownMenuBarOwnProps | "dangerouslySetInnerHTML"> & ConsumerDataAttributes & DropdownMenuBarOwnProps`
 - `DropdownMenuRootProps`: `DropdownMenuRootOwnProps`
 - `DropdownMenuRootShellOwnProps`: `DropdownMenuRootOwnProps`
 - `DropdownMenuRootControlledOwnProps`: `Pick<DropdownMenuRootOwnProps, "onOpenChange" | "open">`

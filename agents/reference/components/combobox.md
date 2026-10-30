@@ -94,6 +94,7 @@ Extends: `Omit<ComponentPropsWithRef<"div">, "children">`
 | `defaultValue` | `string` | no |  |
 | `filterFn` | `ComboboxFilterFn` | no |  |
 | `items` | `readonly ComboboxItemData[]` | yes |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 
 ### ComboboxRootControlledOwnProps
 
@@ -157,8 +158,8 @@ Extends: `Omit<ComboboxRootShellOwnProps, "defaultValue">`, `Omit<ComboboxRootCo
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `tag` | `ComboboxRepeatedSlotProps<"span">` | no |  |
-| `remove` | `ComboboxRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly type?: never }>` | no |  |
+| `tag` | `RepeatedSlotProps<SlotProps<"span">>` | no |  |
+| `remove` | `RepeatedSlotProps<SlotProps<"button">>` | no |  |
 
 ### ComboboxInputOwnProps
 
@@ -175,28 +176,17 @@ Extends: `Omit<ComboboxRootShellOwnProps, "defaultValue">`, `Omit<ComboboxRootCo
 
 ### ComboboxItemOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-disabled" | "aria-selected" | "children" | "data-disabled" | "data-highlighted" | "data-part" | "data-selected" | "dangerouslySetInnerHTML" | "id" | "role">`, `ConsumerDataAttributes`
+Extends: `SlotProps<"div">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"aria-disabled"` | `never` | no |  |
-| `"aria-selected"` | `never` | no |  |
-| `className` | `string` | no |  |
-| `"data-disabled"` | `never` | no |  |
-| `"data-highlighted"` | `never` | no |  |
-| `"data-part"` | `never` | no |  |
-| `"data-selected"` | `never` | no |  |
 | `item` | `ComboboxItemData` | yes |  |
 
 ### ComboboxEmptyOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "data-part" | "dangerouslySetInnerHTML" | "role">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithRef<"div">, "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
-| Member | Type | Required | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | no |  |
-| `className` | `string` | no |  |
-| `"data-part"` | `never` | no |  |
+No own members.
 
 ## Other types
 
@@ -206,4 +196,4 @@ Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "data-part" | "dangero
 - `ComboboxTagsProps<TAs>`: `RenderableProps<TAs, ComboboxTagsOwnProps, Record<string, never>, HTMLElement>`
 - `ComboboxInputProps<TAs>`: `RenderableProps<TAs, ComboboxInputOwnProps, { open: boolean }, HTMLInputElement>`
 - `ComboboxTriggerProps<TAs>`: `RenderableProps<TAs, ComboboxTriggerOwnProps, { open: boolean }, HTMLElement>`
-- `ComboboxContentOwnProps`: `Omit<ComponentPropsWithRef<"div">, | "aria-multiselectable" | "children" | "className" | "data-align" | "data-part" | "data-side" | "data-state" | "dangerouslySetInnerHTML" | "id" | "role"> & ConsumerDataAttributes & { readonly "aria-multiselectable"?: never; readonly "data-align"?: never; readonly "data-part"?: never; readonly "data-side"?: never; readonly "data-state"?: never; readonly align?: AnchorAlign; readonly children: (filteredItems: ComboboxItemData[]) => ReactNode; readonly className?: string; readonly side?: AnchorSide; }`
+- `ComboboxContentOwnProps`: `SlotProps<"div"> & { readonly align?: AnchorAlign; readonly children: (filteredItems: ComboboxItemData[]) => ReactNode; readonly side?: AnchorSide; }`

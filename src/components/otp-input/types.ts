@@ -1,5 +1,6 @@
 import type { ElementType } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ControlSize } from "../internal/control-size/types.js";
 
 export type OtpInputType = "numeric" | "alphanumeric";
 
@@ -25,6 +26,8 @@ export interface OtpInputRootShellOwnProps {
   readonly length?: number;
   readonly mask?: boolean;
   readonly pattern?: string;
+  /** Sets the control's height and text size; `md` is the default. */
+  readonly size?: ControlSize;
   readonly type?: OtpInputType;
 }
 
@@ -61,7 +64,7 @@ export type OtpInputSlotProps<TAs extends ElementType = "div"> = RenderableProps
 
 export type OtpInputHiddenInputProps<TAs extends ElementType = "input"> = RenderableProps<
   TAs,
-  { readonly autoFocus?: boolean },
+  { readonly autoFocus?: boolean | undefined },
   { disabled: boolean },
   HTMLInputElement
 >;

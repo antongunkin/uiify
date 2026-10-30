@@ -45,7 +45,7 @@ export interface NumberFieldRootOwnProps {
 }
 
 export interface NumberFieldInputOwnProps {
-  readonly id?: string;
+  readonly id?: string | undefined;
   readonly onBlur?: FocusEventHandler<HTMLInputElement>;
   readonly onChange?: ChangeEventHandler<HTMLInputElement>;
   readonly onFocus?: FocusEventHandler<HTMLInputElement>;

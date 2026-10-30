@@ -4,9 +4,9 @@ import type { RenderableProps } from "@gunkin/uiify/core/render";
 export interface FieldRootOwnProps {
   /** Stable id for deterministic label/control/error wiring. Required. */
   readonly id: string;
-  readonly invalid?: boolean;
-  readonly required?: boolean;
-  readonly disabled?: boolean;
+  readonly invalid?: boolean | undefined;
+  readonly required?: boolean | undefined;
+  readonly disabled?: boolean | undefined;
   readonly name?: string;
 }
 
@@ -24,17 +24,17 @@ export interface FieldPartOwnProps {
 }
 
 export interface FieldLabelOwnProps extends FieldPartOwnProps {
-  readonly disabled?: boolean;
-  readonly required?: boolean;
+  readonly disabled?: boolean | undefined;
+  readonly required?: boolean | undefined;
 }
 
 export type FieldLabelProps = FieldLabelOwnProps &
-  Omit<ComponentPropsWithRef<"label">, "htmlFor" | keyof FieldLabelOwnProps>;
+  Omit<ComponentPropsWithRef<"label">, keyof FieldLabelOwnProps>;
 
 export interface FieldControlOwnProps extends FieldPartOwnProps {
-  readonly disabled?: boolean;
-  readonly invalid?: boolean;
-  readonly required?: boolean;
+  readonly disabled?: boolean | undefined;
+  readonly invalid?: boolean | undefined;
+  readonly required?: boolean | undefined;
 }
 
 export type FieldControlProps<TAs extends ElementType = "div"> = RenderableProps<
@@ -45,14 +45,14 @@ export type FieldControlProps<TAs extends ElementType = "div"> = RenderableProps
 >;
 
 export interface FieldDescriptionOwnProps extends FieldPartOwnProps {
-  readonly disabled?: boolean;
+  readonly disabled?: boolean | undefined;
 }
 
 export type FieldDescriptionProps = FieldDescriptionOwnProps &
   Omit<ComponentPropsWithRef<"p">, keyof FieldDescriptionOwnProps>;
 
 export interface FieldErrorOwnProps extends FieldPartOwnProps {
-  readonly invalid?: boolean;
+  readonly invalid?: boolean | undefined;
 }
 
 export type FieldErrorProps = FieldErrorOwnProps &

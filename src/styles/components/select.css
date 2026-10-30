@@ -10,14 +10,15 @@
     display: flex;
     align-items: center;
     gap: var(--space-md);
-    padding-block: var(--space-sm);
-    padding-inline: var(--space-md);
+    box-sizing: border-box;
+    block-size: var(--uiify-control-size, var(--control-md));
+    padding-block: 0;
+    padding-inline: var(--space-lg);
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--uiify-control-text);
+    font-size: var(--uiify-control-font, var(--text-base));
     line-height: var(--leading-normal);
     cursor: pointer;
     transition: var(--transition-colors);
@@ -70,7 +71,6 @@
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-lg);
-    corner-shape: squircle;
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-popover);
@@ -129,10 +129,9 @@
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
     border-radius: calc(var(--radius-lg) - var(--space-xs));
-    corner-shape: squircle;
     color: var(--foreground);
     cursor: pointer;
-    font-size: var(--text-sm) !important;
+    font-size: var(--text-base) !important;
   }
 
   /* :focus-visible, not :focus: the browser gives the currently-selected
@@ -157,10 +156,13 @@
   /* Selection marker — matches the menu's checkbox item-indicator (filled
      accent square, not the radio dot): ::checkmark only ever exists on the
      selected option, so there's no separate "unchecked" state to draw. The
-     check is punched out of the square with a mask instead of typeset as a
-     glyph: U+2713 falls back to a different font in each engine, and in Safari
-     it sat above and left of centre. The hole shows the popover surface, which
-     is what the theme's --primary-foreground already contrasts with. */
+     check is punched out of the square with an even-odd clip-path polygon
+     (the zero-width bridge from the corner to the check cancels itself)
+     instead of typeset as a glyph: U+2713 falls back to a different font in
+     each engine, and in Safari it sat above and left of centre. The polygon is
+     the Checkbox checkmark's, placed in the same 1rem inset. The hole shows the
+     popover surface, which is what the theme's --primary-foreground already
+     contrasts with. */
   [data-uiify-select] option::checkmark {
     order: -1;
     box-sizing: border-box;
@@ -169,14 +171,23 @@
     flex: 0 0 1.25rem;
     display: block;
     border-radius: var(--radius-xs);
-    corner-shape: squircle;
     background: var(--primary);
     content: "";
-    mask:
-      linear-gradient(#000 0 0),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.6l3 3L12.4 4.8' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-        center / 100% 100% no-repeat;
-    mask-composite: exclude;
+    clip-path: polygon(
+      evenodd,
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      32.72% 47.12%,
+      26% 57.2%,
+      44.24% 74%,
+      74% 36.56%,
+      66.32% 28.88%,
+      44.24% 58.64%,
+      32.72% 47.12%
+    );
   }
 
   [data-uiify-select] hr {

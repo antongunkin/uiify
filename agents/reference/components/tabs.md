@@ -43,7 +43,7 @@ No own members.
 | `input` | `TabsInputSlotProps` | no |  |
 | `trigger` | `TabsTriggerSlotProps` | no |  |
 | `panel` | `TabsPanelSlotProps` | no |  |
-| `append` | `Omit<ComponentPropsWithRef<"div">, "children" \| "dangerouslySetInnerHTML" \| "data-part" \| "data-uiify-tabs"> & ConsumerDataAttributes & TabsPartOwnedAttributes` | no |  |
+| `append` | `SlotProps<"div">` | no |  |
 
 ### TabsOwnProps
 
@@ -58,8 +58,8 @@ No own members.
 
 ## Other types
 
-- `TabsItemSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-choice" | "data-uiify-tabs">, TabsItemOwnedAttributes>`
-- `TabsInputSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"input">, | "aria-labelledby" | "checked" | "defaultChecked" | "disabled" | "id" | "name" | "type" | "value" | "data-part" | "data-uiify-choice" | "data-uiify-radio" | "data-uiify-tabs">, TabsControlOwnedAttributes>`
-- `TabsTriggerSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"label">, "children" | "dangerouslySetInnerHTML" | "htmlFor" | "id" | "data-part" | "data-uiify-tabs">, TabsPartOwnedAttributes>`
-- `TabsPanelSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "id" | "data-part" | "data-uiify-tabs">, TabsPartOwnedAttributes>`
-- `TabsProps`: `TabsOwnProps & Omit<ComponentPropsWithRef<"div">, | keyof TabsOwnProps | "children" | "dangerouslySetInnerHTML" | "data-uiify-choice" | "data-uiify-tabs">`
+- `TabsItemSlotProps`: `NonNullable<ChoiceGroupSlotProps["item"]>`
+- `TabsInputSlotProps`: `NonNullable<ChoiceGroupSlotProps["input"]>`
+- `TabsTriggerSlotProps`: `NonNullable<ChoiceGroupSlotProps["label"]>`
+- `TabsPanelSlotProps`: `NonNullable<ChoiceGroupSlotProps["panel"]>`
+- `TabsProps`: `TabsOwnProps & Omit<ComponentPropsWithRef<"div">, keyof TabsOwnProps | "children" | "dangerouslySetInnerHTML">`

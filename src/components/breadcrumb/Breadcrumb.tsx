@@ -1,6 +1,6 @@
 import type { ElementType, ReactElement, ReactNode } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { omitProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
+import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import { collapseBreadcrumbItems } from "./breadcrumb-collapse.js";
 import type {
   BreadcrumbLabels,
@@ -22,22 +22,16 @@ const DEFAULT_BREADCRUMB_LABELS: BreadcrumbLabels = {
 export function BreadcrumbRoot<TAs extends ElementType = "nav">(
   props: BreadcrumbRootProps<TAs>,
 ): ReactElement | null {
-  const {
-    as,
-    render,
-    "aria-label": ariaLabel,
-    labels,
-    ...consumerProps
-  } = props as BreadcrumbRootProps<"nav">;
+  const { as, render, labels, ...consumerProps } = props as BreadcrumbRootProps<"nav">;
   const resolvedLabels = { ...DEFAULT_BREADCRUMB_LABELS, ...labels };
 
   return useRenderElement({
     as,
     defaultTag: "nav",
     props: {
-      ...consumerProps,
-      "aria-label": ariaLabel ?? resolvedLabels.root,
+      "aria-label": resolvedLabels.root,
       "data-uiify-breadcrumb": "",
+      ...consumerProps,
     },
     render,
     state: {},
@@ -50,20 +44,11 @@ function renderDataItem(
   slotProps: BreadcrumbListProps["slotProps"],
 ): ReactElement {
   return (
-    <BreadcrumbItem
-      {...resolveRepeatedSlotProps(slotProps?.item, item.key, ["data-part"])}
-      key={item.key}
-    >
+    <BreadcrumbItem {...resolveRepeatedSlotProps(slotProps?.item, item.key)} key={item.key}>
       <BreadcrumbLink
-        {...resolveRepeatedSlotProps(slotProps?.link, item.key, [
-          "aria-current",
-          "current",
-          "data-current",
-          "data-part",
-          "href",
-        ])}
         {...(item.current !== undefined ? { current: item.current } : {})}
         {...(item.href !== undefined ? { href: item.href } : {})}
+        {...resolveRepeatedSlotProps(slotProps?.link, item.key)}
       >
         {item.label}
       </BreadcrumbLink>
@@ -131,7 +116,7 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
   return useRenderElement({
     as,
     defaultTag: "ol",
-    props: { ...consumerProps, children: content, "data-part": "list" },
+    props: { "data-part": "list", ...consumerProps, children: content },
     render,
     state: {},
   });
@@ -146,7 +131,7 @@ export function BreadcrumbItem<TAs extends ElementType = "li">(
   return useRenderElement({
     as,
     defaultTag: "li",
-    props: { ...consumerProps, children, "data-part": "item" },
+    props: { "data-part": "item", ...consumerProps, children },
     render,
     state: {},
   });
@@ -168,11 +153,11 @@ export function BreadcrumbLink<TAs extends ElementType = "a">(
     as,
     defaultTag: "a",
     props: {
-      ...consumerProps,
       "data-part": "link",
       "aria-current": current ? "page" : undefined,
       "data-current": current ? "" : undefined,
       href,
+      ...consumerProps,
       children,
     },
     render,
@@ -193,7 +178,7 @@ export function BreadcrumbSeparator<TAs extends ElementType = "span">(
   return useRenderElement({
     as,
     defaultTag: "span",
-    props: { ...consumerProps, "aria-hidden": true, children, "data-part": "separator" },
+    props: { "aria-hidden": true, "data-part": "separator", ...consumerProps, children },
     render,
     state: {},
   });
@@ -211,53 +196,23 @@ function BreadcrumbEllipsis({
   slotProps,
 }: BreadcrumbEllipsisProps): ReactElement {
   return (
-    <BreadcrumbItem
-      {...omitProps(slotProps?.ellipsisItem, ["data-part", "children", "dangerouslySetInnerHTML"])}
-    >
+    <BreadcrumbItem {...slotProps?.ellipsisItem}>
       <details
-        {...omitProps(slotProps?.ellipsis, [
-          "data-part",
-          "data-uiify-breadcrumb",
-          "data-uiify-details",
-          "children",
-          "dangerouslySetInnerHTML",
-        ])}
         data-part="ellipsis"
         data-uiify-breadcrumb=""
         data-uiify-details=""
+        {...slotProps?.ellipsis}
       >
-        <summary
-          {...omitProps(slotProps?.ellipsisTrigger, [
-            "aria-label",
-            "data-part",
-            "data-uiify-details",
-            "children",
-            "dangerouslySetInnerHTML",
-          ])}
-          aria-label={labels.showCollapsed}
-        >
+        <summary aria-label={labels.showCollapsed} {...slotProps?.ellipsisTrigger}>
           …
         </summary>
-        <ol
-          {...omitProps(slotProps?.ellipsisContent, [
-            "data-part",
-            "data-uiify-details",
-            "children",
-            "dangerouslySetInnerHTML",
-          ])}
-        >
+        <ol {...slotProps?.ellipsisContent}>
           {hiddenItems.map((item) => (
             <BreadcrumbLink
-              {...resolveRepeatedSlotProps(slotProps?.link, item.key, [
-                "aria-current",
-                "current",
-                "data-current",
-                "data-part",
-                "href",
-              ])}
               key={item.key}
               {...(item.current !== undefined ? { current: item.current } : {})}
               {...(item.href !== undefined ? { href: item.href } : {})}
+              {...resolveRepeatedSlotProps(slotProps?.link, item.key)}
             >
               {item.label}
             </BreadcrumbLink>
@@ -274,18 +229,8 @@ export function BreadcrumbEllipsisPart({
   slotProps,
 }: BreadcrumbEllipsisPartProps = {}): ReactElement {
   return (
-    <BreadcrumbItem
-      {...omitProps(slotProps?.item, ["data-part", "children", "dangerouslySetInnerHTML"])}
-    >
-      <span
-        {...omitProps(slotProps?.ellipsis, [
-          "aria-hidden",
-          "data-part",
-          "children",
-          "dangerouslySetInnerHTML",
-        ])}
-        aria-hidden="true"
-      >
+    <BreadcrumbItem {...slotProps?.item}>
+      <span aria-hidden="true" {...slotProps?.ellipsis}>
         …
       </span>
     </BreadcrumbItem>

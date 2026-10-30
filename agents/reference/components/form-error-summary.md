@@ -29,10 +29,10 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `title` | `FormErrorSummaryPartSlotProps<"h2">` | no |  |
-| `list` | `FormErrorSummaryPartSlotProps<"ul">` | no |  |
-| `item` | `FormErrorSummaryRepeatedSlotProps<"li">` | no | Repeated error props may target an error by its stable href value. |
-| `link` | `FormErrorSummaryRepeatedSlotProps<"a", { readonly href?: never }>` | no |  |
+| `title` | `SlotProps<"h2">` | no |  |
+| `list` | `SlotProps<"ul">` | no |  |
+| `item` | `RepeatedSlotProps<SlotProps<"li">>` | no | Repeated error props may target an error by its stable href value. |
+| `link` | `RepeatedSlotProps<SlotProps<"a">>` | no |  |
 
 ### FormErrorSummaryOwnProps
 

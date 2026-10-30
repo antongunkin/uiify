@@ -46,22 +46,26 @@ describe("Checkbox", () => {
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
 
-  it("keeps checkbox identity and checked state owned over runtime slot payloads", () => {
-    const hostileProps = {
+  it("lets native slots override checkbox identity and state", () => {
+    const nativeProps: Pick<CheckboxProps, "slotProps"> = {
       slotProps: {
-        input: { checked: true, "data-state": "hostile", id: "wrong", type: "text" },
-        label: { "data-uiify-checkbox": "wrong", htmlFor: "wrong", id: "wrong" },
+        input: {
+          checked: true,
+          "data-state": "custom",
+          id: "native",
+          type: "radio",
+          "aria-labelledby": "native-label",
+        },
+        label: { "data-uiify-checkbox": "custom", htmlFor: "native", id: "native-label" },
       },
-    } as unknown as Pick<CheckboxProps, "slotProps">;
-
-    render(<Checkbox id="terms" label="Terms" {...hostileProps} />);
-
-    const input = screen.getByRole("checkbox", { name: "Terms" });
-    expect(input.id).toBe("terms");
-    expect((input as HTMLInputElement).checked).toBe(false);
-    expect(input.getAttribute("data-state")).toBeNull();
-    expect(input.parentElement?.id).toBe("terms-label");
-    expect(input.parentElement?.getAttribute("data-uiify-checkbox")).toBe("");
+    };
+    render(<Checkbox id="terms" label="Terms" {...nativeProps} />);
+    const input = screen.getByRole("radio", { name: "Terms" });
+    expect(input.id).toBe("native");
+    expect(input.getAttribute("checked")).toBe("");
+    expect(input.getAttribute("data-state")).toBe("custom");
+    expect(input.parentElement?.id).toBe("native-label");
+    expect(input.parentElement?.getAttribute("data-uiify-checkbox")).toBe("custom");
   });
 
   it("renders a native checkbox and label from data props", () => {

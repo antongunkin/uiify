@@ -22,37 +22,37 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `caption` | `LineChartPartSlotProps<"figcaption">` | no |  |
-| `readout` | `LineChartPartSlotProps<"div", { readonly "aria-live"?: never; readonly "data-part"?: never; }>` | no |  |
-| `readoutTime` | `LineChartPartSlotProps<"span">` | no |  |
-| `readoutValue` | `LineChartPartSlotProps<"span">` | no |  |
-| `plot` | `LineChartPartSlotProps<"div", { readonly "aria-hidden"?: never; readonly "data-part"?: never; }>` | no |  |
-| `scrollViewport` | `LineChartPartSlotProps<"div">` | no |  |
-| `canvas` | `LineChartPartSlotProps<"div">` | no |  |
-| `viewport` | `LineChartPartSlotProps<"div">` | no |  |
-| `points` | `LineChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-part"?: never; }>` | no |  |
-| `point` | `LineChartIndexedSlotProps<LineChartPointElementProps, LineChartPointOwnedProps>` | no |  |
-| `pointHit` | `LineChartRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly "aria-pressed"?: never; readonly "data-part"?: never; readonly type?: never; }>` | no |  |
-| `crosshair` | `LineChartPartSlotProps<"div", { readonly "aria-hidden"?: never; readonly "data-part"?: never; }>` | no |  |
-| `crosshairMarker` | `LineChartPartSlotProps<"span">` | no |  |
-| `timeViewport` | `LineChartPartSlotProps<"div">` | no |  |
-| `timeAxis` | `LineChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never; }>` | no |  |
+| `caption` | `SlotProps<"figcaption">` | no |  |
+| `readout` | `SlotProps<"div">` | no |  |
+| `readoutTime` | `SlotProps<"span">` | no |  |
+| `readoutValue` | `SlotProps<"span">` | no |  |
+| `plot` | `SlotProps<"div">` | no |  |
+| `scrollViewport` | `SlotProps<"div">` | no |  |
+| `canvas` | `SlotProps<"div">` | no |  |
+| `viewport` | `SlotProps<"div">` | no |  |
+| `points` | `SlotProps<"ol">` | no |  |
+| `point` | `LineChartIndexedSlotProps<LineChartPointElementProps>` | no |  |
+| `pointHit` | `LineChartRepeatedSlotProps<"button">` | no |  |
+| `crosshair` | `SlotProps<"div">` | no |  |
+| `crosshairMarker` | `SlotProps<"span">` | no |  |
+| `timeViewport` | `SlotProps<"div">` | no |  |
+| `timeAxis` | `SlotProps<"ol">` | no |  |
 | `timeAxisLabel` | `LineChartRepeatedSlotProps<"li">` | no |  |
-| `crosshairTime` | `LineChartPartSlotProps<"li">` | no |  |
-| `valueAxis` | `LineChartPartSlotProps<"ol", { readonly "aria-label"?: never; readonly "data-axis"?: never; readonly "data-part"?: never; }>` | no |  |
+| `crosshairTime` | `SlotProps<"li">` | no |  |
+| `valueAxis` | `SlotProps<"ol">` | no |  |
 | `valueAxisLabel` | `LineChartRepeatedSlotProps<"li">` | no |  |
-| `crosshairValue` | `LineChartPartSlotProps<"li">` | no |  |
-| `liveScrollport` | `LineChartPartSlotProps<"div", { readonly "data-dynamic-layout"?: never; readonly "data-orientation"?: never; readonly "data-part"?: never; readonly "data-uiify-virtual-scroll"?: never; readonly role?: never; }>` | no |  |
-| `liveSpacer` | `LineChartPartSlotProps<"div">` | no |  |
-| `livePointRow` | `LineChartLiveRowSlotProps` | no |  |
-| `dataTable` | `LineChartPartSlotProps<"table", { readonly "aria-label"?: never; readonly "data-part"?: never; }>` | no |  |
-| `dataTableHead` | `LineChartPartSlotProps<"thead">` | no |  |
-| `dataTableHeaderRow` | `LineChartPartSlotProps<"tr">` | no |  |
-| `dataTableTimeHeader` | `LineChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never; }>` | no |  |
-| `dataTableValueHeader` | `LineChartPartSlotProps<"th", { readonly scope?: never; readonly "data-part"?: never; }>` | no |  |
-| `dataTableBody` | `LineChartPartSlotProps<"tbody">` | no |  |
+| `crosshairValue` | `SlotProps<"li">` | no |  |
+| `liveScrollport` | `SlotProps<"div">` | no |  |
+| `liveSpacer` | `SlotProps<"div">` | no |  |
+| `livePointRow` | `LineChartRepeatedSlotProps<"div">` | no |  |
+| `dataTable` | `SlotProps<"table">` | no |  |
+| `dataTableHead` | `SlotProps<"thead">` | no |  |
+| `dataTableHeaderRow` | `SlotProps<"tr">` | no |  |
+| `dataTableTimeHeader` | `SlotProps<"th">` | no |  |
+| `dataTableValueHeader` | `SlotProps<"th">` | no |  |
+| `dataTableBody` | `SlotProps<"tbody">` | no |  |
 | `dataTableRow` | `LineChartRepeatedSlotProps<"tr">` | no |  |
-| `dataTableTimeCell` | `LineChartRepeatedSlotProps<"th", { readonly scope?: never }>` | no |  |
+| `dataTableTimeCell` | `LineChartRepeatedSlotProps<"th">` | no |  |
 | `dataTableValueCell` | `LineChartRepeatedSlotProps<"td">` | no |  |
 
 ### LineChartData
@@ -80,7 +80,7 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"aria-label"` | `string` | no |  |
+| `"aria-label"` | `string \| undefined` | no |  |
 | `activePointIndex` | `number` | no |  |
 | `cursorY` | `number` | no |  |
 | `data` | `readonly LineChartData[]` | yes |  |

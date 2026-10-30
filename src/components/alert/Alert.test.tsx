@@ -14,7 +14,7 @@ describe("Alert", () => {
     expect(alert.getAttribute("data-uiify-alert")).toBe("");
   });
 
-  it("preserves consumer-selected role and owns its marker", () => {
+  it("preserves consumer-selected role and marker", () => {
     render(
       <Alert
         role="alert"
@@ -29,7 +29,7 @@ describe("Alert", () => {
       </Alert>,
     );
     const alert = screen.getByRole("alert");
-    expect(alert.getAttribute("data-uiify-alert")).toBe("");
+    expect(alert.getAttribute("data-uiify-alert")).toBe("changed");
     expect(alert.className).toBe("callout");
     expect(alert.style.color).toBe("red");
     expect(alert.getAttribute("data-record")).toBe("kept");
@@ -48,9 +48,9 @@ describe("Alert", () => {
     expect(symbol.getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("owns the default variant even when a consumer supplies a data attribute", () => {
+  it("lets a consumer data attribute override the default variant", () => {
     render(<Alert data-variant="destructive">Saved</Alert>);
-    expect(screen.getByText("Saved").getAttribute("data-variant")).toBe("secondary");
+    expect(screen.getByText("Saved").getAttribute("data-variant")).toBe("destructive");
   });
 
   it.each([
@@ -82,7 +82,7 @@ describe("Alert", () => {
     expect(root.textContent).toBe("!Read the details.");
   });
 
-  it("forwards native props, refs, events and styling while owning part markers", () => {
+  it("forwards native props, refs, events and styling and consumer part markers", () => {
     const rootRef = createRef<HTMLElement>();
     const titleRef = createRef<HTMLHeadingElement>();
     const onClick = vi.fn();
@@ -113,11 +113,11 @@ describe("Alert", () => {
     expect(titleRef.current).toBe(title);
     expect(title.className).toBe("heading");
     expect(title.style.color).toBe("red");
-    expect(title.getAttribute("data-uiify-alert-title")).toBe("");
-    expect(title.getAttribute("data-part")).toBe("title");
+    expect(title.getAttribute("data-uiify-alert-title")).toBe("changed");
+    expect(title.getAttribute("data-part")).toBe("changed");
     expect(title.getAttribute("data-record")).toBe("kept");
     expect(description.tagName).toBe("P");
-    expect(description.getAttribute("data-part")).toBe("description");
+    expect(description.getAttribute("data-part")).toBe("changed");
     fireEvent.click(root);
     expect(onClick).toHaveBeenCalledOnce();
   });

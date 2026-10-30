@@ -70,3 +70,26 @@ describe("applyVirtualScrollRangeToDom range math", () => {
     expect(range.start).toBe(500 - VIRTUAL_SCROLL_OVERSCAN);
   });
 });
+
+it("keeps routed consumer dynamic row styles when syncing offsets", () => {
+  const scrollport = document.createElement("div");
+  scrollport.innerHTML =
+    '<div data-part="spacer"><div data-part="row"></div><div data-part="row"></div></div>';
+  const styles: Readonly<Record<number, React.CSSProperties>> = {
+    10: { "--uiify-row-offset": "7px" } as React.CSSProperties,
+    11: { "--uiify-row-offset": undefined } as React.CSSProperties,
+  };
+  applyVirtualScrollRangeToDom(
+    scrollport,
+    { start: 10, end: 12, visibleStart: 10, visibleEnd: 11, offsetY: 800 },
+    {
+      dynamicLayout: true,
+      slotCount: 2,
+      getRowOffset: (index) => index * 80,
+      getRowStyle: (index) => styles[index],
+    },
+  );
+  const rows = scrollport.querySelectorAll<HTMLElement>('[data-part="row"]');
+  expect(rows[0]?.style.getPropertyValue("--uiify-row-offset")).toBe("7px");
+  expect(rows[1]?.style.getPropertyValue("--uiify-row-offset")).toBe("");
+});

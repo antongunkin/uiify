@@ -66,21 +66,19 @@ describe("ToggleGroup", () => {
         id="align"
         type="multiple"
         items={[{ value: "left", label: "Left" }]}
-        slotProps={
-          {
-            item: { byItemValue: { left: { "data-testid": "left-item" } } },
-            input: {
-              byItemValue: { left: { "data-testid": "left-input", "data-uiify-radio": "bad" } },
-            },
-            label: { byItemValue: { left: { title: "Left alignment" } } },
-          } as never
-        }
+        slotProps={{
+          item: { byItemValue: { left: { "data-testid": "left-item" } } },
+          input: {
+            byItemValue: { left: { "data-testid": "left-input", "data-uiify-radio": "bad" } },
+          },
+          label: { byItemValue: { left: { title: "Left alignment" } } },
+        }}
       />,
     );
 
     expect(screen.getByTestId("left-item")).toBeTruthy();
     expect(screen.getByTestId("left-input")).toBeTruthy();
-    expect(screen.getByTestId("left-input").hasAttribute("data-uiify-radio")).toBe(false);
+    expect(screen.getByTestId("left-input").getAttribute("data-uiify-radio")).toBe("bad");
     expect(screen.getByText("Left").closest("label")?.getAttribute("title")).toBe("Left alignment");
   });
 

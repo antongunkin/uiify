@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { NativeButtonProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { ConsumerDataAttributes, SlotProps } from "../../core/slot-props.js";
 
 export interface AlertModalOwnProps {
   readonly id: string;
@@ -14,55 +14,24 @@ export interface AlertModalOwnProps {
   readonly slotProps?: AlertModalSlotProps;
 }
 
-type AlertModalSlotElementProps<T extends ElementType, TProtected extends string = never> = Omit<
-  ComponentPropsWithRef<T>,
-  "children" | "dangerouslySetInnerHTML" | TProtected
-> &
-  ConsumerDataAttributes & { readonly [K in TProtected]?: never };
-
-type AlertModalInvokerSlotProps<TProtected extends string = never> = AlertModalSlotElementProps<
-  "button",
-  | "type"
-  | "command"
-  | "commandfor"
-  | "commandFor"
-  | "popoverTarget"
-  | "popoverTargetAction"
-  | "data-part"
-  | "data-uiify-button"
-  | "data-uiify-alert-modal"
-  | TProtected
->;
-
-type AlertModalChoiceSlotProps = AlertModalInvokerSlotProps<"value" | "data-variant">;
+type AlertModalInvokerSlotProps = Omit<
+  SlotProps<"button">,
+  "popoverTarget" | "popoverTargetAction"
+> & {
+  readonly command?: string | undefined;
+  readonly commandfor?: string | undefined;
+};
 
 export interface AlertModalSlotProps {
   readonly trigger?: AlertModalInvokerSlotProps;
-  readonly content?: AlertModalSlotElementProps<
-    "dialog",
-    | "id"
-    | "role"
-    | "open"
-    | "popover"
-    | "aria-describedby"
-    | "aria-labelledby"
-    | "data-part"
-    | "data-uiify-alert-modal"
-  >;
-  readonly title?: AlertModalSlotElementProps<"h2", "id" | "data-part" | "data-uiify-alert-modal">;
-  readonly description?: AlertModalSlotElementProps<
-    "p",
-    "id" | "data-part" | "data-uiify-alert-modal"
-  >;
-  readonly cancel?: AlertModalChoiceSlotProps;
-  readonly action?: AlertModalChoiceSlotProps;
+  readonly content?: Omit<SlotProps<"dialog">, "id" | "open" | "popover">;
+  readonly title?: SlotProps<"h2">;
+  readonly description?: SlotProps<"p">;
+  readonly cancel?: AlertModalInvokerSlotProps;
+  readonly action?: AlertModalInvokerSlotProps;
 }
 
-export type AlertModalProps = AlertModalOwnProps &
-  Omit<
-    AlertModalSlotElementProps<"div", "data-part" | "data-uiify-alert-modal">,
-    keyof AlertModalOwnProps
-  >;
+export type AlertModalProps = AlertModalOwnProps & Omit<SlotProps<"div">, keyof AlertModalOwnProps>;
 
 export interface AlertModalTriggerOwnProps {
   readonly children?: ReactNode;
@@ -70,60 +39,43 @@ export interface AlertModalTriggerOwnProps {
   readonly target: string;
 }
 
-export type AlertModalTriggerProps<TAs extends ElementType = "button"> = Omit<
-  NativeButtonProps<TAs, AlertModalTriggerOwnProps>,
-  "dangerouslySetInnerHTML"
+export type AlertModalTriggerProps<TAs extends ElementType = "button"> = NativeButtonProps<
+  TAs,
+  AlertModalTriggerOwnProps
 > &
-  ConsumerDataAttributes & {
-    readonly "data-part"?: never;
-    readonly "data-uiify-button"?: never;
-    readonly "data-uiify-alert-modal"?: never;
-  };
+  ConsumerDataAttributes;
 
 export interface AlertModalActionOwnProps {
   readonly children?: ReactNode;
   readonly target: string;
 }
 
-export type AlertModalActionProps<TAs extends ElementType = "button"> = Omit<
-  NativeButtonProps<TAs, AlertModalActionOwnProps>,
-  "dangerouslySetInnerHTML"
+export type AlertModalActionProps<TAs extends ElementType = "button"> = NativeButtonProps<
+  TAs,
+  AlertModalActionOwnProps
 > &
-  ConsumerDataAttributes & {
-    readonly "data-part"?: never;
-    readonly "data-variant"?: never;
-    readonly "data-uiify-button"?: never;
-    readonly "data-uiify-alert-modal"?: never;
-  };
+  ConsumerDataAttributes;
 
 export interface AlertModalCancelOwnProps {
   readonly children?: ReactNode;
   readonly target: string;
 }
 
-export type AlertModalCancelProps<TAs extends ElementType = "button"> = Omit<
-  NativeButtonProps<TAs, AlertModalCancelOwnProps>,
-  "dangerouslySetInnerHTML"
+export type AlertModalCancelProps<TAs extends ElementType = "button"> = NativeButtonProps<
+  TAs,
+  AlertModalCancelOwnProps
 > &
-  ConsumerDataAttributes & {
-    readonly "data-part"?: never;
-    readonly "data-variant"?: never;
-    readonly "data-uiify-button"?: never;
-    readonly "data-uiify-alert-modal"?: never;
-  };
+  ConsumerDataAttributes;
 
 export interface AlertModalContentOwnProps {
   readonly children?: ReactNode;
   readonly id: string;
 }
 
-/** `<dialog role="alertdialog">`; `role`, `open` and `popover` belong to the part. */
+/** `<dialog role="alertdialog">`; `open` and `popover` use the native modal contract. */
 export type AlertModalContentProps = AlertModalContentOwnProps &
   Omit<
     ComponentPropsWithRef<"dialog">,
-    keyof AlertModalContentOwnProps | "open" | "popover" | "role" | "dangerouslySetInnerHTML"
+    keyof AlertModalContentOwnProps | "open" | "popover" | "dangerouslySetInnerHTML"
   > &
-  ConsumerDataAttributes & {
-    readonly "data-part"?: never;
-    readonly "data-uiify-alert-modal"?: never;
-  };
+  ConsumerDataAttributes;

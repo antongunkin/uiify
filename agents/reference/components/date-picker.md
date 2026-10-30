@@ -20,8 +20,9 @@
 
 ### DatePickerProps
 
-Extends: `Omit<ComponentPropsWithRef<"input">, "type">`
+Extends: `Omit<ComponentPropsWithRef<"input">, "type" | "size">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `invalid` | `boolean` | no |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |

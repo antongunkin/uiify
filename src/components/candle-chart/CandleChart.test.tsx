@@ -200,33 +200,20 @@ describe("CandleChart", () => {
     expect(onCandleClick).not.toHaveBeenCalled();
   });
 
-  it("keeps generated candle content and anatomy markers owned", () => {
+  it("lets consumers replace candle state and anatomy defaults", () => {
     const { container } = render(
       <CandleChart
         data={DATA}
-        slotProps={
-          {
-            candle: {
-              byItemIndex: {
-                0: {
-                  children: "replacement",
-                  dangerouslySetInnerHTML: { __html: "unsafe" },
-                  "data-direction": "down",
-                },
-              },
-            },
-            priceAxis: { "data-part": "other" },
-          } as never
-        }
+        slotProps={{
+          candle: { byItemIndex: { 0: { "data-direction": "custom" } } },
+          priceAxis: { "data-part": "custom-axis" },
+        }}
       />,
     );
-
-    expect(container.querySelector('[data-part="candle"]')?.textContent).toBe("");
     expect(container.querySelector('[data-part="candle"]')?.getAttribute("data-direction")).toBe(
-      "up",
+      "custom",
     );
-    expect(container.querySelector('[data-part="price-axis"]')).not.toBeNull();
-    expect(container.querySelector('[data-part="other"]')).toBeNull();
+    expect(container.querySelector('[data-part="custom-axis"]')).not.toBeNull();
   });
 
   it("renders the active candle readout with React values", () => {

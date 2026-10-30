@@ -19,19 +19,9 @@ export type RatingSlotProps = ChoiceOptionSlotProps;
 export type RatingProps = RatingOwnProps &
   Omit<
     ComponentPropsWithRef<"div">,
-    | keyof RatingOwnProps
-    | "children"
-    | "dangerouslySetInnerHTML"
-    | "data-orientation"
-    | "data-part"
-    | "data-uiify-choice"
-    | "data-uiify-rating"
+    keyof RatingOwnProps | "children" | "dangerouslySetInnerHTML"
   > &
-  ConsumerDataAttributes & {
-    readonly "data-orientation"?: never;
-    readonly "data-uiify-choice"?: never;
-    readonly "data-uiify-rating"?: never;
-  };
+  ConsumerDataAttributes;
 
 export interface RatingClientProps extends RatingProps {
   readonly value?: number;

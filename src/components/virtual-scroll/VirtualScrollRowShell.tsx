@@ -51,14 +51,14 @@ export function VirtualScrollRowShell({
 
   return (
     <div
-      {...consumerProps}
       data-part="row"
       data-dynamic-row={dynamicLayout ? "" : undefined}
       data-row-index={index}
       role={listRole === "list" ? "listitem" : "row"}
       aria-setsize={itemCount}
       aria-posinset={index + 1}
-      style={{ ...consumerStyle, ...generatedStyle }}
+      {...consumerProps}
+      style={{ ...generatedStyle, ...consumerStyle }}
     >
       {children}
     </div>

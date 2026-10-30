@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { createRef } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Toggle } from "./Toggle.js";
 
@@ -16,6 +16,38 @@ describe("Toggle", () => {
     const toggle = screen.getByRole("checkbox", { name: "Bold" });
 
     fireEvent.click(toggle);
+
+    expect((toggle as HTMLInputElement).checked).toBe(true);
+  });
+
+  it("marks a controlled checkbox read-only when no change handler is supplied", () => {
+    render(<Toggle id="bold" label="Bold" pressed />);
+
+    expect(screen.getByRole("checkbox", { name: "Bold" }).hasAttribute("readonly")).toBe(true);
+  });
+
+  it("reports controlled state changes without owning the state", () => {
+    const onPressedChange = vi.fn();
+    const onControlChange = vi.fn();
+    const view = render(
+      <Toggle
+        id="bold"
+        label="Bold"
+        pressed={false}
+        onPressedChange={onPressedChange}
+        slotProps={{ control: { onChange: onControlChange } }}
+      />,
+    );
+    const toggle = view.getByRole("checkbox", { name: "Bold" });
+    expect(toggle.hasAttribute("readonly")).toBe(false);
+
+    fireEvent.click(toggle);
+
+    expect(onControlChange).toHaveBeenCalledOnce();
+    expect(onPressedChange).toHaveBeenCalledWith(true);
+    expect((toggle as HTMLInputElement).checked).toBe(false);
+
+    view.rerender(<Toggle id="bold" label="Bold" pressed onPressedChange={onPressedChange} />);
 
     expect((toggle as HTMLInputElement).checked).toBe(true);
   });

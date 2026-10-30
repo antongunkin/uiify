@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default table DOM 1`] = `
+[
+  "table data-uiify-table="" role="grid"",
+  "thead data-part="header"",
+  "tr",
+  "th data-part="column-header" id="select" scope="col"",
+  "label data-uiify-checkbox="" id="_R_0_-select-all-label"",
+  "input aria-labelledby="_R_0_-select-all-label" data-part="control" data-state="unchecked" id="_R_0_-select-all" type="checkbox"",
+  "tbody data-orientation="both" data-part="body"",
+  "tr aria-selected="false" data-part="row" id="row" tabindex="-1"",
+  "td data-part="cell"",
+  "label data-uiify-checkbox="" id="_R_0_-row-row-label"",
+  "input aria-labelledby="_R_0_-row-row-label" data-part="control" data-state="unchecked" id="_R_0_-row-row" type="checkbox"",
+]
+`;

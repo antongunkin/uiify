@@ -48,6 +48,6 @@
 
 ## Other types
 
-- `PopoverTriggerProps<TAs>`: `NativeButtonProps<TAs, PopoverTriggerOwnProps>`
-- `PopoverCloseProps<TAs>`: `NativeButtonProps<TAs, PopoverCloseOwnProps>`
-- `PopoverSurfaceProps`: `PopoverSurfaceOwnProps & Omit<ComponentPropsWithRef<"div">, keyof PopoverSurfaceOwnProps | "popover">` — `popover`, `data-side`, `data-align` and `data-positioning` are owned by the element.
+- `PopoverTriggerProps<TAs>`: `NativeButtonProps<TAs, PopoverTriggerOwnProps & PopoverInvokerNativeProps>`
+- `PopoverCloseProps<TAs>`: `NativeButtonProps<TAs, PopoverCloseOwnProps & PopoverInvokerNativeProps>`
+- `PopoverSurfaceProps`: `PopoverSurfaceOwnProps & Omit<ComponentPropsWithRef<"div">, keyof PopoverSurfaceOwnProps>` — Native props can override the surface defaults.

@@ -29,12 +29,12 @@ export function FieldRoot<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-disabled": disabled ? "" : undefined,
       "data-invalid": invalid ? "" : undefined,
       "data-required": required ? "" : undefined,
       "data-uiify-field": "",
       id,
+      ...consumerProps,
     },
     render,
     state: { disabled, invalid, required, id },
@@ -55,12 +55,12 @@ export function FieldLabel(props: FieldLabelProps): ReactElement | null {
   return useRenderElement({
     defaultTag: "label",
     props: {
-      ...consumerProps,
       id: labelId,
       htmlFor: controlId,
       "data-part": "label",
       "data-disabled": disabled ? "" : undefined,
       "data-required": required ? "" : undefined,
+      ...consumerProps,
       ...(className ? { className } : {}),
       children,
     },
@@ -93,7 +93,6 @@ export function FieldControl<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       ...controlIdentity,
       ...(as === "input" || as === "textarea" || as === "select"
         ? { disabled: disabled || undefined, required: required || undefined }
@@ -109,6 +108,7 @@ export function FieldControl<TAs extends ElementType = "div">(
       "data-disabled": disabled ? "" : undefined,
       "data-invalid": invalid ? "" : undefined,
       "data-required": required ? "" : undefined,
+      ...consumerProps,
     },
     render,
     state: { disabled, invalid, required },
@@ -122,10 +122,10 @@ export function FieldDescription(props: FieldDescriptionProps): ReactElement | n
   return useRenderElement({
     defaultTag: "p",
     props: {
-      ...consumerProps,
       id: descriptionId,
       "data-part": "description",
       "data-disabled": disabled ? "" : undefined,
+      ...consumerProps,
       ...(className ? { className } : {}),
       children,
     },
@@ -140,11 +140,11 @@ export function FieldError(props: FieldErrorProps): ReactElement | null {
   const element = useRenderElement({
     defaultTag: "p",
     props: {
-      ...consumerProps,
       id: errorId,
       "data-part": "error",
       role: "alert",
       "data-invalid": "",
+      ...consumerProps,
       ...(className ? { className } : {}),
       children,
     },

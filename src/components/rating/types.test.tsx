@@ -15,11 +15,10 @@ describe("Rating props", () => {
 
     // @ts-expect-error Rating owns its group id and never accepts raw HTML on the root.
     const invalidRoot: RatingProps = { id: "rating", dangerouslySetInnerHTML: { __html: "" } };
-    // @ts-expect-error Radio checked state belongs to Rating's value props.
-    const invalidInput: RatingProps = { id: "rating", slotProps: { input: { checked: true } } };
-    // @ts-expect-error Rating owns its identity marker.
-    const invalidMarker: RatingProps = { id: "rating", "data-uiify-rating": "no" };
+    // Consumer props replace library defaults, so slots and markers are open.
+    const overriddenInput: RatingProps = { id: "rating", slotProps: { input: { checked: true } } };
+    const overriddenMarker: RatingProps = { id: "rating", "data-uiify-rating": "no" };
 
-    expect([valid, invalidRoot, invalidInput, invalidMarker].length).toBe(4);
+    expect([valid, invalidRoot, overriddenInput, overriddenMarker].length).toBe(4);
   });
 });

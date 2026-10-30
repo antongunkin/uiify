@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default number field DOM 1`] = `
+[
+  "div data-uiify-number-field=""",
+  "div data-part="group"",
+  "button aria-label="Decrease" data-part="decrement" tabindex="-1" type="button"",
+  "input aria-label="Amount" aria-valuemax="10" aria-valuemin="0" aria-valuenow="5" data-part="input" id="uiify-_R_0_" inputmode="decimal" role="spinbutton" value="5"",
+  "button aria-label="Increase" data-part="increment" tabindex="-1" type="button"",
+]
+`;

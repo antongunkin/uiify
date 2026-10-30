@@ -15,28 +15,15 @@ it("accepts native candle slots and absolute index overrides", () => {
   expect(chart.slotProps).toBe(slots);
 });
 
-it("protects chart-owned markers, state, and generated content", () => {
-  const invalidMarker: CandleChartProps = {
+it("accepts native candle state and marker overrides", () => {
+  const chart: CandleChartProps = {
     data: [],
-    // @ts-expect-error The price-axis anatomy marker is owned by CandleChart.
-    slotProps: { priceAxis: { "data-part": "other" } },
-  };
-  const invalidCandleState: CandleChartProps = {
-    data: [],
-    // @ts-expect-error Candle direction comes from OHLC data.
-    slotProps: { candle: { byItemIndex: { 0: { "data-direction": "up" } } } },
-  };
-  const invalidHtml: CandleChartProps = {
-    data: [],
+    "aria-label": undefined,
     slotProps: {
-      candle: {
-        byItemIndex: {
-          // @ts-expect-error Generated slot children cannot be replaced with raw HTML.
-          0: { dangerouslySetInnerHTML: { __html: "unsafe" } },
-        },
-      },
+      priceAxis: { "data-part": "other" },
+      candle: { byItemIndex: { 0: { "data-direction": "custom", "aria-hidden": undefined } } },
+      candleHit: { type: "submit", "aria-pressed": undefined },
     },
   };
-
-  expect([invalidMarker, invalidCandleState, invalidHtml]).toHaveLength(3);
+  expect(chart.slotProps?.candleHit?.type).toBe("submit");
 });

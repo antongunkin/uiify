@@ -12,10 +12,9 @@ it("accepts native virtual-anchor slot props", () => {
     },
   } satisfies ContextMenuRootProps;
 
-  const invalid: ContextMenuRootSlotProps["virtualAnchor"] = {
-    // @ts-expect-error Library-owned anchor identity cannot be overridden.
+  const overridden: ContextMenuRootSlotProps["virtualAnchor"] = {
     "data-virtual-anchor": "false",
   };
 
-  expect([props.slotProps?.virtualAnchor?.className, invalid]).toBeTruthy();
+  expect([props.slotProps?.virtualAnchor?.className, overridden]).toBeTruthy();
 });

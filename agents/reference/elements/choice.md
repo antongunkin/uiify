@@ -62,7 +62,7 @@ No own members.
 ## Other types
 
 - `ChoiceGroupProps`: `ChoiceGroupOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ChoiceGroupOwnProps | "dangerouslySetInnerHTML">`
-- `ChoiceInputSlotProps`: `Omit<ComponentPropsWithRef<"input">, | "children" | "dangerouslySetInnerHTML" | "aria-labelledby" | "checked" | "defaultChecked" | "disabled" | "id" | "name" | "type" | "value" | "data-part" | "data-uiify-choice" | "data-uiify-radio"> & ConsumerDataAttributes & { readonly "data-part"?: never; readonly "data-uiify-choice"?: never; readonly "data-uiify-radio"?: never; }`
-- `ChoiceLabelSlotProps`: `Omit<ComponentPropsWithRef<"label">, "children" | "dangerouslySetInnerHTML" | "htmlFor" | "id" | "data-part"> & ConsumerDataAttributes & { readonly "data-part"?: never }`
-- `ChoicePanelSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "id" | "data-part"> & ConsumerDataAttributes & { readonly "data-part"?: never }`
+- `ChoiceInputSlotProps`: `Omit<ComponentPropsWithRef<"input">, "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes` — Native props of the generated input; consumer values replace the defaults.
+- `ChoiceLabelSlotProps`: `Omit<ComponentPropsWithRef<"label">, "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes`
+- `ChoicePanelSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes`
 - `ChoiceItemProps`: `ChoiceItemOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ChoiceItemOwnProps | "children" | "dangerouslySetInnerHTML">`

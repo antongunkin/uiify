@@ -1,5 +1,6 @@
 /* All component skins. Each file scopes itself to @layer components. */
 @import url("./button.css");
+@import url("./control-size.css");
 @import url("./surface.css");
 @import url("./field.css");
 @import url("./choice.css");

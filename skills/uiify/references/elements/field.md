@@ -22,7 +22,7 @@ Keep labels and help text close to the control at narrow widths. Let long instru
 
 ## States
 
-Native required validation works without JavaScript. For application validation, set `invalid` on Root and Control and render `Field.Error` with the same state after validation. Keep `Field.Description` mounted alongside the conditional Error: Control always references its derived description ID. Parts own their IDs and Control's ARIA relationships; omit manual `id`/`aria-describedby` overrides. The error is included while invalid.
+Native required validation works without JavaScript. For application validation, set `invalid` on Root and Control and render `Field.Error` with the same state after validation. Keep `Field.Description` mounted alongside the conditional Error: Control always references its derived description ID. Parts write their IDs and Control's ARIA relationships by default; overriding `id`/`aria-describedby` breaks those links, so omit manual overrides. The error is included while invalid.
 
 ## Verify
 

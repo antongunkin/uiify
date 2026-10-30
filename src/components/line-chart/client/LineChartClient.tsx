@@ -10,7 +10,6 @@ import {
   useLiveChartWindow,
 } from "../../internal/live-chart/use-live-chart-window.js";
 import { useScrollbarReserve } from "../../internal/chart-scrollbar/use-scrollbar-reserve.js";
-import { omitProps } from "../../../core/slot-props.js";
 import { VirtualScroll } from "../../virtual-scroll/VirtualScroll.js";
 import { LineChart, LineChartPoint } from "../LineChart.js";
 import { getValueBounds } from "../line-chart-geometry.js";
@@ -80,8 +79,9 @@ export function LineChartClient<TAs extends ElementType = "figure">(
     itemWidth: viewport.itemWidth,
     figureHeight: figureSize?.height,
     scrollVariable: "--line-scroll-x",
+    consumerStyle,
   });
-  useScrollbarReserve(liveWindow.chartRef, "--line-scrollbar-size");
+  useScrollbarReserve(liveWindow.chartRef, "--line-scrollbar-size", consumerStyle);
   // Cursor and selection hold absolute indices so they survive scrolling and appends.
   const [cursor, setCursor] = useState<CursorState | null>(null);
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | undefined>();
@@ -110,8 +110,8 @@ export function LineChartClient<TAs extends ElementType = "figure">(
   );
 
   const style: InteractiveLineStyle = {
-    ...consumerStyle,
     "--line-scale": String(viewport.scale),
+    ...consumerStyle,
   };
 
   if (!live) {
@@ -172,15 +172,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
           />
         );
       }}
-      {...omitProps(liveScrollportProps, [
-        "children",
-        "dangerouslySetInnerHTML",
-        "data-dynamic-layout",
-        "data-orientation",
-        "data-part",
-        "data-uiify-virtual-scroll",
-        "role",
-      ])}
+      {...liveScrollportProps}
       {...(liveScrollportRef ? { ref: liveScrollportRef } : {})}
       slotProps={{
         ...(slotProps?.liveSpacer ? { spacer: slotProps.liveSpacer } : {}),
@@ -195,6 +187,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
     "--line-plot-height": `${plotHeight}px`,
     // One virtual row: the viewport holds `visibleCount` of them.
     "--line-run": String(100 / visibleCount),
+    ...consumerStyle,
   };
   const chartProps = {
     ...consumerProps,

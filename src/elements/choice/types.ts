@@ -32,39 +32,24 @@ export interface ChoiceGroupOwnProps {
 export type ChoiceGroupProps = ChoiceGroupOwnProps &
   Omit<ComponentPropsWithRef<"div">, keyof ChoiceGroupOwnProps | "dangerouslySetInnerHTML">;
 
+/** Native props of the generated input; consumer values replace the defaults. */
 export type ChoiceInputSlotProps = Omit<
   ComponentPropsWithRef<"input">,
-  | "children"
-  | "dangerouslySetInnerHTML"
-  | "aria-labelledby"
-  | "checked"
-  | "defaultChecked"
-  | "disabled"
-  | "id"
-  | "name"
-  | "type"
-  | "value"
-  | "data-part"
-  | "data-uiify-choice"
-  | "data-uiify-radio"
+  "children" | "dangerouslySetInnerHTML"
 > &
-  ConsumerDataAttributes & {
-    readonly "data-part"?: never;
-    readonly "data-uiify-choice"?: never;
-    readonly "data-uiify-radio"?: never;
-  };
+  ConsumerDataAttributes;
 
 export type ChoiceLabelSlotProps = Omit<
   ComponentPropsWithRef<"label">,
-  "children" | "dangerouslySetInnerHTML" | "htmlFor" | "id" | "data-part"
+  "children" | "dangerouslySetInnerHTML"
 > &
-  ConsumerDataAttributes & { readonly "data-part"?: never };
+  ConsumerDataAttributes;
 
 export type ChoicePanelSlotProps = Omit<
   ComponentPropsWithRef<"div">,
-  "children" | "dangerouslySetInnerHTML" | "id" | "data-part"
+  "children" | "dangerouslySetInnerHTML"
 > &
-  ConsumerDataAttributes & { readonly "data-part"?: never };
+  ConsumerDataAttributes;
 
 export interface ChoiceItemSlotProps {
   readonly input?: ChoiceInputSlotProps;

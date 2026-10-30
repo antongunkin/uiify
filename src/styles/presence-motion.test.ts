@@ -9,7 +9,7 @@ const overlaySkins = ["popup", "surface", "menu", "combobox", "select", "modal"]
 
 describe("shared presence motion", () => {
   it("defines one transition and scale for every appearing surface", () => {
-    const semantic = read("tokens/semantic.css");
+    const semantic = read("tokens/theme.css");
     expect(semantic).toMatch(/--presence-scale:\s*[^;]+;/);
     expect(semantic).toContain(
       "--transition-presence: opacity var(--duration-fast) var(--ease-out), scale var(--duration-fast) var(--ease-out), display var(--duration-fast) allow-discrete, overlay var(--duration-fast) allow-discrete;",

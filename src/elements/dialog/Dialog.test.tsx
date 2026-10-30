@@ -41,7 +41,26 @@ describe("Dialog", () => {
     expect(html).not.toContain("<dialog open");
   });
 
-  it("owns type=button and the invoker attributes", () => {
+  it("lets consumer props replace the invoker defaults", () => {
+    render(
+      <DialogTrigger
+        {...{ command: "request-close", commandfor: "other" }}
+        data-part="opener"
+        target="settings"
+        type="submit"
+      >
+        Open
+      </DialogTrigger>,
+    );
+    const button = screen.getByRole("button", { name: "Open" });
+    expect(button.getAttribute("type")).toBe("submit");
+    expect(button.getAttribute("command")).toBe("request-close");
+    expect(button.getAttribute("commandfor")).toBe("other");
+    expect(button.getAttribute("data-part")).toBe("opener");
+    expect(button.getAttribute("data-uiify-dialog")).toBe("");
+  });
+
+  it("writes type=button and the invoker attributes by default", () => {
     render(
       <DialogTrigger target="settings" onClick={() => {}}>
         Open
@@ -123,5 +142,20 @@ describe("Dialog", () => {
     expect(Dialog.Trigger).toBe(DialogTrigger);
     expect(Dialog.Content).toBe(DialogContent);
     expect(Dialog.Close).toBe(DialogClose);
+  });
+  it("lets consumer content markers replace defaults", () => {
+    render(
+      <DialogContent
+        aria-label="Settings"
+        id="settings"
+        data-part="custom"
+        data-uiify-dialog={undefined}
+      >
+        Body
+      </DialogContent>,
+    );
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog.getAttribute("data-part")).toBe("custom");
+    expect(dialog.hasAttribute("data-uiify-dialog")).toBe(false);
   });
 });

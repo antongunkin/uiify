@@ -9,13 +9,10 @@ import type {
 } from "react";
 import { useEffect, useState } from "react";
 import { useControllableState } from "@gunkin/uiify/hooks";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
-import {
-  mergeRepeatedSlotProps,
-  omitProps,
-  resolveRepeatedSlotProps,
-} from "../../../core/slot-props.js";
+import { mergeRepeatedSlotProps, resolveRepeatedSlotProps } from "../../../core/slot-props.js";
 
 import { getSliderStops, snapSliderToStops } from "../slider-values.js";
 import type {
@@ -81,12 +78,9 @@ function resolveMarkSlotProps(
   index: number,
 ) {
   const { byItemValue, byItemIndex, ...commonProps } = slotProps ?? {};
-  return omitProps(
-    mergeRepeatedSlotProps(
-      mergeRepeatedSlotProps(commonProps, byItemValue?.[String(markValue)]),
-      byItemIndex?.[index],
-    ),
-    ["children", "dangerouslySetInnerHTML", "data-part"],
+  return mergeRepeatedSlotProps(
+    mergeRepeatedSlotProps(commonProps, byItemValue?.[String(markValue)]),
+    byItemIndex?.[index],
   );
 }
 
@@ -134,18 +128,17 @@ export function SliderClient<TAs extends ElementType = "div">(
       : [normalizedValue[0], normalizedValue[1]];
   const isRange = values.length === 2;
   const consumerStyle = "style" in consumerProps ? consumerProps.style : undefined;
-  const consumerRole = "role" in consumerProps ? consumerProps.role : undefined;
   const positionStyles: readonly SliderPositionStyle[] = values.map((currentValue) => ({
     "--uiify-slider-position": String(position(currentValue, min, max)) + "%",
   }));
   const rootStyle: SliderPositionStyle = {
-    ...consumerStyle,
     "--uiify-slider-start": String(position(values[0]!, min, max)) + "%",
     "--uiify-slider-end": String(position(values[values.length - 1]!, min, max)) + "%",
     "--uiify-slider-middle":
       String(
         (position(values[0]!, min, max) + position(values[values.length - 1]!, min, max)) / 2,
       ) + "%",
+    ...consumerStyle,
   };
   const visibleMarks = marksInRange(marks, min, max);
   const accessibleLabels = { ...DEFAULT_SLIDER_LABELS, ...labels };
@@ -203,23 +196,7 @@ export function SliderClient<TAs extends ElementType = "div">(
   const thumbKeys = isRange ? (["minimum", "maximum"] as const) : (["value"] as const);
   const inputNodes = values.map((currentValue, index) => {
     const thumbKey = thumbKeys[index]!;
-    const inputProps = resolveRepeatedSlotProps(slotProps?.input, thumbKey, [
-      "aria-label",
-      "aria-labelledby",
-      "aria-orientation",
-      "data-disabled",
-      "data-orientation",
-      "data-part",
-      "data-state",
-      "defaultChecked",
-      "defaultValue",
-      "disabled",
-      "max",
-      "min",
-      "step",
-      "type",
-      "value",
-    ]);
+    const inputProps = resolveRepeatedSlotProps(slotProps?.input, thumbKey);
     const inputLabel = isRange
       ? (thumbLabels?.[index] ??
         (index === 0 ? accessibleLabels.minimum : accessibleLabels.maximum))
@@ -228,7 +205,6 @@ export function SliderClient<TAs extends ElementType = "div">(
 
     return (
       <input
-        {...inputProps}
         key={index}
         type="range"
         min={min}
@@ -243,14 +219,11 @@ export function SliderClient<TAs extends ElementType = "div">(
         data-state={String(currentValue)}
         data-orientation={orientation}
         data-disabled={disabled ? "" : undefined}
-        onChange={(event) => {
-          inputProps.onChange?.(event);
-          if (!event.defaultPrevented) handleChange(index, event);
-        }}
-        onKeyDown={(event) => {
-          inputProps.onKeyDown?.(event);
-          if (!event.defaultPrevented) handleKeyDown(index, event);
-        }}
+        {...inputProps}
+        onChange={composeEventHandlers(inputProps.onChange, (event) => handleChange(index, event))}
+        onKeyDown={composeEventHandlers(inputProps.onKeyDown, (event) =>
+          handleKeyDown(index, event),
+        )}
       />
     );
   });
@@ -259,8 +232,7 @@ export function SliderClient<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
-      role: isRange ? "group" : consumerRole,
+      role: isRange ? "group" : undefined,
       "aria-label": isRange ? ariaLabel : undefined,
       "aria-labelledby": isRange ? ariaLabelledBy : undefined,
       "data-uiify-slider-client": "",
@@ -270,34 +242,23 @@ export function SliderClient<TAs extends ElementType = "div">(
       "data-orientation": orientation,
       "data-disabled": disabled ? "" : undefined,
       "data-enhanced": enhanced ? "" : undefined,
+      ...consumerProps,
       style: rootStyle,
       children: (
         <>
-          <div
-            {...omitProps(slotProps?.track, [
-              "aria-hidden",
-              "children",
-              "dangerouslySetInnerHTML",
-              "data-part",
-            ])}
-            data-part="track"
-            aria-hidden="true"
-          >
-            <span
-              {...omitProps(slotProps?.range, ["children", "dangerouslySetInnerHTML", "data-part"])}
-              data-part="range"
-            />
+          <div data-part="track" aria-hidden="true" {...slotProps?.track}>
+            <span data-part="range" {...slotProps?.range} />
             {visibleMarks.map((mark, index) => {
               const markProps = resolveMarkSlotProps(slotProps?.mark, mark.value, index);
               return (
                 <span
-                  {...markProps}
                   key={index}
                   data-part="mark"
+                  {...markProps}
                   style={
                     {
-                      ...markProps.style,
                       "--uiify-slider-position": String(position(mark.value, min, max)) + "%",
+                      ...markProps.style,
                     } as SliderPositionStyle
                   }
                 >
@@ -309,14 +270,13 @@ export function SliderClient<TAs extends ElementType = "div">(
               const thumbProps = resolveRepeatedSlotProps(
                 slotProps?.visualThumb,
                 thumbKeys[index]!,
-                ["data-part"],
               );
               return (
                 <span
-                  {...thumbProps}
                   key={index}
                   data-part="visual-thumb"
-                  style={{ ...thumbProps.style, ...style }}
+                  {...thumbProps}
+                  style={{ ...style, ...thumbProps.style }}
                 />
               );
             })}

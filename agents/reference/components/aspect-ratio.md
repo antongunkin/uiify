@@ -35,4 +35,4 @@
 ## Other types
 
 - `AspectRatioProps<TAs>`: `RenderableProps<TAs, AspectRatioOwnProps, Record<string, never>, HTMLElement>`
-- `AspectRatioContentSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-aspect-ratio"> & { readonly "data-part"?: never; readonly "data-uiify-aspect-ratio"?: never; } & ConsumerDataAttributes`
+- `AspectRatioContentSlotProps`: `SlotProps<"div">`

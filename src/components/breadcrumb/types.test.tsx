@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import type { BreadcrumbEllipsisPartProps, BreadcrumbListProps } from "./types.js";
 
-it("accepts native props for generated breadcrumb parts and protects link state", () => {
+it("accepts native overrides for generated breadcrumb parts", () => {
   const valid: BreadcrumbListProps = {
     items: [{ href: "/docs", key: "docs", label: "Docs" }],
     slotProps: {
@@ -19,7 +19,6 @@ it("accepts native props for generated breadcrumb parts and protects link state"
       link: {
         byItemValue: {
           docs: {
-            // @ts-expect-error The item data owns the destination.
             href: "/elsewhere",
           },
         },
@@ -30,7 +29,6 @@ it("accepts native props for generated breadcrumb parts and protects link state"
     items: [],
     slotProps: {
       ellipsisTrigger: {
-        // @ts-expect-error The disclosure label comes from Breadcrumb labels.
         "aria-label": "Other label",
       },
     },
@@ -39,7 +37,6 @@ it("accepts native props for generated breadcrumb parts and protects link state"
     items: [],
     slotProps: {
       item: {
-        // @ts-expect-error Breadcrumb owns its part markers.
         "data-part": "other",
       },
     },

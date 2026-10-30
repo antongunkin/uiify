@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useState } from "react";
 import type { CSSProperties, ElementType, ReactElement, Ref } from "react";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
-import { omitProps } from "../../../core/slot-props.js";
 import { CandleChart, CandleChartCandle, getPriceBounds } from "../CandleChart.js";
 import type {
   CandleChartClientProps,
@@ -79,8 +78,9 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     itemWidth: viewport.itemWidth,
     figureHeight: figureSize?.height,
     scrollVariable: "--candle-scroll-x",
+    consumerStyle,
   });
-  useScrollbarReserve(liveWindow.chartRef, "--candle-scrollbar-size");
+  useScrollbarReserve(liveWindow.chartRef, "--candle-scrollbar-size", consumerStyle);
   // Cursor and selection hold absolute indices so they survive scrolling and appends.
   const [cursor, setCursor] = useState<CursorState | null>(null);
   const [selectedCandleIndex, setSelectedCandleIndex] = useState<number | undefined>();
@@ -108,8 +108,8 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     [data, live],
   );
   const style: InteractiveCandleStyle = {
-    ...consumerStyle,
     "--candle-scale": String(viewport.scale),
+    ...consumerStyle,
   };
 
   if (!live) {
@@ -172,15 +172,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
           />
         );
       }}
-      {...omitProps(liveScrollportProps, [
-        "children",
-        "dangerouslySetInnerHTML",
-        "data-dynamic-layout",
-        "data-orientation",
-        "data-part",
-        "data-uiify-virtual-scroll",
-        "role",
-      ])}
+      {...liveScrollportProps}
       {...(liveScrollportRef ? { ref: liveScrollportRef } : {})}
       slotProps={{
         ...(slotProps?.liveSpacer ? { spacer: slotProps.liveSpacer } : {}),
@@ -193,6 +185,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     ...style,
     "--candle-content-size": `${contentSize}px`,
     "--candle-plot-height": `${plotHeight}px`,
+    ...consumerStyle,
   };
   const chartProps = {
     ...consumerProps,

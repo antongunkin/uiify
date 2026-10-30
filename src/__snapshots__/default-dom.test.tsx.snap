@@ -1,0 +1,54 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`keeps the default DOM of migrated components 1`] = `
+{
+  "accordionMultiple": [
+    "div data-kind="multiple" data-uiify-accordion="" id="faq"",
+    "details data-part="item" data-uiify-details="" open=""",
+    "summary data-part="trigger"",
+    "div data-part="panel"",
+    "details data-disabled="" data-part="item" data-uiify-details="" open=""",
+    "summary aria-disabled="true" data-part="trigger" tabindex="-1"",
+    "div data-part="panel"",
+  ],
+  "accordionSingle": [
+    "div data-kind="single" data-uiify-accordion="" id="faq"",
+    "details data-part="item" data-uiify-details="" name="faq" open=""",
+    "summary data-part="trigger"",
+    "div data-part="panel"",
+    "details data-disabled="" data-part="item" data-uiify-details="" name="faq"",
+    "summary aria-disabled="true" data-part="trigger" tabindex="-1"",
+    "div data-part="panel"",
+  ],
+  "alertModal": [
+    "div data-part="root" data-uiify-alert-modal=""",
+    "button command="show-modal" commandfor="del" data-part="trigger" data-uiify-alert-modal="" data-uiify-button="" type="button"",
+    "dialog aria-describedby="del-description" aria-labelledby="del-title" data-part="content" data-uiify-alert-modal="" id="del" role="alertdialog"",
+    "h2 data-part="title" data-uiify-alert-modal="" id="del-title"",
+    "p data-part="description" data-uiify-alert-modal="" id="del-description"",
+    "button command="request-close" commandfor="del" data-part="cancel" data-uiify-alert-modal="" data-uiify-button="" data-variant="secondary" type="button" value="cancel"",
+    "button command="request-close" commandfor="del" data-part="action" data-uiify-alert-modal="" data-uiify-button="" data-variant="destructive" type="button" value="confirm"",
+  ],
+  "collapsible": [
+    "details data-uiify-collapsible="" data-uiify-details="" id="filters" open=""",
+    "summary data-part="trigger"",
+    "div data-part="panel"",
+  ],
+  "collapsibleDisabled": [
+    "details data-disabled="" data-uiify-collapsible="" data-uiify-details="" id="f"",
+    "summary aria-disabled="true" data-part="trigger" tabindex="-1"",
+    "div data-part="panel"",
+  ],
+  "drawerPanel": [
+    "div data-part="root" data-side="bottom" data-uiify-drawer=""",
+    "button command="show-modal" commandfor="d" data-part="trigger" data-uiify-button="" data-uiify-drawer="" type="button"",
+    "dialog aria-labelledby="d-title" closedby="any" data-part="content" data-side="bottom" data-size="lg" data-uiify-drawer="" id="d"",
+    "div aria-hidden="true" data-part="grabber" data-uiify-drawer=""",
+    "div data-part="header" data-uiify-drawer=""",
+    "h2 data-part="title" data-uiify-drawer="" id="d-title"",
+    "button aria-label="Close" command="request-close" commandfor="d" data-part="close" data-size="icon" data-uiify-button="" data-uiify-drawer="" data-variant="ghost" type="button"",
+    "div data-part="body" data-uiify-drawer=""",
+    "div data-part="footer" data-uiify-drawer=""",
+  ],
+}
+`;

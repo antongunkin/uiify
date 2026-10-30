@@ -63,7 +63,7 @@ describe("AspectRatio", () => {
     },
   );
 
-  it("lets the ratio prop own its custom property", () => {
+  it("lets consumer styles override the ratio custom property", () => {
     render(
       <AspectRatio
         ratio={4 / 5}
@@ -71,7 +71,7 @@ describe("AspectRatio", () => {
         style={{ "--uiify-aspect-ratio": 2 } as CSSProperties}
       />,
     );
-    expect(screen.getByTestId("frame").style.getPropertyValue("--uiify-aspect-ratio")).toBe("0.8");
+    expect(screen.getByTestId("frame").style.getPropertyValue("--uiify-aspect-ratio")).toBe("2");
   });
 
   it("forwards native props, events, className and ref to the root", () => {
@@ -108,9 +108,9 @@ describe("AspectRatio", () => {
     expect(screen.getByTestId("content").getAttribute("data-part")).toBe("content");
   });
 
-  it("owns its identity marker even when a consumer supplies another value", () => {
+  it("lets a consumer replace its identity marker", () => {
     render(<AspectRatio data-uiify-aspect-ratio="overridden" data-testid="frame" />);
-    expect(screen.getByTestId("frame").getAttribute("data-uiify-aspect-ratio")).toBe("");
+    expect(screen.getByTestId("frame").getAttribute("data-uiify-aspect-ratio")).toBe("overridden");
   });
 
   it("supports a polymorphic root and its native attributes and ref", () => {

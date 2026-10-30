@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useIsomorphicLayoutEffect } from "../../../hooks/use-isomorphic-layout-effect.js";
 import type { VirtualScrollHandle, VirtualScrollRangeChange } from "../../virtual-scroll/types.js";
@@ -39,6 +40,21 @@ export function liveTimeAxis(
   return labels;
 }
 
+function writeScrollVariable(
+  chart: HTMLElement,
+  scrollVariable: `--${string}`,
+  offset: number,
+  consumerStyle: CSSProperties | undefined,
+): void {
+  const style: CSSProperties & Record<`--${string}`, string | number | undefined> = {
+    [scrollVariable]: `${offset}px`,
+    ...consumerStyle,
+  };
+  const value = style[scrollVariable];
+  if (value === undefined) chart.style.removeProperty(scrollVariable);
+  else chart.style.setProperty(scrollVariable, String(value));
+}
+
 /**
  * Live chart window over a horizontal VirtualScroll: follows appends while the
  * reader is at the newest item, leaves a scrolled-back reader in place, and
@@ -47,7 +63,14 @@ export function liveTimeAxis(
  * variable so axes and crosshairs scroll without re-rendering.
  */
 export function useLiveChartWindow(options: UseLiveChartWindowOptions): UseLiveChartWindowResult {
-  const { count, visibleCount = 0, itemWidth, figureHeight, scrollVariable } = options;
+  const {
+    count,
+    visibleCount = 0,
+    itemWidth,
+    figureHeight,
+    scrollVariable,
+    consumerStyle,
+  } = options;
   const live = visibleCount > 0;
   const scrollRef = useRef<VirtualScrollHandle>(null);
   const chartRef = useRef<HTMLElement | null>(null);
@@ -56,8 +79,8 @@ export function useLiveChartWindow(options: UseLiveChartWindowOptions): UseLiveC
   const [following, setFollowing] = useState(true);
   const contentSize = count * itemWidth;
   const viewportWidth = itemWidth * visibleCount;
-  const layoutRef = useRef({ contentSize, itemWidth, viewportWidth });
-  layoutRef.current = { contentSize, itemWidth, viewportWidth };
+  const layoutRef = useRef({ contentSize, itemWidth, viewportWidth, consumerStyle });
+  layoutRef.current = { contentSize, itemWidth, viewportWidth, consumerStyle };
 
   // Publish the scroll offset (a CSS variable, so scrolling re-renders nothing)
   // and track whether the reader is at the end.
@@ -68,8 +91,8 @@ export function useLiveChartWindow(options: UseLiveChartWindowOptions): UseLiveC
     if (!element || !chart) return;
     const onScroll = (): void => {
       const offset = element.scrollLeft; // banned-read-ok: scroll position drives the axis offset.
-      chart.style.setProperty(scrollVariable, `${offset}px`);
       const layout = layoutRef.current;
+      writeScrollVariable(chart, scrollVariable, offset, layout.consumerStyle);
       // Within one item of the end counts: an item appended while the reader
       // scrolls there moves the end by exactly one item width.
       setFollowing(
@@ -88,7 +111,7 @@ export function useLiveChartWindow(options: UseLiveChartWindowOptions): UseLiveC
     if (!element || !chart) return;
     const end = Math.max(0, contentSize - viewportWidth);
     element.scrollLeft = end; // banned-read-ok: pin the newest item before paint.
-    chart.style.setProperty(scrollVariable, `${end}px`);
+    writeScrollVariable(chart, scrollVariable, end, layoutRef.current.consumerStyle);
   }, [live, following, contentSize, viewportWidth, scrollVariable]);
 
   // While following, the slice is the tail, so an append rescales in the same

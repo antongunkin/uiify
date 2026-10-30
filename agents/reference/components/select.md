@@ -29,6 +29,7 @@
 | `onValueChange` | `(value: string) => void` | no |  |
 | `name` | `string` | no |  |
 | `disabled` | `boolean` | no |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 
 ### SelectContentOwnProps
 

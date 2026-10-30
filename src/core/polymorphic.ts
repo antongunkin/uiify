@@ -38,22 +38,23 @@ export type NativeButtonAs<TAs extends ElementType> = TAs extends keyof JSX.Intr
   : TAs;
 
 /**
- * Props of a part that renders a native invoker button. The library owns `type`
- * and the invoker attributes; consumers keep className, style, ref and onClick.
+ * Props of a part that renders a native invoker button. The library writes `type="button"`,
+ * `command` and `commandfor` by default; consumer props replace them. Popover invoker
+ * attributes are not part of a command invoker.
  */
 export type NativeButtonProps<TAs extends ElementType, OwnProps extends object> = OwnProps &
   Omit<
     ComponentPropsWithRef<TAs>,
-    | keyof OwnProps
-    | "as"
-    | "render"
-    | "type"
-    | "command"
-    | "commandfor"
-    | "popoverTarget"
-    | "popoverTargetAction"
-  > & {
+    keyof OwnProps | "as" | "render" | "popoverTarget" | "popoverTargetAction"
+  > &
+  Omit<NativeInvokerAttributes, keyof OwnProps> & {
     /** `"button"` (default) or a component that forwards props and ref to a native <button>. */
     readonly as?: TAs & NativeButtonAs<TAs>;
     readonly render?: never;
   };
+
+/** Invoker attributes that @types/react 19.2 does not declare yet. */
+interface NativeInvokerAttributes {
+  readonly command?: string | undefined;
+  readonly commandfor?: string | undefined;
+}

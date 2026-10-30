@@ -52,10 +52,22 @@ describe("Modal native parts", () => {
     );
   });
 
-  it("does not let consumers override a part's identity", () => {
+  it("lets consumers replace a part's markers", () => {
     const html = renderToStaticMarkup(<ModalBody data-part="other" />);
-    expect(html).toContain('data-part="body"');
-    expect(html).not.toContain('data-part="other"');
+    expect(html).toContain('data-part="other"');
+    expect(html).not.toContain('data-part="body"');
+    expect(html).toContain("data-uiify-modal");
+  });
+
+  it("lets consumers replace the grabber's aria-hidden and the dialog's closedby", () => {
+    const html = renderToStaticMarkup(
+      <>
+        <ModalGrabber aria-hidden={false} />
+        <ModalContent aria-label="Settings" closedby="none" id="settings" />
+      </>,
+    );
+    expect(html).toContain('aria-hidden="false"');
+    expect(html).toContain('closedby="none"');
   });
 
   it("renders a show-modal invoker, a plain dialog and a request-close invoker without a Root", () => {
@@ -87,7 +99,18 @@ describe("Modal native parts", () => {
     expect(html).not.toContain("<dialog open");
   });
 
-  it("owns type=button and the invoker attributes", () => {
+  it("lets consumers replace type and the invoker target", () => {
+    render(
+      <ModalTrigger target="settings" type="submit" {...{ commandfor: "other" }}>
+        Open
+      </ModalTrigger>,
+    );
+    const button = screen.getByRole("button", { name: "Open" });
+    expect(button.getAttribute("type")).toBe("submit");
+    expect(button.getAttribute("commandfor")).toBe("other");
+  });
+
+  it("writes type=button and the invoker attributes by default", () => {
     render(
       <ModalTrigger target="settings" onClick={() => {}}>
         Open

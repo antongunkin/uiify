@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default aspect-ratio DOM 1`] = `
+[
+  "div data-uiify-aspect-ratio="" style="--uiify-aspect-ratio:1.5"",
+  "div data-part="content"",
+]
+`;

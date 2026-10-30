@@ -13,8 +13,8 @@ import {
   type ReactNode,
   type SyntheticEvent,
 } from "react";
-import { useControllableState, useId } from "@gunkin/uiify/hooks";
-import { createPartContext } from "@gunkin/uiify/core";
+import { useControllableState, useId, useMergedRefs } from "@gunkin/uiify/hooks";
+import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement, type PolymorphicProps } from "@gunkin/uiify/core/render";
@@ -175,9 +175,9 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-disabled": disabled ? "" : undefined,
       "data-uiify-number-field": "",
+      ...consumerProps,
     },
     render,
     state: { disabled, readOnly, required },
@@ -197,9 +197,9 @@ export function NumberFieldGroup<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-disabled": disabled ? "" : undefined,
       "data-part": "group",
+      ...consumerProps,
     },
     render,
     state: { disabled },
@@ -227,6 +227,8 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
     setDisplayValue,
     setEditing,
   } = useNumberFieldContext("Input");
+  const [consumerRef] = splitRef<HTMLInputElement, typeof consumerProps>(consumerProps);
+  const mergedRef = useMergedRefs(inputRef, consumerRef);
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (isComposingKeyEvent(event)) return;
@@ -265,9 +267,7 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...consumerProps,
-      id: consumerProps.id ?? inputId,
-      ref: inputRef,
+      id: inputId,
       role: "spinbutton",
       "data-part": "input",
       inputMode: "decimal",
@@ -281,6 +281,8 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
       readOnly: readOnly || undefined,
       required: required || undefined,
       value: displayValue,
+      ...consumerProps,
+      ref: mergedRef,
       onFocus: composeEventHandlers(consumerProps.onFocus, () => setEditing(true)),
       onBlur: composeEventHandlers(consumerProps.onBlur, (event: FocusEvent<HTMLInputElement>) => {
         setEditing(false);
@@ -315,12 +317,12 @@ export function NumberFieldIncrement<TAs extends ElementType = "button">(
     as,
     defaultTag: "button",
     props: {
-      ...consumerProps,
       type: "button",
       tabIndex: -1,
       "data-part": "increment",
       "data-disabled": inactive ? "" : undefined,
       disabled: inactive || undefined,
+      ...consumerProps,
       onClick: composeEventHandlers(
         consumerProps.onClick,
         (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -358,12 +360,12 @@ export function NumberFieldDecrement<TAs extends ElementType = "button">(
     as,
     defaultTag: "button",
     props: {
-      ...consumerProps,
       type: "button",
       tabIndex: -1,
       "data-part": "decrement",
       "data-disabled": inactive ? "" : undefined,
       disabled: inactive || undefined,
+      ...consumerProps,
       onClick: composeEventHandlers(
         consumerProps.onClick,
         (event: ReactMouseEvent<HTMLButtonElement>) => {

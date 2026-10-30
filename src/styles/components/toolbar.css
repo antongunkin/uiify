@@ -8,7 +8,6 @@
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-full);
-    corner-shape: round;
     background-color: var(--card);
   }
 

@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default Dialog DOM 1`] = `
+[
+  [
+    "button",
+    [
+      "command=show-modal",
+      "commandfor=dialog",
+      "data-part=trigger",
+      "data-uiify-dialog=",
+      "type=button",
+    ],
+    "Open",
+  ],
+  [
+    "dialog",
+    [
+      "aria-label=Settings",
+      "data-part=content",
+      "data-uiify-dialog=",
+      "id=dialog",
+    ],
+    null,
+  ],
+  [
+    "button",
+    [
+      "command=request-close",
+      "commandfor=dialog",
+      "data-part=close",
+      "data-uiify-dialog=",
+      "type=button",
+    ],
+    "Close",
+  ],
+]
+`;

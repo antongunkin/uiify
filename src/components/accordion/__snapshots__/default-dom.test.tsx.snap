@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default Accordion DOM 1`] = `
+[
+  [
+    "div",
+    [
+      "data-kind=single",
+      "data-uiify-accordion=",
+      "id=faq",
+    ],
+    null,
+  ],
+  [
+    "details",
+    [
+      "data-part=item",
+      "data-uiify-details=",
+      "name=faq",
+      "open=",
+    ],
+    null,
+  ],
+  [
+    "summary",
+    [
+      "data-part=trigger",
+    ],
+    "A",
+  ],
+  [
+    "div",
+    [
+      "data-part=panel",
+    ],
+    "Panel A",
+  ],
+  [
+    "details",
+    [
+      "data-disabled=",
+      "data-part=item",
+      "data-uiify-details=",
+      "name=faq",
+    ],
+    null,
+  ],
+  [
+    "summary",
+    [
+      "aria-disabled=true",
+      "data-part=trigger",
+      "tabindex=-1",
+    ],
+    "B",
+  ],
+  [
+    "div",
+    [
+      "data-part=panel",
+    ],
+    "Panel B",
+  ],
+]
+`;

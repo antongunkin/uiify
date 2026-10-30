@@ -4,7 +4,7 @@ import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { Breadcrumb } from "./Breadcrumb.js";
 
 describe("Breadcrumb", () => {
-  it("preserves custom navigation labels and owns styling parts", () => {
+  it("preserves custom navigation labels and styling overrides", () => {
     render(
       <Breadcrumb.Root aria-label="Location" data-uiify-breadcrumb="override">
         <Breadcrumb.List data-part="override">
@@ -17,8 +17,8 @@ describe("Breadcrumb", () => {
     );
     expect(
       screen.getByRole("navigation", { name: "Location" })?.getAttribute("data-uiify-breadcrumb"),
-    ).toBe("");
-    expect(screen.getByRole("list")?.getAttribute("data-part")).toBe("list");
+    ).toBe("override");
+    expect(screen.getByRole("list")?.getAttribute("data-part")).toBe("override");
     expect(screen.getByRole("link")?.getAttribute("data-part")).toBe("link");
   });
 
@@ -77,7 +77,7 @@ describe("Breadcrumb", () => {
     expect(screen.getByText("/").getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("owns aria-current and data-current on the current link; consumer cannot override them", () => {
+  it("accepts current-link native overrides", () => {
     render(
       <Breadcrumb.Root>
         <Breadcrumb.List>
@@ -90,11 +90,11 @@ describe("Breadcrumb", () => {
       </Breadcrumb.Root>,
     );
     const link = screen.getByRole("link", { name: "Docs" });
-    expect(link.getAttribute("aria-current")).toBe("page");
-    expect(link.getAttribute("data-current")).toBe("");
+    expect(link.getAttribute("aria-current")).toBe("step");
+    expect(link.getAttribute("data-current")).toBe("bogus");
   });
 
-  it("owns aria-hidden on the separator; consumer cannot override it", () => {
+  it("accepts separator native overrides", () => {
     render(
       <Breadcrumb.Root>
         <Breadcrumb.List>
@@ -104,7 +104,7 @@ describe("Breadcrumb", () => {
         </Breadcrumb.List>
       </Breadcrumb.Root>,
     );
-    expect(screen.getByText("/").getAttribute("aria-hidden")).toBe("true");
+    expect(screen.getByText("/").getAttribute("aria-hidden")).toBe("false");
   });
 
   it("throws when maxItems is given without the data-driven items prop", () => {

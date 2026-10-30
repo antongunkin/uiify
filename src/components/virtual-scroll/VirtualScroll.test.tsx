@@ -494,22 +494,16 @@ describe("VirtualScroll", () => {
     expect(secondRow.getAttribute("aria-posinset")).toBe("2");
   });
 
-  it("strips generated-content overrides from indexed JavaScript slot props", () => {
+  it("forwards native row semantics from indexed slot props", () => {
     const { container } = render(
       <VirtualScroll
         items={createSongs(1)}
         renderRow={(song) => song.title}
-        slotProps={
-          {
-            row: {
-              byItemIndex: { 0: { dangerouslySetInnerHTML: { __html: "replaced" } } },
-            },
-          } as never
-        }
+        slotProps={{ row: { byItemIndex: { 0: { "data-part": "custom-row", role: "note" } } } }}
       />,
     );
-
-    expect(container.querySelector('[data-part="row"]')?.textContent).toBe("Song 1");
+    expect(container.querySelector('[data-part="custom-row"]')?.textContent).toBe("Song 1");
+    expect(container.querySelector('[data-part="custom-row"]')?.getAttribute("role")).toBe("note");
   });
 
   it("respects custom rowHeight and overscan", async () => {

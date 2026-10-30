@@ -67,26 +67,22 @@ Extends: `CSSProperties`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `viewport` | `Omit<ComponentPropsWithRef<"div">, "aria-label" \| "children" \| "dangerouslySetInnerHTML" \| "data-part" \| "id" \| "role" \| "tabIndex"> & ConsumerDataAttributes & { readonly "aria-label"?: never; readonly "data-part"?: never; readonly id?: never; readonly role?: never; readonly tabIndex?: never; }` | no |  |
-| `slide` | `CarouselRepeatedSlotProps<"div", { readonly "aria-hidden"?: never; readonly "aria-label"?: never; readonly "aria-roledescription"?: never; readonly "data-carousel-index"?: never; readonly "data-part"?: never; readonly "data-state"?: never; readonly id?: never; readonly inert?: never; readonly role?: never; }>` | no |  |
-| `slideContent` | `CarouselRepeatedSlotProps<"div", { readonly "data-part"?: never }>` | no |  |
-| `rotationControl` | `CarouselRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly "data-carousel-action"?: never; readonly "data-part"?: never; readonly "data-size"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly disabled?: never; readonly hidden?: never; readonly type?: never; }>` | no |  |
-| `previousControl` | `CarouselRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly "data-carousel-action"?: never; readonly "data-part"?: never; readonly "data-size"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly disabled?: never; readonly hidden?: never; readonly type?: never; }>` | no |  |
-| `nextControl` | `CarouselRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly "data-carousel-action"?: never; readonly "data-part"?: never; readonly "data-size"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly disabled?: never; readonly hidden?: never; readonly type?: never; }>` | no |  |
-| `dots` | `Omit<ComponentPropsWithRef<"nav">, "aria-label" \| "children" \| "dangerouslySetInnerHTML" \| "data-part"> & ConsumerDataAttributes & { readonly "aria-label"?: never; readonly "data-part"?: never; }` | no |  |
-| `dot` | `CarouselRepeatedSlotProps<"a", { readonly "aria-current"?: never; readonly "aria-label"?: never; readonly "data-carousel-index"?: never; readonly "data-part"?: never; readonly href?: never; }>` | no |  |
-| `status` | `Omit<ComponentPropsWithRef<"div">, "aria-atomic" \| "aria-live" \| "children" \| "dangerouslySetInnerHTML" \| "data-part"> & ConsumerDataAttributes & { readonly "aria-atomic"?: never; readonly "aria-live"?: never; readonly "data-part"?: never; }` | no |  |
+| `viewport` | `SlotProps<"div">` | no |  |
+| `slide` | `RepeatedSlotProps<SlotProps<"div">>` | no |  |
+| `slideContent` | `RepeatedSlotProps<SlotProps<"div">>` | no |  |
+| `rotationControl` | `RepeatedSlotProps<SlotProps<"button">>` | no |  |
+| `previousControl` | `RepeatedSlotProps<SlotProps<"button">>` | no |  |
+| `nextControl` | `RepeatedSlotProps<SlotProps<"button">>` | no |  |
+| `dots` | `SlotProps<"nav">` | no |  |
+| `dot` | `RepeatedSlotProps<SlotProps<"a">>` | no |  |
+| `status` | `SlotProps<"div">` | no |  |
 
 ### CarouselProps
 
-Extends: `Omit<ComponentPropsWithoutRef<"section">, | "aria-label" | "children" | "className" | "data-axis" | "data-enhanced" | "data-mode" | "data-uiify-carousel" | "dangerouslySetInnerHTML" | "defaultValue" | "dir" | "id" | "autoplay" | "afterChange" | "beforeChange" | "mouseDrag" | "onSelect" | "onSwipe" | "rewind" | "swipe" | "style" | "value">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithoutRef<"section">, | "aria-label" | "children" | "className" | "dangerouslySetInnerHTML" | "defaultValue" | "dir" | "id" | "autoplay" | "afterChange" | "beforeChange" | "mouseDrag" | "onSelect" | "onSwipe" | "rewind" | "swipe" | "style" | "value">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"data-axis"` | `never` | no |  |
-| `"data-enhanced"` | `never` | no |  |
-| `"data-mode"` | `never` | no |  |
-| `"data-uiify-carousel"` | `never` | no |  |
 | `id` | `string` | yes |  |
 | `items` | `readonly CarouselItem[]` | yes |  |
 | `"aria-label"` | `string` | yes |  |

@@ -275,7 +275,7 @@ describe("Tooltip", () => {
   });
 
   describe("client variant (Tooltip.tsx) props ownership", () => {
-    it("owns TooltipTrigger's data-anchor and does not let a consumer override it", async () => {
+    it("lets the consumer override TooltipTrigger data-anchor", async () => {
       const { Tooltip: ClientTooltip } = await loadClientTooltip();
       render(
         <ClientTooltip.Provider>
@@ -287,10 +287,10 @@ describe("Tooltip", () => {
       );
       const trigger = screen.getByRole("button", { name: "Help" });
       expect(trigger.getAttribute("data-anchor")).toBeTruthy();
-      expect(trigger.getAttribute("data-anchor")).not.toBe("consumer-anchor");
+      expect(trigger.getAttribute("data-anchor")).toBe("consumer-anchor");
     });
 
-    it("owns TooltipTrigger's aria-describedby/type and does not let a consumer override them", async () => {
+    it("lets the consumer override TooltipTrigger ARIA and type", async () => {
       const { Tooltip: ClientTooltip } = await loadClientTooltip();
       render(
         <ClientTooltip.Provider>
@@ -303,11 +303,8 @@ describe("Tooltip", () => {
         </ClientTooltip.Provider>,
       );
       const trigger = screen.getByRole("button", { name: "Help" });
-      expect(trigger.getAttribute("type")).toBe("button");
-      expect(trigger.getAttribute("aria-describedby")).not.toBe("consumer-describedby");
-      expect(trigger.getAttribute("aria-describedby")).toBe(
-        screen.getByRole("tooltip", { hidden: true }).id,
-      );
+      expect(trigger.getAttribute("type")).toBe("submit");
+      expect(trigger.getAttribute("aria-describedby")).toBe("consumer-describedby");
     });
 
     it("lets a consumer onPointerEnter veto the open intent on the trigger (policy #5)", async () => {
@@ -367,7 +364,7 @@ describe("Tooltip", () => {
       expect(screen.getByRole("tooltip", { hidden: true }).getAttribute("data-state")).toBe("open");
     });
 
-    it("owns TooltipContent's positioning data-* attributes and does not let a consumer override them", async () => {
+    it("lets the consumer override TooltipContent positioning", async () => {
       const { Tooltip: ClientTooltip } = await loadClientTooltip();
       render(
         <ClientTooltip.Provider>
@@ -387,13 +384,13 @@ describe("Tooltip", () => {
         </ClientTooltip.Provider>,
       );
       const tooltip = screen.getByRole("tooltip", { hidden: true });
-      expect(tooltip.getAttribute("data-align")).toBe("end");
-      expect(tooltip.getAttribute("data-side")).toBe("top");
-      expect(tooltip.getAttribute("data-positioning")).toBe("native");
-      expect(tooltip.getAttribute("data-anchor")).not.toBe("consumer-anchor");
+      expect(tooltip.getAttribute("data-align")).toBe("consumer-align");
+      expect(tooltip.getAttribute("data-side")).toBe("consumer-side");
+      expect(tooltip.getAttribute("data-positioning")).toBe("consumer-positioning");
+      expect(tooltip.getAttribute("data-anchor")).toBe("consumer-anchor");
     });
 
-    it("owns TooltipContent's popover/role/data-state and does not let a consumer override them", async () => {
+    it("lets the consumer override TooltipContent popover, role and state", async () => {
       const { Tooltip: ClientTooltip } = await loadClientTooltip();
       render(
         <ClientTooltip.Provider>
@@ -405,10 +402,10 @@ describe("Tooltip", () => {
           </ClientTooltip.Root>
         </ClientTooltip.Provider>,
       );
-      const tooltip = screen.getByRole("tooltip", { hidden: true });
-      expect(tooltip.getAttribute("popover")).toBe("manual");
-      expect(tooltip.getAttribute("role")).toBe("tooltip");
-      expect(tooltip.getAttribute("data-state")).toBe("closed");
+      const tooltip = screen.getByRole("note", { hidden: true });
+      expect(tooltip.getAttribute("popover")).toBe("auto");
+      expect(tooltip.getAttribute("role")).toBe("note");
+      expect(tooltip.getAttribute("data-state")).toBe("consumer-state");
     });
 
     it("lets a consumer onPointerLeave veto the close intent on the content (policy #5)", async () => {
@@ -442,7 +439,7 @@ describe("Tooltip", () => {
       expect(screen.getByRole("tooltip", { hidden: true }).id).toBe("consumer-tooltip-id");
     });
 
-    it("falls back to a generated id on TooltipContent when the consumer supplies an empty string", async () => {
+    it("preserves an empty consumer TooltipContent id", async () => {
       const { Tooltip: ClientTooltip } = await loadClientTooltip();
       render(
         <ClientTooltip.Provider>
@@ -453,7 +450,7 @@ describe("Tooltip", () => {
         </ClientTooltip.Provider>,
       );
       const tooltip = screen.getByRole("tooltip", { hidden: true });
-      expect(tooltip.id.length).toBeGreaterThan(0);
+      expect(tooltip.id).toBe("");
     });
   });
 });

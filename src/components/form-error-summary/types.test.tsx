@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import type { FormErrorSummaryProps } from "./types.js";
 
-it("accepts native generated-part props and protects the error link and anatomy", () => {
+it("accepts native generated-part overrides for links and anatomy", () => {
   const valid: FormErrorSummaryProps = {
     title: "Errors",
     errors: [{ href: "#email", message: "Invalid email" }],
@@ -12,18 +12,16 @@ it("accepts native generated-part props and protects the error link and anatomy"
       link: { byItemValue: { "#email": { title: "Fix email", "data-testid": "link" } } },
     },
   };
-  const invalidHref: FormErrorSummaryProps = {
+  const nativeHref: FormErrorSummaryProps = {
     title: "Errors",
     errors: [{ href: "#email", message: "Invalid email" }],
-    // @ts-expect-error Field destinations are owned by the error records.
     slotProps: { link: { href: "#other" } },
   };
-  const invalidPart: FormErrorSummaryProps = {
+  const nativePart: FormErrorSummaryProps = {
     title: "Errors",
     errors: [{ href: "#email", message: "Invalid email" }],
-    // @ts-expect-error Generated anatomy markers are library-owned.
     slotProps: { item: { "data-part": "other" } },
   };
 
-  expect([valid, invalidHref, invalidPart].length).toBe(3);
+  expect([valid, nativeHref, nativePart].length).toBe(3);
 });

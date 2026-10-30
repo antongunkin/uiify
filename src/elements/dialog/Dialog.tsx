@@ -1,7 +1,6 @@
 import type { ElementType, ReactElement } from "react";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
 import type { DialogCloseProps, DialogContentProps, DialogTriggerProps } from "./types.js";
-
 /**
  * Opens `target` modally through the browser: no React handler, works before hydration.
  * Emits `data-uiify-dialog` with `data-part="trigger"`.
@@ -31,14 +30,13 @@ function dialogTrigger<TAs extends ElementType = "button">(
 export const DialogTrigger = /* @__PURE__ */ Object.assign(dialogTrigger, {
   displayName: "DialogTrigger",
 });
-
 /**
  * A plain, initially closed `<dialog>`. Emits `data-uiify-dialog` with `data-part="content"`.
  */
 function dialogContent(props: DialogContentProps): ReactElement {
   const { children, ...dialogProps } = props;
   return (
-    <dialog {...dialogProps} data-part="content" data-uiify-dialog="">
+    <dialog data-part="content" data-uiify-dialog="" {...dialogProps}>
       {children}
     </dialog>
   );
@@ -46,7 +44,6 @@ function dialogContent(props: DialogContentProps): ReactElement {
 export const DialogContent = /* @__PURE__ */ Object.assign(dialogContent, {
   displayName: "DialogContent",
 });
-
 /**
  * Requests closing `target` (fires the cancelable `cancel` event first).
  * Emits `data-uiify-dialog` with `data-part="close"`.
@@ -67,7 +64,6 @@ function dialogClose<TAs extends ElementType = "button">(
 export const DialogClose = /* @__PURE__ */ Object.assign(dialogClose, {
   displayName: "DialogClose",
 });
-
 export const Dialog = {
   Trigger: DialogTrigger,
   Content: DialogContent,

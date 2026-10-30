@@ -85,12 +85,12 @@ describe("Pagination", () => {
     expect(html).toContain('aria-label="Pagination"');
   });
 
-  it("Root owns data-uiify-pagination; consumer cannot override it", () => {
+  it("allows root identity overrides", () => {
     render(<Pagination.Root count={3} page={1} data-uiify-pagination="bogus" />);
-    expect(screen.getByRole("navigation").getAttribute("data-uiify-pagination")).toBe("");
+    expect(screen.getByRole("navigation").getAttribute("data-uiify-pagination")).toBe("bogus");
   });
 
-  it("Link owns aria-current, aria-label, data-selected, and data-type; consumer cannot override them", () => {
+  it("allows native link overrides", () => {
     render(
       <Pagination.Root count={5} page={1}>
         <Pagination.Link
@@ -103,10 +103,10 @@ describe("Pagination", () => {
         />
       </Pagination.Root>,
     );
-    const link = screen.getByRole("button", { name: "Page 2" });
-    expect(link.getAttribute("aria-current")).toBe("page");
-    expect(link.getAttribute("data-selected")).toBe("");
-    expect(link.getAttribute("data-type")).toBe("page");
+    const link = screen.getByRole("button", { name: "bogus" });
+    expect(link.getAttribute("aria-current")).toBe("date");
+    expect(link.getAttribute("data-selected")).toBe("bogus");
+    expect(link.getAttribute("data-type")).toBe("bogus");
   });
 
   describe("PaginationShell (static getPageHref-driven variant)", () => {
@@ -134,14 +134,14 @@ describe("Pagination", () => {
       expect(screen.getByRole("link", { name: "Page 4" })).toBeTruthy();
     });
 
-    it("Root owns data-uiify-pagination; consumer cannot override it", () => {
+    it("allows root identity overrides", () => {
       render(
         <PaginationShellRoot count={3} page={1} data-uiify-pagination="bogus" data-testid="nav" />,
       );
-      expect(screen.getByTestId("nav").getAttribute("data-uiify-pagination")).toBe("");
+      expect(screen.getByTestId("nav").getAttribute("data-uiify-pagination")).toBe("bogus");
     });
 
-    it("Link owns aria-current, aria-label, data-selected, and data-type; consumer cannot override them", () => {
+    it("allows native link overrides", () => {
       render(
         <PaginationShellLink
           page={2}
@@ -153,19 +153,19 @@ describe("Pagination", () => {
           data-type="bogus"
         />,
       );
-      const link = screen.getByRole("link", { name: "Page 2" });
-      expect(link.getAttribute("aria-current")).toBe("page");
-      expect(link.getAttribute("data-selected")).toBe("");
-      expect(link.getAttribute("data-type")).toBe("page");
+      const link = screen.getByRole("link", { name: "bogus" });
+      expect(link.getAttribute("aria-current")).toBe("date");
+      expect(link.getAttribute("data-selected")).toBe("bogus");
+      expect(link.getAttribute("data-type")).toBe("bogus");
     });
 
-    it("Ellipsis owns aria-hidden and data-type; consumer cannot override them", () => {
+    it("allows native ellipsis overrides", () => {
       render(
         <PaginationShellEllipsis aria-hidden="false" data-type="bogus" data-testid="ellipsis" />,
       );
       const ellipsis = screen.getByTestId("ellipsis");
-      expect(ellipsis.getAttribute("aria-hidden")).toBe("true");
-      expect(ellipsis.getAttribute("data-type")).toBe("ellipsis");
+      expect(ellipsis.getAttribute("aria-hidden")).toBe("false");
+      expect(ellipsis.getAttribute("data-type")).toBe("bogus");
     });
   });
 });

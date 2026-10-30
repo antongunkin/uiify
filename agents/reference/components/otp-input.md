@@ -48,6 +48,7 @@
 | `length` | `number` | no |  |
 | `mask` | `boolean` | no |  |
 | `pattern` | `string` | no |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 | `type` | `OtpInputType` | no |  |
 
 ### OtpInputRootControlledOwnProps
@@ -69,4 +70,4 @@
 - `OtpInputRootShellProps<TAs>`: `RenderableProps<TAs, OtpInputRootShellOwnProps, OtpInputRootShellOwnProps, HTMLElement>`
 - `OtpInputRootProps<TAs>`: `RenderableProps<TAs, OtpInputRootShellOwnProps & OtpInputRootControlledOwnProps, OtpInputRootShellOwnProps & OtpInputRootControlledOwnProps, HTMLElement>`
 - `OtpInputSlotProps<TAs>`: `RenderableProps<TAs, OtpInputSlotOwnProps, { active: boolean; filled: boolean }, HTMLElement>`
-- `OtpInputHiddenInputProps<TAs>`: `RenderableProps<TAs, { readonly autoFocus?: boolean }, { disabled: boolean }, HTMLInputElement>`
+- `OtpInputHiddenInputProps<TAs>`: `RenderableProps<TAs, { readonly autoFocus?: boolean | undefined }, { disabled: boolean }, HTMLInputElement>`

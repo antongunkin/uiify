@@ -155,20 +155,17 @@ describe("LineChart", () => {
     expect(onPointHitClickAtIndex).toHaveBeenCalledOnce();
   });
 
-  it("keeps generated content and anatomy markers owned by LineChart", () => {
+  it("lets consumers replace generated anatomy and state defaults", () => {
     const { container } = render(
       <LineChart
         data={DATA}
-        slotProps={{
-          plot: { "data-part": "consumer-plot" } as never,
-          point: { children: "replaced" } as never,
-        }}
+        slotProps={{ plot: { "data-part": "consumer-plot" }, point: { "data-trend": "custom" } }}
       />,
     );
-
-    expect(container.querySelector('[data-part="plot"]')).not.toBeNull();
-    expect(container.querySelector('[data-part="consumer-plot"]')).toBeNull();
-    expect(container.querySelector('[data-part="point"]')?.textContent).toBe("");
+    expect(container.querySelector('[data-part="consumer-plot"]')).not.toBeNull();
+    expect(container.querySelector('[data-part="point"]')?.getAttribute("data-trend")).toBe(
+      "custom",
+    );
   });
 
   it("allows a point-hit native click handler to cancel chart activation", () => {

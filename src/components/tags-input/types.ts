@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { ConsumerDataAttributes, SlotProps } from "../../core/slot-props.js";
 
 export interface TagsInputStoreOptions {
   readonly allowDuplicates?: boolean;
@@ -34,17 +34,8 @@ export interface TagsInputContextValue {
 
 export interface TagsInputRootShellOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      | "children"
-      | "className"
-      | "data-disabled"
-      | "data-uiify-tags-input"
-      | "dangerouslySetInnerHTML"
-    >,
+    Omit<ComponentPropsWithRef<"div">, "children" | "className" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
-  readonly "data-disabled"?: never;
-  readonly "data-uiify-tags-input"?: never;
   readonly className?: string;
   readonly addOnPaste?: boolean;
   readonly allowDuplicates?: boolean;
@@ -83,39 +74,17 @@ export type TagsInputInputProps<TAs extends ElementType = "input"> = RenderableP
   HTMLInputElement
 >;
 
-type TagsInputPartSlotProps<TTag extends ElementType> = Omit<
-  ComponentPropsWithRef<TTag>,
-  "children" | "dangerouslySetInnerHTML" | "data-part"
-> &
-  ConsumerDataAttributes & {
-    readonly "data-part"?: never;
-  };
-
-type TagsInputIndexedSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = object,
-> = TagsInputPartSlotProps<TTag> &
-  TOwned & {
-    readonly byItemIndex?: Readonly<Record<number, TagsInputPartSlotProps<TTag> & TOwned>>;
-  };
-
 export interface TagsInputListSlotProps {
-  readonly input?: TagsInputPartSlotProps<"li">;
-  readonly tag?: TagsInputIndexedSlotProps<
-    "li",
-    { readonly "data-index"?: never; readonly "data-value"?: never }
-  >;
+  readonly input?: SlotProps<"li">;
+  readonly tag?: SlotProps<"li"> & {
+    readonly byItemIndex?: Readonly<Record<number, SlotProps<"li">>>;
+  };
 }
 
 export interface TagsInputListOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"ul">,
-      "children" | "className" | "data-orientation" | "data-part" | "dangerouslySetInnerHTML" | "id"
-    >,
+    Omit<ComponentPropsWithRef<"ul">, "children" | "className" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
-  readonly "data-orientation"?: never;
-  readonly "data-part"?: never;
   readonly children?: ReactNode;
   readonly className?: string;
   readonly slotProps?: TagsInputListSlotProps;
@@ -136,12 +105,7 @@ export type TagsInputTagProps<TAs extends ElementType = "li"> = RenderableProps<
 >;
 
 export interface TagsInputTagRemoveOwnProps
-  extends
-    Omit<ComponentPropsWithRef<"button">, "children" | "data-part" | "disabled" | "type">,
-    ConsumerDataAttributes {
+  extends ComponentPropsWithRef<"button">, ConsumerDataAttributes {
   readonly className?: string;
-  readonly "data-part"?: never;
-  readonly disabled?: never;
   readonly index: number;
-  readonly type?: never;
 }

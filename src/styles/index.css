@@ -8,8 +8,7 @@
  */
 @layer reset, tokens, base, demo, components, utilities, theme;
 
-@import url("./tokens/primitives.css");
-@import url("./tokens/semantic.css");
+@import url("./tokens/theme.css");
 @import url("./base.css");
 @import url("./components/index.css");
 @import url("./i18n.css");

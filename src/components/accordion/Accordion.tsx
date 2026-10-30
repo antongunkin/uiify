@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import { DetailsContent, DetailsRoot, DetailsSummary } from "../../elements/details/index.js";
-import { omitProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
+import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import type { AccordionProps, AccordionType } from "./types.js";
 
 function isDefaultOpen(
@@ -27,50 +27,27 @@ export function Accordion({
   ...rootProps
 }: AccordionProps): ReactElement {
   return (
-    <div
-      {...omitProps(rootProps, ["children", "dangerouslySetInnerHTML"])}
-      id={id}
-      data-kind={type}
-      data-uiify-accordion=""
-    >
+    <div id={id} data-kind={type} data-uiify-accordion="" {...rootProps}>
       {items.map((item) => {
         const disabled = item.disabled ?? false;
         return (
           <DetailsRoot
-            {...resolveRepeatedSlotProps(slotProps?.item, item.value, [
-              "name",
-              "open",
-              "disabled",
-              "data-part",
-              "data-uiify-details",
-              "data-uiify-accordion",
-            ])}
             data-part="item"
             defaultOpen={isDefaultOpen(type, defaultValue, item.value)}
             disabled={disabled}
             key={item.value}
             {...(type === "single" ? { name: id } : {})}
+            {...resolveRepeatedSlotProps(slotProps?.item, item.value)}
           >
             <DetailsSummary
-              {...resolveRepeatedSlotProps(slotProps?.trigger, item.value, [
-                "disabled",
-                "part",
-                "data-part",
-                "data-uiify-details",
-                "data-uiify-accordion",
-              ])}
+              {...resolveRepeatedSlotProps(slotProps?.trigger, item.value)}
               disabled={disabled}
               part="trigger"
             >
               {item.label}
             </DetailsSummary>
             <DetailsContent
-              {...resolveRepeatedSlotProps(slotProps?.panel, item.value, [
-                "part",
-                "data-part",
-                "data-uiify-details",
-                "data-uiify-accordion",
-              ])}
+              {...resolveRepeatedSlotProps(slotProps?.panel, item.value)}
               part="panel"
             >
               {item.panel}

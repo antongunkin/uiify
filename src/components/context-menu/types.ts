@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef, ElementType, MouseEvent, ReactNode } from "react";
 import type { PopoverChangeHandler } from "@gunkin/uiify/core/popover";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes } from "@gunkin/uiify/core/slot-props";
+import type { ConsumerDataAttributes, SlotProps } from "@gunkin/uiify/core/slot-props";
 import type {
   DropdownMenuLabelOwnProps,
   DropdownMenuSeparatorOwnProps,
@@ -26,20 +26,7 @@ export interface ContextMenuRootShellOwnProps {
 }
 
 export interface ContextMenuRootSlotProps {
-  readonly virtualAnchor?: Omit<
-    ComponentPropsWithRef<"span">,
-    | "aria-hidden"
-    | "children"
-    | "dangerouslySetInnerHTML"
-    | "data-anchor"
-    | "data-virtual-anchor"
-    | "data-uiify-menu"
-  > &
-    ConsumerDataAttributes & {
-      readonly "data-anchor"?: never;
-      readonly "data-uiify-menu"?: never;
-      readonly "data-virtual-anchor"?: never;
-    };
+  readonly virtualAnchor?: SlotProps<"span">;
 }
 
 export interface ContextMenuRootControlledOwnProps {
@@ -97,55 +84,23 @@ export type ContextMenuItemProps<TAs extends ElementType = "div"> = RenderablePr
 
 export interface ContextMenuCheckboxItemOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      | "aria-checked"
-      | "children"
-      | "data-disabled"
-      | "data-part"
-      | "data-state"
-      | "data-uiify-menu"
-      | "dangerouslySetInnerHTML"
-      | "role"
-    >,
+    Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
   readonly checked?: boolean | "indeterminate";
   readonly children?: ReactNode;
   readonly disabled?: boolean;
   readonly onCheckedChange?: (checked: boolean) => void;
   readonly textValue?: string;
-  readonly "aria-checked"?: never;
-  readonly "data-disabled"?: never;
-  readonly "data-part"?: never;
-  readonly "data-state"?: never;
-  readonly "data-uiify-menu"?: never;
-  readonly role?: never;
 }
 
 export interface ContextMenuRadioItemOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      | "aria-checked"
-      | "children"
-      | "data-disabled"
-      | "data-part"
-      | "data-state"
-      | "data-uiify-menu"
-      | "dangerouslySetInnerHTML"
-      | "role"
-    >,
+    Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
   readonly children?: ReactNode;
   readonly disabled?: boolean;
   readonly textValue?: string;
   readonly value: string;
-  readonly "aria-checked"?: never;
-  readonly "data-disabled"?: never;
-  readonly "data-part"?: never;
-  readonly "data-state"?: never;
-  readonly "data-uiify-menu"?: never;
-  readonly role?: never;
 }
 
 export interface ContextMenuSubOwnProps {
@@ -154,43 +109,16 @@ export interface ContextMenuSubOwnProps {
 
 export interface ContextMenuSubTriggerOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      | "aria-expanded"
-      | "aria-haspopup"
-      | "children"
-      | "data-part"
-      | "data-uiify-menu"
-      | "dangerouslySetInnerHTML"
-      | "role"
-    >,
+    Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
   readonly children?: ReactNode;
   readonly disabled?: boolean;
   readonly textValue?: string;
-  readonly "aria-expanded"?: never;
-  readonly "aria-haspopup"?: never;
-  readonly "data-part"?: never;
-  readonly "data-uiify-menu"?: never;
-  readonly role?: never;
 }
 
 export interface ContextMenuSubContentOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      | "children"
-      | "data-part"
-      | "data-state"
-      | "data-uiify-menu"
-      | "dangerouslySetInnerHTML"
-      | "hidden"
-      | "role"
-    >,
+    Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
   readonly children?: ReactNode;
-  readonly "data-part"?: never;
-  readonly "data-state"?: never;
-  readonly "data-uiify-menu"?: never;
-  readonly role?: never;
 }

@@ -1,5 +1,6 @@
 import type { ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
+import type { ControlSize } from "../internal/control-size/types.js";
 
 export interface SelectRootOwnProps {
   readonly children?: ReactNode;
@@ -8,6 +9,8 @@ export interface SelectRootOwnProps {
   readonly onValueChange?: (value: string) => void;
   readonly name?: string;
   readonly disabled?: boolean;
+  /** Sets the control's height and text size; `md` is the default. */
+  readonly size?: ControlSize;
 }
 
 export type SelectRootProps<TAs extends ElementType = "select"> = RenderableProps<

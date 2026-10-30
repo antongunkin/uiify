@@ -1,6 +1,5 @@
 import type { ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { omitProps } from "../../core/slot-props.js";
 import type { AlertDescriptionProps, AlertProps, AlertTitleProps } from "./types.js";
 
 const symbols = { secondary: "ⓘ", success: "✓", warning: "⚠︎", destructive: "×" };
@@ -21,17 +20,13 @@ export function Alert<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-uiify-alert": "",
       "data-variant": variant,
+      ...consumerProps,
       children: (
         <>
           {symbol !== false && (
-            <span
-              {...omitProps(slotProps?.symbol, ["aria-hidden", "data-part", "data-uiify-alert"])}
-              data-part="symbol"
-              aria-hidden="true"
-            >
+            <span data-part="symbol" aria-hidden="true" {...slotProps?.symbol}>
               {symbol}
             </span>
           )}
@@ -53,7 +48,7 @@ export function AlertTitle<TAs extends ElementType = "div">(
   return useRenderElement({
     as,
     defaultTag: "div",
-    props: { ...consumerProps, "data-uiify-alert-title": "", "data-part": "title" },
+    props: { "data-uiify-alert-title": "", "data-part": "title", ...consumerProps },
     render,
     state: {},
   });
@@ -67,9 +62,9 @@ export function AlertDescription<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-uiify-alert-description": "",
       "data-part": "description",
+      ...consumerProps,
     },
     render,
     state: {},

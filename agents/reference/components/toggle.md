@@ -33,11 +33,12 @@
 | `label` | `ReactNode` | yes |  |
 | `pressed` | `boolean` | no |  |
 | `defaultPressed` | `boolean` | no |  |
+| `onPressedChange` | `(pressed: boolean) => void` | no |  |
 | `disabled` | `boolean` | no |  |
 | `slotProps` | `ToggleSlotProps` | no |  |
 
 ## Other types
 
-- `ToggleControlSlotProps`: `Omit<ComponentPropsWithRef<"input">, | "aria-labelledby" | "checked" | "data-disabled" | "data-part" | "data-state" | "data-uiify-toggle" | "defaultChecked" | "disabled" | "id" | "type"> & ToggleControlOwnedAttributes & ConsumerDataAttributes`
-- `ToggleLabelSlotProps`: `Omit<ComponentPropsWithRef<"label">, "children" | "data-part" | "data-uiify-button" | "data-variant" | "htmlFor" | "id"> & ToggleLabelOwnedAttributes & ConsumerDataAttributes`
-- `ToggleProps`: `ToggleOwnProps & Omit<ComponentPropsWithRef<"div">, | keyof ToggleOwnProps | "children" | "dangerouslySetInnerHTML" | "data-disabled" | "data-uiify-toggle" | "id">`
+- `ToggleControlSlotProps`: `SlotProps<"input">`
+- `ToggleLabelSlotProps`: `SlotProps<"label">`
+- `ToggleProps`: `ToggleOwnProps & Omit<ComponentPropsWithRef<"div">, keyof ToggleOwnProps | "children" | "dangerouslySetInnerHTML" | "id">`

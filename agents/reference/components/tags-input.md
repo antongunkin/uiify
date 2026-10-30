@@ -55,12 +55,10 @@
 
 ### TagsInputRootShellOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, | "children" | "className" | "data-disabled" | "data-uiify-tags-input" | "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "className" | "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"data-disabled"` | `never` | no |  |
-| `"data-uiify-tags-input"` | `never` | no |  |
 | `className` | `string` | no |  |
 | `addOnPaste` | `boolean` | no |  |
 | `allowDuplicates` | `boolean` | no |  |
@@ -106,17 +104,15 @@ Extends: `TagsInputRootShellOwnProps`, `TagsInputRootControlledOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `input` | `TagsInputPartSlotProps<"li">` | no |  |
-| `tag` | `TagsInputIndexedSlotProps<"li", { readonly "data-index"?: never; readonly "data-value"?: never }>` | no |  |
+| `input` | `SlotProps<"li">` | no |  |
+| `tag` | `SlotProps<"li"> & { readonly byItemIndex?: Readonly<Record<number, SlotProps<"li">>>; }` | no |  |
 
 ### TagsInputListOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"ul">, "children" | "className" | "data-orientation" | "data-part" | "dangerouslySetInnerHTML" | "id">`, `ConsumerDataAttributes`
+Extends: `Omit<ComponentPropsWithRef<"ul">, "children" | "className" | "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"data-orientation"` | `never` | no |  |
-| `"data-part"` | `never` | no |  |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
 | `slotProps` | `TagsInputListSlotProps` | no |  |
@@ -132,15 +128,12 @@ Extends: `Omit<ComponentPropsWithRef<"ul">, "children" | "className" | "data-ori
 
 ### TagsInputTagRemoveOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"button">, "children" | "data-part" | "disabled" | "type">`, `ConsumerDataAttributes`
+Extends: `ComponentPropsWithRef<"button">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `className` | `string` | no |  |
-| `"data-part"` | `never` | no |  |
-| `disabled` | `never` | no |  |
 | `index` | `number` | yes |  |
-| `type` | `never` | no |  |
 
 ## Other types
 

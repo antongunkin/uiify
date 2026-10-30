@@ -45,9 +45,9 @@
 
 ## Other types
 
-- `ColorPickerFieldSlotProps`: `Omit<ComponentPropsWithRef<"div">, | "children" | "dangerouslySetInnerHTML" | "data-disabled" | "data-invalid" | "data-part" | "data-required" | "data-uiify-color-picker" | "data-uiify-field" | "id"> & ConsumerDataAttributes & ColorPickerFieldOwnedAttributes`
-- `ColorPickerLabelSlotProps`: `Omit<ComponentPropsWithRef<"label">, | "children" | "dangerouslySetInnerHTML" | "id" | "htmlFor" | "data-disabled" | "data-part" | "data-required" | "data-uiify-color-picker"> & ConsumerDataAttributes & ColorPickerLabelOwnedAttributes`
-- `ColorPickerSurfaceSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-color-picker" | "data-value"> & ConsumerDataAttributes & ColorPickerSurfaceOwnedAttributes`
-- `ColorPickerControlSlotProps`: `Omit<ComponentPropsWithRef<"input">, | "children" | "dangerouslySetInnerHTML" | "aria-describedby" | "aria-hidden" | "aria-invalid" | "aria-labelledby" | "aria-required" | "disabled" | "defaultValue" | "id" | "name" | "readOnly" | "required" | "tabIndex" | "type" | "value" | "data-disabled" | "data-invalid" | "data-part" | "data-required" | "data-uiify-color-picker" | "data-uiify-input"> & ConsumerDataAttributes & ColorPickerControlOwnedAttributes`
-- `ColorPickerInputSlotProps`: `Omit<ComponentPropsWithRef<"input">, | "children" | "dangerouslySetInnerHTML" | "aria-invalid" | "aria-label" | "aria-labelledby" | "disabled" | "id" | "type" | "value" | "alpha" | "colorspace" | "defaultValue" | "data-part" | "data-uiify-color-picker" | "required"> & ConsumerDataAttributes & ColorPickerPartOwnedAttributes`
-- `ColorPickerProps`: `Omit<ComponentPropsWithRef<"input">, | "alpha" | "className" | "colorSpace" | "defaultValue" | "onChange" | "ref" | "style" | "type" | "value"> & ColorPickerOwnProps & { readonly className?: string; readonly onChange?: ChangeEventHandler<HTMLInputElement>; readonly ref?: Ref<HTMLInputElement>; readonly style?: CSSProperties; } & { readonly "data-uiify-color-picker"?: never; readonly "data-uiify-field"?: never; }`
+- `ColorPickerFieldSlotProps`: `Omit<SlotProps<"div">, "id">` — The field id is the required Field.Root wiring input; use ColorPicker.id.
+- `ColorPickerLabelSlotProps`: `SlotProps<"label">`
+- `ColorPickerSurfaceSlotProps`: `SlotProps<"div">`
+- `ColorPickerControlSlotProps`: `SlotProps<"input">`
+- `ColorPickerInputSlotProps`: `SlotProps<"input"> & { readonly alpha?: string | undefined; readonly colorspace?: ColorSpace | undefined; }`
+- `ColorPickerProps`: `Omit<ComponentPropsWithRef<"input">, "alpha" | "className" | "colorSpace" | "defaultValue" | "onChange" | "ref" | "style" | "value"> & ColorPickerOwnProps & { readonly className?: string; readonly onChange?: ChangeEventHandler<HTMLInputElement>; readonly ref?: Ref<HTMLInputElement>; readonly style?: CSSProperties; } & ConsumerDataAttributes`

@@ -94,7 +94,7 @@ describe("Spinner", () => {
     expect(html).toContain('role="status"');
   });
 
-  it("owns aria-live, role and data attributes; consumer cannot override them", () => {
+  it("lets consumer ARIA, role and data attributes override defaults", () => {
     render(
       <Spinner
         delay={500}
@@ -105,12 +105,12 @@ describe("Spinner", () => {
         data-delay="bogus"
       />,
     );
-    const status = screen.getByRole("status", { hidden: true });
-    expect(status.getAttribute("role")).toBe("status");
-    expect(status.getAttribute("aria-live")).toBe("polite");
-    expect(status.getAttribute("data-uiify-spinner")).toBe("");
-    expect(status.getAttribute("data-state")).toBe("delayed");
-    expect(status.getAttribute("data-delay")).toBe("500ms");
+    const status = screen.getByRole("alert", { hidden: true });
+    expect(status.getAttribute("role")).toBe("alert");
+    expect(status.getAttribute("aria-live")).toBe("assertive");
+    expect(status.getAttribute("data-uiify-spinner")).toBe("bogus");
+    expect(status.getAttribute("data-state")).toBe("visible");
+    expect(status.getAttribute("data-delay")).toBe("bogus");
   });
 
   it("uses an accessible name without generated inline styles or hidden markup", () => {

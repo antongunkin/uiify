@@ -1,8 +1,9 @@
 import type { ReactElement } from "react";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
-import { omitProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
+import { cn } from "../../core/class-names.js";
+import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import { carouselFragment, carouselSlideId, normalizeCarouselProps } from "./carousel-markup.js";
-import type { CarouselMarkupProps } from "./types.js";
+import type { CarouselClientProps, CarouselMarkupProps } from "./types.js";
 
 export function CarouselMarkup({
   base: rawBase,
@@ -11,35 +12,27 @@ export function CarouselMarkup({
 }: CarouselMarkupProps): ReactElement | null {
   const base = normalizeCarouselProps(rawBase);
   const { items, labels, slotProps } = base;
-  const rootProps = omitProps(base, [
-    "aria-label",
-    "autoplay",
-    "axis",
-    "afterChange",
-    "beforeChange",
-    "className",
-    "data-enhanced",
-    "data-mode",
-    "dangerouslySetInnerHTML",
-    "defaultValue",
-    "dir",
-    "icons",
-    "id",
-    "items",
-    "labels",
-    "locale",
-    "mouseDrag",
-    "navigation",
-    "onSelect",
-    "onSwipe",
-    "pagination",
-    "ref",
-    "rewind",
-    "slotProps",
-    "style",
-    "swipe",
-    "value",
-  ]);
+  const {
+    items: _items,
+    labels: _labels,
+    slotProps: _slotProps,
+    axis: _axis,
+    locale: _locale,
+    icons: _icons,
+    navigation: _navigation,
+    pagination: _pagination,
+    autoplay: _autoplay,
+    afterChange: _afterChange,
+    beforeChange: _beforeChange,
+    defaultValue: _defaultValue,
+    mouseDrag: _mouseDrag,
+    onSelect: _onSelect,
+    onSwipe: _onSwipe,
+    rewind: _rewind,
+    swipe: _swipe,
+    value: _value,
+    ...rootProps
+  } = base as typeof base & Partial<CarouselClientProps> & { readonly swipe?: boolean };
   const hasControls = items.length > 1;
 
   if (items.length === 0) return null;
@@ -59,80 +52,42 @@ export function CarouselMarkup({
 
   return (
     <section
-      {...rootProps}
-      ref={rootRef}
-      id={base.id}
-      aria-label={base["aria-label"]}
       aria-roledescription="carousel"
       data-uiify-carousel=""
       data-axis={base.axis}
       {...(presentation ? { "data-mode": presentation.mode } : {})}
       {...(enhanced ? { "data-enhanced": "" } : {})}
-      {...(base.dir ? { dir: base.dir } : {})}
-      {...(base.className ? { className: base.className } : {})}
-      {...(base.style ? { style: base.style } : {})}
+      {...rootProps}
+      ref={rootRef}
     >
       {presentation && hasControls && presentation.autoplay ? (
         <button
-          {...resolveRepeatedSlotProps(slotProps?.rotationControl, "rotation", [
-            "aria-label",
-            "data-carousel-action",
-            "data-part",
-            "data-size",
-            "data-uiify-button",
-            "data-variant",
-            "dangerouslySetInnerHTML",
-            "disabled",
-            "hidden",
-            "type",
-          ])}
           type="button"
           data-part="controls"
           data-carousel-action="rotation"
           data-uiify-button=""
           data-variant="outline"
           hidden={!enhanced}
+          {...resolveRepeatedSlotProps(slotProps?.rotationControl, "rotation")}
         >
           {presentation.autoplay.requested ? labels.stop : labels.start}
         </button>
       ) : null}
 
       <div
-        {...omitProps(slotProps?.viewport, [
-          "aria-label",
-          "dangerouslySetInnerHTML",
-          "data-part",
-          "id",
-          "role",
-          "tabIndex",
-        ])}
         id={`${base.id}--viewport`}
         tabIndex={0}
         role="group"
         aria-label={base["aria-label"]}
         data-part="viewport"
+        {...slotProps?.viewport}
       >
         {items.map((item, index) => {
           const slideId = carouselSlideId(base.id, item.id);
-          const slideProps = resolveRepeatedSlotProps(slotProps?.slide, item.id, [
-            "aria-hidden",
-            "aria-label",
-            "aria-roledescription",
-            "data-carousel-index",
-            "data-part",
-            "data-state",
-            "dangerouslySetInnerHTML",
-            "id",
-            "inert",
-            "role",
-          ]);
-          const slideContentProps = resolveRepeatedSlotProps(slotProps?.slideContent, item.id, [
-            "dangerouslySetInnerHTML",
-            "data-part",
-          ]);
+          const slideProps = resolveRepeatedSlotProps(slotProps?.slide, item.id);
+          const slideContentProps = resolveRepeatedSlotProps(slotProps?.slideContent, item.id);
           return (
             <div
-              {...slideProps}
               key={item.id}
               id={slideId}
               role="group"
@@ -146,17 +101,16 @@ export function CarouselMarkup({
                 },
                 base.locale,
               )}
-              className={
-                [item.className, slideProps.className].filter(Boolean).join(" ") || undefined
-              }
               data-part="slide"
               data-carousel-index={index}
               {...(enhanced
                 ? { "data-state": index === presentedIndex ? "active" : "inactive" }
                 : {})}
               {...(fade && index !== presentedIndex ? { inert: true, "aria-hidden": true } : {})}
+              {...slideProps}
+              className={cn(item.className, slideProps.className)}
             >
-              <div {...slideContentProps} data-part="slide-content">
+              <div data-part="slide-content" {...slideContentProps}>
                 {item.children}
               </div>
             </div>
@@ -166,18 +120,6 @@ export function CarouselMarkup({
 
       {presentation && hasControls && base.navigation ? (
         <button
-          {...resolveRepeatedSlotProps(slotProps?.previousControl, "previous", [
-            "aria-label",
-            "data-carousel-action",
-            "data-part",
-            "data-size",
-            "data-uiify-button",
-            "data-variant",
-            "dangerouslySetInnerHTML",
-            "disabled",
-            "hidden",
-            "type",
-          ])}
           type="button"
           aria-label={labels.previous}
           data-part="controls"
@@ -187,36 +129,26 @@ export function CarouselMarkup({
           data-variant="outline"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atStart : undefined}
+          {...resolveRepeatedSlotProps(slotProps?.previousControl, "previous")}
         >
           {base.icons?.previous}
         </button>
       ) : null}
 
       {base.pagination && hasControls ? (
-        <nav
-          {...omitProps(slotProps?.dots, ["aria-label", "dangerouslySetInnerHTML", "data-part"])}
-          aria-label={labels.navigation}
-          data-part="dots"
-        >
+        <nav aria-label={labels.navigation} data-part="dots" {...slotProps?.dots}>
           {dotIndices.map((itemIndex) => {
             const item = items[itemIndex];
             if (!item) return null;
             return (
               <a
-                {...resolveRepeatedSlotProps(slotProps?.dot, item.id, [
-                  "aria-current",
-                  "aria-label",
-                  "data-carousel-index",
-                  "data-part",
-                  "dangerouslySetInnerHTML",
-                  "href",
-                ])}
                 key={item.id}
                 href={carouselFragment(carouselSlideId(base.id, item.id))}
                 aria-label={formatLabel(labels.goToSlide, { label: item.label }, base.locale)}
                 aria-current={showActiveDot && itemIndex === activeIndex ? "true" : undefined}
                 data-part="dot"
                 data-carousel-index={itemIndex}
+                {...resolveRepeatedSlotProps(slotProps?.dot, item.id)}
               >
                 {itemIndex + 1}
               </a>
@@ -227,18 +159,6 @@ export function CarouselMarkup({
 
       {presentation && hasControls && base.navigation ? (
         <button
-          {...resolveRepeatedSlotProps(slotProps?.nextControl, "next", [
-            "aria-label",
-            "data-carousel-action",
-            "data-part",
-            "data-size",
-            "data-uiify-button",
-            "data-variant",
-            "dangerouslySetInnerHTML",
-            "disabled",
-            "hidden",
-            "type",
-          ])}
           type="button"
           aria-label={labels.next}
           data-part="controls"
@@ -248,6 +168,7 @@ export function CarouselMarkup({
           data-variant="outline"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atEnd : undefined}
+          {...resolveRepeatedSlotProps(slotProps?.nextControl, "next")}
         >
           {base.icons?.next}
         </button>
@@ -255,15 +176,10 @@ export function CarouselMarkup({
 
       {presentation ? (
         <div
-          {...omitProps(slotProps?.status, [
-            "aria-atomic",
-            "aria-live",
-            "dangerouslySetInnerHTML",
-            "data-part",
-          ])}
           aria-live={presentation.autoplay?.playing ? "off" : "polite"}
           aria-atomic="true"
           data-part="status"
+          {...slotProps?.status}
         >
           {enhanced && announcedIndex !== undefined
             ? formatLabel(

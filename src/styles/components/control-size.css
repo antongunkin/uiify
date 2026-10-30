@@ -1,0 +1,31 @@
+/* Form control sizes — the same three heights and text sizes as Button (`sm`, `md`, `lg`).
+   A control's root sets the two properties below; its skin and parts read them with the `md`
+   metrics as fallback. Corners stay `--radius-full` at every size, as on Button. */
+
+@layer components {
+  :is(
+    [data-uiify-input],
+    [data-uiify-select],
+    [data-uiify-date-picker],
+    [data-uiify-input-group],
+    [data-uiify-combobox],
+    [data-uiify-otp-input],
+    [data-uiify-segmented-control]
+  )[data-size="sm"] {
+    --uiify-control-size: var(--control-sm);
+    --uiify-control-font: var(--text-sm);
+  }
+
+  :is(
+    [data-uiify-input],
+    [data-uiify-select],
+    [data-uiify-date-picker],
+    [data-uiify-input-group],
+    [data-uiify-combobox],
+    [data-uiify-otp-input],
+    [data-uiify-segmented-control]
+  )[data-size="lg"] {
+    --uiify-control-size: var(--control-lg);
+    --uiify-control-font: var(--text-lg);
+  }
+}

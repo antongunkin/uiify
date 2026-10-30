@@ -27,15 +27,20 @@ export function Slider<TAs extends ElementType = "input">(
   const isControlled = value !== undefined;
   const progressValue = value ?? defaultValue ?? min + (max - min) / 2;
   const progress = getProgressPercentage(progressValue, min, max);
+  const consumerStyle = (consumerProps as { style?: CSSProperties }).style;
   const style = {
-    ...(consumerProps as { style?: CSSProperties }).style,
     "--uiify-slider-progress": `${progress}%`,
+    ...consumerStyle,
   } as CSSProperties;
 
   const handleChange = (event: SyntheticEvent<HTMLInputElement>): void => {
     if (!isControlled) {
       const nextProgress = getProgressPercentage(event.currentTarget.valueAsNumber, min, max);
-      event.currentTarget.style.setProperty("--uiify-slider-progress", `${nextProgress}%`);
+      const nextStyle = { "--uiify-slider-progress": `${nextProgress}%`, ...consumerStyle };
+      const nextValue = nextStyle["--uiify-slider-progress"];
+      if (nextValue === undefined)
+        event.currentTarget.style.removeProperty("--uiify-slider-progress");
+      else event.currentTarget.style.setProperty("--uiify-slider-progress", nextValue);
     }
     onValueChange?.(event.currentTarget.valueAsNumber);
   };
@@ -50,8 +55,6 @@ export function Slider<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...consumerProps,
-      style,
       type: "range",
       "data-uiify-slider": "",
       min,
@@ -60,8 +63,10 @@ export function Slider<TAs extends ElementType = "input">(
       disabled: disabled || undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-state": isControlled ? String(value) : undefined,
-      onChange: composeEventHandlers(consumerOnChange, handleChange),
       ...(isControlled ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
+      ...consumerProps,
+      style,
+      onChange: composeEventHandlers(consumerOnChange, handleChange),
     },
     render,
     state: { min, max, step, disabled },

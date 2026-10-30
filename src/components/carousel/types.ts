@@ -1,12 +1,9 @@
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode, Ref } from "react";
 import type {
-  ComponentPropsWithRef,
-  ComponentPropsWithoutRef,
-  CSSProperties,
-  ElementType,
-  ReactNode,
-  Ref,
-} from "react";
-import type { ConsumerDataAttributes, RepeatedSlotProps } from "../../core/slot-props.js";
+  ConsumerDataAttributes,
+  RepeatedSlotProps,
+  SlotProps,
+} from "../../core/slot-props.js";
 
 export type CarouselAxis = "inline" | "block";
 export type CarouselReason =
@@ -53,110 +50,16 @@ export interface CarouselStyle extends CSSProperties {
   readonly "--uiify-carousel-fade-duration"?: string;
 }
 
-type CarouselRepeatedSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = object,
-> = RepeatedSlotProps<
-  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
-  TOwned
->;
-
 export interface CarouselSlotProps {
-  readonly viewport?: Omit<
-    ComponentPropsWithRef<"div">,
-    "aria-label" | "children" | "dangerouslySetInnerHTML" | "data-part" | "id" | "role" | "tabIndex"
-  > &
-    ConsumerDataAttributes & {
-      readonly "aria-label"?: never;
-      readonly "data-part"?: never;
-      readonly id?: never;
-      readonly role?: never;
-      readonly tabIndex?: never;
-    };
-  readonly slide?: CarouselRepeatedSlotProps<
-    "div",
-    {
-      readonly "aria-hidden"?: never;
-      readonly "aria-label"?: never;
-      readonly "aria-roledescription"?: never;
-      readonly "data-carousel-index"?: never;
-      readonly "data-part"?: never;
-      readonly "data-state"?: never;
-      readonly id?: never;
-      readonly inert?: never;
-      readonly role?: never;
-    }
-  >;
-  readonly slideContent?: CarouselRepeatedSlotProps<"div", { readonly "data-part"?: never }>;
-  readonly rotationControl?: CarouselRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-carousel-action"?: never;
-      readonly "data-part"?: never;
-      readonly "data-size"?: never;
-      readonly "data-uiify-button"?: never;
-      readonly "data-variant"?: never;
-      readonly disabled?: never;
-      readonly hidden?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly previousControl?: CarouselRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-carousel-action"?: never;
-      readonly "data-part"?: never;
-      readonly "data-size"?: never;
-      readonly "data-uiify-button"?: never;
-      readonly "data-variant"?: never;
-      readonly disabled?: never;
-      readonly hidden?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly nextControl?: CarouselRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-label"?: never;
-      readonly "data-carousel-action"?: never;
-      readonly "data-part"?: never;
-      readonly "data-size"?: never;
-      readonly "data-uiify-button"?: never;
-      readonly "data-variant"?: never;
-      readonly disabled?: never;
-      readonly hidden?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly dots?: Omit<
-    ComponentPropsWithRef<"nav">,
-    "aria-label" | "children" | "dangerouslySetInnerHTML" | "data-part"
-  > &
-    ConsumerDataAttributes & {
-      readonly "aria-label"?: never;
-      readonly "data-part"?: never;
-    };
-  readonly dot?: CarouselRepeatedSlotProps<
-    "a",
-    {
-      readonly "aria-current"?: never;
-      readonly "aria-label"?: never;
-      readonly "data-carousel-index"?: never;
-      readonly "data-part"?: never;
-      readonly href?: never;
-    }
-  >;
-  readonly status?: Omit<
-    ComponentPropsWithRef<"div">,
-    "aria-atomic" | "aria-live" | "children" | "dangerouslySetInnerHTML" | "data-part"
-  > &
-    ConsumerDataAttributes & {
-      readonly "aria-atomic"?: never;
-      readonly "aria-live"?: never;
-      readonly "data-part"?: never;
-    };
+  readonly viewport?: SlotProps<"div">;
+  readonly slide?: RepeatedSlotProps<SlotProps<"div">>;
+  readonly slideContent?: RepeatedSlotProps<SlotProps<"div">>;
+  readonly rotationControl?: RepeatedSlotProps<SlotProps<"button">>;
+  readonly previousControl?: RepeatedSlotProps<SlotProps<"button">>;
+  readonly nextControl?: RepeatedSlotProps<SlotProps<"button">>;
+  readonly dots?: SlotProps<"nav">;
+  readonly dot?: RepeatedSlotProps<SlotProps<"a">>;
+  readonly status?: SlotProps<"div">;
 }
 
 export interface CarouselProps
@@ -166,10 +69,6 @@ export interface CarouselProps
       | "aria-label"
       | "children"
       | "className"
-      | "data-axis"
-      | "data-enhanced"
-      | "data-mode"
-      | "data-uiify-carousel"
       | "dangerouslySetInnerHTML"
       | "defaultValue"
       | "dir"
@@ -186,10 +85,6 @@ export interface CarouselProps
       | "value"
     >,
     ConsumerDataAttributes {
-  readonly "data-axis"?: never;
-  readonly "data-enhanced"?: never;
-  readonly "data-mode"?: never;
-  readonly "data-uiify-carousel"?: never;
   readonly id: string;
   readonly items: readonly CarouselItem[];
   readonly "aria-label": string;

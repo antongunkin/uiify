@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default color picker DOM 1`] = `
+[
+  "div data-required="" data-uiify-color-picker="" data-uiify-field="" id="brand-field"",
+  "label data-part="label" data-required="" for="brand-field-control" id="brand-field-label"",
+  "div data-part="surface" data-value="#2563eb" style="--uiify-color-picker-value:#2563eb"",
+  "input aria-describedby="brand-field-description" aria-hidden="true" aria-labelledby="brand-field-label" aria-required="true" data-part="control" data-required="" data-uiify-input="" id="brand-field-control" readonly="" required="" tabindex="-1" type="text" value="#2563eb"",
+  "input aria-labelledby="brand-field-label" data-part="native-input" id="brand" required="" type="color" value="#2563eb"",
+]
+`;

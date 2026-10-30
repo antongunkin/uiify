@@ -296,7 +296,7 @@ describe("HoverCard", () => {
     expect(markup).toContain('data-state="closed"');
   });
 
-  it("owns HoverCardTrigger's data-anchor and does not let a consumer override it", () => {
+  it("lets the consumer override HoverCardTrigger data-anchor", () => {
     render(
       <HoverCard.Root>
         <HoverCard.Trigger data-anchor="consumer-anchor">Profile</HoverCard.Trigger>
@@ -305,10 +305,10 @@ describe("HoverCard", () => {
     );
     const trigger = screen.getByRole("button", { name: "Profile" });
     expect(trigger.getAttribute("data-anchor")).toBeTruthy();
-    expect(trigger.getAttribute("data-anchor")).not.toBe("consumer-anchor");
+    expect(trigger.getAttribute("data-anchor")).toBe("consumer-anchor");
   });
 
-  it("owns HoverCardTrigger's aria-controls/aria-expanded and does not let a consumer override them", () => {
+  it("lets the consumer override HoverCardTrigger ARIA", () => {
     render(
       <HoverCard.Root defaultOpen>
         <HoverCard.Trigger aria-controls="consumer-controls" aria-expanded={false}>
@@ -318,8 +318,8 @@ describe("HoverCard", () => {
       </HoverCard.Root>,
     );
     const trigger = screen.getByRole("button", { name: "Profile" });
-    expect(trigger.getAttribute("aria-controls")).not.toBe("consumer-controls");
-    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.getAttribute("aria-controls")).toBe("consumer-controls");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
   });
 
   it("lets a consumer onPointerEnter veto the open intent (policy #5)", () => {
@@ -348,7 +348,7 @@ describe("HoverCard", () => {
     expect(screen.getByText("Extra details").getAttribute("data-state")).toBe("open");
   });
 
-  it("owns HoverCardContent's positioning data-* attributes and does not let a consumer override them", () => {
+  it("provides HoverCardContent positioning defaults", () => {
     renderHoverCard({ defaultOpen: true });
     const content = screen.getByText("Extra details");
     // renderHoverCard already sets side="top" align="start"; also confirm data-positioning/data-anchor.
@@ -356,7 +356,7 @@ describe("HoverCard", () => {
     expect(content.getAttribute("data-anchor")).toBeTruthy();
   });
 
-  it("does not let a consumer override HoverCardContent's positioning data-* attributes", () => {
+  it("lets the consumer override HoverCardContent positioning", () => {
     render(
       <HoverCard.Root defaultOpen>
         <HoverCard.Trigger>Profile</HoverCard.Trigger>
@@ -373,13 +373,13 @@ describe("HoverCard", () => {
       </HoverCard.Root>,
     );
     const content = screen.getByText("Extra details");
-    expect(content.getAttribute("data-align")).toBe("end");
-    expect(content.getAttribute("data-side")).toBe("top");
-    expect(content.getAttribute("data-positioning")).toBe("native");
-    expect(content.getAttribute("data-anchor")).not.toBe("consumer-anchor");
+    expect(content.getAttribute("data-align")).toBe("consumer-align");
+    expect(content.getAttribute("data-side")).toBe("consumer-side");
+    expect(content.getAttribute("data-positioning")).toBe("consumer-positioning");
+    expect(content.getAttribute("data-anchor")).toBe("consumer-anchor");
   });
 
-  it("owns HoverCardContent's popover/data-state and does not let a consumer override them", () => {
+  it("lets the consumer override HoverCardContent popover and state", () => {
     render(
       <HoverCard.Root>
         <HoverCard.Trigger>Profile</HoverCard.Trigger>
@@ -389,8 +389,8 @@ describe("HoverCard", () => {
       </HoverCard.Root>,
     );
     const content = screen.getByText("Extra details");
-    expect(content.getAttribute("popover")).toBe("manual");
-    expect(content.getAttribute("data-state")).toBe("closed");
+    expect(content.getAttribute("popover")).toBe("auto");
+    expect(content.getAttribute("data-state")).toBe("consumer-state");
   });
 
   it("lets a consumer onPointerLeave veto the close intent on the content (policy #5)", () => {
@@ -416,14 +416,14 @@ describe("HoverCard", () => {
     expect(screen.getByText("Extra details").id).toBe("consumer-card-id");
   });
 
-  it("falls back to a generated id on HoverCardContent when the consumer supplies an empty string", () => {
+  it("preserves an empty consumer HoverCardContent id", () => {
     render(
       <HoverCard.Root defaultOpen>
         <HoverCard.Trigger>Profile</HoverCard.Trigger>
         <HoverCard.Content id="">Extra details</HoverCard.Content>
       </HoverCard.Root>,
     );
-    expect(screen.getByText("Extra details").id.length).toBeGreaterThan(0);
+    expect(screen.getByText("Extra details").id).toBe("");
   });
 
   it("calls showPopover when the content opens", async () => {

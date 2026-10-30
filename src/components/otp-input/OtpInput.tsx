@@ -48,6 +48,7 @@ export function OtpInputRoot<TAs extends ElementType = "div">(
     mask = false,
     disabled = false,
     autoFocus = false,
+    size,
     ...consumerProps
   } = props as OtpInputRootProps<ElementType>;
 
@@ -96,10 +97,11 @@ export function OtpInputRoot<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "data-uiify-otp-input": "",
+      ...(size !== undefined ? { "data-size": size } : {}),
       "data-disabled": disabled ? "" : undefined,
       "data-complete": value.length === length ? "" : undefined,
+      ...consumerProps,
       onClick: composeEventHandlers(consumerOnClick, handleClick),
     },
     render,
@@ -128,13 +130,13 @@ export function OtpInputSlot<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      ...consumerProps,
       "aria-hidden": true,
       "data-part": "slot",
       "data-active": active ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-filled": filled ? "" : undefined,
       "data-index": index,
+      ...consumerProps,
       children: mask && filled ? "•" : char,
     },
     render,
@@ -148,11 +150,10 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
   const {
     as,
     render,
-    autoFocus: autoFocusProp,
     ref: consumerRef,
     style: consumerStyle,
     ...consumerProps
-  } = props as PolymorphicProps<"input", { readonly autoFocus?: boolean }>;
+  } = props as PolymorphicProps<"input", { readonly autoFocus?: boolean | undefined }>;
 
   const {
     autoFocus: rootAutoFocus,
@@ -168,7 +169,6 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
   } = useOtpInputContext("HiddenInput");
   const mergedRef = useMergedRefs(consumerRef, hiddenInputRef);
   const inputId = useId();
-  const autoFocus = autoFocusProp ?? rootAutoFocus;
   const {
     onBlur: consumerOnBlur,
     onChange: consumerOnChange,
@@ -204,30 +204,30 @@ export function OtpInputHiddenInput<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...consumerProps,
       "data-part": "control",
       id: inputId,
-      ref: mergedRef,
       type: mask ? "password" : "text",
       inputMode: type === "numeric" ? "numeric" : "text",
       autoComplete: "one-time-code",
-      autoFocus: autoFocus || undefined,
+      autoFocus: rootAutoFocus || undefined,
       disabled: disabled || undefined,
       "aria-label": "One-time code",
       value,
       maxLength: length,
+      ...consumerProps,
+      ref: mergedRef,
       onChange: composeEventHandlers(consumerOnChange, handleChange),
       onFocus: composeEventHandlers(consumerOnFocus, onHiddenFocus),
       onBlur: composeEventHandlers(consumerOnBlur, onHiddenBlur),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       onPaste: composeEventHandlers(consumerOnPaste, handlePaste),
       style: {
-        ...consumerStyle,
         position: "absolute",
         opacity: 0,
         pointerEvents: "none",
         width: 1,
         height: 1,
+        ...consumerStyle,
       } as CSSProperties,
     },
     render,

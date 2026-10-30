@@ -54,6 +54,6 @@
     [data-uiify-toggle]
   ):focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 }

@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default ModalClientContent DOM 1`] = `
+[
+  [
+    "dialog",
+    [
+      "aria-label=Settings",
+      "closedby=any",
+      "data-part=content",
+      "data-size=lg",
+      "data-uiify-modal=",
+      "id=settings",
+    ],
+    "Body",
+  ],
+]
+`;

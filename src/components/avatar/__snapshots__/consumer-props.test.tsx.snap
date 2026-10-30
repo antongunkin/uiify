@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default avatar DOM 1`] = `
+[
+  "link as="image" href="/ada.png" rel="preload"",
+  "span aria-label="Ada" data-uiify-avatar="" role="img"",
+  "span aria-hidden="true" data-part="fallback"",
+  "span aria-label="Ada" data-size="lg" data-uiify-avatar="" role="img"",
+  "img alt="" data-part="image" src="/ada.png"",
+]
+`;

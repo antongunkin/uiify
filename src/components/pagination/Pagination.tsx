@@ -40,7 +40,6 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
   const {
     as,
     render,
-    "aria-label": ariaLabel,
     boundaryCount,
     count,
     defaultPage,
@@ -89,14 +88,14 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     as,
     defaultTag: "nav",
     props: {
+      "aria-label": mergedLabels.root,
+      "data-uiify-pagination": "",
       ...consumerProps,
-      "aria-label": ariaLabel ?? mergedLabels.root,
       children: children ?? (
         <ol {...slotProps?.list}>
           <PaginationListItems />
         </ol>
       ),
-      "data-uiify-pagination": "",
     },
     render,
     state: { page: currentPage },
@@ -141,12 +140,9 @@ function PaginationItemRenderer({
   let content: ReactElement;
   switch (item.type) {
     case "ellipsis": {
-      const ellipsisProps = resolveRepeatedSlotProps(slotProps?.ellipsis, itemKey, [
-        "aria-hidden",
-        "data-type",
-      ]);
+      const ellipsisProps = resolveRepeatedSlotProps(slotProps?.ellipsis, itemKey);
       content = (
-        <span {...ellipsisProps} aria-hidden="true" data-type="ellipsis">
+        <span aria-hidden="true" data-type="ellipsis" {...ellipsisProps}>
           …
         </span>
       );
@@ -155,88 +151,49 @@ function PaginationItemRenderer({
     case "previous":
       content = (
         <PaginationPrevious
-          {...resolveRepeatedSlotProps(slotProps?.control, itemKey, [
-            "aria-label",
-            "data-type",
-            "data-uiify-button",
-            "data-variant",
-            "disabled",
-            "type",
-          ])}
           disabled={item.disabled}
           labels={labels}
+          {...resolveRepeatedSlotProps(slotProps?.control, itemKey)}
         />
       );
       break;
     case "next":
       content = (
         <PaginationNext
-          {...resolveRepeatedSlotProps(slotProps?.control, itemKey, [
-            "aria-label",
-            "data-type",
-            "data-uiify-button",
-            "data-variant",
-            "disabled",
-            "type",
-          ])}
           disabled={item.disabled}
           labels={labels}
+          {...resolveRepeatedSlotProps(slotProps?.control, itemKey)}
         />
       );
       break;
     case "first":
       content = (
         <PaginationFirst
-          {...resolveRepeatedSlotProps(slotProps?.control, itemKey, [
-            "aria-label",
-            "data-type",
-            "data-uiify-button",
-            "data-variant",
-            "disabled",
-            "type",
-          ])}
           disabled={item.disabled}
           labels={labels}
+          {...resolveRepeatedSlotProps(slotProps?.control, itemKey)}
         />
       );
       break;
     case "last":
       content = (
         <PaginationLast
-          {...resolveRepeatedSlotProps(slotProps?.control, itemKey, [
-            "aria-label",
-            "data-type",
-            "data-uiify-button",
-            "data-variant",
-            "disabled",
-            "type",
-          ])}
           disabled={item.disabled}
           labels={labels}
+          {...resolveRepeatedSlotProps(slotProps?.control, itemKey)}
         />
       );
       break;
     default: {
-      const linkProps = resolveRepeatedSlotProps(slotProps?.link, itemKey, [
-        "aria-current",
-        "aria-label",
-        "data-selected",
-        "data-size",
-        "data-type",
-        "data-uiify-button",
-        "data-variant",
-        "disabled",
-        "href",
-        "type",
-      ]);
+      const linkProps = resolveRepeatedSlotProps(slotProps?.link, itemKey);
       content = (
         <PaginationLink
-          {...linkProps}
           disabled={item.disabled}
           {...(locale !== undefined ? { locale } : {})}
           pageLabelTemplate={labels.page}
           page={item.page ?? 1}
           selected={item.selected}
+          {...linkProps}
         />
       );
       break;
@@ -295,7 +252,6 @@ export function PaginationLink<TAs extends ElementType = "button">(
     as,
     defaultTag: "button",
     props: {
-      ...consumerProps,
       "aria-current": selected ? "page" : undefined,
       "aria-label": formatPageLabel(activePageLabelTemplate, page, activeLocale),
       "data-selected": selected ? "" : undefined,
@@ -304,8 +260,9 @@ export function PaginationLink<TAs extends ElementType = "button">(
       "data-uiify-button": "",
       "data-variant": "ghost",
       disabled: disabled || undefined,
-      onClick: composeEventHandlers(onClick, () => setPage(page)),
       type: "button",
+      ...consumerProps,
+      onClick: composeEventHandlers(onClick, () => setPage(page)),
       children: formatPageNumber(page, activeLocale),
     },
     render,
@@ -313,23 +270,14 @@ export function PaginationLink<TAs extends ElementType = "button">(
   });
 }
 
-type PaginationControlNativeProps = Omit<
-  ComponentPropsWithRef<"button">,
-  | "aria-label"
-  | "children"
-  | "data-type"
-  | "data-uiify-button"
-  | "data-variant"
-  | "disabled"
-  | "type"
->;
+type PaginationControlNativeProps = Omit<ComponentPropsWithRef<"button">, "children">;
 
 interface PaginationControlButtonProps extends PaginationControlNativeProps {
-  readonly disabled: boolean;
+  readonly disabled?: boolean | undefined;
   readonly label: string;
   readonly labelText: string;
   readonly onAction: () => void;
-  readonly type: "previous" | "next" | "first" | "last";
+  readonly actionType: "previous" | "next" | "first" | "last";
 }
 
 function PaginationControlButton({
@@ -337,20 +285,20 @@ function PaginationControlButton({
   label,
   labelText,
   onAction,
-  type,
+  actionType,
   ...consumerProps
 }: PaginationControlButtonProps): ReactElement {
   const onClick = consumerProps.onClick as MouseEventHandler<HTMLButtonElement> | undefined;
   return (
     <button
-      {...consumerProps}
       aria-label={label}
-      data-type={type}
+      data-type={actionType}
       data-uiify-button=""
       data-variant="ghost"
       disabled={disabled}
-      onClick={composeEventHandlers(onClick, onAction)}
       type="button"
+      {...consumerProps}
+      onClick={composeEventHandlers(onClick, onAction)}
     >
       {labelText}
     </button>
@@ -363,7 +311,7 @@ function PaginationPrevious({
   labels,
   ...consumerProps
 }: PaginationControlNativeProps & {
-  readonly disabled: boolean;
+  readonly disabled?: boolean | undefined;
   readonly labels: PaginationContextValue["labels"];
 }): ReactElement {
   const { page, setPage } = usePaginationContext("Previous");
@@ -374,7 +322,7 @@ function PaginationPrevious({
       label={labels.previous}
       labelText={labels.previousText}
       onAction={() => setPage(page - 1)}
-      type="previous"
+      actionType="previous"
     />
   );
 }
@@ -385,7 +333,7 @@ function PaginationNext({
   labels,
   ...consumerProps
 }: PaginationControlNativeProps & {
-  readonly disabled: boolean;
+  readonly disabled?: boolean | undefined;
   readonly labels: PaginationContextValue["labels"];
 }): ReactElement {
   const { page, setPage } = usePaginationContext("Next");
@@ -396,7 +344,7 @@ function PaginationNext({
       label={labels.next}
       labelText={labels.nextText}
       onAction={() => setPage(page + 1)}
-      type="next"
+      actionType="next"
     />
   );
 }
@@ -407,7 +355,7 @@ function PaginationFirst({
   labels,
   ...consumerProps
 }: PaginationControlNativeProps & {
-  readonly disabled: boolean;
+  readonly disabled?: boolean | undefined;
   readonly labels: PaginationContextValue["labels"];
 }): ReactElement {
   const { setPage } = usePaginationContext("First");
@@ -418,7 +366,7 @@ function PaginationFirst({
       label={labels.first}
       labelText={labels.firstText}
       onAction={() => setPage(1)}
-      type="first"
+      actionType="first"
     />
   );
 }
@@ -429,7 +377,7 @@ function PaginationLast({
   labels,
   ...consumerProps
 }: PaginationControlNativeProps & {
-  readonly disabled: boolean;
+  readonly disabled?: boolean | undefined;
   readonly labels: PaginationContextValue["labels"];
 }): ReactElement {
   const { count, setPage } = usePaginationContext("Last");
@@ -440,7 +388,7 @@ function PaginationLast({
       label={labels.last}
       labelText={labels.lastText}
       onAction={() => setPage(count)}
-      type="last"
+      actionType="last"
     />
   );
 }

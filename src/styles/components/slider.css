@@ -15,7 +15,7 @@
     inline-size: 100%;
     max-inline-size: 22rem;
     min-inline-size: 14rem;
-    min-block-size: 2.75rem;
+    min-block-size: var(--control-md);
     padding-inline: 0.5625rem;
     appearance: none;
     background-color: transparent;
@@ -103,7 +103,7 @@
     inline-size: 100%;
     max-inline-size: 22rem;
     min-inline-size: 14rem;
-    min-block-size: 2.75rem;
+    min-block-size: var(--control-md);
     accent-color: var(--primary);
   }
 

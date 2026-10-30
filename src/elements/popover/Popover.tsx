@@ -6,7 +6,6 @@ import type {
   PopoverTriggerAction,
   PopoverTriggerProps,
 } from "./types.js";
-
 /**
  * Render a `popovertarget` invoker. React 19 knows `popoverTarget` and
  * `popoverTargetAction` as camelCase DOM properties: on the client it sets them via
@@ -31,15 +30,14 @@ function renderInvoker(
   consumerProps: Record<string, unknown>,
 ): ReactElement {
   return createElement(as ?? "button", {
-    ...consumerProps,
     [marker]: "",
     "data-part": part,
     popoverTarget: target,
     popoverTargetAction: action,
     type: "button",
+    ...consumerProps,
   });
 }
-
 /**
  * Acts on `target` (`action`, default `"toggle"`); light dismiss, Escape and nesting are
  * handled by the browser. The popover opened this way uses the invoker as its implicit
@@ -67,7 +65,6 @@ function popoverTrigger<TAs extends ElementType = "button">(
 export const PopoverTrigger = /* @__PURE__ */ Object.assign(popoverTrigger, {
   displayName: "PopoverTrigger",
 });
-
 /**
  * The popover surface. `data-side`/`data-align` drive required geometry in
  * `@gunkin/uiify/components/behavior.css`; optional skins provide the gap. Emits `popover`, `data-side`, `data-align`, `data-positioning="native"` and
@@ -77,13 +74,13 @@ function popoverSurface(props: PopoverSurfaceProps): ReactElement {
   const { align = "center", children, mode = "auto", side = "bottom", ...consumerProps } = props;
   return (
     <div
-      {...consumerProps}
       data-align={align}
       data-part="surface"
       data-positioning="native"
       data-side={side}
       data-uiify-popover=""
       popover={mode}
+      {...consumerProps}
     >
       {children}
     </div>
@@ -92,7 +89,6 @@ function popoverSurface(props: PopoverSurfaceProps): ReactElement {
 export const PopoverSurface = /* @__PURE__ */ Object.assign(popoverSurface, {
   displayName: "PopoverSurface",
 });
-
 /**
  * Hides `target`. Emits `data-uiify-popover` with `data-part="close"`.
  */
@@ -112,7 +108,6 @@ function popoverClose<TAs extends ElementType = "button">(
 export const PopoverClose = /* @__PURE__ */ Object.assign(popoverClose, {
   displayName: "PopoverClose",
 });
-
 export const Popover = {
   Trigger: PopoverTrigger,
   Surface: PopoverSurface,

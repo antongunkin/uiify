@@ -61,7 +61,7 @@
 | `boundaryCount` | `number` | no |  |
 | `count` | `number` | yes |  |
 | `defaultPage` | `number` | no |  |
-| `disabled` | `boolean` | no |  |
+| `disabled` | `boolean \| undefined` | no |  |
 | `onPageChange` | `(page: number) => void` | no |  |
 | `page` | `number` | no |  |
 | `showFirstLast` | `boolean` | no |  |
@@ -91,11 +91,11 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `list` | `Omit<ComponentPropsWithRef<"ol">, "children" \| "dangerouslySetInnerHTML"> & ConsumerDataAttributes` | no |  |
-| `item` | `PaginationRepeatedSlotProps<"li">` | no |  |
-| `link` | `PaginationRepeatedSlotProps<"button", { readonly "aria-current"?: never; readonly "aria-label"?: never; readonly disabled?: never; readonly "data-selected"?: never; readonly "data-size"?: never; readonly "data-type"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly type?: never; }>` | no |  |
-| `control` | `PaginationRepeatedSlotProps<"button", { readonly "aria-label"?: never; readonly disabled?: never; readonly "data-type"?: never; readonly "data-uiify-button"?: never; readonly "data-variant"?: never; readonly type?: never; }>` | no |  |
-| `ellipsis` | `PaginationRepeatedSlotProps<"span", { readonly "aria-hidden"?: never; readonly "data-type"?: never }>` | no |  |
+| `list` | `SlotProps<"ol">` | no |  |
+| `item` | `RepeatedSlotProps<SlotProps<"li">>` | no |  |
+| `link` | `RepeatedSlotProps<SlotProps<"button">>` | no |  |
+| `control` | `RepeatedSlotProps<SlotProps<"button">>` | no |  |
+| `ellipsis` | `RepeatedSlotProps<SlotProps<"span">>` | no |  |
 
 ### PaginationRootOwnProps
 
@@ -103,7 +103,6 @@ Extends: `UsePaginationParams`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"aria-label"` | `string` | no |  |
 | `children` | `ReactNode` | no |  |
 | `getPageHref` | `(page: number) => string` | no |  |
 | `labels` | `Partial<PaginationLabels>` | no |  |
@@ -126,7 +125,7 @@ Extends: `UsePaginationParams`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `disabled` | `boolean` | no |  |
+| `disabled` | `boolean \| undefined` | no |  |
 | `getPageHref` | `(page: number) => string` | no |  |
 | `locale` | `string` | no |  |
 | `pageLabelTemplate` | `string` | no |  |

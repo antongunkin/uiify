@@ -12,7 +12,6 @@
     padding-inline: var(--space-md);
     border: var(--border-width) solid color-mix(in oklab, var(--destructive) 45%, var(--border));
     border-radius: var(--radius-md);
-    corner-shape: squircle;
     background: color-mix(in oklab, var(--destructive) 4%, var(--background));
     color: var(--foreground);
     text-wrap: pretty;

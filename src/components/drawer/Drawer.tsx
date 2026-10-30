@@ -1,5 +1,4 @@
 "use client";
-
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { PointerEvent, ReactElement, SyntheticEvent } from "react";
 import {
@@ -25,9 +24,7 @@ import type {
   DrawerCloseProps,
   DrawerHandleOwnProps,
 } from "./types.js";
-
 const [DrawerProvider, useDrawerContext] = createPartContext<DrawerContextValue>("Drawer");
-
 export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
   const {
     activeSnapPoint,
@@ -67,22 +64,17 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
     ...(onSnapChange ? { onSnapChange } : {}),
   });
   const store = storeRef.current;
-
   useIsomorphicLayoutEffect(() => {
     if (activeSnapPoint !== undefined) store.syncActiveSnapPoint(activeSnapPoint);
   }, [activeSnapPoint, store]);
-
   useIsomorphicLayoutEffect(() => {
     if (wasOpenRef.current && !dialog.open) {
       queueMicrotask(() => triggerRef.current?.focus({ preventScroll: true }));
     }
     wasOpenRef.current = dialog.open;
   }, [dialog.open]);
-
   useIsomorphicLayoutEffect(() => store.setSide(effectiveSide), [effectiveSide, store]);
-
   const snapEnabled = Boolean(snapPoints && snapPoints.length > 0);
-
   const contextValue = useMemo<DrawerContextValue>(
     () => ({
       close: dialog.close,
@@ -120,21 +112,16 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
       store,
     ],
   );
-
   return <DrawerProvider value={contextValue}>{children}</DrawerProvider>;
 }
 DrawerRoot.displayName = "DrawerRoot";
-
 export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
   const { children, className, ref, ...consumerProps } = props;
   const { contentId, open, openDialog, triggerRef } = useDrawerContext("Trigger");
   const mergedRef = useMergedRefs(triggerRef, ref);
-
   return useRenderElement({
     defaultTag: "button",
     props: {
-      ...consumerProps,
-      ref: mergedRef,
       type: "button",
       "data-uiify-button": "",
       "data-part": "trigger",
@@ -142,14 +129,15 @@ export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
       "aria-controls": contentId,
       "aria-expanded": open,
       "aria-haspopup": "dialog",
-      onClick: composeEventHandlers(consumerProps.onClick, openDialog),
       ...(className ? { className } : {}),
+      ...consumerProps,
+      ref: mergedRef,
+      onClick: composeEventHandlers(consumerProps.onClick, openDialog),
       children,
     },
     state: {},
   });
 }
-
 export function DrawerContent(props: DrawerContentProps): ReactElement | null {
   const {
     children,
@@ -188,13 +176,11 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
     () => store.getActiveSnapPoint(),
     () => 1,
   );
-
   useIsomorphicLayoutEffect(() => {
     if (!size) return;
     const vertical = side === "top" || side === "bottom";
     store.setContainerSize(vertical ? size.height : size.width);
   }, [side, size, store]);
-
   const styleVars =
     snapEnabled && transform
       ? ({
@@ -202,12 +188,9 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
           "--uiify-drawer-snap": String(activeSnap),
         } as React.CSSProperties)
       : undefined;
-
   const content = useRenderElement({
     defaultTag: "dialog",
     props: {
-      ...consumerProps,
-      ref: mergedRef,
       id: contentId,
       "aria-describedby": descriptionId,
       "aria-labelledby": labelId,
@@ -221,7 +204,9 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
       "data-uiify-drawer": "",
       "data-snap-enabled": snapEnabled ? "" : undefined,
       ...(className ? { className } : {}),
-      ...(consumerStyle || styleVars ? { style: { ...consumerStyle, ...styleVars } } : {}),
+      ...(consumerStyle || styleVars ? { style: { ...styleVars, ...consumerStyle } } : {}),
+      ...consumerProps,
+      ref: mergedRef,
       onCancel: composeEventHandlers(
         consumerProps.onCancel,
         (event: SyntheticEvent<HTMLDialogElement>) => {
@@ -238,81 +223,71 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
     },
     state: { open, side },
   });
-
   return content;
 }
-
 export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   const id = useId();
   const { setLabelId } = useDrawerContext("Title");
-
   useIsomorphicLayoutEffect(() => {
     setLabelId(id);
     return () => setLabelId(undefined);
   }, [id, setLabelId]);
-
   return useRenderElement({
     defaultTag: "h2",
     props: {
-      ...consumerProps,
       id,
       "data-part": "title",
       "data-uiify-drawer": "",
       ...(className ? { className } : {}),
+      ...consumerProps,
       children,
     },
     state: {},
   });
 }
-
 export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   const id = useId();
   const { setDescriptionId } = useDrawerContext("Description");
-
   useIsomorphicLayoutEffect(() => {
     setDescriptionId(id);
     return () => setDescriptionId(undefined);
   }, [id, setDescriptionId]);
-
   return useRenderElement({
     defaultTag: "p",
     props: {
-      ...consumerProps,
       id,
       "data-part": "description",
       "data-uiify-drawer": "",
       ...(className ? { className } : {}),
+      ...consumerProps,
       children,
     },
     state: {},
   });
 }
-
 export function DrawerClose(props: DrawerCloseProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   const { close } = useDrawerContext("Close");
-
   return useRenderElement({
     defaultTag: "button",
     props: {
-      ...consumerProps,
       type: "button",
       "data-uiify-button": "",
       "data-part": "close",
       "data-uiify-drawer": "",
       "data-variant": "ghost",
+      ...(className ? { className } : {}),
+      ...consumerProps,
       onClick: composeEventHandlers(consumerProps.onClick, () => {
         close();
       }),
-      ...(className ? { className } : {}),
       children,
     },
     state: {},
   });
 }
-
 export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
   const {
     className,
@@ -328,20 +303,18 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
     () => store.isDragging(),
     () => false,
   );
-
   const axis = side === "top" || side === "bottom" ? "clientY" : "clientX";
-
   return useRenderElement({
     defaultTag: "div",
     props: snapEnabled
       ? {
-          ...consumerProps,
           "aria-hidden": true,
           "data-part": "handle",
           "data-uiify-drawer": "",
           "data-dragging": dragging ? "" : undefined,
           "data-side": side,
           ...(className ? { className } : {}),
+          ...consumerProps,
           onPointerDown: composeEventHandlers(
             onPointerDown,
             (event: PointerEvent<HTMLDivElement>) => {
@@ -373,11 +346,11 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
           ),
         }
       : {
-          ...consumerProps,
           "aria-hidden": true,
           "data-part": "handle",
           "data-uiify-drawer": "",
           ...(className ? { className } : {}),
+          ...consumerProps,
           onPointerDown,
           onPointerMove,
           onPointerUp,
@@ -386,7 +359,6 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
     state: { dragging },
   });
 }
-
 export const Drawer = {
   Close: DrawerClose,
   Content: DrawerContent,

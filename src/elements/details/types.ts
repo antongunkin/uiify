@@ -9,13 +9,13 @@ export interface DetailsRootOwnProps {
    * Groups sibling `<details name>` into an exclusive, single-open set — the browser
    * enforces it, no JS. Must be unique per group and stable across SSR.
    */
-  readonly name?: string;
+  readonly name?: string | undefined;
   readonly disabled?: boolean;
 }
 
-/** `open` is not part of the contract — use `defaultOpen`; the browser owns state after that. */
+/** Native props may override the initial open state. */
 export type DetailsRootProps = DetailsRootOwnProps &
-  Omit<ComponentPropsWithRef<"details">, keyof DetailsRootOwnProps | "open">;
+  Omit<ComponentPropsWithRef<"details">, keyof DetailsRootOwnProps>;
 
 export interface DetailsSummaryOwnProps {
   readonly children?: ReactNode;

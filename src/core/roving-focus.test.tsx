@@ -96,14 +96,14 @@ describe("RovingFocus", () => {
     expect(document.activeElement).toBe(beta);
   });
 
-  it("owns RovingFocusRoot's data-orientation, not overridable by the consumer", () => {
+  it("lets the consumer override RovingFocusRoot data-orientation", () => {
     render(
       <RovingFocusRoot data-orientation="vertical" orientation="horizontal">
         <RovingFocusItem as="button">One</RovingFocusItem>
       </RovingFocusRoot>,
     );
     const root = screen.getByRole("button", { name: "One" }).parentElement;
-    expect(root?.dataset.orientation).toBe("horizontal");
+    expect(root?.dataset.orientation).toBe("vertical");
   });
 
   it("does not write dir without an explicit direction", () => {
@@ -164,7 +164,7 @@ describe("RovingFocus", () => {
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Second" }));
   });
 
-  it("owns RovingFocusItem's aria-disabled/data-current/data-disabled, not overridable by the consumer", () => {
+  it("lets the consumer override RovingFocusItem attributes", () => {
     render(
       <RovingFocusRoot orientation="horizontal">
         <RovingFocusItem
@@ -179,12 +179,12 @@ describe("RovingFocus", () => {
       </RovingFocusRoot>,
     );
     const one = screen.getByRole("button", { name: "One" });
-    expect(one.getAttribute("aria-disabled")).toBe("true");
-    expect(one.dataset.current).toBeUndefined();
-    expect(one.dataset.disabled).toBe("");
+    expect(one.getAttribute("aria-disabled")).toBe("false");
+    expect(one.dataset.current).toBe("fake");
+    expect(one.dataset.disabled).toBe("fake");
   });
 
-  it("owns RovingFocusItem's tabIndex — a consumer override never breaks the roving-tabindex pattern", () => {
+  it("lets the consumer override the RovingFocusItem tabIndex", () => {
     render(
       <RovingFocusRoot orientation="horizontal">
         <RovingFocusItem as="button" tabIndex={5}>
@@ -197,8 +197,8 @@ describe("RovingFocus", () => {
     );
     const one = screen.getByRole("button", { name: "One" });
     const two = screen.getByRole("button", { name: "Two" });
-    expect(one.tabIndex).toBe(0);
-    expect(two.tabIndex).toBe(-1);
+    expect(one.tabIndex).toBe(5);
+    expect(two.tabIndex).toBe(5);
   });
 
   it("merges RovingFocusItem's three-way ref (internal element + consumer + store registration), cleaning up on unmount under StrictMode", () => {

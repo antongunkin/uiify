@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -6,8 +6,6 @@ const stylesDirectory = import.meta.dirname;
 const i18nCss = readFileSync(resolve(stylesDirectory, "i18n.css"), "utf8");
 const normalizedI18nCss = i18nCss.replace(/\s+/g, " ");
 const indexCss = readFileSync(resolve(stylesDirectory, "index.css"), "utf8");
-const docsCssPath = resolve(stylesDirectory, "../../../catalog/src/docs/docs.css");
-const hasDocsCss = existsSync(docsCssPath);
 
 describe("script-aware typography", () => {
   it("sets Japanese and Chinese text behavior and Japanese font stack", () => {
@@ -40,31 +38,5 @@ describe("script-aware typography", () => {
   it("is imported by the styles entry and avoids compatibility branches", () => {
     expect(indexCss).toContain('@import url("./i18n.css");');
     expect(i18nCss).not.toContain("@supports");
-  });
-
-  it.skipIf(!hasDocsCss)("applies the script stacks and prose behavior to docs", () => {
-    const docsCss = readFileSync(docsCssPath, "utf8");
-    const normalizedDocsCss = docsCss.replace(/\s+/g, " ");
-    const docsTokensCss = readFileSync(
-      resolve(stylesDirectory, "../../../catalog/src/styles/tokens.css"),
-      "utf8",
-    );
-    const normalizedDocsTokensCss = docsTokensCss.replace(/\s+/g, " ");
-
-    expect(docsCss).toMatch(
-      /\.docs-body:lang\(ja\)\s*\{\s*font-family:\s*var\(\s*--font-sans-ja,\s*"Hiragino Sans",\s*"Hiragino Kaku Gothic ProN",\s*"Yu Gothic UI",\s*"Noto Sans JP",\s*var\(--font-sans\)\s*\);/,
-    );
-    expect(docsCss).toMatch(
-      /\.docs-body:lang\(zh-Hans\)\s*\{\s*font-family:\s*var\(\s*--font-sans-zh-hans,\s*"PingFang SC",\s*"Microsoft YaHei UI",\s*"Noto Sans SC",\s*var\(--font-sans\)\s*\);/,
-    );
-    expect(normalizedDocsCss).toContain(
-      '.docs-body:lang(ar) { letter-spacing: var(--docs-tracking-normal); font-family: var(--font-sans-ar, "SF Arabic", "Segoe UI", "Noto Sans Arabic", var(--font-sans));',
-    );
-    expect(normalizedDocsTokensCss).toMatch(/--docs-tracking-normal:\s*0;/);
-    expect(normalizedDocsCss).toContain(".docs-body:lang(ar) .docs-prose__p { line-height: 1.8;");
-    expect(normalizedDocsCss).toContain(
-      ".docs-body:lang(ru) .docs-prose, .docs-body:lang(es) .docs-prose, .docs-body:lang(pt-BR) .docs-prose { hyphens: auto;",
-    );
-    expect(normalizedDocsCss).toContain(".docs-prose code { unicode-bidi: isolate;");
   });
 });

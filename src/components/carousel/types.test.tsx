@@ -26,7 +26,6 @@ it("accepts native props and refs for generated carousel parts", () => {
     id: "gallery",
     "aria-label": "Gallery",
     items: [],
-    // @ts-expect-error Render mode is owned by CarouselClient/FadeCarouselClient.
     "data-mode": "fade",
   };
   const invalidDangerousHtml: CarouselProps = {
@@ -53,26 +52,23 @@ it("accepts native props and refs for generated carousel parts", () => {
   ]).toHaveLength(5);
 });
 
-it("protects carousel-owned slide, navigation and control attributes", () => {
+it("accepts native slide, navigation and control overrides", () => {
   const invalidSlideId: CarouselProps = {
     id: "gallery",
     "aria-label": "Gallery",
     items: [],
-    // @ts-expect-error Generated slide ids link dots and slides.
     slotProps: { slide: { id: "other" } },
   };
   const invalidDotHref: CarouselProps = {
     id: "gallery",
     "aria-label": "Gallery",
     items: [],
-    // @ts-expect-error Dot destinations are generated from slide ids.
     slotProps: { dot: { href: "#other" } },
   };
   const invalidControlAction: CarouselProps = {
     id: "gallery",
     "aria-label": "Gallery",
     items: [],
-    // @ts-expect-error Control actions are consumed by the carousel controller.
     slotProps: { nextControl: { "data-carousel-action": "previous" } },
   };
 

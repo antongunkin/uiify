@@ -1,7 +1,6 @@
 import type {
   ComponentPropsWithRef,
   CSSProperties,
-  ElementType,
   MouseEvent,
   PointerEvent,
   ReactNode,
@@ -10,7 +9,8 @@ import type {
 } from "react";
 
 import type { DialogChangeHandler, UseDialogReturn } from "@gunkin/uiify/core/dialog";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { NativeButtonProps } from "@gunkin/uiify/core/render";
+import type { ConsumerDataAttributes, SlotProps } from "../../core/slot-props.js";
 
 export type DrawerSide = "top" | "right" | "bottom" | "left";
 
@@ -33,78 +33,24 @@ export interface DrawerOwnProps extends DrawerAppearanceProps {
   readonly slotProps?: DrawerSlotProps;
 }
 
-type DrawerSlotElementProps<T extends ElementType, TProtected extends string = never> = Omit<
-  ComponentPropsWithRef<T>,
-  "children" | "dangerouslySetInnerHTML" | TProtected
-> &
-  ConsumerDataAttributes & { readonly [K in TProtected]?: never };
+type DrawerInvokerSlotProps = Omit<SlotProps<"button">, "popoverTarget" | "popoverTargetAction"> & {
+  readonly command?: string | undefined;
+  readonly commandfor?: string | undefined;
+};
 
 export interface DrawerSlotProps {
-  readonly trigger?: DrawerSlotElementProps<
-    "button",
-    | "type"
-    | "command"
-    | "commandfor"
-    | "commandFor"
-    | "popoverTarget"
-    | "popoverTargetAction"
-    | "data-part"
-    | "data-uiify-button"
-    | "data-uiify-drawer"
-  >;
-  readonly content?: DrawerSlotElementProps<
-    "dialog",
-    | "size"
-    | "dismiss"
-    | "side"
-    | "backdrop"
-    | "id"
-    | "open"
-    | "popover"
-    | "closedby"
-    | "aria-describedby"
-    | "aria-labelledby"
-    | "aria-modal"
-    | "data-part"
-    | "data-side"
-    | "data-size"
-    | "data-backdrop"
-    | "data-state"
-    | "data-snap-enabled"
-    | "data-uiify-drawer"
-  >;
-  readonly grabber?: DrawerSlotElementProps<
-    "div",
-    "aria-hidden" | "data-part" | "data-uiify-drawer"
-  >;
-  readonly header?: DrawerSlotElementProps<"div", "data-part" | "data-uiify-drawer">;
-  readonly title?: DrawerSlotElementProps<"h2", "id" | "data-part" | "data-uiify-drawer">;
-  readonly description?: DrawerSlotElementProps<"p", "id" | "data-part" | "data-uiify-drawer">;
-  readonly close?: DrawerSlotElementProps<
-    "button",
-    | "type"
-    | "command"
-    | "commandfor"
-    | "commandFor"
-    | "popoverTarget"
-    | "popoverTargetAction"
-    | "aria-label"
-    | "data-part"
-    | "data-variant"
-    | "data-uiify-button"
-    | "data-uiify-drawer"
-  >;
-  readonly closeIcon?: DrawerSlotElementProps<"svg", "aria-hidden" | "focusable">;
-  readonly closeIconPath?: DrawerSlotElementProps<"path">;
-  readonly body?: DrawerSlotElementProps<"div", "data-part" | "data-uiify-drawer">;
-  readonly footer?: DrawerSlotElementProps<"div", "data-part" | "data-uiify-drawer">;
+  readonly trigger?: DrawerInvokerSlotProps;
+  readonly content?: Omit<SlotProps<"dialog">, "id" | "open" | "popover">;
+  readonly grabber?: SlotProps<"div">;
+  readonly header?: SlotProps<"div">;
+  readonly title?: SlotProps<"h2">;
+  readonly description?: SlotProps<"p">;
+  readonly close?: DrawerInvokerSlotProps;
+  readonly body?: SlotProps<"div">;
+  readonly footer?: SlotProps<"div">;
 }
 
-export type DrawerProps = DrawerOwnProps &
-  Omit<
-    DrawerSlotElementProps<"div", "data-part" | "data-side" | "data-uiify-drawer">,
-    keyof DrawerOwnProps
-  >;
+export type DrawerProps = DrawerOwnProps & Omit<SlotProps<"div">, keyof DrawerOwnProps>;
 
 export interface DrawerLabels {
   readonly close: string;
@@ -112,43 +58,15 @@ export interface DrawerLabels {
 
 export interface DrawerNativeContentProps
   extends
-    Omit<
-      ComponentPropsWithRef<"dialog">,
-      | "open"
-      | "popover"
-      | "closedby"
-      | "dangerouslySetInnerHTML"
-      | "data-part"
-      | "data-side"
-      | "data-size"
-      | "data-backdrop"
-      | "data-uiify-drawer"
-    >,
-    DrawerAppearanceProps {
+    Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "dangerouslySetInnerHTML">,
+    DrawerAppearanceProps,
+    ConsumerDataAttributes {
   readonly id: string;
   readonly side?: DrawerSide;
-  readonly "data-part"?: never;
-  readonly "data-side"?: never;
-  readonly "data-size"?: never;
-  readonly "data-backdrop"?: never;
-  readonly "data-uiify-drawer"?: never;
 }
-export interface DrawerNativeInvokerProps extends Omit<
-  ComponentPropsWithRef<"button">,
-  | "type"
-  | "command"
-  | "commandfor"
-  | "commandFor"
-  | "popoverTarget"
-  | "popoverTargetAction"
-  | "data-part"
-  | "data-variant"
-  | "data-uiify-button"
-  | "data-uiify-drawer"
-  | "dangerouslySetInnerHTML"
-> {
-  readonly target: string;
-}
+
+export type DrawerNativeInvokerProps = NativeButtonProps<"button", { readonly target: string }> &
+  ConsumerDataAttributes;
 
 export interface DrawerStoreOptions {
   readonly activeSnapPoint?: number;
@@ -220,7 +138,7 @@ export interface DrawerTriggerOwnProps {
 export interface DrawerTriggerProps
   extends
     DrawerTriggerOwnProps,
-    Omit<ComponentPropsWithRef<"button">, "type" | keyof DrawerTriggerOwnProps> {
+    Omit<ComponentPropsWithRef<"button">, keyof DrawerTriggerOwnProps> {
   readonly onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   readonly ref?: Ref<HTMLButtonElement>;
 }
@@ -234,21 +152,18 @@ export interface DrawerContentOwnProps extends DrawerAppearanceProps {
 export interface DrawerContentProps
   extends
     DrawerContentOwnProps,
-    Omit<
-      ComponentPropsWithRef<"dialog">,
-      "id" | "open" | "closedby" | keyof DrawerContentOwnProps
-    > {
+    Omit<ComponentPropsWithRef<"dialog">, "open" | keyof DrawerContentOwnProps> {
   readonly onCancel?: DrawerContextValue["dialogProps"]["onCancel"];
   readonly onClose?: DrawerContextValue["dialogProps"]["onClose"];
   readonly ref?: Ref<HTMLDialogElement>;
 }
 
-export interface DrawerTitleOwnProps extends Omit<ComponentPropsWithRef<"h2">, "id"> {
+export interface DrawerTitleOwnProps extends ComponentPropsWithRef<"h2"> {
   readonly children?: ReactNode;
   readonly className?: string;
 }
 
-export interface DrawerDescriptionOwnProps extends Omit<ComponentPropsWithRef<"p">, "id"> {
+export interface DrawerDescriptionOwnProps extends ComponentPropsWithRef<"p"> {
   readonly children?: ReactNode;
   readonly className?: string;
 }
@@ -259,9 +174,7 @@ export interface DrawerCloseOwnProps {
 }
 
 export interface DrawerCloseProps
-  extends
-    DrawerCloseOwnProps,
-    Omit<ComponentPropsWithRef<"button">, "type" | keyof DrawerCloseOwnProps> {
+  extends DrawerCloseOwnProps, Omit<ComponentPropsWithRef<"button">, keyof DrawerCloseOwnProps> {
   readonly onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 

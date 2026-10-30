@@ -4,15 +4,16 @@
     inline-size: 100%;
     min-inline-size: 12rem;
     max-inline-size: 24rem;
-    padding-block: var(--space-sm);
-    padding-inline: var(--space-md);
+    box-sizing: border-box;
+    block-size: var(--uiify-control-size, var(--control-md));
+    padding-block: 0;
+    padding-inline: var(--space-lg);
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
     background-color: var(--card);
     color: var(--foreground);
     font: inherit;
-    font-size: var(--uiify-control-text);
+    font-size: var(--uiify-control-font, var(--text-base));
     line-height: var(--leading-normal);
     transition: var(--transition-colors);
   }

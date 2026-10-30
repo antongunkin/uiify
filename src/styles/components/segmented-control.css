@@ -1,13 +1,19 @@
-/* Segmented control — pill toggle group with sliding indicator. */
+/* Segmented control — pill toggle group with sliding indicator. Horizontal tracks are as tall
+   as a Button (--control-md); the segments fill the track inside its border and padding. */
 
 @layer components {
   :where([data-uiify-segmented-control], [data-uiify-segmented-control]) {
     position: relative;
     display: inline-flex;
+    box-sizing: border-box;
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-full);
     background-color: var(--muted);
+  }
+
+  [data-uiify-segmented-control]:not([data-orientation="vertical"]) {
+    block-size: var(--uiify-control-size, var(--control-md));
   }
 
   [data-uiify-segmented-control][data-full-width] {
@@ -16,10 +22,12 @@
 
   [data-uiify-segmented-control][data-orientation="vertical"] {
     flex-direction: column;
+    border-radius: var(--radius-xl);
   }
 
   [data-uiify-segmented-control] [data-part="item"] {
     position: relative;
+    display: grid;
   }
 
   [data-uiify-segmented-control][data-full-width] [data-part="item"] {
@@ -36,11 +44,17 @@
     white-space: nowrap;
   }
 
-  /* The segments are Button-skinned labels (`ghost`, `sm`); only their place in the track
-     is set here. */
+  /* The segments are Button-skinned labels (`ghost`); only their place in the track is set
+     here. A horizontal segment fills the track instead of keeping the Button's own height. */
   [data-uiify-segmented-control] [data-part="item"] > label {
     z-index: 1;
     min-inline-size: 4rem;
+    font-size: var(--uiify-control-font, var(--text-base));
+    line-height: var(--leading-normal);
+  }
+
+  [data-uiify-segmented-control]:not([data-orientation="vertical"]) [data-part="item"] > label {
+    min-block-size: 0;
   }
 
   [data-uiify-segmented-control][data-full-width] [data-part="item"] > label {

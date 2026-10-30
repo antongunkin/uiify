@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default virtual scroll DOM 1`] = `
+{
+  "dynamicGrid": [
+    "div data-dynamic-layout="" data-orientation="horizontal" data-uiify-virtual-scroll="" role="grid" style="block-size:600px;overflow-x:auto;overflow-y:hidden;--uiify-virtual-scroll-count:2;--uiify-virtual-scroll-row-height:64px;--uiify-virtual-scroll-total-size:80px"",
+    "div data-part="spacer"",
+    "div aria-posinset="1" aria-setsize="2" data-dynamic-row="" data-part="row" data-row-index="0" role="row" style="--uiify-slot-index:0;--uiify-row-offset:0px;--uiify-row-height:40px"",
+    "div aria-posinset="2" aria-setsize="2" data-dynamic-row="" data-part="row" data-row-index="1" role="row" style="--uiify-slot-index:1;--uiify-row-offset:40px;--uiify-row-height:40px"",
+  ],
+  "fixed": [
+    "div data-orientation="vertical" data-uiify-virtual-scroll="" role="list" style="block-size:600px;overflow-y:auto;--uiify-virtual-scroll-count:2;--uiify-virtual-scroll-row-height:64px"",
+    "div data-part="spacer" style="--uiify-range-start:0"",
+    "div aria-posinset="1" aria-setsize="2" data-part="row" data-row-index="0" role="listitem" style="--uiify-slot-index:0"",
+    "div aria-posinset="2" aria-setsize="2" data-part="row" data-row-index="1" role="listitem" style="--uiify-slot-index:1"",
+  ],
+}
+`;

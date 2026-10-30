@@ -7,9 +7,10 @@ import type {
   ReactNode,
   Ref,
 } from "react";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
-import { mergeRepeatedSlotProps, omitProps } from "../../core/slot-props.js";
+import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import { assignRef } from "../../hooks/utils/assign-ref.js";
 import type {
   CandleChartAxisLabel,
@@ -19,33 +20,19 @@ import type {
   CandleChartViewProps,
 } from "./types.js";
 
-function getPartProps<T extends object>(
-  props: T | undefined,
-  protectedKeys: readonly string[] = [],
-): T {
-  return omitProps(props, ["children", "dangerouslySetInnerHTML", ...protectedKeys]);
-}
-
 function getIndexedPartProps<T extends object>(
   props: (T & { readonly byItemIndex?: Readonly<Record<number, T>> }) | undefined,
   index: number,
-  protectedKeys: readonly string[] = [],
 ): T {
   const { byItemIndex, ...common } = props ?? {};
-  const merged = mergeRepeatedSlotProps(common as T, byItemIndex?.[index]);
-  return omitProps(merged, [
-    "children",
-    "dangerouslySetInnerHTML",
-    "byItemIndex",
-    ...protectedKeys,
-  ]);
+  return mergeRepeatedSlotProps(common as T, byItemIndex?.[index]);
 }
 
 function withGeneratedStyle<T extends { readonly style?: object | undefined }>(
   props: T,
   generatedStyle: object,
 ): T {
-  return { ...props, style: { ...props.style, ...generatedStyle } };
+  return { ...props, style: { ...generatedStyle, ...props.style } };
 }
 
 function forwardCandleRef(ref: Ref<HTMLElement> | undefined) {
@@ -273,23 +260,10 @@ export function CandleChartCandle({
   slotProps,
 }: CandleChartCandleProps): ReactElement {
   const geometry = geometryFor(candle, x, slot, min, max);
-  const candleSlotProps = getIndexedPartProps(slotProps?.candle, index, [
-    "aria-hidden",
-    "data-crosshair-active",
-    "data-direction",
-    "data-part",
-    "data-time",
-  ]);
+  const candleSlotProps = getIndexedPartProps(slotProps?.candle, index);
   const { ref: candleRef, ...candleProps } = candleSlotProps;
-  const candleHitSlotProps = getIndexedPartProps(slotProps?.candleHit, index, [
-    "aria-label",
-    "aria-pressed",
-    "data-part",
-    "type",
-  ]);
+  const candleHitSlotProps = getIndexedPartProps(slotProps?.candleHit, index);
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    candleHitSlotProps.onKeyDown?.(event);
-    if (event.defaultPrevented) return;
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
     onCandleClick?.(index);
@@ -297,39 +271,35 @@ export function CandleChartCandle({
 
   return (
     <Tag
-      {...candleProps}
-      {...(candleRef ? { ref: forwardCandleRef(candleRef) } : {})}
       aria-hidden={interactive ? undefined : true}
       data-part="candle"
       data-direction={geometry.direction}
       data-crosshair-active={interactive && isActive ? "" : undefined}
       data-time={String(candle.time)}
+      {...candleProps}
+      {...(candleRef ? { ref: forwardCandleRef(candleRef) } : {})}
       style={{
-        ...candleSlotProps.style,
         ...candleStyle(geometry, isActive ? cursorY : undefined),
+        ...candleSlotProps.style,
       }}
     >
       {interactive ? (
         <button
-          {...candleHitSlotProps}
           data-part="candle-hit"
           type="button"
           aria-label={hitLabel}
           aria-pressed={isSelected}
-          onClick={(event) => {
-            candleHitSlotProps.onClick?.(event);
-            if (!event.defaultPrevented) onCandleClick?.(index);
-          }}
-          onKeyDown={handleKeyDown}
-          onPointerLeave={(event) => {
-            candleHitSlotProps.onPointerLeave?.(event);
-            if (!event.defaultPrevented) onCandlePointerLeave?.();
-          }}
-          onPointerMove={(event: PointerEvent<HTMLButtonElement>) => {
-            candleHitSlotProps.onPointerMove?.(event);
-            if (!event.defaultPrevented)
-              onCandlePointerMove?.({ index, offsetY: event.nativeEvent.offsetY });
-          }}
+          {...candleHitSlotProps}
+          onClick={composeEventHandlers(candleHitSlotProps.onClick, () => onCandleClick?.(index))}
+          onKeyDown={composeEventHandlers(candleHitSlotProps.onKeyDown, handleKeyDown)}
+          onPointerLeave={composeEventHandlers(candleHitSlotProps.onPointerLeave, () =>
+            onCandlePointerLeave?.(),
+          )}
+          onPointerMove={composeEventHandlers(
+            candleHitSlotProps.onPointerMove,
+            (event: PointerEvent<HTMLButtonElement>) =>
+              onCandlePointerMove?.({ index, offsetY: event.nativeEvent.offsetY }),
+          )}
         />
       ) : null}
     </Tag>
@@ -346,7 +316,6 @@ export function CandleChart<TAs extends ElementType = "figure">(
     data,
     xAxis,
     yAxis,
-    "aria-label": ariaLabel,
     labels,
     activeCandleIndex,
     cursorY,
@@ -365,7 +334,7 @@ export function CandleChart<TAs extends ElementType = "figure">(
   } = props as CandleChartProps<"figure"> & CandleChartViewProps;
   const accessibleLabels = { ...DEFAULT_CANDLE_CHART_LABELS, ...labels };
   const { min, max } = getPriceBounds(data);
-  const label = ariaLabel ?? accessibleLabels.chart;
+  const label = consumerProps["aria-label"] ?? accessibleLabels.chart;
   const monthLabels = axisLabelsFor(xAxis, monthLabelsFor(data, locale));
   const priceLabels = axisLabelsFor(yAxis, priceLabelsFor(min, max, locale));
   const readoutIndex =
@@ -374,9 +343,9 @@ export function CandleChart<TAs extends ElementType = "figure">(
   const crosshairCandle = activeCandleIndex === undefined ? undefined : data[activeCandleIndex];
   const candles = candleLayer ?? (
     <ol
-      {...getPartProps(slotProps?.candles, ["aria-label", "data-part"])}
       data-part="candles"
       aria-label={`${label} ${accessibleLabels.candles}`}
+      {...slotProps?.candles}
     >
       {data.map((candle, index) => (
         <CandleChartCandle
@@ -406,77 +375,61 @@ export function CandleChart<TAs extends ElementType = "figure">(
     as,
     defaultTag: "figure",
     props: {
-      ...consumerProps,
       "aria-label": label,
       "data-uiify-candle-chart": "",
       "data-interactive": interactive ? "" : undefined,
+      ...consumerProps,
       children: (
         <>
-          <figcaption {...getPartProps(slotProps?.caption)}>{label}</figcaption>
+          <figcaption {...slotProps?.caption}>{label}</figcaption>
           {interactive && readoutCandle ? (
             <div
-              {...getPartProps(slotProps?.readout, ["aria-live", "data-part"])}
               data-part="readout"
               aria-live={announceReadout ? "polite" : "off"}
+              {...slotProps?.readout}
             >
-              <span
-                {...getPartProps(slotProps?.readoutTime, ["data-part"])}
-                data-part="readout-time"
-              >
+              <span data-part="readout-time" {...slotProps?.readoutTime}>
                 {String(readoutCandle.time)}
               </span>
-              <span {...getPartProps(slotProps?.readoutOpen)}>{`O ${readoutCandle.open}`}</span>
-              <span {...getPartProps(slotProps?.readoutHigh)}>{`H ${readoutCandle.high}`}</span>
-              <span {...getPartProps(slotProps?.readoutLow)}>{`L ${readoutCandle.low}`}</span>
-              <span {...getPartProps(slotProps?.readoutClose)}>{`C ${readoutCandle.close}`}</span>
+              <span {...slotProps?.readoutOpen}>{`O ${readoutCandle.open}`}</span>
+              <span {...slotProps?.readoutHigh}>{`H ${readoutCandle.high}`}</span>
+              <span {...slotProps?.readoutLow}>{`L ${readoutCandle.low}`}</span>
+              <span {...slotProps?.readoutClose}>{`C ${readoutCandle.close}`}</span>
             </div>
           ) : null}
-          <div
-            {...getPartProps(slotProps?.plot, ["aria-hidden", "data-part"])}
-            data-part="plot"
-            aria-hidden={interactive ? undefined : true}
-          >
-            <div
-              {...getPartProps(slotProps?.scrollViewport, ["data-part"])}
-              data-part="scroll-viewport"
-            >
-              <div {...getPartProps(slotProps?.canvas, ["data-part"])} data-part="canvas">
-                <div {...getPartProps(slotProps?.viewport, ["data-part"])} data-part="viewport">
+          <div data-part="plot" aria-hidden={interactive ? undefined : true} {...slotProps?.plot}>
+            <div data-part="scroll-viewport" {...slotProps?.scrollViewport}>
+              <div data-part="canvas" {...slotProps?.canvas}>
+                <div data-part="viewport" {...slotProps?.viewport}>
                   {candles}
                   {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                     <div
-                      {...getPartProps(slotProps?.crosshair, ["aria-hidden", "data-part"])}
                       data-part="crosshair"
                       aria-hidden="true"
+                      {...slotProps?.crosshair}
                       style={{
-                        ...slotProps?.crosshair?.style,
                         ...crosshairStyle(slotOffset + activeCandleIndex, slotCount, cursorY),
+                        ...slotProps?.crosshair?.style,
                       }}
                     >
-                      <span
-                        {...getPartProps(slotProps?.crosshairMarker, ["data-part"])}
-                        data-part="crosshair-marker"
-                      >
+                      <span data-part="crosshair-marker" {...slotProps?.crosshairMarker}>
                         +
                       </span>
                     </div>
                   ) : null}
                 </div>
-                <div
-                  {...getPartProps(slotProps?.timeViewport, ["data-part"])}
-                  data-part="time-viewport"
-                >
+                <div data-part="time-viewport" {...slotProps?.timeViewport}>
                   <ol
-                    {...getPartProps(slotProps?.timeAxis, ["aria-label", "data-axis", "data-part"])}
                     data-part="time-axis"
                     data-axis="time"
                     aria-label={`${label} ${accessibleLabels.months}`}
+                    {...slotProps?.timeAxis}
                   >
                     {monthLabels.map((axisLabel, index) => (
                       <li
                         key={`${axisLabel.position}-${index}`}
                         {...withGeneratedStyle(
-                          getIndexedPartProps(slotProps?.timeAxisLabel, index, ["data-part"]),
+                          getIndexedPartProps(slotProps?.timeAxisLabel, index),
                           axisStyle("x", axisLabel.position),
                         )}
                       >
@@ -485,11 +438,11 @@ export function CandleChart<TAs extends ElementType = "figure">(
                     ))}
                     {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                       <li
-                        {...getPartProps(slotProps?.crosshairTime, ["data-part"])}
                         data-part="crosshair-time"
+                        {...slotProps?.crosshairTime}
                         style={{
-                          ...slotProps?.crosshairTime?.style,
                           ...crosshairStyle(slotOffset + activeCandleIndex, slotCount, undefined),
+                          ...slotProps?.crosshairTime?.style,
                         }}
                       >
                         {String(crosshairCandle.time)}
@@ -500,16 +453,16 @@ export function CandleChart<TAs extends ElementType = "figure">(
               </div>
             </div>
             <ol
-              {...getPartProps(slotProps?.priceAxis, ["aria-label", "data-axis", "data-part"])}
               data-part="price-axis"
               data-axis="price"
               aria-label={`${label} ${accessibleLabels.prices}`}
+              {...slotProps?.priceAxis}
             >
               {priceLabels.map((axisLabel, index) => (
                 <li
                   key={`${axisLabel.position}-${index}`}
                   {...withGeneratedStyle(
-                    getIndexedPartProps(slotProps?.priceAxisLabel, index, ["data-part"]),
+                    getIndexedPartProps(slotProps?.priceAxisLabel, index),
                     axisStyle("y", axisLabel.position),
                   )}
                 >
@@ -518,9 +471,9 @@ export function CandleChart<TAs extends ElementType = "figure">(
               ))}
               {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                 <li
-                  {...getPartProps(slotProps?.crosshairPrice, ["data-part"])}
                   data-part="crosshair-price"
-                  style={{ ...slotProps?.crosshairPrice?.style, ...cursorStyle(cursorY) }}
+                  {...slotProps?.crosshairPrice}
+                  style={{ ...cursorStyle(cursorY), ...slotProps?.crosshairPrice?.style }}
                 >
                   {crosshairCandle.close}
                 </li>
@@ -528,40 +481,38 @@ export function CandleChart<TAs extends ElementType = "figure">(
             </ol>
           </div>
           <table
-            {...getPartProps(slotProps?.dataTable, ["aria-label", "data-part"])}
             data-part="data"
             aria-label={`${label} ${accessibleLabels.data}`}
+            {...slotProps?.dataTable}
           >
-            <thead {...getPartProps(slotProps?.dataTableHead)}>
-              <tr {...getPartProps(slotProps?.dataTableHeaderRow)}>
-                <th {...getPartProps(slotProps?.dataTableTimeHeader, ["scope"])} scope="col">
+            <thead {...slotProps?.dataTableHead}>
+              <tr {...slotProps?.dataTableHeaderRow}>
+                <th scope="col" {...slotProps?.dataTableTimeHeader}>
                   {accessibleLabels.time}
                 </th>
-                <th {...getPartProps(slotProps?.dataTableOpenHeader, ["scope"])} scope="col">
+                <th scope="col" {...slotProps?.dataTableOpenHeader}>
                   {accessibleLabels.open}
                 </th>
-                <th {...getPartProps(slotProps?.dataTableHighHeader, ["scope"])} scope="col">
+                <th scope="col" {...slotProps?.dataTableHighHeader}>
                   {accessibleLabels.high}
                 </th>
-                <th {...getPartProps(slotProps?.dataTableLowHeader, ["scope"])} scope="col">
+                <th scope="col" {...slotProps?.dataTableLowHeader}>
                   {accessibleLabels.low}
                 </th>
-                <th {...getPartProps(slotProps?.dataTableCloseHeader, ["scope"])} scope="col">
+                <th scope="col" {...slotProps?.dataTableCloseHeader}>
                   {accessibleLabels.close}
                 </th>
               </tr>
             </thead>
-            <tbody {...getPartProps(slotProps?.dataTableBody)}>
+            <tbody {...slotProps?.dataTableBody}>
               {data.map((candle, index) => (
                 <tr
                   key={`${candle.time}-${index}`}
                   {...getIndexedPartProps(slotProps?.dataTableRow, slotOffset + index)}
                 >
                   <th
-                    {...getIndexedPartProps(slotProps?.dataTableTimeCell, slotOffset + index, [
-                      "scope",
-                    ])}
                     scope="row"
+                    {...getIndexedPartProps(slotProps?.dataTableTimeCell, slotOffset + index)}
                   >
                     {String(candle.time)}
                   </th>

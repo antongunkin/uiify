@@ -20,7 +20,6 @@
     block-size: 24px;
     margin-block: auto;
     border-radius: var(--radius-lg);
-    corner-shape: squircle;
     content: "";
     z-index: 1;
     pointer-events: none;
@@ -56,7 +55,7 @@
     [data-part="surface"]:has([data-part="native-input"]:focus-visible)
     [data-part="control"] {
     border-color: var(--primary);
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 
   [data-uiify-color-picker]

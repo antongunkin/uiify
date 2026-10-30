@@ -10,14 +10,11 @@ import {
   type FragmentInstance,
   type ReactElement,
 } from "react";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { flushSync } from "react-dom";
 import { useResizeObserver } from "@gunkin/uiify/hooks";
 import { useMergedRefs } from "../../hooks/use-merged-refs.js";
-import {
-  mergeRepeatedSlotProps,
-  omitProps,
-  resolveRepeatedSlotProps,
-} from "../../core/slot-props.js";
+import { mergeRepeatedSlotProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import { resolveVirtualScrollAnchorAdjustment } from "./virtual-scroll-anchor.js";
 import { readScrollOffset, writeScrollOffset } from "./virtual-scroll-axis.js";
 import {
@@ -99,7 +96,6 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     scrollRef,
     estimateRowHeight,
     onRangeChange,
-    role = "list",
     anchor = "start",
     followAppend = false,
     onScrollStateChange,
@@ -108,6 +104,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     ...consumerProps
   } = props;
 
+  const listRole = consumerProps.role === "grid" ? "grid" : "list";
   const height = suppliedHeight ?? 600;
   const dynamicLayout = estimateRowHeight !== undefined;
   const horizontal = orientation === "horizontal";
@@ -115,6 +112,12 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   const rootRef = useMergedRefs(ref, consumerRef);
   const scrollOffsetRef = useRef(0);
   const programmaticScrollRef = useRef(false);
+  const eventHandlersRef = useRef({
+    onScroll: () => {},
+    onScrollEnd: () => {},
+    onTouchStart: () => {},
+    onTouchEnd: () => {},
+  });
   const itemsRef = useRef(items);
   itemsRef.current = items;
   const lastRangeChangeRef = useRef<string>("");
@@ -236,6 +239,14 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       dynamicLayout,
       slotCount,
       getRowOffset: store.getRowOffset.bind(store),
+      spacerStyle: slotProps?.spacer?.style,
+      getRowStyle: (index) => {
+        const item = itemsRef.current[index];
+        if (!item) return undefined;
+        const { byItemIndex, ...byItemValueProps } = slotProps?.row ?? {};
+        const commonProps = resolveRepeatedSlotProps(byItemValueProps, item.id);
+        return mergeRepeatedSlotProps(commonProps, byItemIndex?.[index]).style;
+      },
     });
 
     // Commit the visible slice synchronously so content matches scroll position on large jumps.
@@ -427,8 +438,6 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       },
     });
 
-    let onScroll: (() => void) | null = null;
-    let onScrollEnd: (() => void) | null = null;
     const ios = iosControllerRef.current;
     const onTouchStart = (): void => ios.onTouchStart();
     const onTouchEnd = (): void => ios.onTouchEnd();
@@ -452,28 +461,26 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       });
     };
 
-    onScroll = () => {
+    const onScroll = () => {
       syncNativeScroll();
       scrollState.notifyScroll();
     };
-    element.addEventListener("scroll", onScroll, { passive: true });
-    if (supportsScrollEndEvent()) {
-      onScrollEnd = () => {
-        syncNativeScroll();
-        scrollState.notifyScrollEnd();
-      };
-      element.addEventListener("scrollend", onScrollEnd, { passive: true });
-    }
-    element.addEventListener("touchstart", onTouchStart, { passive: true });
-    element.addEventListener("touchend", onTouchEnd, { passive: true });
+    const onScrollEnd = (): void => {
+      if (!supportsScrollEndEvent()) return;
+      syncNativeScroll();
+      scrollState.notifyScrollEnd();
+    };
+    eventHandlersRef.current = { onScroll, onScrollEnd, onTouchStart, onTouchEnd };
 
     return () => {
       if (verifyFrame !== 0) cancelAnimationFrame(verifyFrame);
       if (verifyTimer !== 0) window.clearTimeout(verifyTimer);
-      if (onScroll) element.removeEventListener("scroll", onScroll);
-      if (onScrollEnd) element.removeEventListener("scrollend", onScrollEnd);
-      element.removeEventListener("touchstart", onTouchStart);
-      element.removeEventListener("touchend", onTouchEnd);
+      eventHandlersRef.current = {
+        onScroll: () => {},
+        onScrollEnd: () => {},
+        onTouchStart: () => {},
+        onTouchEnd: () => {},
+      };
       scrollState.dispose();
     };
   }, [isScrollingResetDelay]);
@@ -519,12 +526,12 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     ...(suppliedHeight !== undefined || (!consumerStyle?.blockSize && !consumerStyle?.height)
       ? { blockSize: height }
       : {}),
-    ...consumerStyle,
     overflowX: horizontal ? "auto" : undefined,
     overflowY: horizontal ? "hidden" : "auto",
     "--uiify-virtual-scroll-count": items.length,
     "--uiify-virtual-scroll-row-height": `${rowHeight}px`,
     ...(dynamicLayout ? { "--uiify-virtual-scroll-total-size": `${totalSize}px` } : {}),
+    ...consumerStyle,
   } as CSSProperties;
 
   const spacerStyle = dynamicLayout
@@ -535,20 +542,32 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
   return (
     <div
-      {...consumerProps}
-      ref={rootRef}
-      data-testid={testId ?? consumerProps["data-testid" as keyof typeof consumerProps]}
+      data-testid={testId}
       data-uiify-virtual-scroll=""
       data-dynamic-layout={dynamicLayout ? "" : undefined}
       data-orientation={orientation}
-      role={role}
+      role={listRole}
+      {...consumerProps}
+      ref={rootRef}
+      onScroll={composeEventHandlers(consumerProps.onScroll, () =>
+        eventHandlersRef.current.onScroll(),
+      )}
+      onScrollEnd={composeEventHandlers(consumerProps.onScrollEnd, () =>
+        eventHandlersRef.current.onScrollEnd(),
+      )}
+      onTouchStart={composeEventHandlers(consumerProps.onTouchStart, () =>
+        eventHandlersRef.current.onTouchStart(),
+      )}
+      onTouchEnd={composeEventHandlers(consumerProps.onTouchEnd, () =>
+        eventHandlersRef.current.onTouchEnd(),
+      )}
       className={className}
       style={scrollportStyle}
     >
       <div
-        {...omitProps(slotProps?.spacer, ["children", "dangerouslySetInnerHTML", "data-part"])}
         data-part="spacer"
-        style={{ ...slotProps?.spacer?.style, ...spacerStyle }}
+        {...slotProps?.spacer}
+        style={{ ...spacerStyle, ...slotProps?.spacer?.style }}
       >
         {rowSlots.map((slot) => {
           const store = measurementStoreRef.current;
@@ -561,22 +580,13 @@ export function VirtualScroll<T extends VirtualScrollItem>(
                 if (!slot.item) return {};
                 const { byItemIndex, ...byItemValueProps } = slotProps?.row ?? {};
                 const commonProps = resolveRepeatedSlotProps(byItemValueProps, slot.item.id);
-                return omitProps(mergeRepeatedSlotProps(commonProps, byItemIndex?.[slot.index]), [
-                  "children",
-                  "dangerouslySetInnerHTML",
-                  "aria-posinset",
-                  "aria-setsize",
-                  "data-dynamic-row",
-                  "data-part",
-                  "data-row-index",
-                  "role",
-                ]);
+                return mergeRepeatedSlotProps(commonProps, byItemIndex?.[slot.index]);
               })()}
               key={`slot-${slot.slotIndex}`}
               slotIndex={slot.slotIndex}
               index={slot.index}
               itemCount={items.length}
-              listRole={role}
+              listRole={listRole}
               dynamicLayout={dynamicLayout}
               {...(rowOffset !== undefined ? { rowOffset } : {})}
               {...(measuredRowHeight !== undefined ? { rowHeight: measuredRowHeight } : {})}

@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { NativeButtonProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { SlotProps } from "../../core/slot-props.js";
 
 export type ModalSize = "sm" | "md" | "lg" | "full";
 export type ModalAlign = "center" | "start";
@@ -41,61 +41,27 @@ export interface ModalOwnProps extends ModalAppearanceProps {
   readonly slotProps?: ModalSlotProps;
 }
 
-type ModalSlotElementProps<T extends ElementType, TProtected extends string = never> = Omit<
-  ComponentPropsWithRef<T>,
-  "children" | "dangerouslySetInnerHTML" | TProtected
-> &
-  ConsumerDataAttributes & { readonly [K in TProtected]?: never };
+/**
+ * Popover attributes contradict a command invoker; `open`/`popover` contradict a modal dialog; the
+ * dialog `id` is the Modal's own `id` prop, which the trigger and close `target` reference.
+ */
+type CommandInvokerSlotProps = Omit<SlotProps<"button">, "popoverTarget" | "popoverTargetAction">;
 
-/** Native props for Modal's generated inner elements. Owned ids and markers stay internal. */
+/** Native props for Modal's generated inner elements; consumer values replace the defaults. */
 export interface ModalSlotProps {
-  readonly trigger?: ModalSlotElementProps<
-    "button",
-    | "type"
-    | "command"
-    | "commandfor"
-    | "popoverTarget"
-    | "popoverTargetAction"
-    | "data-part"
-    | "data-uiify-modal"
-    | "data-uiify-button"
-  >;
-  readonly content?: ModalSlotElementProps<
-    "dialog",
-    | "id"
-    | "open"
-    | "popover"
-    | "closedby"
-    | "data-part"
-    | "data-uiify-modal"
-    | "aria-describedby"
-    | "aria-labelledby"
-  >;
-  readonly grabber?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal" | "aria-hidden">;
-  readonly header?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">;
-  readonly title?: ModalSlotElementProps<"h2", "id" | "data-part" | "data-uiify-modal">;
-  readonly description?: ModalSlotElementProps<"p", "id" | "data-part" | "data-uiify-modal">;
-  readonly close?: ModalSlotElementProps<
-    "button",
-    | "type"
-    | "command"
-    | "commandfor"
-    | "popoverTarget"
-    | "popoverTargetAction"
-    | "data-part"
-    | "data-uiify-modal"
-    | "data-uiify-button"
-    | "aria-label"
-  >;
-  readonly closeIcon?: ModalSlotElementProps<"svg", "aria-hidden" | "focusable">;
-  readonly closeIconPath?: ModalSlotElementProps<"path">;
-  readonly body?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">;
-  readonly footer?: ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">;
+  readonly trigger?: CommandInvokerSlotProps;
+  readonly content?: Omit<SlotProps<"dialog">, "id" | "open" | "popover">;
+  readonly grabber?: SlotProps<"div">;
+  readonly header?: SlotProps<"div">;
+  readonly title?: SlotProps<"h2">;
+  readonly description?: SlotProps<"p">;
+  readonly close?: CommandInvokerSlotProps;
+  readonly body?: SlotProps<"div">;
+  readonly footer?: SlotProps<"div">;
 }
 
 /** Native props for Modal's root div plus its dialog and trigger contract. */
-export type ModalProps = ModalOwnProps &
-  Omit<ModalSlotElementProps<"div", "data-part" | "data-uiify-modal">, keyof ModalOwnProps>;
+export type ModalProps = ModalOwnProps & Omit<SlotProps<"div">, keyof ModalOwnProps>;
 
 export interface ModalLabels {
   readonly close: string;
@@ -133,10 +99,7 @@ export interface ModalContentOwnProps extends ModalAppearanceProps {
 
 /** A plain, initially closed `<dialog>`: `open` and `popover` are not part of the native contract. */
 export type ModalContentProps = ModalContentOwnProps &
-  Omit<
-    ComponentPropsWithRef<"dialog">,
-    keyof ModalContentOwnProps | "open" | "popover" | "closedby"
-  >;
+  Omit<ComponentPropsWithRef<"dialog">, keyof ModalContentOwnProps | "open" | "popover">;
 
 export interface ModalClientContentOwnProps extends ModalAppearanceProps {
   readonly children?: ReactNode;
@@ -163,7 +126,7 @@ export interface ModalClientContentOwnProps extends ModalAppearanceProps {
 
 /** Props of the client adapter; `popover` is excluded because the adapter is always modal. */
 export type ModalClientContentProps = ModalClientContentOwnProps &
-  Omit<ComponentPropsWithRef<"dialog">, keyof ModalClientContentOwnProps | "popover" | "closedby">;
+  Omit<ComponentPropsWithRef<"dialog">, keyof ModalClientContentOwnProps | "popover">;
 
 export type ModalHeaderProps = ComponentPropsWithRef<"div">;
 export type ModalTitleProps = ComponentPropsWithRef<"h2">;

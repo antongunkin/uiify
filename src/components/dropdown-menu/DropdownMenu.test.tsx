@@ -1,9 +1,8 @@
-import { Profiler, useState } from "react";
+import { createRef, Profiler, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import type { DropdownMenuBarProps, DropdownMenuRootProps } from "./types.js";
 import { DropdownMenu } from "./DropdownMenu.js";
 
 function RtlSubmenu({ side }: { readonly side?: "left" | "right" }) {
@@ -26,16 +25,15 @@ function RtlSubmenu({ side }: { readonly side?: "left" | "right" }) {
 RtlSubmenu.displayName = "RtlSubmenu";
 
 describe("DropdownMenu", () => {
-  it("forwards native props, class, style, and ref to Root while protecting its marker", () => {
+  it("forwards native props, class, style, and ref to Root and lets the consumer replace its marker", () => {
     const rootRef = { current: null as HTMLDivElement | null };
     const rootProps = {
       className: "menu-root",
       "data-testid": "menu-root",
       "data-uiify-menu": "consumer",
-      dangerouslySetInnerHTML: { __html: "<b>unwanted root markup</b>" },
       style: { color: "red" },
       ref: rootRef,
-    } as unknown as DropdownMenuRootProps;
+    };
     render(
       <DropdownMenu.Root {...rootProps}>
         <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
@@ -48,7 +46,7 @@ describe("DropdownMenu", () => {
     const root = screen.getByTestId("menu-root");
     expect(root.className).toBe("menu-root");
     expect(root.style.color).toBe("red");
-    expect(root.getAttribute("data-uiify-menu")).toBe("");
+    expect(root.getAttribute("data-uiify-menu")).toBe("consumer");
     expect(root.querySelector("b")).toBeNull();
     expect(rootRef.current).toBe(root);
   });
@@ -74,9 +72,8 @@ describe("DropdownMenu", () => {
     const barProps = {
       className: "bar",
       "data-testid": "menu-bar",
-      dangerouslySetInnerHTML: { __html: "<b>unwanted bar markup</b>" },
       ref: barRef,
-    } as unknown as DropdownMenuBarProps;
+    };
     render(
       <DropdownMenu.Bar {...barProps}>
         <DropdownMenu.Root>
@@ -303,7 +300,7 @@ describe("DropdownMenu", () => {
     expect(markup).toContain('role="menu"');
   });
 
-  it("owns Trigger's aria-controls, aria-expanded, type, aria-haspopup, and data-anchor regardless of consumer override", () => {
+  it("lets consumer Trigger attributes override defaults", () => {
     render(
       <DropdownMenu.Root>
         <DropdownMenu.Trigger
@@ -322,14 +319,14 @@ describe("DropdownMenu", () => {
     );
 
     const trigger = screen.getByRole("button", { name: "Menu" });
-    expect(trigger.getAttribute("aria-controls")).not.toBe("bogus");
-    expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
-    expect(trigger.getAttribute("data-anchor")).not.toBe("bogus");
+    expect(trigger.getAttribute("aria-controls")).toBe("bogus");
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(trigger.getAttribute("data-anchor")).toBe("bogus");
   });
 
-  it("owns Content's role, data-align, data-side, and data-state regardless of consumer override", () => {
+  it("lets consumer Content attributes override defaults", () => {
     render(
       <DropdownMenu.Root defaultOpen>
         <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
@@ -339,13 +336,13 @@ describe("DropdownMenu", () => {
       </DropdownMenu.Root>,
     );
 
-    const content = screen.getByRole("menu");
-    expect(content.getAttribute("data-align")).toBe("start");
-    expect(content.getAttribute("data-side")).toBe("bottom");
-    expect(content.getAttribute("data-state")).toBe("open");
+    const content = screen.getByRole("alert");
+    expect(content.getAttribute("data-align")).toBe("end");
+    expect(content.getAttribute("data-side")).toBe("top");
+    expect(content.getAttribute("data-state")).toBe("bogus");
   });
 
-  it("owns Item's role regardless of consumer override", () => {
+  it("lets consumer Item role override its default", () => {
     render(
       <DropdownMenu.Root defaultOpen>
         <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
@@ -355,7 +352,7 @@ describe("DropdownMenu", () => {
       </DropdownMenu.Root>,
     );
 
-    expect(screen.getByRole("menuitem", { name: "Cut" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Cut" })).toBeTruthy();
   });
 
   it("lets a consumer onKeyDown veto arrow navigation on an Item without suppressing Enter-driven selection", () => {
@@ -854,5 +851,129 @@ describe("DropdownMenu", () => {
       await vi.waitFor(() => expect(trigger.getAttribute("aria-expanded")).toBe("true"));
       expect(subContent()?.getAttribute("data-side")).toBe("right");
     });
+  });
+  it("composes submenu handlers and refs with consumer-first veto", () => {
+    const triggerRef = createRef<HTMLButtonElement>();
+    const contentRef = createRef<HTMLDivElement>();
+    const triggerLeave = vi.fn((event: React.PointerEvent<HTMLElement>) => event.preventDefault());
+    const contentKey = vi.fn((event: ReactKeyboardEvent<HTMLElement>) => event.preventDefault());
+    const contentLeave = vi.fn((event: React.PointerEvent<HTMLElement>) => event.preventDefault());
+    render(
+      <DropdownMenu.Root defaultOpen>
+        <DropdownMenu.Trigger>Actions</DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Sub defaultOpen>
+            <DropdownMenu.SubTrigger ref={triggerRef} onPointerLeave={triggerLeave}>
+              More
+            </DropdownMenu.SubTrigger>
+            <DropdownMenu.SubContent
+              ref={contentRef}
+              onKeyDown={contentKey}
+              onPointerLeave={contentLeave}
+            >
+              <DropdownMenu.Item>Child</DropdownMenu.Item>
+            </DropdownMenu.SubContent>
+          </DropdownMenu.Sub>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>,
+    );
+    const trigger = screen.getByRole("menuitem", { name: "More" });
+    const content = document.querySelector<HTMLElement>('[data-part="sub-content"]');
+    expect(triggerRef.current).toBe(trigger);
+    expect(contentRef.current).toBe(content);
+    fireEvent.pointerLeave(trigger);
+    expect(triggerLeave).toHaveBeenCalledOnce();
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(content!, { key: "Escape" });
+    expect(contentKey).toHaveBeenCalledOnce();
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.pointerLeave(content!);
+    expect(contentLeave).toHaveBeenCalledOnce();
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("lets consumer anatomy, roles and focus attributes replace defaults", () => {
+    render(
+      <DropdownMenu.Bar
+        data-testid="bar"
+        role="toolbar"
+        data-uiify-menu-bar={undefined}
+        tabIndex={undefined}
+      >
+        <DropdownMenu.Root defaultOpen>
+          <DropdownMenu.Trigger>Actions</DropdownMenu.Trigger>
+          <DropdownMenu.Content data-orientation="custom">
+            <DropdownMenu.Label role="note" data-part="custom-label">
+              Label
+            </DropdownMenu.Label>
+            <DropdownMenu.Group role="region">
+              <DropdownMenu.Item tabIndex={3} aria-disabled="true" data-disabled="custom">
+                Item
+              </DropdownMenu.Item>
+            </DropdownMenu.Group>
+            <DropdownMenu.CheckboxItem>
+              <DropdownMenu.ItemIndicator data-state="custom" />
+              Check
+            </DropdownMenu.CheckboxItem>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      </DropdownMenu.Bar>,
+    );
+    expect(screen.getByTestId("bar").getAttribute("role")).toBe("toolbar");
+    expect(screen.getByTestId("bar").hasAttribute("data-uiify-menu-bar")).toBe(false);
+    expect(screen.getByTestId("bar").hasAttribute("tabindex")).toBe(false);
+    expect(screen.getByRole("note").getAttribute("data-part")).toBe("custom-label");
+    expect(screen.getByRole("menu").getAttribute("data-orientation")).toBe("custom");
+    expect(screen.getByRole("menuitem", { name: "Item" }).tabIndex).toBe(3);
+    expect(screen.getByRole("menuitem", { name: "Item" }).getAttribute("aria-disabled")).toBe(
+      "true",
+    );
+    expect(document.querySelector('[data-part="item-indicator"]')?.getAttribute("data-state")).toBe(
+      "custom",
+    );
+  });
+  it("composes hover handlers with the internal open and close intents", () => {
+    vi.useFakeTimers();
+    try {
+      const enterTrigger = vi.fn();
+      const leaveTrigger = vi.fn();
+      const enterContent = vi.fn();
+      const leaveContent = vi.fn();
+      render(
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger
+            openOnHover
+            onPointerEnter={enterTrigger}
+            onPointerLeave={leaveTrigger}
+          >
+            Actions
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content onPointerEnter={enterContent} onPointerLeave={leaveContent}>
+            <DropdownMenu.Item>Cut</DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>,
+      );
+      const trigger = screen.getByRole("button", { name: "Actions" });
+      fireEvent.pointerEnter(trigger);
+      expect(enterTrigger).toHaveBeenCalledOnce();
+      expect(trigger.getAttribute("data-state")).toBe("open");
+      fireEvent.pointerLeave(trigger);
+      expect(leaveTrigger).toHaveBeenCalledOnce();
+      const content = screen.getByRole("menu");
+      fireEvent.pointerEnter(content);
+      expect(enterContent).toHaveBeenCalledOnce();
+      act(() => {
+        vi.advanceTimersByTime(150);
+      });
+      expect(trigger.getAttribute("data-state")).toBe("open");
+      fireEvent.pointerLeave(content);
+      expect(leaveContent).toHaveBeenCalledOnce();
+      act(() => {
+        vi.advanceTimersByTime(150);
+      });
+      expect(trigger.getAttribute("data-state")).toBe("closed");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

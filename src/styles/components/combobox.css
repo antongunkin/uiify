@@ -14,12 +14,15 @@
     align-items: center;
     gap: var(--space-xs);
     inline-size: 100%;
-    min-block-size: 2.5rem;
-    padding-block: var(--space-sm);
-    padding-inline: var(--space-md);
+    box-sizing: border-box;
+    min-block-size: var(--uiify-control-size, var(--control-md));
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-lg);
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
+
+    /* A pill on one row; when tags wrap onto more rows the corners stay that same radius
+       instead of stretching into an oval. */
+    border-radius: calc(var(--uiify-control-size, var(--control-md)) / 2);
     background-color: var(--card);
     color: var(--foreground);
     transition: var(--transition-colors);
@@ -49,7 +52,6 @@
     padding-block: var(--space-xs);
     padding-inline: var(--space-sm);
     border-radius: var(--radius-xs);
-    corner-shape: squircle;
     background-color: var(--accent);
     color: var(--accent-foreground);
     font-size: var(--text-xs);
@@ -65,7 +67,6 @@
     padding: 0;
     border: 0;
     border-radius: var(--radius-xs);
-    corner-shape: squircle;
     background: transparent;
     color: inherit;
     font: inherit;
@@ -81,14 +82,15 @@
 
   [data-uiify-combobox] [data-part="input"] {
     inline-size: 100%;
-    padding-block: var(--space-sm);
-    padding-inline: var(--space-md);
+    box-sizing: border-box;
+    block-size: var(--uiify-control-size, var(--control-md));
+    padding-block: 0;
+    padding-inline: var(--space-lg);
     border: var(--border-width) solid var(--input);
-    border-radius: var(--radius-md);
-    corner-shape: squircle;
+    border-radius: var(--radius-full);
     background-color: var(--card);
     color: var(--foreground);
-    font-size: var(--uiify-control-text);
+    font-size: var(--uiify-control-font, var(--text-base));
     transition: var(--transition-colors);
   }
 
@@ -100,6 +102,7 @@
     flex: 1 1 5rem;
     min-inline-size: 5rem;
     inline-size: auto;
+    block-size: auto;
     padding-block: var(--space-xs);
     padding-inline: 0;
     border: 0;
@@ -122,7 +125,6 @@
     padding: var(--space-xs);
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-lg);
-    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     box-shadow: var(--shadow-popover);
@@ -141,11 +143,10 @@
     padding-inline: var(--space-md);
     border: 0;
     border-radius: calc(var(--radius-lg) - var(--space-xs));
-    corner-shape: squircle;
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     line-height: var(--leading-normal);
     text-align: start;
     cursor: pointer;
@@ -171,7 +172,7 @@
   [data-uiify-combobox] [data-part="empty"] {
     padding: var(--space-sm) var(--space-md);
     color: var(--muted-foreground);
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
   }
 
   @media (prefers-reduced-motion: no-preference) {

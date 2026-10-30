@@ -6,7 +6,12 @@ import type {
 } from "@gunkin/uiify/core/anchor-position";
 import type { PopoverChangeHandler, UsePopoverReturn } from "@gunkin/uiify/core/popover";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes, RepeatedSlotProps } from "../../core/slot-props.js";
+import type { ControlSize } from "../internal/control-size/types.js";
+import type {
+  ConsumerDataAttributes,
+  RepeatedSlotProps,
+  SlotProps,
+} from "../../core/slot-props.js";
 
 export interface ComboboxItemData {
   readonly disabled?: boolean;
@@ -75,6 +80,8 @@ export interface ComboboxRootShellOwnProps extends Omit<ComponentPropsWithRef<"d
   readonly defaultValue?: string;
   readonly filterFn?: ComboboxFilterFn;
   readonly items: readonly ComboboxItemData[];
+  /** Sets the control's height and text size; `md` is the default. */
+  readonly size?: ControlSize;
 }
 
 export interface ComboboxRootControlledOwnProps {
@@ -133,20 +140,9 @@ export interface ComboboxTagsOwnProps {
   readonly slotProps?: ComboboxTagsSlotProps;
 }
 
-type ComboboxRepeatedSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = object,
-> = RepeatedSlotProps<
-  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
-  TOwned & { readonly "data-part"?: never }
->;
-
 export interface ComboboxTagsSlotProps {
-  readonly tag?: ComboboxRepeatedSlotProps<"span">;
-  readonly remove?: ComboboxRepeatedSlotProps<
-    "button",
-    { readonly "aria-label"?: never; readonly type?: never }
-  >;
+  readonly tag?: RepeatedSlotProps<SlotProps<"span">>;
+  readonly remove?: RepeatedSlotProps<SlotProps<"button">>;
 }
 
 export type ComboboxTagsProps<TAs extends ElementType = "div"> = RenderableProps<
@@ -179,65 +175,15 @@ export type ComboboxTriggerProps<TAs extends ElementType = "button"> = Renderabl
   HTMLElement
 >;
 
-export type ComboboxContentOwnProps = Omit<
-  ComponentPropsWithRef<"div">,
-  | "aria-multiselectable"
-  | "children"
-  | "className"
-  | "data-align"
-  | "data-part"
-  | "data-side"
-  | "data-state"
-  | "dangerouslySetInnerHTML"
-  | "id"
-  | "role"
-> &
-  ConsumerDataAttributes & {
-    readonly "aria-multiselectable"?: never;
-    readonly "data-align"?: never;
-    readonly "data-part"?: never;
-    readonly "data-side"?: never;
-    readonly "data-state"?: never;
-    readonly align?: AnchorAlign;
-    readonly children: (filteredItems: ComboboxItemData[]) => ReactNode;
-    readonly className?: string;
-    readonly side?: AnchorSide;
-  };
+export type ComboboxContentOwnProps = SlotProps<"div"> & {
+  readonly align?: AnchorAlign;
+  readonly children: (filteredItems: ComboboxItemData[]) => ReactNode;
+  readonly side?: AnchorSide;
+};
 
-export interface ComboboxItemOwnProps
-  extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      | "aria-disabled"
-      | "aria-selected"
-      | "children"
-      | "data-disabled"
-      | "data-highlighted"
-      | "data-part"
-      | "data-selected"
-      | "dangerouslySetInnerHTML"
-      | "id"
-      | "role"
-    >,
-    ConsumerDataAttributes {
-  readonly "aria-disabled"?: never;
-  readonly "aria-selected"?: never;
-  readonly className?: string;
-  readonly "data-disabled"?: never;
-  readonly "data-highlighted"?: never;
-  readonly "data-part"?: never;
-  readonly "data-selected"?: never;
+export interface ComboboxItemOwnProps extends SlotProps<"div"> {
   readonly item: ComboboxItemData;
 }
 
 export interface ComboboxEmptyOwnProps
-  extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      "children" | "data-part" | "dangerouslySetInnerHTML" | "role"
-    >,
-    ConsumerDataAttributes {
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly "data-part"?: never;
-}
+  extends Omit<ComponentPropsWithRef<"div">, "dangerouslySetInnerHTML">, ConsumerDataAttributes {}

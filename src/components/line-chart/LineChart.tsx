@@ -1,6 +1,7 @@
 import type { ElementType, KeyboardEvent, PointerEvent, ReactElement, Ref } from "react";
+import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { mergeRepeatedSlotProps, omitProps } from "../../core/slot-props.js";
+import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import { assignRef } from "../../hooks/utils/assign-ref.js";
 import {
   axisLabelsFor,
@@ -17,33 +18,19 @@ import {
 } from "./line-chart-geometry.js";
 import type { LineChartPointProps, LineChartProps, LineChartViewProps } from "./types.js";
 
-function getPartProps<T extends object>(
-  props: T | undefined,
-  protectedKeys: readonly string[] = [],
-): T {
-  return omitProps(props, ["children", "dangerouslySetInnerHTML", ...protectedKeys]);
-}
-
 function getIndexedPartProps<T extends object>(
   props: (T & { readonly byItemIndex?: Readonly<Record<number, T>> }) | undefined,
   index: number,
-  protectedKeys: readonly string[] = [],
 ): T {
   const { byItemIndex, ...common } = props ?? {};
-  const merged = mergeRepeatedSlotProps(common as T, byItemIndex?.[index]);
-  return omitProps(merged, [
-    "children",
-    "dangerouslySetInnerHTML",
-    "byItemIndex",
-    ...protectedKeys,
-  ]);
+  return mergeRepeatedSlotProps(common as T, byItemIndex?.[index]);
 }
 
 function withGeneratedStyle<T extends { readonly style?: object | undefined }>(
   props: T,
   generatedStyle: object,
 ): T {
-  return { ...props, style: { ...props.style, ...generatedStyle } };
+  return { ...props, style: { ...generatedStyle, ...props.style } };
 }
 
 function forwardPointRef(ref: Ref<HTMLElement> | undefined) {
@@ -75,25 +62,10 @@ export function LineChartPoint({
   slotProps,
 }: LineChartPointProps): ReactElement {
   const geometry = geometryFor(point, previousPoint, index, count, min, max);
-  const pointSlotProps = getIndexedPartProps(slotProps?.point, index, [
-    "aria-hidden",
-    "data-crosshair-active",
-    "data-first",
-    "data-part",
-    "data-point-selected",
-    "data-time",
-    "data-trend",
-  ]);
+  const pointSlotProps = getIndexedPartProps(slotProps?.point, index);
   const { ref: pointRef, ...pointProps } = pointSlotProps;
-  const pointHitSlotProps = getIndexedPartProps(slotProps?.pointHit, index, [
-    "aria-label",
-    "aria-pressed",
-    "data-part",
-    "type",
-  ]);
+  const pointHitSlotProps = getIndexedPartProps(slotProps?.pointHit, index);
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    pointHitSlotProps.onKeyDown?.(event);
-    if (event.defaultPrevented) return;
     if (event.key !== "Enter" && event.key !== " ") return;
     event.preventDefault();
     onPointClick?.(index);
@@ -101,8 +73,6 @@ export function LineChartPoint({
 
   return (
     <Tag
-      {...pointProps}
-      {...(pointRef ? { ref: forwardPointRef(pointRef) } : {})}
       aria-hidden={interactive ? undefined : true}
       data-part="point"
       data-first={previousPoint === undefined ? "" : undefined}
@@ -110,32 +80,30 @@ export function LineChartPoint({
       data-point-selected={interactive && isSelected ? "" : undefined}
       data-time={String(point.time)}
       data-trend={geometry.trend}
+      {...pointProps}
+      {...(pointRef ? { ref: forwardPointRef(pointRef) } : {})}
       style={{
-        ...pointSlotProps.style,
         ...pointStyle(geometry, isActive ? cursorY : undefined),
+        ...pointSlotProps.style,
       }}
     >
       {interactive ? (
         <button
-          {...pointHitSlotProps}
           data-part="point-hit"
           type="button"
           aria-label={`Point ${String(point.time)}`}
           aria-pressed={isSelected}
-          onClick={(event) => {
-            pointHitSlotProps.onClick?.(event);
-            if (!event.defaultPrevented) onPointClick?.(index);
-          }}
-          onKeyDown={handleKeyDown}
-          onPointerLeave={(event) => {
-            pointHitSlotProps.onPointerLeave?.(event);
-            if (!event.defaultPrevented) onPointPointerLeave?.();
-          }}
-          onPointerMove={(event: PointerEvent<HTMLButtonElement>) => {
-            pointHitSlotProps.onPointerMove?.(event);
-            if (!event.defaultPrevented)
-              onPointPointerMove?.({ index, offsetY: event.nativeEvent.offsetY });
-          }}
+          {...pointHitSlotProps}
+          onClick={composeEventHandlers(pointHitSlotProps.onClick, () => onPointClick?.(index))}
+          onKeyDown={composeEventHandlers(pointHitSlotProps.onKeyDown, handleKeyDown)}
+          onPointerLeave={composeEventHandlers(pointHitSlotProps.onPointerLeave, () =>
+            onPointPointerLeave?.(),
+          )}
+          onPointerMove={composeEventHandlers(
+            pointHitSlotProps.onPointerMove,
+            (event: PointerEvent<HTMLButtonElement>) =>
+              onPointPointerMove?.({ index, offsetY: event.nativeEvent.offsetY }),
+          )}
         />
       ) : null}
     </Tag>
@@ -152,7 +120,6 @@ export function LineChart<TAs extends ElementType = "figure">(
     data,
     xAxis,
     yAxis,
-    "aria-label": ariaLabel,
     activePointIndex,
     cursorY,
     interactive = false,
@@ -169,7 +136,7 @@ export function LineChart<TAs extends ElementType = "figure">(
     ...consumerProps
   } = props as LineChartProps<"figure"> & LineChartViewProps;
   const { min, max } = getValueBounds(data);
-  const label = ariaLabel ?? "Line chart";
+  const label = consumerProps["aria-label"] ?? "Line chart";
   const timeLabels = axisLabelsFor(xAxis, monthLabelsFor(data, locale));
   const valueLabels = axisLabelsFor(yAxis, valueLabelsFor(min, max, locale));
   const readoutIndex =
@@ -178,10 +145,10 @@ export function LineChart<TAs extends ElementType = "figure">(
   const crosshairPoint = activePointIndex === undefined ? undefined : data[activePointIndex];
   const points = pointLayer ?? (
     <ol
-      {...getPartProps(slotProps?.points, ["aria-label", "data-part"])}
       data-part="points"
       aria-label={`${label} points`}
-      style={{ ...slotProps?.points?.style, ...pointsStyle(data.length) }}
+      {...slotProps?.points}
+      style={{ ...pointsStyle(data.length), ...slotProps?.points?.style }}
     >
       {data.map((point, index) => (
         <LineChartPoint
@@ -214,74 +181,58 @@ export function LineChart<TAs extends ElementType = "figure">(
     as,
     defaultTag: "figure",
     props: {
-      ...consumerProps,
       "aria-label": label,
       "data-uiify-line-chart": "",
       "data-interactive": interactive ? "" : undefined,
+      ...consumerProps,
       children: (
         <>
-          <figcaption {...getPartProps(slotProps?.caption)}>{label}</figcaption>
+          <figcaption {...slotProps?.caption}>{label}</figcaption>
           {interactive && readoutPoint ? (
             <div
-              {...getPartProps(slotProps?.readout, ["aria-live", "data-part"])}
               data-part="readout"
               aria-live={announceReadout ? "polite" : "off"}
+              {...slotProps?.readout}
             >
-              <span
-                {...getPartProps(slotProps?.readoutTime, ["data-part"])}
-                data-part="readout-time"
-              >
+              <span data-part="readout-time" {...slotProps?.readoutTime}>
                 {String(readoutPoint.time)}
               </span>
-              <span {...getPartProps(slotProps?.readoutValue)}>{readoutPoint.value}</span>
+              <span {...slotProps?.readoutValue}>{readoutPoint.value}</span>
             </div>
           ) : null}
-          <div
-            {...getPartProps(slotProps?.plot, ["aria-hidden", "data-part"])}
-            data-part="plot"
-            aria-hidden={interactive ? undefined : true}
-          >
-            <div
-              {...getPartProps(slotProps?.scrollViewport, ["data-part"])}
-              data-part="scroll-viewport"
-            >
-              <div {...getPartProps(slotProps?.canvas, ["data-part"])} data-part="canvas">
-                <div {...getPartProps(slotProps?.viewport, ["data-part"])} data-part="viewport">
+          <div data-part="plot" aria-hidden={interactive ? undefined : true} {...slotProps?.plot}>
+            <div data-part="scroll-viewport" {...slotProps?.scrollViewport}>
+              <div data-part="canvas" {...slotProps?.canvas}>
+                <div data-part="viewport" {...slotProps?.viewport}>
                   {points}
                   {interactive && crosshairPoint && activePointIndex !== undefined ? (
                     <div
-                      {...getPartProps(slotProps?.crosshair, ["aria-hidden", "data-part"])}
                       data-part="crosshair"
                       aria-hidden="true"
+                      {...slotProps?.crosshair}
                       style={{
-                        ...slotProps?.crosshair?.style,
                         ...crosshairFor(activePointIndex, cursorY),
+                        ...slotProps?.crosshair?.style,
                       }}
                     >
-                      <span
-                        {...getPartProps(slotProps?.crosshairMarker, ["data-part"])}
-                        data-part="crosshair-marker"
-                      >
+                      <span data-part="crosshair-marker" {...slotProps?.crosshairMarker}>
                         +
                       </span>
                     </div>
                   ) : null}
                 </div>
-                <div
-                  {...getPartProps(slotProps?.timeViewport, ["data-part"])}
-                  data-part="time-viewport"
-                >
+                <div data-part="time-viewport" {...slotProps?.timeViewport}>
                   <ol
-                    {...getPartProps(slotProps?.timeAxis, ["aria-label", "data-axis", "data-part"])}
                     data-part="time-axis"
                     data-axis="time"
                     aria-label={`${label} dates`}
+                    {...slotProps?.timeAxis}
                   >
                     {timeLabels.map((axisLabel, index) => (
                       <li
                         key={`${axisLabel.position}-${index}`}
                         {...withGeneratedStyle(
-                          getIndexedPartProps(slotProps?.timeAxisLabel, index, ["data-part"]),
+                          getIndexedPartProps(slotProps?.timeAxisLabel, index),
                           axisStyle("x", axisLabel.position),
                         )}
                       >
@@ -290,11 +241,11 @@ export function LineChart<TAs extends ElementType = "figure">(
                     ))}
                     {interactive && crosshairPoint && activePointIndex !== undefined ? (
                       <li
-                        {...getPartProps(slotProps?.crosshairTime, ["data-part"])}
                         data-part="crosshair-time"
+                        {...slotProps?.crosshairTime}
                         style={{
-                          ...slotProps?.crosshairTime?.style,
                           ...crosshairFor(activePointIndex, undefined),
+                          ...slotProps?.crosshairTime?.style,
                         }}
                       >
                         {String(crosshairPoint.time)}
@@ -305,16 +256,16 @@ export function LineChart<TAs extends ElementType = "figure">(
               </div>
             </div>
             <ol
-              {...getPartProps(slotProps?.valueAxis, ["aria-label", "data-axis", "data-part"])}
               data-part="value-axis"
               data-axis="value"
               aria-label={`${label} values`}
+              {...slotProps?.valueAxis}
             >
               {valueLabels.map((axisLabel, index) => (
                 <li
                   key={`${axisLabel.position}-${index}`}
                   {...withGeneratedStyle(
-                    getIndexedPartProps(slotProps?.valueAxisLabel, index, ["data-part"]),
+                    getIndexedPartProps(slotProps?.valueAxisLabel, index),
                     axisStyle("y", axisLabel.position),
                   )}
                 >
@@ -323,41 +274,35 @@ export function LineChart<TAs extends ElementType = "figure">(
               ))}
               {interactive && crosshairPoint && activePointIndex !== undefined ? (
                 <li
-                  {...getPartProps(slotProps?.crosshairValue, ["data-part"])}
                   data-part="crosshair-value"
-                  style={{ ...slotProps?.crosshairValue?.style, ...cursorStyle(cursorY) }}
+                  {...slotProps?.crosshairValue}
+                  style={{ ...cursorStyle(cursorY), ...slotProps?.crosshairValue?.style }}
                 >
                   {crosshairPoint.value}
                 </li>
               ) : null}
             </ol>
           </div>
-          <table
-            {...getPartProps(slotProps?.dataTable, ["aria-label", "data-part"])}
-            data-part="data"
-            aria-label={`${label} data`}
-          >
-            <thead {...getPartProps(slotProps?.dataTableHead)}>
-              <tr {...getPartProps(slotProps?.dataTableHeaderRow)}>
-                <th {...getPartProps(slotProps?.dataTableTimeHeader, ["scope"])} scope="col">
+          <table data-part="data" aria-label={`${label} data`} {...slotProps?.dataTable}>
+            <thead {...slotProps?.dataTableHead}>
+              <tr {...slotProps?.dataTableHeaderRow}>
+                <th scope="col" {...slotProps?.dataTableTimeHeader}>
                   Time
                 </th>
-                <th {...getPartProps(slotProps?.dataTableValueHeader, ["scope"])} scope="col">
+                <th scope="col" {...slotProps?.dataTableValueHeader}>
                   Value
                 </th>
               </tr>
             </thead>
-            <tbody {...getPartProps(slotProps?.dataTableBody)}>
+            <tbody {...slotProps?.dataTableBody}>
               {data.map((point, index) => (
                 <tr
                   key={`${point.time}-${index}`}
                   {...getIndexedPartProps(slotProps?.dataTableRow, slotOffset + index)}
                 >
                   <th
-                    {...getIndexedPartProps(slotProps?.dataTableTimeCell, slotOffset + index, [
-                      "scope",
-                    ])}
                     scope="row"
+                    {...getIndexedPartProps(slotProps?.dataTableTimeCell, slotOffset + index)}
                   >
                     {String(point.time)}
                   </th>

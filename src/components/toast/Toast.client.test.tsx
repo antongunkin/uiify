@@ -188,24 +188,21 @@ describe("Toast client", () => {
           <Toast.Viewport
             className="toast-viewport-class"
             data-testid="custom-toast-viewport"
-            slotProps={
-              {
-                item: {
-                  className: "toast-item-common",
-                  "data-testid": "toast-item-common",
-                  byItemValue: {
-                    saved: { className: "toast-item-saved", "data-testid": "toast-item-saved" },
-                  },
+            slotProps={{
+              item: {
+                className: "toast-item-common",
+                "data-testid": "toast-item-common",
+                byItemValue: {
+                  saved: { className: "toast-item-saved", "data-testid": "toast-item-saved" },
                 },
-                title: { className: "toast-title", "data-testid": "toast-title" },
-                action: {
-                  dangerouslySetInnerHTML: { __html: "<b>unsafe action</b>" },
-                  byItemValue: { saved: { "data-testid": "toast-action-saved" } },
-                  onClick: (event: MouseEvent<HTMLButtonElement>) => event.preventDefault(),
-                },
-                close: { "data-testid": "toast-close" },
-              } as never
-            }
+              },
+              title: { className: "toast-title", "data-testid": "toast-title" },
+              action: {
+                byItemValue: { saved: { "data-testid": "toast-action-saved" } },
+                onClick: (event: MouseEvent<HTMLButtonElement>) => event.preventDefault(),
+              },
+              close: { "data-testid": "toast-close" },
+            }}
           />
         </>
       );
@@ -214,19 +211,16 @@ describe("Toast client", () => {
 
     render(
       <Toast.Provider
-        slotProps={
-          {
-            politeLiveRegion: {
-              className: "polite-region",
-              "data-testid": "polite-region",
-              dangerouslySetInnerHTML: { __html: "<b>unsafe announcement</b>" },
-            },
-            assertiveLiveRegion: {
-              className: "assertive-region",
-              "data-testid": "assertive-region",
-            },
-          } as never
-        }
+        slotProps={{
+          politeLiveRegion: {
+            className: "polite-region",
+            "data-testid": "polite-region",
+          },
+          assertiveLiveRegion: {
+            className: "assertive-region",
+            "data-testid": "assertive-region",
+          },
+        }}
       >
         <SlottedToastHarness />
       </Toast.Provider>,

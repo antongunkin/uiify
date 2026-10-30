@@ -11,20 +11,12 @@ it("types generated slider slots by their native elements and stable identities"
       input: { byItemValue: { maximum: { "aria-describedby": "maximum-help" } } },
     },
   };
-  const invalidPart: SliderClientProps = {
+  const overrides: SliderClientProps = {
     slotProps: {
-      // @ts-expect-error data-part is owned by the library.
-      track: { "data-part": "other" },
-    },
-  };
-  const invalidValue: SliderClientProps = {
-    slotProps: {
-      input: {
-        // @ts-expect-error Input value is controlled by SliderClient.
-        value: 40,
-      },
+      track: { "data-part": "other", "aria-hidden": undefined },
+      input: { value: 40, type: "number", "aria-label": undefined },
     },
   };
 
-  expect([props, invalidPart, invalidValue]).toHaveLength(3);
+  expect([props, overrides]).toHaveLength(2);
 });

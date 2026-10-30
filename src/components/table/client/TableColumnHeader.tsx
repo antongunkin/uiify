@@ -3,7 +3,6 @@
 import { useSyncExternalStore } from "react";
 import type { ElementType, ReactElement } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { omitProps } from "../../../core/slot-props.js";
 import { TableColumnHeader as TableColumnHeaderElement } from "../TableShell.js";
 import type { SortDescriptor, TableClientColumnHeaderProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
@@ -40,16 +39,7 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
     allowsSorting,
     id,
     children: allowsSorting ? (
-      <button
-        {...omitProps(slotProps?.sortButton, [
-          "children",
-          "dangerouslySetInnerHTML",
-          "data-part",
-          "type",
-        ])}
-        data-part="sort-button"
-        type="button"
-      >
+      <button data-part="sort-button" type="button" {...slotProps?.sortButton}>
         {rest.children}
       </button>
     ) : (

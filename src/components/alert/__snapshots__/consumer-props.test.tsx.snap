@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default alert DOM 1`] = `
+[
+  "div data-uiify-alert="" data-variant="warning"",
+  "span aria-hidden="true" data-part="symbol"",
+  "div data-part="title" data-uiify-alert-title=""",
+  "div data-part="description" data-uiify-alert-description=""",
+]
+`;

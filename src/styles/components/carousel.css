@@ -40,7 +40,6 @@
     justify-content: center;
     border: var(--border-width) solid var(--border);
     border-radius: var(--radius-xl);
-    corner-shape: squircle;
     background-color: var(--card);
     color: var(--foreground);
     font-size: 2.25rem;
@@ -61,9 +60,47 @@
     line-height: 1;
   }
 
+  /* Default chevron for icon-less buttons: two borders of a rotated box on the outline Button's
+     free `::before`. `all: unset` drops the wash geometry Button gives every pseudo-element. The
+     logical corner follows `dir`; the turn and the optical centring (the arms sit 0.14rem off
+     the box centre) are mirrored with it. */
+  [data-uiify-carousel]
+    > button[data-part="controls"]:is(
+      [data-carousel-action="previous"],
+      [data-carousel-action="next"]
+    ):empty {
+    --uiify-carousel-turn: 1;
+
+    &:dir(rtl) {
+      --uiify-carousel-turn: -1;
+    }
+
+    &::before {
+      all: unset;
+      content: "";
+      box-sizing: border-box;
+      inline-size: 0.5rem;
+      block-size: 0.5rem;
+      border: 0 solid currentcolor;
+      rotate: calc(-45deg * var(--uiify-carousel-turn));
+    }
+
+    &[data-carousel-action="previous"]::before {
+      border-block-start-width: 2px;
+      border-inline-start-width: 2px;
+      translate: calc(0.14rem * var(--uiify-carousel-turn));
+    }
+
+    &[data-carousel-action="next"]::before {
+      border-block-end-width: 2px;
+      border-inline-end-width: 2px;
+      translate: calc(-0.14rem * var(--uiify-carousel-turn));
+    }
+  }
+
   [data-uiify-carousel] > [data-part="dots"] > a:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 
   [data-uiify-carousel] > [data-part="dots"] {
@@ -79,8 +116,8 @@
   [data-uiify-carousel] > [data-part="dots"] > a {
     display: inline-grid;
     place-items: center;
-    inline-size: 2.75rem;
-    block-size: 2.75rem;
+    inline-size: var(--control-md);
+    block-size: var(--control-md);
     border-radius: var(--radius-full);
     background-color: transparent;
     color: var(--muted-foreground);

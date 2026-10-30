@@ -43,21 +43,15 @@ export interface DropdownMenuBarOwnProps {
 }
 export type DropdownMenuBarProps = Omit<
   ComponentPropsWithRef<"div">,
-  keyof DropdownMenuBarOwnProps | "dangerouslySetInnerHTML" | "role" | "data-uiify-menu-bar"
+  keyof DropdownMenuBarOwnProps | "dangerouslySetInnerHTML"
 > &
   ConsumerDataAttributes &
-  DropdownMenuBarOwnProps & {
-    readonly "data-uiify-menu-bar"?: never;
-  };
+  DropdownMenuBarOwnProps;
 
 export interface DropdownMenuRootOwnProps
   extends
-    Omit<
-      ComponentPropsWithRef<"div">,
-      "children" | "dangerouslySetInnerHTML" | "dir" | "data-uiify-menu"
-    >,
+    Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "dir">,
     ConsumerDataAttributes {
-  readonly "data-uiify-menu"?: never;
   readonly children?: ReactNode;
   readonly defaultOpen?: boolean;
   readonly dir?: Direction;

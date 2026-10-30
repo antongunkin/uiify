@@ -1,41 +1,9 @@
 import type { ComponentPropsWithRef, ReactNode } from "react";
-import type { ConsumerDataAttributes } from "../../core/slot-props.js";
+import type { SlotProps } from "../../core/slot-props.js";
 
-type CollapsibleTriggerOwnedAttributes = {
-  readonly "aria-disabled"?: never;
-  readonly "data-part"?: never;
-  readonly "data-uiify-details"?: never;
-  readonly disabled?: never;
-  readonly part?: never;
-  readonly tabIndex?: never;
-};
+export type CollapsibleTriggerSlotProps = Omit<SlotProps<"summary">, "part">;
 
-type CollapsiblePanelOwnedAttributes = {
-  readonly "data-part"?: never;
-  readonly "data-uiify-details"?: never;
-  readonly part?: never;
-};
-
-export type CollapsibleTriggerSlotProps = Omit<
-  ComponentPropsWithRef<"summary">,
-  | "aria-disabled"
-  | "children"
-  | "dangerouslySetInnerHTML"
-  | "data-part"
-  | "data-uiify-details"
-  | "disabled"
-  | "part"
-  | "tabIndex"
-> &
-  CollapsibleTriggerOwnedAttributes &
-  ConsumerDataAttributes;
-
-export type CollapsiblePanelSlotProps = Omit<
-  ComponentPropsWithRef<"div">,
-  "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "part"
-> &
-  CollapsiblePanelOwnedAttributes &
-  ConsumerDataAttributes;
+export type CollapsiblePanelSlotProps = Omit<SlotProps<"div">, "part">;
 
 export interface CollapsibleSlotProps {
   readonly trigger?: CollapsibleTriggerSlotProps;
@@ -54,12 +22,5 @@ export interface CollapsibleOwnProps {
 export type CollapsibleProps = CollapsibleOwnProps &
   Omit<
     ComponentPropsWithRef<"details">,
-    | keyof CollapsibleOwnProps
-    | "children"
-    | "dangerouslySetInnerHTML"
-    | "data-disabled"
-    | "data-uiify-collapsible"
-    | "data-uiify-details"
-    | "open"
-    | "name"
+    keyof CollapsibleOwnProps | "children" | "dangerouslySetInnerHTML"
   >;

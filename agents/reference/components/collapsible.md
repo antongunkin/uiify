@@ -39,6 +39,6 @@
 
 ## Other types
 
-- `CollapsibleTriggerSlotProps`: `Omit<ComponentPropsWithRef<"summary">, | "aria-disabled" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "disabled" | "part" | "tabIndex"> & CollapsibleTriggerOwnedAttributes & ConsumerDataAttributes`
-- `CollapsiblePanelSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "part"> & CollapsiblePanelOwnedAttributes & ConsumerDataAttributes`
-- `CollapsibleProps`: `CollapsibleOwnProps & Omit<ComponentPropsWithRef<"details">, | keyof CollapsibleOwnProps | "children" | "dangerouslySetInnerHTML" | "data-disabled" | "data-uiify-collapsible" | "data-uiify-details" | "open" | "name">`
+- `CollapsibleTriggerSlotProps`: `Omit<SlotProps<"summary">, "part">`
+- `CollapsiblePanelSlotProps`: `Omit<SlotProps<"div">, "part">`
+- `CollapsibleProps`: `CollapsibleOwnProps & Omit<ComponentPropsWithRef<"details">, keyof CollapsibleOwnProps | "children" | "dangerouslySetInnerHTML">`

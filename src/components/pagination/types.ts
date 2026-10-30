@@ -1,6 +1,6 @@
-import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
-import type { ConsumerDataAttributes, RepeatedSlotProps } from "../../core/slot-props.js";
+import type { RepeatedSlotProps, SlotProps } from "../../core/slot-props.js";
 
 export type PaginationItemType = "page" | "ellipsis" | "previous" | "next" | "first" | "last";
 
@@ -37,7 +37,7 @@ export interface UsePaginationParams {
   readonly boundaryCount?: number;
   readonly count: number;
   readonly defaultPage?: number;
-  readonly disabled?: boolean;
+  readonly disabled?: boolean | undefined;
   readonly onPageChange?: (page: number) => void;
   readonly page?: number;
   readonly showFirstLast?: boolean;
@@ -60,51 +60,15 @@ export interface PaginationContextValue {
   readonly slotProps?: PaginationRootSlotProps;
 }
 
-type PaginationRepeatedSlotProps<
-  TTag extends ElementType,
-  TOwned extends object = object,
-> = RepeatedSlotProps<
-  Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML">,
-  TOwned
->;
-
 export interface PaginationRootSlotProps {
-  readonly list?: Omit<ComponentPropsWithRef<"ol">, "children" | "dangerouslySetInnerHTML"> &
-    ConsumerDataAttributes;
-  readonly item?: PaginationRepeatedSlotProps<"li">;
-  readonly link?: PaginationRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-current"?: never;
-      readonly "aria-label"?: never;
-      readonly disabled?: never;
-      readonly "data-selected"?: never;
-      readonly "data-size"?: never;
-      readonly "data-type"?: never;
-      readonly "data-uiify-button"?: never;
-      readonly "data-variant"?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly control?: PaginationRepeatedSlotProps<
-    "button",
-    {
-      readonly "aria-label"?: never;
-      readonly disabled?: never;
-      readonly "data-type"?: never;
-      readonly "data-uiify-button"?: never;
-      readonly "data-variant"?: never;
-      readonly type?: never;
-    }
-  >;
-  readonly ellipsis?: PaginationRepeatedSlotProps<
-    "span",
-    { readonly "aria-hidden"?: never; readonly "data-type"?: never }
-  >;
+  readonly list?: SlotProps<"ol">;
+  readonly item?: RepeatedSlotProps<SlotProps<"li">>;
+  readonly link?: RepeatedSlotProps<SlotProps<"button">>;
+  readonly control?: RepeatedSlotProps<SlotProps<"button">>;
+  readonly ellipsis?: RepeatedSlotProps<SlotProps<"span">>;
 }
 
 export interface PaginationRootOwnProps extends UsePaginationParams {
-  readonly "aria-label"?: string;
   readonly children?: ReactNode;
   readonly getPageHref?: (page: number) => string;
   readonly labels?: Partial<PaginationLabels>;
@@ -142,7 +106,7 @@ export type PaginationItemProps<TAs extends ElementType = "li"> = RenderableProp
 >;
 
 export interface PaginationLinkOwnProps {
-  readonly disabled?: boolean;
+  readonly disabled?: boolean | undefined;
   readonly getPageHref?: (page: number) => string;
   readonly locale?: string;
   readonly pageLabelTemplate?: string;

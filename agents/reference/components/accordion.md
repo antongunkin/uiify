@@ -49,7 +49,7 @@ No own members.
 
 ## Other types
 
-- `AccordionItemSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"details">, | "name" | "open" | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "data-uiify-accordion" | "disabled">, AccordionOwnedSlotAttributes>`
-- `AccordionTriggerSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"summary">, | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "data-uiify-accordion" | "disabled" | "part">, AccordionOwnedSlotAttributes>`
-- `AccordionPanelSlotProps`: `RepeatedSlotProps<Omit<ComponentPropsWithRef<"div">, | "children" | "dangerouslySetInnerHTML" | "data-part" | "data-uiify-details" | "data-uiify-accordion" | "part">, AccordionOwnedSlotAttributes>`
-- `AccordionProps`: `AccordionOwnProps & Omit<ComponentPropsWithRef<"div">, keyof AccordionOwnProps | "children" | "dangerouslySetInnerHTML" | "data-uiify-accordion">`
+- `AccordionItemSlotProps`: `RepeatedSlotProps<SlotProps<"details">>` — Native props for each repeated details item.
+- `AccordionTriggerSlotProps`: `RepeatedSlotProps<Omit<SlotProps<"summary">, "part">>`
+- `AccordionPanelSlotProps`: `RepeatedSlotProps<Omit<SlotProps<"div">, "part">>`
+- `AccordionProps`: `AccordionOwnProps & Omit<ComponentPropsWithRef<"div">, keyof AccordionOwnProps | "children" | "dangerouslySetInnerHTML">`

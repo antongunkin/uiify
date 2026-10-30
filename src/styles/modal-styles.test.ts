@@ -23,9 +23,8 @@ describe("Modal skin: anatomy", () => {
     expect(css).toContain(
       '[data-uiify-modal][data-part="body"] { flex: 1 1 auto; min-block-size: 0; overflow: auto; overscroll-behavior: contain; }',
     );
-    expect(css).toContain(
-      '[data-uiify-modal][data-part="header"] { position: relative; flex: none;',
-    );
+    // The header is not positioned: the close button anchors to the dialog, not to it.
+    expect(css).toContain('[data-uiify-modal][data-part="header"] { flex: none;');
     expect(css).toContain('[data-uiify-modal][data-part="footer"] { display: flex; flex: none;');
   });
 
@@ -47,14 +46,17 @@ describe("Modal skin: anatomy", () => {
     expect(modalOnly).not.toMatch(/data-uiify-(?:alert-modal|drawer|dialog)/);
   });
 
-  it("gives touch pointers a 44px close target", () => {
-    expect(css).toContain("@media (pointer: coarse)");
-    expect(css).toContain("min-inline-size: 2.75rem;");
+  it("leaves the close target at the default Button size", () => {
+    const closeRule = css.match(
+      /\[data-uiify-modal\]\[data-part="header"\] > \[data-part="close"\] \{[^}]*\}/,
+    )?.[0];
+    expect(closeRule).toBeDefined();
+    expect(closeRule).not.toMatch(/(?:inline|block)-size|min-/);
   });
 
-  it("keeps the title clear of the enlarged coarse-pointer close target", () => {
+  it("keeps the title clear of the close target", () => {
     expect(css).toMatch(
-      /@media \(pointer: coarse\) \{ \[data-uiify-modal\]\[data-part="header"\] \{ padding-inline-end: 2\.75rem; \}/,
+      /\[data-uiify-modal\]\[data-part="header"\] \{[^}]*padding-inline-end: var\(--control-md\);/,
     );
   });
 

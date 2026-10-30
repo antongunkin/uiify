@@ -81,13 +81,9 @@ describe("Toast server shell", () => {
     expect(markup).not.toContain("aria-live");
   });
 
-  it("forwards slot props to server-authored toast nodes and protects owned markers", () => {
-    const unsafeRootProps = {
-      dangerouslySetInnerHTML: { __html: "<b>unsafe root</b>" },
-    } as unknown as Parameters<typeof Toast.Root>[0];
+  it("forwards slot props and consumer marker overrides to server-authored toast nodes", () => {
     render(
       <Toast.Root
-        {...unsafeRootProps}
         toast={{
           id: "static-toast",
           duration: 0,
@@ -99,25 +95,22 @@ describe("Toast server shell", () => {
         className="static-item"
         style={{ order: 2 }}
         data-testid="static-item"
-        data-part={"consumer-override" as never}
-        slotProps={
-          {
-            title: {
-              className: "static-title-common",
-              dangerouslySetInnerHTML: { __html: "<b>unsafe title</b>" },
-              byItemValue: {
-                "static-toast": { className: "static-title", "data-testid": "static-title" },
-              },
+        data-part="consumer-override"
+        slotProps={{
+          title: {
+            className: "static-title-common",
+            byItemValue: {
+              "static-toast": { className: "static-title", "data-testid": "static-title" },
             },
-            description: { "data-testid": "static-description" },
-            action: { "data-testid": "static-action" },
-            close: { "data-testid": "static-close" },
-          } as never
-        }
+          },
+          description: { "data-testid": "static-description" },
+          action: { "data-testid": "static-action" },
+          close: { "data-testid": "static-close" },
+        }}
       />,
     );
 
-    expect(screen.getByTestId("static-item").getAttribute("data-part")).toBe("item");
+    expect(screen.getByTestId("static-item").getAttribute("data-part")).toBe("consumer-override");
     expect(screen.getByTestId("static-item").className).toBe("static-item");
     expect(screen.getByTestId("static-item").getAttribute("style")).toContain("order: 2");
     expect(screen.getByTestId("static-title").className).toBe("static-title-common static-title");
@@ -152,19 +145,19 @@ describe("Toast server shell", () => {
     expect(screen.getAllByRole("button", { name: "Fermer" })).toHaveLength(2);
   });
 
-  it("owns ToastClose's computed aria-label and does not let a consumer override it with string children", () => {
+  it("lets consumers replace ToastClose's computed aria-label", () => {
     render(<Toast.Close aria-label="consumer-label">Dismiss</Toast.Close>);
-    const button = screen.getByRole("button", { name: "Dismiss" });
-    expect(button.getAttribute("aria-label")).toBe("Dismiss");
+    const button = screen.getByRole("button", { name: "consumer-label" });
+    expect(button.getAttribute("aria-label")).toBe("consumer-label");
   });
 
-  it("falls back to the default 'Close' aria-label on non-string children, ignoring a consumer override", () => {
+  it("lets consumers replace the fallback close label with non-string children", () => {
     render(
       <Toast.Close aria-label="consumer-label">
         <span aria-hidden="true">x</span>
       </Toast.Close>,
     );
-    const button = screen.getByRole("button", { name: "Close" });
-    expect(button.getAttribute("aria-label")).toBe("Close");
+    const button = screen.getByRole("button", { name: "consumer-label" });
+    expect(button.getAttribute("aria-label")).toBe("consumer-label");
   });
 });

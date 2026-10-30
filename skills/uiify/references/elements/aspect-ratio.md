@@ -23,7 +23,7 @@ import "@gunkin/uiify/components/behavior.css";
 </AspectRatio>
 ```
 
-Direct import: `@gunkin/uiify/components/aspect-ratio`. This reusable layout Component is Tier 0. It renders two wrappers: root `data-uiify-aspect-ratio`, then `data-part="content"` around children. Root forwards native props, events, `className`, `style`, `ref`, `as` and `render`; custom renderers must forward props/ref. Owned markers cannot be overridden.
+Direct import: `@gunkin/uiify/components/aspect-ratio`. This reusable layout Component is Tier 0. It renders two wrappers: root `data-uiify-aspect-ratio`, then `data-part="content"` around children. Root forwards native props, events, `className`, `style`, `ref`, `as` and `render`; custom renderers must forward props/ref. Consumer props replace its default markers.
 
 `ratio?: number` accepts a positive finite number (width/height). Square default: `1`; invalid numbers fall back to `1`. Omission leaves the stylesheet default and permits a CSS `--uiify-aspect-ratio` override; an explicit ratio writes that property.
 

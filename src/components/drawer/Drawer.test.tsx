@@ -10,12 +10,6 @@ import {
   DrawerNativeTrigger,
   DrawerPanel,
 } from "./DrawerNative.js";
-import type {
-  DrawerNativeContentProps,
-  DrawerNativeInvokerProps,
-  DrawerProps,
-  DrawerSlotProps,
-} from "./types.js";
 
 describe("DrawerPanel (native shell)", () => {
   it("provides native dismissal, size and complete dialog anatomy", () => {
@@ -85,7 +79,7 @@ describe("DrawerPanel (native shell)", () => {
       />,
     );
 
-    expect(markup).toContain('<dialog aria-describedby="settings-description"');
+    expect(markup).toContain('aria-describedby="settings-description"');
     expect(markup).toContain('data-side="bottom"');
     expect(markup).toContain('command="show-modal"');
     expect(markup).toContain('command="request-close"');
@@ -107,8 +101,6 @@ describe("DrawerPanel (native shell)", () => {
       title: createRef<HTMLHeadingElement>(),
       description: createRef<HTMLParagraphElement>(),
       close: createRef<HTMLButtonElement>(),
-      closeIcon: createRef<SVGSVGElement>(),
-      closeIconPath: createRef<SVGPathElement>(),
       body: createRef<HTMLDivElement>(),
       footer: createRef<HTMLDivElement>(),
     };
@@ -133,19 +125,6 @@ describe("DrawerPanel (native shell)", () => {
             ref: refs.description,
           },
           close: { className: "close-class", "data-testid": "close", ref: refs.close },
-          closeIcon: {
-            className: "icon-class",
-            "data-testid": "close-icon",
-            height: 20,
-            ref: refs.closeIcon,
-            width: 20,
-          },
-          closeIconPath: {
-            className: "path-class",
-            "data-testid": "close-icon-path",
-            d: "M1 1L15 15",
-            ref: refs.closeIconPath,
-          },
           body: { className: "body-class", "data-testid": "body", ref: refs.body },
           footer: { className: "footer-class", "data-testid": "footer", ref: refs.footer },
         }}
@@ -165,8 +144,6 @@ describe("DrawerPanel (native shell)", () => {
       ["title", "title", "title-class"],
       ["description", "description", "description-class"],
       ["close", "close", "close-class"],
-      ["closeIcon", "close-icon", "icon-class"],
-      ["closeIconPath", "close-icon-path", "path-class"],
       ["body", "body", "body-class"],
       ["footer", "footer", "footer-class"],
     ];
@@ -183,141 +160,72 @@ describe("DrawerPanel (native shell)", () => {
     expect(screen.getByTestId("title").id).toBe("slot-test-title");
     expect(screen.getByTestId("description").id).toBe("slot-test-description");
     expect(screen.getByTestId("close").getAttribute("aria-label")).toBe("Close");
-    expect(screen.getByTestId("close-icon").getAttribute("width")).toBe("20");
-    expect(screen.getByTestId("close-icon-path").getAttribute("d")).toBe("M1 1L15 15");
   });
 
-  it("filters hostile JavaScript props from generated nodes and native invokers", () => {
-    const dangerousHtml = { dangerouslySetInnerHTML: { __html: "injected" } };
-    const hostileSlots = {
-      trigger: { ...dangerousHtml, command: "request-close", commandfor: "wrong", type: "submit" },
-      content: {
-        ...dangerousHtml,
-        backdrop: "transparent",
-        dismiss: "none",
-        id: "wrong",
-        open: true,
-        popover: "auto",
-        side: "right",
-        size: "full",
-      },
-      grabber: { ...dangerousHtml, "aria-hidden": false },
-      header: dangerousHtml,
-      title: { ...dangerousHtml, id: "wrong-title" },
-      description: { ...dangerousHtml, id: "wrong-description" },
-      close: { ...dangerousHtml, "aria-label": "Wrong", command: "show-modal", type: "submit" },
-      closeIcon: { ...dangerousHtml, "aria-hidden": false, focusable: true },
-      closeIconPath: dangerousHtml,
-      body: dangerousHtml,
-      footer: dangerousHtml,
-    } as unknown as DrawerSlotProps;
-    const hostileRoot = {
-      className: "safe-root",
-      "data-testid": "safe-root",
-      "data-part": "wrong",
-      "data-side": "right",
-      "data-uiify-drawer": "wrong",
-      ...dangerousHtml,
-    } as unknown as DrawerProps;
+  it("lets native shell slots replace defaults", () => {
     render(
       <DrawerPanel
-        {...hostileRoot}
-        description="Description"
-        footer="Actions"
-        id="safe-drawer"
-        slotProps={hostileSlots}
-        title="Drawer title"
+        id="drawer"
         trigger="Open"
-      >
-        Body
-      </DrawerPanel>,
+        title="Settings"
+        description="Description"
+        data-testid="root"
+        data-side="right"
+        data-part="custom-root"
+        slotProps={{
+          trigger: { type: "submit", command: "request-close", commandfor: "other" },
+          content: { closedby: "none", "data-side": "left", "aria-labelledby": "custom-title" },
+          title: { id: "custom-title" },
+          description: { id: "custom-description" },
+          grabber: { "aria-hidden": false },
+          close: { "aria-label": "Dismiss", type: "submit", command: "show-modal" },
+        }}
+      />,
     );
-
-    const root = screen.getByTestId("safe-root");
+    expect(screen.getByTestId("root").getAttribute("data-side")).toBe("right");
+    expect(screen.getByTestId("root").getAttribute("data-part")).toBe("custom-root");
     const trigger = screen.getByRole("button", { name: "Open" });
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("command")).toBe("request-close");
+    expect(trigger.getAttribute("commandfor")).toBe("other");
     const dialog = screen.getByRole("dialog", { hidden: true });
-    const close = screen.getByRole("button", { name: "Close", hidden: true });
-    expect(root.textContent).not.toContain("injected");
-    expect(root.getAttribute("data-part")).toBe("root");
-    expect(root.getAttribute("data-side")).toBe("bottom");
-    expect(trigger.getAttribute("command")).toBe("show-modal");
-    expect(trigger.getAttribute("commandfor")).toBe("safe-drawer");
-    expect(trigger.getAttribute("type")).toBe("button");
-    expect(dialog.id).toBe("safe-drawer");
-    expect(dialog.hasAttribute("open")).toBe(false);
-    expect(dialog.hasAttribute("popover")).toBe(false);
-    expect(dialog.getAttribute("closedby")).toBe("any");
-    expect(dialog.getAttribute("data-side")).toBe("bottom");
-    expect(dialog.hasAttribute("data-size")).toBe(false);
-    expect(dialog.hasAttribute("data-backdrop")).toBe(false);
-    expect(dialog.getAttribute("aria-labelledby")).toBe("safe-drawer-title");
-    expect(close.getAttribute("command")).toBe("request-close");
-    expect(close.getAttribute("commandfor")).toBe("safe-drawer");
-    expect(close.getAttribute("aria-label")).toBe("Close");
-    expect(dialog.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+    expect(dialog.getAttribute("closedby")).toBe("none");
+    expect(dialog.getAttribute("data-side")).toBe("left");
+    expect(dialog.getAttribute("aria-labelledby")).toBe("custom-title");
+    expect(
+      screen.getByRole("button", { name: "Dismiss", hidden: true }).getAttribute("command"),
+    ).toBe("show-modal");
   });
 
-  it("keeps direct native aliases customizable while filtering hostile invoker and dialog props", () => {
-    const triggerRef = createRef<HTMLButtonElement>();
-    const closeRef = createRef<HTMLButtonElement>();
-    const dialogRef = createRef<HTMLDialogElement>();
-    const triggerProps = {
-      className: "trigger-class",
-      "data-testid": "native-trigger",
-      command: "request-close",
-      commandfor: "wrong",
-      dangerouslySetInnerHTML: { __html: "injected trigger" },
-      popoverTarget: "wrong",
-      target: "native-dialog",
-      type: "submit",
-      ref: triggerRef,
-    } as unknown as DrawerNativeInvokerProps;
-    const closeProps = {
-      className: "close-class",
-      "data-testid": "native-close",
-      dangerouslySetInnerHTML: { __html: "injected close" },
-      target: "native-dialog",
-      type: "submit",
-      ref: closeRef,
-    } as unknown as DrawerNativeInvokerProps;
-    const dialogProps = {
-      "data-testid": "native-dialog",
-      "data-part": "wrong",
-      closedby: "none",
-      dangerouslySetInnerHTML: { __html: "injected" },
-      id: "native-dialog",
-      open: true,
-      popover: "auto",
-      ref: dialogRef,
-    } as unknown as DrawerNativeContentProps;
+  it("lets direct native aliases replace defaults and keeps refs", () => {
+    const ref = createRef<HTMLDialogElement>();
     render(
       <>
-        <DrawerNativeTrigger {...triggerProps}>Open</DrawerNativeTrigger>
-        <DrawerNativeContent {...dialogProps}>Safe body</DrawerNativeContent>
-        <DrawerNativeClose {...closeProps}>Close</DrawerNativeClose>
+        <DrawerNativeTrigger
+          target="drawer"
+          command="request-close"
+          commandfor="other"
+          type="submit"
+        >
+          Open
+        </DrawerNativeTrigger>
+        <DrawerNativeContent id="drawer" closedby="none" data-part="custom" ref={ref}>
+          Body
+        </DrawerNativeContent>
+        <DrawerNativeClose target="drawer" type="submit">
+          Close
+        </DrawerNativeClose>
       </>,
     );
-
-    const trigger = screen.getByTestId("native-trigger");
-    const dialog = screen.getByTestId("native-dialog");
-    const close = screen.getByTestId("native-close");
-    expect(trigger.className).toContain("trigger-class");
-    expect(trigger.getAttribute("command")).toBe("show-modal");
-    expect(trigger.getAttribute("commandfor")).toBe("native-dialog");
-    expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.hasAttribute("popovertarget")).toBe(false);
-    expect(dialog).toBe(dialogRef.current);
-    expect(dialog.getAttribute("data-part")).toBe("content");
-    expect(dialog.getAttribute("closedby")).toBe("any");
-    expect(dialog.hasAttribute("open")).toBe(false);
-    expect(dialog.hasAttribute("popover")).toBe(false);
-    expect(dialog.textContent).toBe("Safe body");
-    expect(close.className).toContain("close-class");
-    expect(close.getAttribute("command")).toBe("request-close");
-    expect(close.getAttribute("commandfor")).toBe("native-dialog");
-    expect(close.getAttribute("type")).toBe("button");
-    expect(triggerRef.current).toBe(trigger);
-    expect(closeRef.current).toBe(close);
+    const trigger = screen.getByRole("button", { name: "Open" });
+    expect(trigger.getAttribute("type")).toBe("submit");
+    expect(trigger.getAttribute("command")).toBe("request-close");
+    expect(trigger.getAttribute("commandfor")).toBe("other");
+    const dialog = screen.getByRole("dialog", { hidden: true });
+    expect(dialog).toBe(ref.current);
+    expect(dialog.getAttribute("closedby")).toBe("none");
+    expect(dialog.getAttribute("data-part")).toBe("custom");
+    expect(screen.getByRole("button", { name: "Close" }).getAttribute("type")).toBe("submit");
   });
 });
 
@@ -361,25 +269,19 @@ beforeEach(() => {
 });
 
 describe("Drawer compound — props ownership", () => {
-  it("rejects dangerouslySetInnerHTML on native invoker parts at the type level", () => {
+  it("accepts native invoker props", () => {
     const elements: ReactElement[] = [
       <DrawerNativeTrigger key="safe" target="dialog">
         Open
       </DrawerNativeTrigger>,
-      <DrawerNativeClose
-        key="unsafe"
-        target="dialog"
-        // @ts-expect-error -- invokers own their children.
-        dangerouslySetInnerHTML={{ __html: "unsafe" }}
-      />,
+      <DrawerNativeClose key="unsafe" target="dialog" type="submit" />,
     ];
     expect(elements).toHaveLength(2);
   });
 
-  it("only accepts Trigger's type as library-computed — the type system rejects a consumer override", () => {
+  it("accepts the native Trigger type", () => {
     const elements: ReactElement[] = [
       <Drawer.Trigger key="ok">Open</Drawer.Trigger>,
-      // @ts-expect-error -- the library owns type=button.
       <Drawer.Trigger key="type" type="submit">
         Open
       </Drawer.Trigger>,
@@ -387,7 +289,7 @@ describe("Drawer compound — props ownership", () => {
     expect(elements).toHaveLength(2);
   });
 
-  it("owns Trigger's aria-controls, aria-expanded, and aria-haspopup even when a consumer forces them through (TypeScript allows aria-* on any JSX element)", () => {
+  it("lets consumer ARIA override Trigger defaults", () => {
     render(
       <Drawer.Root>
         <Drawer.Trigger aria-controls="not-the-content" aria-expanded aria-haspopup="menu">
@@ -400,10 +302,10 @@ describe("Drawer compound — props ownership", () => {
     );
     const trigger = screen.getByRole("button", { name: "Open" });
     const dialog = screen.getByRole("dialog", { hidden: true });
-    expect(trigger.getAttribute("aria-controls")).toBe(dialog.id);
-    expect(trigger.getAttribute("aria-controls")).not.toBe("not-the-content");
-    expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(trigger.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(dialog).toBeTruthy();
+    expect(trigger.getAttribute("aria-controls")).toBe("not-the-content");
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
   });
 
   it("renders Trigger's owned type/aria-controls/aria-expanded/aria-haspopup and syncs aria-expanded with open state", () => {
@@ -474,16 +376,15 @@ describe("Drawer compound — props ownership", () => {
     expect(consumerRef.current).toBe(screen.getByRole("button", { name: "Open" }));
   });
 
-  it("only accepts Content's id as library-computed — the type system rejects a consumer override", () => {
+  it("accepts a native Content id", () => {
     const elements: ReactElement[] = [
       <Drawer.Content key="ok" />,
-      // @ts-expect-error -- the library owns id.
       <Drawer.Content key="id" id="not-the-content" />,
     ];
     expect(elements).toHaveLength(2);
   });
 
-  it("owns Content's aria-describedby/aria-labelledby/aria-modal/data-side/data-state/data-snap-enabled even when a consumer forces them through (TypeScript allows aria-*/data-* on any JSX element)", () => {
+  it("lets consumer Content attributes override defaults", () => {
     render(
       <Drawer.Root defaultOpen side="left">
         <Drawer.Trigger>Open</Drawer.Trigger>
@@ -500,13 +401,12 @@ describe("Drawer compound — props ownership", () => {
       </Drawer.Root>,
     );
     const dialog = screen.getByRole("dialog", { hidden: true });
-    expect(dialog.getAttribute("aria-labelledby")).not.toBe("bogus");
-    expect(dialog.getAttribute("aria-labelledby")).toBeTruthy();
-    expect(dialog.getAttribute("aria-describedby")).not.toBe("bogus");
-    expect(dialog.getAttribute("aria-modal")).toBe("true");
-    expect(dialog.getAttribute("data-side")).toBe("left");
-    expect(dialog.getAttribute("data-state")).toBe("open");
-    expect(dialog.hasAttribute("data-snap-enabled")).toBe(false);
+    expect(dialog.getAttribute("aria-labelledby")).toBe("bogus");
+    expect(dialog.getAttribute("aria-describedby")).toBe("bogus");
+    expect(dialog.getAttribute("aria-modal")).toBe("false");
+    expect(dialog.getAttribute("data-side")).toBe("right");
+    expect(dialog.getAttribute("data-state")).toBe("bogus");
+    expect(dialog.getAttribute("data-snap-enabled")).toBe("bogus");
   });
 
   it("joins a consumer style with the snap-point CSS vars instead of replacing it", () => {

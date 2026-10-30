@@ -1,11 +1,11 @@
 import type { ReactElement } from "react";
-import { mergeRepeatedSlotProps, resolveRepeatedSlotProps } from "../../../core/slot-props.js";
+import { cn } from "../../../core/class-names.js";
+import { resolveRepeatedSlotProps } from "../../../core/slot-props.js";
 import {
   ChoiceGroup as ElementChoiceGroup,
   ChoiceItem as ElementChoiceItem,
 } from "../../../elements/choice/index.js";
 import { getChoiceGroupName } from "./ids.js";
-import type { ChoiceItemSlotProps } from "../../../elements/choice/types.js";
 import type { ChoiceGroupProps, ChoiceItem } from "./types.js";
 
 /**
@@ -32,8 +32,6 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
     rootAttributes,
     labelAttributes,
     itemInputClassName,
-    itemProps,
-    itemSlotProps,
     slotProps,
     onItemChange,
     renderPanel,
@@ -45,54 +43,20 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
 
   return (
     <ElementChoiceGroup
-      {...rootProps}
+      {...{ [`data-uiify-${namespace}`]: "" }}
       {...rootAttributes}
+      {...rootProps}
       className={className}
       id={id}
       kind={kind}
       orientation={orientation}
-      {...{ [`data-uiify-${namespace}`]: "" }}
     >
       {items.map((item) => {
-        const panel = renderPanel ? renderPanel(item) : undefined;
-        const itemSlots = itemSlotProps?.(item);
-        const inputSlotProps = mergeRepeatedSlotProps(
-          resolveRepeatedSlotProps(slotProps?.input, item.value, ["data-part", "data-uiify-radio"]),
-          itemSlots?.input,
-        );
-        const controlClassName = [inputSlotProps.className, itemInputClassName?.(item)]
-          .filter(Boolean)
-          .join(" ");
-        const itemPropsForValue = mergeRepeatedSlotProps(
-          resolveRepeatedSlotProps(slotProps?.item, item.value, [
-            "checked",
-            "defaultChecked",
-            "disabled",
-            "groupId",
-            "kind",
-            "label",
-            "labelPart",
-            "name",
-            "onValueChange",
-            "panel",
-            "part",
-            "slotProps",
-            "value",
-          ]),
-          itemProps?.(item),
-        );
-        const labelPropsForValue = mergeRepeatedSlotProps(
-          resolveRepeatedSlotProps(slotProps?.label, item.value),
-          itemSlots?.label,
-        );
-        const panelPropsForValue = mergeRepeatedSlotProps(
-          resolveRepeatedSlotProps(slotProps?.panel, item.value),
-          itemSlots?.panel,
-        );
+        const inputSlotProps = resolveRepeatedSlotProps(slotProps?.input, item.value);
         return (
           <ElementChoiceItem
-            {...itemPropsForValue}
-            {...(panel === undefined ? {} : { panel })}
+            {...resolveRepeatedSlotProps(slotProps?.item, item.value)}
+            {...(renderPanel ? { panel: renderPanel(item) } : {})}
             {...(isControlled ? { checked: isChecked(item) } : { defaultChecked: isChecked(item) })}
             disabled={item.disabled ?? false}
             groupId={id}
@@ -101,21 +65,17 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
             label={renderLabel ? renderLabel(item) : item.label}
             labelPart={labelPart ? "trigger" : "label"}
             slotProps={{
-              ...itemSlots,
               input: {
-                ...inputSlotProps,
-                ...(controlClassName ? { className: controlClassName } : {}),
                 "data-part": "control",
                 ...(kind === "single" ? { "data-uiify-radio": "" } : {}),
-              } as unknown as NonNullable<ChoiceItemSlotProps["input"]>,
+                ...inputSlotProps,
+                className: cn(inputSlotProps.className, itemInputClassName?.(item)),
+              },
               label: {
-                ...labelPropsForValue,
                 ...labelAttributes,
-              } as NonNullable<ChoiceItemSlotProps["label"]>,
-              panel: {
-                ...panelPropsForValue,
-                "data-part": "panel",
-              } as NonNullable<ChoiceItemSlotProps["panel"]>,
+                ...resolveRepeatedSlotProps(slotProps?.label, item.value),
+              },
+              panel: resolveRepeatedSlotProps(slotProps?.panel, item.value),
             }}
             name={groupName}
             {...(onItemChange ? { onValueChange: () => onItemChange(item) } : {})}
@@ -125,7 +85,7 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
         );
       })}
       {append ? (
-        <div {...appendProps} data-part="append">
+        <div data-part="append" {...appendProps}>
           {append}
         </div>
       ) : null}

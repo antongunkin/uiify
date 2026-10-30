@@ -44,7 +44,7 @@ Extends: `RatingProps`
 ## Other types
 
 - `RatingSlotProps`: `ChoiceOptionSlotProps`
-- `RatingProps`: `RatingOwnProps & Omit<ComponentPropsWithRef<"div">, | keyof RatingOwnProps | "children" | "dangerouslySetInnerHTML" | "data-orientation" | "data-part" | "data-uiify-choice" | "data-uiify-rating"> & ConsumerDataAttributes & { readonly "data-orientation"?: never; readonly "data-uiify-choice"?: never; readonly "data-uiify-rating"?: never; }`
+- `RatingProps`: `RatingOwnProps & Omit<ComponentPropsWithRef<"div">, keyof RatingOwnProps | "children" | "dangerouslySetInnerHTML"> & ConsumerDataAttributes`
 
 ## Sub-entries
 

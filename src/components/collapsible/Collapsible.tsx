@@ -1,13 +1,8 @@
 import type { ReactElement } from "react";
-import { omitProps } from "../../core/slot-props.js";
 import { DetailsContent, DetailsRoot, DetailsSummary } from "../../elements/details/index.js";
 import type { CollapsibleProps } from "./types.js";
 
-/**
- * Built on `@gunkin/uiify/elements/details`: `Details.Root`/`Details.Summary` already own
- * `data-disabled`/`aria-disabled`/`tabIndex` from their own `disabled` prop; this component
- * adds only its own `data-uiify-collapsible` marker and `data-part` values.
- */
+/** Native disclosure defaults remain replaceable through root and generated-part props. */
 export function Collapsible({
   id,
   label,
@@ -19,37 +14,16 @@ export function Collapsible({
 }: CollapsibleProps): ReactElement {
   return (
     <DetailsRoot
-      {...omitProps(rootProps, [
-        "children",
-        "dangerouslySetInnerHTML",
-        "data-disabled",
-        "data-uiify-collapsible",
-        "data-uiify-details",
-        "open",
-      ])}
       data-uiify-collapsible=""
       defaultOpen={defaultOpen}
       disabled={disabled}
       id={id}
+      {...rootProps}
     >
-      <DetailsSummary
-        {...omitProps(slotProps?.trigger, [
-          "aria-disabled",
-          "data-part",
-          "data-uiify-details",
-          "disabled",
-          "part",
-          "tabIndex",
-        ])}
-        disabled={disabled}
-        part="trigger"
-      >
+      <DetailsSummary disabled={disabled} part="trigger" {...slotProps?.trigger}>
         {label}
       </DetailsSummary>
-      <DetailsContent
-        {...omitProps(slotProps?.panel, ["data-part", "data-uiify-details", "part"])}
-        part="panel"
-      >
+      <DetailsContent part="panel" {...slotProps?.panel}>
         {content}
       </DetailsContent>
     </DetailsRoot>

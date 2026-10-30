@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default breadcrumb DOM 1`] = `
+[
+  "nav aria-label="Breadcrumb" data-uiify-breadcrumb=""",
+  "ol data-part="list"",
+  "li data-part="item"",
+  "a data-part="link" href="/a"",
+  "span aria-hidden="true" data-part="separator"",
+  "li data-part="item"",
+  "details data-part="ellipsis" data-uiify-breadcrumb="" data-uiify-details=""",
+  "summary aria-label="Show collapsed breadcrumbs"",
+  "ol",
+  "a data-part="link" href="/b"",
+  "span aria-hidden="true" data-part="separator"",
+  "li data-part="item"",
+  "a aria-current="page" data-current="" data-part="link"",
+]
+`;

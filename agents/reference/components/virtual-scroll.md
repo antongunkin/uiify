@@ -78,7 +78,7 @@ Extends: `VirtualScrollScrollBehaviorOptions`
 
 ### VirtualScrollOwnProps
 
-Extends: `Omit<ComponentPropsWithoutRef<"div">, "children" | "role">`
+Extends: `Omit<ComponentPropsWithoutRef<"div">, "children">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -94,7 +94,6 @@ Extends: `Omit<ComponentPropsWithoutRef<"div">, "children" | "role">`
 | `scrollRef` | `Ref<VirtualScrollHandle>` | no |  |
 | `estimateRowHeight` | `(index: number) => number` | no |  |
 | `onRangeChange` | `(range: VirtualScrollRangeChange) => void` | no |  |
-| `role` | `VirtualScrollListRole` | no |  |
 | `anchor` | `VirtualScrollAnchor` | no |  |
 | `followAppend` | `boolean \| "smooth"` | no |  |
 | `onScrollStateChange` | `(state: VirtualScrollScrollState) => void` | no |  |
@@ -103,7 +102,7 @@ Extends: `Omit<ComponentPropsWithoutRef<"div">, "children" | "role">`
 
 ### VirtualScrollRowShellProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-posinset" | "aria-setsize" | "children" | "data-dynamic-row" | "data-part" | "data-row-index" | "dangerouslySetInnerHTML" | "role">`
+Extends: `SlotProps<"div">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -126,5 +125,5 @@ Extends: `Omit<ComponentPropsWithRef<"div">, | "aria-posinset" | "aria-setsize" 
 
 ## Other types
 
-- `VirtualScrollRowSlotProps`: `RepeatedSlotProps<VirtualScrollRowNativeProps, VirtualScrollRowOwnedProps> & { readonly byItemIndex?: Readonly<Record<number, VirtualScrollRowNativeProps & ConsumerDataAttributes & VirtualScrollRowOwnedProps>>; }`
-- `VirtualScrollSpacerSlotProps`: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML" | "data-part"> & { readonly "data-part"?: never; } & ConsumerDataAttributes`
+- `VirtualScrollRowSlotProps`: `RepeatedSlotProps<SlotProps<"div">> & { readonly byItemIndex?: Readonly<Record<number, SlotProps<"div">>>; }`
+- `VirtualScrollSpacerSlotProps`: `SlotProps<"div">`

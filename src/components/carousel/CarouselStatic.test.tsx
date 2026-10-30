@@ -5,7 +5,7 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Carousel } from "./Carousel.js";
 import { CarouselMarkup } from "./CarouselMarkup.js";
-import type { CarouselPresentation, CarouselProps } from "./types.js";
+import type { CarouselPresentation } from "./types.js";
 
 const twoItems = [
   { id: "one", label: "One", children: <p>First</p> },
@@ -52,27 +52,18 @@ describe("Carousel server renderer", () => {
     expect(ref.current?.tagName).toBe("SECTION");
   });
 
-  it("strips runtime attempts to override generated state and children", () => {
-    const unsafeProps = {
-      id: "owned-state",
-      "aria-label": "Gallery",
-      items: twoItems,
-      "data-mode": "fade",
-      "data-enhanced": "",
-      dangerouslySetInnerHTML: { __html: "<p>replace children</p>" },
-      slotProps: {
-        viewport: { dangerouslySetInnerHTML: { __html: "<p>replace viewport</p>" } },
-        dots: { dangerouslySetInnerHTML: { __html: "<p>replace dots</p>" } },
-        status: { dangerouslySetInnerHTML: { __html: "<p>replace status</p>" } },
-      },
-    } as unknown as CarouselProps;
-    const { container } = render(<Carousel {...unsafeProps} />);
-    const root = container.querySelector("section")!;
-
-    expect(root.hasAttribute("data-mode")).toBe(false);
-    expect(root.hasAttribute("data-enhanced")).toBe(false);
-    expect(container.textContent).toContain("First");
-    expect(container.textContent).not.toContain("replace");
+  it("lets consumers replace generated carousel state markers", () => {
+    const { container } = render(
+      <Carousel
+        id="custom-state"
+        aria-label="Gallery"
+        items={twoItems}
+        data-mode="custom"
+        data-enhanced="custom"
+      />,
+    );
+    expect(container.querySelector("section")?.getAttribute("data-mode")).toBe("custom");
+    expect(container.querySelector("section")?.getAttribute("data-enhanced")).toBe("custom");
   });
 
   it("forwards slotProps to its generated controls, viewport, slides and dots", () => {

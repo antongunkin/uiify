@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default toast DOM 1`] = `
+{
+  "client": [
+    "div aria-label="Saved" data-part="item" data-state="open" data-uiify-toast="" role="group" tabindex="0"",
+    "div data-part="title"",
+    "div data-part="description"",
+    "button data-part="action" type="button"",
+    "button aria-label="Close" data-part="close" type="button"",
+    "section aria-label="Notifications" data-part="viewport" data-testid="toast-viewport" data-uiify-toast="" popover="manual"",
+    "span aria-atomic="true" aria-live="polite" style="border:0;clip:rect(0 0 0 0);clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;white-space:nowrap;width:1px"",
+    "span aria-atomic="true" aria-live="assertive" style="border:0;clip:rect(0 0 0 0);clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;white-space:nowrap;width:1px"",
+  ],
+  "shell": [
+    "section aria-label="Notifications" data-part="viewport" data-testid="toast-viewport" data-uiify-toast=""",
+    "div aria-label="Saved" data-part="item" data-state="open" data-uiify-toast="" role="group"",
+    "div data-part="title"",
+    "div data-part="description"",
+    "button data-part="action" type="button"",
+    "button aria-label="Close" data-part="close" type="button"",
+  ],
+}
+`;

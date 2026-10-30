@@ -23,6 +23,7 @@
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
+| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 
 ### InputGroupAddonOwnProps
 

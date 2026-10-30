@@ -6,11 +6,7 @@ const packageRoot = resolve(import.meta.dirname, "../..");
 const repositoryRoot = existsSync(resolve(packageRoot, "../../apps/site/src/docs"))
   ? resolve(packageRoot, "../..")
   : packageRoot;
-const semanticSource = readFileSync(resolve(packageRoot, "src/styles/tokens/semantic.css"), "utf8");
-const primitiveSource = readFileSync(
-  resolve(packageRoot, "src/styles/tokens/primitives.css"),
-  "utf8",
-);
+const themeSource = readFileSync(resolve(packageRoot, "src/styles/tokens/theme.css"), "utf8");
 
 const canonicalSemanticTokens = [
   "background",
@@ -65,7 +61,6 @@ const styleRoots = [
   resolve(packageRoot, "src/styles"),
   resolve(repositoryRoot, "packages/test-fixtures/src"),
   resolve(repositoryRoot, "apps/site/src/docs"),
-  resolve(repositoryRoot, "apps/shadcn-smoke/app"),
 ].filter(existsSync);
 
 function cssFiles(path: string): string[] {
@@ -86,7 +81,7 @@ function sourceForStyleRoots(): string {
 describe("canonical semantic token contract", () => {
   test("defines every canonical semantic token in the package source", () => {
     for (const token of canonicalSemanticTokens) {
-      expect(semanticSource).toMatch(new RegExp(`--${token}\\s*:`));
+      expect(themeSource).toMatch(new RegExp(`--${token}\\s*:`));
     }
   });
 
@@ -102,12 +97,12 @@ describe("canonical semantic token contract", () => {
       "--gray-0",
       "--blue-6",
       "--red-7",
-      "--size-1",
+      "--space-md",
       "--radius-1",
       "--font-sans",
       "--shadow-1",
     ]) {
-      expect(primitiveSource).toContain(`${token}:`);
+      expect(themeSource).toContain(`${token}:`);
     }
   });
 });

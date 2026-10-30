@@ -51,9 +51,8 @@
 
   [data-uiify-rating] > [data-part="item"] > input:focus-visible ~ label {
     outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 16%, transparent);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
     border-radius: var(--radius-xs);
-    corner-shape: squircle;
   }
 
   [data-uiify-rating][data-readonly] > [data-part="item"] > label {

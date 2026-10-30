@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default carousel DOM 1`] = `
+{
+  "enhanced": [
+    "section aria-label="Gallery" aria-roledescription="carousel" data-axis="inline" data-enhanced="" data-mode="fade" data-uiify-carousel="" id="gallery"",
+    "div aria-label="Gallery" data-part="viewport" id="gallery--viewport" role="group" tabindex="0"",
+    "div aria-hidden="true" aria-label="One, 1 of 2" aria-roledescription="slide" data-carousel-index="0" data-part="slide" data-state="inactive" id="gallery--slide-one" inert="" role="group"",
+    "div data-part="slide-content"",
+    "div aria-label="Two, 2 of 2" aria-roledescription="slide" data-carousel-index="1" data-part="slide" data-state="active" id="gallery--slide-two" role="group"",
+    "div data-part="slide-content"",
+    "button aria-label="Previous slide" data-carousel-action="previous" data-part="controls" data-size="icon" data-uiify-button="" data-variant="outline" type="button"",
+    "nav aria-label="Choose slide" data-part="dots"",
+    "a aria-label="Go to One" data-carousel-index="0" data-part="dot" href="#gallery--slide-one"",
+    "a aria-current="true" aria-label="Go to Two" data-carousel-index="1" data-part="dot" href="#gallery--slide-two"",
+    "button aria-label="Next slide" data-carousel-action="next" data-part="controls" data-size="icon" data-uiify-button="" data-variant="outline" disabled="" type="button"",
+    "div aria-atomic="true" aria-live="polite" data-part="status"",
+  ],
+  "static": [
+    "section aria-label="Gallery" aria-roledescription="carousel" data-axis="inline" data-uiify-carousel="" id="gallery"",
+    "div aria-label="Gallery" data-part="viewport" id="gallery--viewport" role="group" tabindex="0"",
+    "div aria-label="One, 1 of 2" aria-roledescription="slide" data-carousel-index="0" data-part="slide" id="gallery--slide-one" role="group"",
+    "div data-part="slide-content"",
+    "div aria-label="Two, 2 of 2" aria-roledescription="slide" data-carousel-index="1" data-part="slide" id="gallery--slide-two" role="group"",
+    "div data-part="slide-content"",
+    "nav aria-label="Choose slide" data-part="dots"",
+    "a aria-label="Go to One" data-carousel-index="0" data-part="dot" href="#gallery--slide-one"",
+    "a aria-label="Go to Two" data-carousel-index="1" data-part="dot" href="#gallery--slide-two"",
+  ],
+}
+`;

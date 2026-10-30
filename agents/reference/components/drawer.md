@@ -52,17 +52,15 @@ Extends: `DrawerAppearanceProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `trigger` | `DrawerSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "commandFor" \| "popoverTarget" \| "popoverTargetAction" \| "data-part" \| "data-uiify-button" \| "data-uiify-drawer">` | no |  |
-| `content` | `DrawerSlotElementProps<"dialog", \| "size" \| "dismiss" \| "side" \| "backdrop" \| "id" \| "open" \| "popover" \| "closedby" \| "aria-describedby" \| "aria-labelledby" \| "aria-modal" \| "data-part" \| "data-side" \| "data-size" \| "data-backdrop" \| "data-state" \| "data-snap-enabled" \| "data-uiify-drawer">` | no |  |
-| `grabber` | `DrawerSlotElementProps<"div", "aria-hidden" \| "data-part" \| "data-uiify-drawer">` | no |  |
-| `header` | `DrawerSlotElementProps<"div", "data-part" \| "data-uiify-drawer">` | no |  |
-| `title` | `DrawerSlotElementProps<"h2", "id" \| "data-part" \| "data-uiify-drawer">` | no |  |
-| `description` | `DrawerSlotElementProps<"p", "id" \| "data-part" \| "data-uiify-drawer">` | no |  |
-| `close` | `DrawerSlotElementProps<"button", \| "type" \| "command" \| "commandfor" \| "commandFor" \| "popoverTarget" \| "popoverTargetAction" \| "aria-label" \| "data-part" \| "data-variant" \| "data-uiify-button" \| "data-uiify-drawer">` | no |  |
-| `closeIcon` | `DrawerSlotElementProps<"svg", "aria-hidden" \| "focusable">` | no |  |
-| `closeIconPath` | `DrawerSlotElementProps<"path">` | no |  |
-| `body` | `DrawerSlotElementProps<"div", "data-part" \| "data-uiify-drawer">` | no |  |
-| `footer` | `DrawerSlotElementProps<"div", "data-part" \| "data-uiify-drawer">` | no |  |
+| `trigger` | `DrawerInvokerSlotProps` | no |  |
+| `content` | `Omit<SlotProps<"dialog">, "id" \| "open" \| "popover">` | no |  |
+| `grabber` | `SlotProps<"div">` | no |  |
+| `header` | `SlotProps<"div">` | no |  |
+| `title` | `SlotProps<"h2">` | no |  |
+| `description` | `SlotProps<"p">` | no |  |
+| `close` | `DrawerInvokerSlotProps` | no |  |
+| `body` | `SlotProps<"div">` | no |  |
+| `footer` | `SlotProps<"div">` | no |  |
 
 ### DrawerLabels
 
@@ -72,25 +70,12 @@ Extends: `DrawerAppearanceProps`
 
 ### DrawerNativeContentProps
 
-Extends: `Omit<ComponentPropsWithRef<"dialog">, | "open" | "popover" | "closedby" | "dangerouslySetInnerHTML" | "data-part" | "data-side" | "data-size" | "data-backdrop" | "data-uiify-drawer">`, `DrawerAppearanceProps`
+Extends: `Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "dangerouslySetInnerHTML">`, `DrawerAppearanceProps`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | `string` | yes |  |
 | `side` | `DrawerSide` | no |  |
-| `"data-part"` | `never` | no |  |
-| `"data-side"` | `never` | no |  |
-| `"data-size"` | `never` | no |  |
-| `"data-backdrop"` | `never` | no |  |
-| `"data-uiify-drawer"` | `never` | no |  |
-
-### DrawerNativeInvokerProps
-
-Extends: `Omit<ComponentPropsWithRef<"button">, | "type" | "command" | "commandfor" | "commandFor" | "popoverTarget" | "popoverTargetAction" | "data-part" | "data-variant" | "data-uiify-button" | "data-uiify-drawer" | "dangerouslySetInnerHTML">`
-
-| Member | Type | Required | Description |
-| --- | --- | --- | --- |
-| `target` | `string` | yes |  |
 
 ### DrawerStoreOptions
 
@@ -175,7 +160,7 @@ Extends: `DrawerRootOwnProps`
 
 ### DrawerTriggerProps
 
-Extends: `DrawerTriggerOwnProps`, `Omit<ComponentPropsWithRef<"button">, "type" | keyof DrawerTriggerOwnProps>`
+Extends: `DrawerTriggerOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof DrawerTriggerOwnProps>`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -194,7 +179,7 @@ Extends: `DrawerAppearanceProps`
 
 ### DrawerContentProps
 
-Extends: `DrawerContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "id" | "open" | "closedby" | keyof DrawerContentOwnProps>`
+Extends: `DrawerContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "open" | keyof DrawerContentOwnProps>`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -204,7 +189,7 @@ Extends: `DrawerContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "id" | 
 
 ### DrawerTitleOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"h2">, "id">`
+Extends: `ComponentPropsWithRef<"h2">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -213,7 +198,7 @@ Extends: `Omit<ComponentPropsWithRef<"h2">, "id">`
 
 ### DrawerDescriptionOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"p">, "id">`
+Extends: `ComponentPropsWithRef<"p">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -229,7 +214,7 @@ Extends: `Omit<ComponentPropsWithRef<"p">, "id">`
 
 ### DrawerCloseProps
 
-Extends: `DrawerCloseOwnProps`, `Omit<ComponentPropsWithRef<"button">, "type" | keyof DrawerCloseOwnProps>`
+Extends: `DrawerCloseOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof DrawerCloseOwnProps>`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -249,4 +234,5 @@ Extends: `ComponentPropsWithRef<"div">`
 
 ## Other types
 
-- `DrawerProps`: `DrawerOwnProps & Omit<DrawerSlotElementProps<"div", "data-part" | "data-side" | "data-uiify-drawer">, keyof DrawerOwnProps>`
+- `DrawerProps`: `DrawerOwnProps & Omit<SlotProps<"div">, keyof DrawerOwnProps>`
+- `DrawerNativeInvokerProps`: `NativeButtonProps<"button", { readonly target: string }> & ConsumerDataAttributes`

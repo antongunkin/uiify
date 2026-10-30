@@ -59,11 +59,11 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `track` | `Omit<ComponentPropsWithRef<"div">, "aria-hidden" \| "children" \| "dangerouslySetInnerHTML" \| "data-part"> & ConsumerDataAttributes & { readonly "aria-hidden"?: never; readonly "data-part"?: never; }` | no |  |
+| `track` | `SlotProps<"div">` | no |  |
 | `range` | `SliderClientPartSlotProps<"span">` | no |  |
 | `mark` | `SliderMarkSlotProps` | no |  |
-| `visualThumb` | `SliderRepeatedSlotProps<"span", { readonly "data-part"?: never }>` | no |  |
-| `input` | `SliderRepeatedSlotProps<"input", { readonly "aria-label"?: never; readonly "aria-labelledby"?: never; readonly "aria-orientation"?: never; readonly "data-disabled"?: never; readonly "data-orientation"?: never; readonly "data-part"?: never; readonly "data-state"?: never; readonly defaultChecked?: never; readonly defaultValue?: never; readonly disabled?: never; readonly max?: never; readonly min?: never; readonly step?: never; readonly type?: never; readonly value?: never; }>` | no |  |
+| `visualThumb` | `RepeatedSlotProps<SlotProps<"span">>` | no |  |
+| `input` | `RepeatedSlotProps<SlotProps<"input">>` | no |  |
 
 ### SliderLabels
 
@@ -83,7 +83,7 @@
 ## Other types
 
 - `SliderClientValue`: `number | readonly [number, number]`
-- `SliderClientPartSlotProps<TTag>`: `Omit<ComponentPropsWithRef<TTag>, "children" | "dangerouslySetInnerHTML" | "data-part"> & ConsumerDataAttributes & { readonly "data-part"?: never }`
+- `SliderClientPartSlotProps<TTag>`: `SlotProps<TTag>`
 - `SliderClientProps<TAs>`: `RenderableProps<TAs, SliderClientOwnProps, SliderClientRenderState, HTMLDivElement>`
 - `SliderProps<TAs>`: `RenderableProps<TAs, SliderOwnProps, SliderOwnProps, HTMLInputElement>`
 

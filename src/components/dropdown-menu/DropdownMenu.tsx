@@ -1,5 +1,4 @@
 "use client";
-
 import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   ElementType,
@@ -19,6 +18,7 @@ import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import { createHoverIntentStore } from "@gunkin/uiify/core/hover-intent-store";
 import type { HoverIntentStore } from "@gunkin/uiify/core/hover-intent-store";
 import type { OpenChangeDetails } from "@gunkin/uiify/core/open-change-details";
+import type { PartName } from "@gunkin/uiify/core/part-names";
 import { usePopover } from "@gunkin/uiify/core/popover";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
 import { useRenderElement } from "@gunkin/uiify/core/render";
@@ -51,19 +51,15 @@ import type {
   DropdownMenuSubTriggerProps,
   DropdownMenuTriggerProps,
 } from "./types.js";
-
 export type { MenuSelectEvent } from "./types.js";
-
 function mapReason(reason: OpenChangeDetails["reason"]): DropdownMenuOpenChangeReason {
   if (reason === "escape-key") return "escape";
   if (reason === "focus-outside") return "focus-out";
   if (reason === "native-toggle") return "trigger-press";
   return reason;
 }
-
 const [DropdownMenuProvider, useDropdownMenuContext] =
   createPartContext<DropdownMenuContextValue>("DropdownMenu");
-
 export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | null {
   const {
     children,
@@ -77,9 +73,6 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     open,
     ...rootProps
   } = props;
-  const nativeRootProps = Object.fromEntries(
-    Object.entries(rootProps).filter(([name]) => name !== "dangerouslySetInnerHTML"),
-  ) as typeof rootProps;
   const dir = useDirectionOverride(localDir);
   const surface = useMenuSurface({
     ...(id !== undefined ? { id } : {}),
@@ -101,14 +94,12 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
   // cannot emit onOpenChange(false) over a sibling that opened since.
   const openRef = useRef(surface.open);
   openRef.current = surface.open;
-
   const cancelHoverClose = useCallback(() => intent.clearCloseTimer(), [intent]);
   const scheduleHoverClose = useCallback(() => {
     intent.scheduleClose(() => {
       if (openRef.current) surface.close();
     });
   }, [intent, surface]);
-
   const value = useMemo(
     () => ({
       ...surface,
@@ -122,12 +113,11 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     [cancelHoverClose, surface, dir, disabled, loop, scheduleHoverClose],
   );
   return (
-    <div {...nativeRootProps} className={className} data-uiify-menu="">
+    <div data-uiify-menu="" {...rootProps} className={className}>
       <DropdownMenuProvider value={value}>{children}</DropdownMenuProvider>
     </div>
   );
 }
-
 export function DropdownMenuTrigger<TAs extends ElementType = "button">(
   props: DropdownMenuTriggerProps<TAs>,
 ): ReactElement | null {
@@ -137,7 +127,9 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
     className,
     openOnHover = false,
     ...consumerProps
-  } = props as DropdownMenuTriggerProps<"button"> & { openOnHover?: boolean };
+  } = props as DropdownMenuTriggerProps<"button"> & {
+    openOnHover?: boolean;
+  };
   const {
     anchorProps,
     cancelHoverClose,
@@ -193,10 +185,8 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
     defaultTag: "button",
     render,
     props: {
-      ...withoutRef,
       ...triggerProps,
       ...anchorProps,
-      ref: mergedRef,
       ...(nativeButton ? { "data-uiify-button": "" } : {}),
       "aria-haspopup": "menu",
       "data-part": "trigger",
@@ -205,6 +195,9 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
       disabled: nativeButton && disabled ? true : undefined,
       ...(nativeButton && !triggerProps.type ? { type: "button" } : {}),
       ...(className ? { className } : {}),
+
+      ...withoutRef,
+      ref: mergedRef,
       onClick: disabled ? consumerOnClick : composeEventHandlers(consumerOnClick, internalOnClick),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       ...(openOnHover && !disabled
@@ -217,7 +210,6 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
     state: { open },
   });
 }
-
 export function DropdownMenuContent<TAs extends ElementType = "div">(
   props: DropdownMenuContentProps<TAs>,
 ): ReactElement | null {
@@ -263,16 +255,17 @@ export function DropdownMenuContent<TAs extends ElementType = "div">(
     }
   };
   const contentProps = {
-    ...withoutRef,
     ...popupProps,
     ...positionerProps,
-    ref: mergedRef,
     role: "menu",
     "data-part": "content",
     "data-align": align,
     "data-side": side,
     "data-state": open ? "open" : "closed",
     ...(className ? { className } : {}),
+
+    ...withoutRef,
+    ref: mergedRef,
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     ...(hoverEnabledRef.current
       ? {
@@ -302,7 +295,6 @@ export function DropdownMenuContent<TAs extends ElementType = "div">(
     />
   );
 }
-
 interface ItemActivationOptions {
   closeOnSelect: boolean;
   disabled: boolean;
@@ -336,7 +328,6 @@ function useItemActivation({
     },
   };
 }
-
 function MenuItem<TAs extends ElementType>(
   props: DropdownMenuItemProps<TAs> & {
     roleName: string;
@@ -379,12 +370,12 @@ function MenuItem<TAs extends ElementType>(
     ...(onStateChange ? { onStateChange } : {}),
   });
   const itemProps = {
-    ...consumerProps,
     role: roleName,
     "aria-checked": checked,
     "data-part": roleName === "menuitem" ? "item" : roleName.replace("menuitem", "") + "-item",
     "data-state": state,
     ...(className ? { className } : {}),
+    ...consumerProps,
     onClick: composeEventHandlers(consumerOnClick, activation.select),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, activation.keyDown),
     children,
@@ -407,13 +398,11 @@ function MenuItem<TAs extends ElementType>(
     />
   );
 }
-
 export function DropdownMenuItem<TAs extends ElementType = "div">(
   props: DropdownMenuItemProps<TAs>,
 ): ReactElement | null {
-  return <MenuItem {...props} roleName="menuitem" defaultClose />;
+  return <MenuItem roleName="menuitem" defaultClose {...props} />;
 }
-
 interface SelectionContextValue {
   checked: DropdownMenuCheckedState;
   kind: "checkbox" | "radio";
@@ -422,7 +411,6 @@ const [SelectionProvider, useSelectionContext] = createPartContext<SelectionCont
   "DropdownMenu",
   "ItemIndicator",
 );
-
 export function DropdownMenuCheckboxItem<TAs extends ElementType = "div">(
   props: DropdownMenuCheckboxItemProps<TAs>,
 ): ReactElement | null {
@@ -448,7 +436,6 @@ export function DropdownMenuCheckboxItem<TAs extends ElementType = "div">(
     </SelectionProvider>
   );
 }
-
 interface RadioContextValue {
   setValue: (value: string) => void;
   value: string | undefined;
@@ -486,7 +473,7 @@ export function DropdownMenuRadioGroup<TAs extends ElementType = "div">(
         as,
         defaultTag: "div",
         render,
-        props: { ...consumerProps, role: "group", "data-part": "radio-group", children },
+        props: { role: "group", "data-part": "radio-group", ...consumerProps, children },
         state: { value },
       })}
     </RadioProvider>
@@ -511,19 +498,21 @@ export function DropdownMenuRadioItem<TAs extends ElementType = "div">(
     </SelectionProvider>
   );
 }
-
 function Part<TAs extends ElementType = "span">({
   part,
   defaultTag,
   ...props
-}: DropdownMenuPartProps<TAs> & { part: string; defaultTag: ElementType }): ReactElement | null {
+}: DropdownMenuPartProps<TAs> & {
+  part: PartName;
+  defaultTag: ElementType;
+}): ReactElement | null {
   const { as, render, children, className, ...consumerProps } =
     props as DropdownMenuPartProps<"span">;
   return useRenderElement({
     as,
     defaultTag,
     render,
-    props: { ...consumerProps, "data-part": part, ...(className ? { className } : {}), children },
+    props: { "data-part": part, ...(className ? { className } : {}), ...consumerProps, children },
     state: {},
   });
 }
@@ -545,12 +534,12 @@ export function DropdownMenuItemIndicator<TAs extends ElementType = "span">(
   const s = useSelectionContext("ItemIndicator");
   return (
     <Part
-      {...p}
       part="item-indicator"
       defaultTag="span"
       data-state={
         s.checked === "indeterminate" ? "indeterminate" : s.checked ? "checked" : "unchecked"
       }
+      {...p}
     />
   );
 }
@@ -569,7 +558,6 @@ export function DropdownMenuSeparator<TAs extends ElementType = "div">(
 ): ReactElement | null {
   return <MenuSeparator {...p} />;
 }
-
 interface SubValue {
   clickedRef: RefObject<boolean>;
   contentRef: React.RefObject<HTMLElement | null>;
@@ -628,11 +616,13 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
   const sub = useSubContext("SubTrigger");
   const root = useDropdownMenuContext("SubTrigger");
   const { clickedRef } = sub;
-  const { onClick, onKeyDown, onPointerEnter, ...withoutEvents } =
-    consumerProps as typeof consumerProps & {
+  const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
+  const { onClick, onKeyDown, onPointerEnter, onPointerLeave, ...withoutEvents } =
+    withoutRef as typeof withoutRef & {
       onClick?: (event: MouseEvent<HTMLElement>) => void;
       onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
       onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
+      onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
     };
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const rtl = resolveDirection(event.currentTarget, root.dir) === "rtl";
@@ -665,20 +655,20 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
     }
   };
   const triggerProps = {
-    ...(withoutEvents as object),
     ...sub.popover.triggerProps,
     ...sub.anchor.anchorProps,
     command: "show-popover",
-    ref: sub.triggerRef,
     role: "menuitem",
     "aria-haspopup": "menu" as const,
     "aria-expanded": sub.open,
     "data-part": "sub-trigger",
     "data-state": sub.open ? "open" : "closed",
+    ...(withoutEvents as object),
+    ref: useMergedRefs(sub.triggerRef, consumerRef),
     onClick: composeEventHandlers(onClick, handleClick),
     onKeyDown: composeEventHandlers(onKeyDown, handleKeyDown),
     onPointerEnter: composeEventHandlers(onPointerEnter, handlePointerEnter),
-    onPointerLeave: handlePointerLeave,
+    onPointerLeave: composeEventHandlers(onPointerLeave, handlePointerLeave),
     children,
   };
   if (render)
@@ -711,6 +701,12 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
     ...consumerProps
   } = props as DropdownMenuSubContentProps<"div">;
   const sub = useSubContext("SubContent");
+  const [consumerRef, domProps] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
+  const { onKeyDown: consumerOnKeyDown, onPointerLeave: consumerOnPointerLeave } =
+    consumerProps as {
+      onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
+      onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
+    };
   const root = useDropdownMenuContext("SubContent");
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const closeKey =
@@ -722,23 +718,26 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
     }
   };
   const contentProps = {
-    ...consumerProps,
     ...sub.popover.popupProps,
     ...sub.anchor.positionerProps,
-    ref: useMergedRefs(sub.popover.popupRef, sub.contentRef),
     role: "menu",
     "data-part": "sub-content",
     "data-state": sub.open ? "open" : "closed",
     "data-side": side ?? sub.resolvedSide,
     "data-align": align,
-    onKeyDown: handleKeyDown,
-    onPointerLeave: (event: PointerEvent<HTMLElement>) => {
-      if (sub.clickedRef.current) return;
-      const nextTarget = event.relatedTarget;
-      if (!(nextTarget instanceof Node) || !sub.triggerRef.current?.contains(nextTarget)) {
-        sub.popover.close();
-      }
-    },
+    ...domProps,
+    ref: useMergedRefs(sub.popover.popupRef, sub.contentRef, consumerRef),
+    onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
+    onPointerLeave: composeEventHandlers(
+      consumerOnPointerLeave,
+      (event: PointerEvent<HTMLElement>) => {
+        if (sub.clickedRef.current) return;
+        const nextTarget = event.relatedTarget;
+        if (!(nextTarget instanceof Node) || !sub.triggerRef.current?.contains(nextTarget)) {
+          sub.popover.close();
+        }
+      },
+    ),
     children,
   };
   if (render)
@@ -761,7 +760,6 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
     />
   );
 }
-
 DropdownMenuRoot.displayName = "DropdownMenuRoot";
 DropdownMenuTrigger.displayName = "DropdownMenuTrigger";
 DropdownMenuContent.displayName = "DropdownMenuContent";
@@ -782,7 +780,6 @@ DropdownMenuSeparator.displayName = "DropdownMenuSeparator";
 DropdownMenuSub.displayName = "DropdownMenuSub";
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";
 DropdownMenuSubContent.displayName = "DropdownMenuSubContent";
-
 export const DropdownMenu = {
   Bar: DropdownMenuBar,
   Root: DropdownMenuRoot,

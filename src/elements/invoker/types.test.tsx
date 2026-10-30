@@ -38,11 +38,11 @@ it("only accepts a native button or a button-forwarding component as `as`", () =
     <Invoker key="bad-command" command="open-sesame" commandfor="settings">
       Open
     </Invoker>,
-    // @ts-expect-error -- the library owns type=button.
+    // type="button" is a default; consumers may replace it.
     <Invoker key="submit" command="show-modal" commandfor="settings" type="submit">
       Open
     </Invoker>,
-    // @ts-expect-error -- the library owns the invoker attributes; use popover elements/Popover instead.
+    // @ts-expect-error -- popover invoker attributes are not part of a command invoker; use elements/Popover.
     <Invoker key="popover" command="show-modal" commandfor="settings" popoverTarget="other">
       Open
     </Invoker>,

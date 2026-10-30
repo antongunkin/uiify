@@ -30,7 +30,6 @@
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `"aria-label"` | `string` | no |  |
 | `labels` | `Partial<BreadcrumbLabels>` | no |  |
 
 ### BreadcrumbItemData
@@ -41,7 +40,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | --- | --- | --- | --- |
 | `key` | `string` | yes |  |
 | `current` | `boolean` | no |  |
-| `href` | `string` | no |  |
+| `href` | `string \| undefined` | no |  |
 | `label` | `ReactNode` | yes |  |
 
 ### BreadcrumbListOwnProps
@@ -61,12 +60,12 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `item` | `BreadcrumbRepeatedSlotProps<"li">` | no | Generated item wrappers and links use `byItemValue[item.key]`. |
-| `link` | `BreadcrumbLinkSlotProps` | no |  |
-| `ellipsisItem` | `BreadcrumbDirectSlotProps<"li">` | no |  |
-| `ellipsis` | `BreadcrumbDirectSlotProps<"details", { readonly "data-uiify-breadcrumb"?: never; readonly "data-uiify-details"?: never }>` | no |  |
-| `ellipsisTrigger` | `BreadcrumbDirectSlotProps<"summary", { readonly "aria-label"?: never }>` | no |  |
-| `ellipsisContent` | `BreadcrumbDirectSlotProps<"ol", { readonly "data-uiify-details"?: never }>` | no |  |
+| `item` | `RepeatedSlotProps<SlotProps<"li">>` | no |  |
+| `link` | `RepeatedSlotProps<SlotProps<"a">>` | no |  |
+| `ellipsisItem` | `SlotProps<"li">` | no |  |
+| `ellipsis` | `SlotProps<"details">` | no |  |
+| `ellipsisTrigger` | `SlotProps<"summary">` | no |  |
+| `ellipsisContent` | `SlotProps<"ol">` | no |  |
 
 ### BreadcrumbLinkOwnProps
 
@@ -74,7 +73,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `current` | `boolean` | no |  |
-| `href` | `string` | no |  |
+| `href` | `string \| undefined` | no |  |
 
 ### BreadcrumbSeparatorOwnProps
 
@@ -95,7 +94,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `slotProps` | `{ readonly item?: BreadcrumbDirectSlotProps<"li">; readonly ellipsis?: BreadcrumbDirectSlotProps<"span">; }` | no |  |
+| `slotProps` | `{ readonly item?: SlotProps<"li">; readonly ellipsis?: SlotProps<"span">; }` | no |  |
 
 ## Other types
 

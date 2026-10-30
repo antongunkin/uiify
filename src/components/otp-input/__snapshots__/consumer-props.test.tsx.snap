@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default OTP input DOM 1`] = `
+[
+  "div data-complete="" data-uiify-otp-input=""",
+  "div aria-hidden="true" data-filled="" data-index="0" data-part="slot"",
+  "div aria-hidden="true" data-filled="" data-index="1" data-part="slot"",
+  "input aria-label="One-time code" autocomplete="one-time-code" data-part="control" id="uiify-_R_3_" inputmode="numeric" maxlength="2" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" type="password" value="12"",
+]
+`;

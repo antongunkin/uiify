@@ -129,7 +129,7 @@ describe("Field", () => {
     expect(control.id).toBe("wrapped-field-control");
   });
 
-  it("Root owns data-disabled, data-invalid, data-required and data-uiify-field; consumer cannot override them", () => {
+  it("allows root marker overrides", () => {
     render(
       <Field.Root
         id="field"
@@ -144,14 +144,13 @@ describe("Field", () => {
       />,
     );
     const root = screen.getByTestId("root");
-    expect(root.getAttribute("data-disabled")).toBe("");
-    expect(root.getAttribute("data-invalid")).toBe("");
-    expect(root.getAttribute("data-required")).toBe("");
-    expect(root.getAttribute("data-uiify-field")).toBe("");
+    expect(root.getAttribute("data-disabled")).toBe("no");
+    expect(root.getAttribute("data-invalid")).toBe("no");
+    expect(root.getAttribute("data-required")).toBe("no");
+    expect(root.getAttribute("data-uiify-field")).toBe("bogus");
   });
 
-  it("Label owns id, htmlFor, data-disabled and data-required; consumer cannot override them", () => {
-    const bogusHtmlFor = { htmlFor: "bogus-for" } as { htmlFor?: string };
+  it("allows label native overrides", () => {
     render(
       <Field.Root id="field" required disabled>
         <Field.Label
@@ -161,7 +160,7 @@ describe("Field", () => {
           id="bogus-id"
           data-disabled="no"
           data-required="no"
-          {...bogusHtmlFor}
+          htmlFor="bogus-for"
         >
           Name
         </Field.Label>
@@ -169,15 +168,13 @@ describe("Field", () => {
       </Field.Root>,
     );
     const label = screen.getByText("Name");
-    const control = screen.getByRole("textbox");
-    expect(label.id).toBe("field-label");
-    expect(label.getAttribute("for")).toBe(control.id);
-    expect(label.getAttribute("for")).not.toBe("bogus-for");
-    expect(label.getAttribute("data-disabled")).toBe("");
-    expect(label.getAttribute("data-required")).toBe("");
+    expect(label.id).toBe("bogus-id");
+    expect(label.getAttribute("for")).toBe("bogus-for");
+    expect(label.getAttribute("data-disabled")).toBe("no");
+    expect(label.getAttribute("data-required")).toBe("no");
   });
 
-  it("Control owns id, aria wiring, and data attributes; consumer cannot override them", () => {
+  it("allows control native overrides", () => {
     render(
       <Field.Root id="field" required invalid disabled>
         <Field.Control
@@ -199,17 +196,17 @@ describe("Field", () => {
       </Field.Root>,
     );
     const control = screen.getByRole("textbox");
-    expect(control.id).toBe("field-control");
-    expect(control.getAttribute("aria-labelledby")).toBe("field-label");
-    expect(control.getAttribute("aria-describedby")).toBe("field-description field-error");
-    expect(control.getAttribute("aria-invalid")).toBe("true");
-    expect(control.getAttribute("aria-required")).toBe("true");
-    expect(control.getAttribute("data-disabled")).toBe("");
-    expect(control.getAttribute("data-invalid")).toBe("");
-    expect(control.getAttribute("data-required")).toBe("");
+    expect(control.id).toBe("bogus-id");
+    expect(control.getAttribute("aria-labelledby")).toBe("bogus");
+    expect(control.getAttribute("aria-describedby")).toBe("bogus");
+    expect(control.getAttribute("aria-invalid")).toBe("false");
+    expect(control.getAttribute("aria-required")).toBe("false");
+    expect(control.getAttribute("data-disabled")).toBe("no");
+    expect(control.getAttribute("data-invalid")).toBe("no");
+    expect(control.getAttribute("data-required")).toBe("no");
   });
 
-  it("Description owns id and data-disabled; consumer cannot override them", () => {
+  it("allows description native overrides", () => {
     render(
       <Field.Root id="field" disabled>
         <Field.Description fieldId="field" disabled id="bogus-id" data-disabled="no">
@@ -218,11 +215,11 @@ describe("Field", () => {
       </Field.Root>,
     );
     const description = screen.getByText("Hint");
-    expect(description.id).toBe("field-description");
-    expect(description.getAttribute("data-disabled")).toBe("");
+    expect(description.id).toBe("bogus-id");
+    expect(description.getAttribute("data-disabled")).toBe("no");
   });
 
-  it("Error owns id, role and data-invalid; consumer cannot override them", () => {
+  it("allows error native overrides", () => {
     render(
       <Field.Root id="field" invalid>
         <Field.Error fieldId="field" invalid id="bogus-id" role="note" data-invalid="no">
@@ -231,9 +228,9 @@ describe("Field", () => {
       </Field.Root>,
     );
     const error = screen.getByText("Required");
-    expect(error.id).toBe("field-error");
-    expect(error.getAttribute("role")).toBe("alert");
-    expect(error.getAttribute("data-invalid")).toBe("");
+    expect(error.id).toBe("bogus-id");
+    expect(error.getAttribute("role")).toBe("note");
+    expect(error.getAttribute("data-invalid")).toBe("no");
   });
 
   it("renders consistent SSR markup", () => {

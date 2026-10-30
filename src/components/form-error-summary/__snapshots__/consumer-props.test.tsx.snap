@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default form-error-summary DOM 1`] = `
+[
+  "section data-uiify-form-error-summary=""",
+  "h2 data-part="title"",
+  "ul data-part="list"",
+  "li data-part="item"",
+  "a data-part="link" href="#email"",
+  "li data-part="item"",
+  "a data-part="link" href="#name"",
+]
+`;

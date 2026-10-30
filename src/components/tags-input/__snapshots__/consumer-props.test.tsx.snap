@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default tags input DOM 1`] = `
+[
+  "div data-uiify-tags-input=""",
+  "ul data-orientation="horizontal" data-part="list" id="uiify-_R_0_"",
+  "li data-index="0" data-value="React"",
+  "li data-part="input-slot"",
+  "input aria-controls="uiify-_R_0_" aria-expanded="false" aria-label="Tags" data-part="input" id="uiify-_R_0H1_" role="combobox" type="text" value=""",
+  "li data-part="tag" data-value="React" id="uiify-_R_l_" role="listitem" tabindex="-1"",
+  "button aria-label="Remove tag" data-part="tag-remove" type="button"",
+]
+`;
