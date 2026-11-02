@@ -4,6 +4,8 @@
 Rules and anti-patterns: [index.md](./index.md). Each entry links to a generated reference with
 its exports, props and shapes; exact types are in the `.d.ts` file listed in the Types column.
 
+UI documents (`@gunkin/uiify/ai`) use many of these components as parts; the part types are in `dist/ai/catalog.generated.d.ts`.
+
 ## Tiers
 
 | Tier | Meaning | Client JavaScript | Without JavaScript |

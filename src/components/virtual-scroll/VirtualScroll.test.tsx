@@ -364,6 +364,18 @@ describe("VirtualScroll", () => {
     expect(container.querySelectorAll('[data-part="row"]').length).toBe(countBefore);
   });
 
+  it("preserves mounted content for items that stay in the visible window", async () => {
+    const { container } = renderSongList(createSongs(200), { overscan: 0 });
+    const title = screen.getByTestId("title-3");
+    const row = title.closest('[data-part="row"]');
+
+    await scrollViewport(getViewport(container), VIRTUAL_SCROLL_ROW_HEIGHT);
+
+    expect(screen.getByTestId("title-3")).toBe(title);
+    expect(title.closest('[data-part="row"]')).toBe(row);
+    expect(title.isConnected).toBe(true);
+  });
+
   it("does not re-render rows when scroll stays within the same visible range", async () => {
     const observer = stubResizeObserver(600);
     const counter = createRenderCounter();

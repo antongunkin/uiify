@@ -186,6 +186,7 @@ With that order in place, rules in the `app` layer win over the library:
 
 - `@gunkin/uiify/components/<name>`: components (names in `components.md`)
 - `@gunkin/uiify/elements/<name>`: native-element primitives for building your own anatomy
+- `@gunkin/uiify/ai`: render JSON UI documents with `UiDocument` and check them with `validateDocument`; the version-matched catalog of part types and TSDoc is `dist/ai/catalog.generated.d.ts`
 - `@gunkin/uiify/hooks`: hooks
 - `@gunkin/uiify/core/<name>`: React-agnostic stores and render helpers
 - `@gunkin/uiify/components/behavior.css`: required behavior CSS, no visual styles

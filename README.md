@@ -32,6 +32,65 @@ export function SaveButton() {
 Use focused `@gunkin/uiify/components/*`, `@gunkin/uiify/elements/*`, `@gunkin/uiify/core/*`, or `@gunkin/uiify/hooks` imports in
 Server Components so client boundaries remain explicit.
 
+## UI documents (`@gunkin/uiify/ai`)
+
+A UI document is a JSON tree of UIify parts: `{ type, props, children }`, with no styling and no
+code. An agent writes it in your repository, or an LLM in your product stores it in a database;
+`UiDocument` renders it in Server Components, with SSR and hydration, and without JavaScript in
+the browser.
+
+Ask your agent, for example `/uiify Add a status filter above the orders table at /orders`.
+The result is an ordinary component:
+
+```tsx
+import { Suspense } from "react";
+import { UiDocument, type UiNodeInput } from "@gunkin/uiify/ai";
+
+const filter = {
+  type: "form",
+  props: { method: "get", role: "search" },
+  children: [
+    { type: "label", props: { htmlFor: "status" }, children: ["Status"] },
+    {
+      type: "Select.Root",
+      props: { id: "status", name: "status" },
+      children: [
+        { type: "Select.Item", props: { value: "open" }, children: ["Open"] },
+        { type: "Select.Item", props: { value: "closed" }, children: ["Closed"] },
+      ],
+    },
+    { type: "Button", props: { type: "submit" }, children: ["Apply"] },
+  ],
+} satisfies UiNodeInput;
+
+export function OrdersFilter() {
+  return (
+    <Suspense>
+      <UiDocument node={filter} />
+    </Suspense>
+  );
+}
+```
+
+`satisfies UiNodeInput` makes TypeScript reject an unknown part, prop or value at the line that is
+wrong. For a document from a database, validate it before saving; `UiDocument` validates again
+before rendering and never renders an invalid document:
+
+```ts
+import { validateDocument } from "@gunkin/uiify/ai";
+
+const result = validateDocument(JSON.parse(body));
+if (!result.ok) return Response.json(result.issues, { status: 422 });
+// result.issues[0] for `variant: "primary"`:
+// { breadcrumb: "form › Stack › Button.props.variant",
+//   message: "\"primary\" is not allowed; use one of \"secondary\", \"outline\", …" }
+await db.pages.save(result.document);
+```
+
+Interactivity is native: links, `GET`/`POST` forms and invoker commands (`commandfor`). Parts
+documents cannot use yet are listed in `uiUnavailableParts`; `uiDocumentSchema` is the JSON Schema
+to give your own LLM.
+
 ## AI coding agents
 
 `@gunkin/uiify` ships rules, a component index and per-component references that match the

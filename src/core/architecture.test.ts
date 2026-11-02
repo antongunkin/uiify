@@ -97,6 +97,24 @@ describe("package architecture", () => {
     expect(existsSync(join(DIST, "core", "merge-props.js"))).toBe(false);
   });
 
+  // `ai` is the top layer (hooks → core → elements → components → ai): nothing outside
+  // src/ai/ may import it. This one rule reads all of src/, not only src/core/.
+  it("keeps every layer below ai free of ai imports", () => {
+    const AI_SRC = join(SRC, "ai");
+    const files = collectProductionFiles(SRC).filter(
+      (file) => !file.startsWith(`${AI_SRC}/`) && !/\.stories\.|\/test-utils(?:\/|\.ts)/.test(file),
+    );
+    expect(files.length).toBeGreaterThan(100);
+    const importPath = /(?:\bfrom\s*|\bimport\s*\(?\s*)["']([^"']+)["']/g;
+    const offenders = files.flatMap((file) =>
+      [...readFileSync(file, "utf8").matchAll(importPath)]
+        .map((match) => match[1]!)
+        .filter((path) => /(?:^|\/)ai(?:\/|$)/.test(path) || path.startsWith("@gunkin/uiify/ai"))
+        .map((path) => `${file}: ${path}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
   // See the comment above iteratesArbitraryKeys/etc. — this is a heuristic
   // signal, not proof. Do not treat a pass here as clearance for a
   // reimplementation that a human reviewer would otherwise flag.

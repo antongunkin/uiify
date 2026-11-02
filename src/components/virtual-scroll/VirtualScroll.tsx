@@ -582,7 +582,11 @@ export function VirtualScroll<T extends VirtualScrollItem>(
                 const commonProps = resolveRepeatedSlotProps(byItemValueProps, slot.item.id);
                 return mergeRepeatedSlotProps(commonProps, byItemIndex?.[slot.index]);
               })()}
-              key={`slot-${slot.slotIndex}`}
+              key={
+                dynamicLayout
+                  ? `slot-${slot.slotIndex}`
+                  : (slot.item?.id ?? `slot-${slot.slotIndex}`)
+              }
               slotIndex={slot.slotIndex}
               index={slot.index}
               itemCount={items.length}

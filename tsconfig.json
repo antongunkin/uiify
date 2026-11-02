@@ -28,7 +28,8 @@
       "@gunkin/uiify/components": ["src/components/index.ts"],
       "@gunkin/uiify/components/*": ["src/components/*"],
       "@gunkin/uiify/elements": ["src/elements/index.ts"],
-      "@gunkin/uiify/elements/*": ["src/elements/*"]
+      "@gunkin/uiify/elements/*": ["src/elements/*"],
+      "@gunkin/uiify/ai": ["src/ai/index.ts"]
     }
   },
   "include": ["src"]
