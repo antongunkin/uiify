@@ -34,6 +34,7 @@ export function validateDocument(value: unknown): UiValidationResult {
     const version = (value as { version: unknown }).version;
     return fail([
       {
+        code: "version.unsupported",
         path: "/version",
         breadcrumb: "version",
         message: `unsupported version ${typeof version === "string" ? JSON.stringify(version) : String(JSON.stringify(version))}; this validator reads version 1`,

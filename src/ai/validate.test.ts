@@ -319,6 +319,10 @@ describe("validateDocument", () => {
         props: {},
         children,
       });
+      const row = (id: string, ...children: unknown[]): Json => ({
+        ...node("Table.Row", ...children),
+        props: { id },
+      });
 
       it.each([
         ["Stack in p", node("p", node("Stack", "x")), "p › Stack", "p"],
@@ -358,6 +362,96 @@ describe("validateDocument", () => {
         expect(single(node("ol", node("p", "x"))).breadcrumb).toBe("ol › p");
         expect(single(node("dl", node("li", "x"))).breadcrumb).toBe("dl › li");
         expect(single(node("ul", node("li", "x"), "y")).path).toBe("/children/1");
+      });
+
+      it.each(["ul", "ol"])("accepts Item as a native li inside %s", (type) => {
+        expect(validateDocument(node(type, node("Item", node("ItemContent", "Name")))).ok).toBe(
+          true,
+        );
+      });
+
+      it.each(["dl", "DescriptionList"])("accepts description parts inside %s", (type) => {
+        expect(
+          validateDocument(
+            node(type, node("DescriptionTerm", "Status"), node("DescriptionDetails", "Active")),
+          ).ok,
+        ).toBe(true);
+        expect(validateDocument(node(type, node("Item", "Wrong"))).ok).toBe(false);
+      });
+
+      it("rejects component buttons nested through physical or transparent parts", () => {
+        expect(single(node("Button", node("Stack", button()))).message).toContain("button");
+        const tooltip = node(
+          "Tooltip.Provider",
+          node("Tooltip.Root", node("Tooltip.Trigger", button())),
+        );
+        expect(single(tooltip).breadcrumb).toBe(
+          "Tooltip.Provider › Tooltip.Root › Tooltip.Trigger › Button",
+        );
+        const nested = node(
+          "Button",
+          node("Tooltip.Provider", node("Tooltip.Root", node("Tooltip.Trigger", "Help"))),
+        );
+        expect(single(nested).message).toContain("button");
+        expect(validateDocument(node("Button", node("button", "Native"))).ok).toBe(false);
+      });
+
+      it.each([
+        node("Table.Root", row("row", node("Table.Cell", "x"))),
+        node("Table.Root", node("Table.Cell", "x")),
+        node("Table.Root", node("Stack", node("Table.Body"))),
+        node("Table.Root", node("Table.Body", node("Table.Cell", "x"))),
+        node("Table.Root", node("Table.Body", row("row", node("Stack", node("Table.Cell", "x"))))),
+        node("Table.Root", node("Table.Body", node("Table.Header"))),
+        node("Table.Root", node("Table.Body", "text")),
+        node("Table.Root", node("Table.Body", row("row", "text"))),
+      ])("rejects table anatomy the HTML parser rewrites: %j", (value) => {
+        expect(validateDocument(value).ok).toBe(false);
+      });
+
+      it("uses effective parents through transparent parts without inventing wrappers", () => {
+        const table = node(
+          "Table.Root",
+          node(
+            "Tooltip.Provider",
+            node(
+              "Tooltip.Root",
+              node("Table.Caption", "Users"),
+              node(
+                "Table.Header",
+                row("head", {
+                  type: "Table.ColumnHeader",
+                  props: { id: "name" },
+                  children: ["Name"],
+                }),
+              ),
+              node(
+                "Table.Body",
+                row("body", node("Table.RowHeader", "Ada"), node("Table.Cell", "Active")),
+              ),
+              node("Table.Footer", row("foot", node("Table.Cell", "Total"))),
+            ),
+          ),
+        );
+        expect(validateDocument(table).ok).toBe(true);
+        expect(
+          validateDocument(
+            node("ul", node("Tooltip.Provider", node("Tooltip.Root", node("Item", "Name")))),
+          ).ok,
+        ).toBe(true);
+        expect(validateDocument(node("ul", node("Tooltip.Provider", "text"))).ok).toBe(false);
+        expect(
+          validateDocument(
+            node(
+              "Select.Root",
+              node("Select.Content", {
+                type: "Select.Item",
+                props: { value: "a" },
+                children: ["A"],
+              }),
+            ),
+          ).ok,
+        ).toBe(true);
       });
 
       it("accepts phrasing natives and text in phrasing parents", () => {
@@ -513,6 +607,20 @@ describe("validateDocument", () => {
     it("rejects a missing version", () => {
       expect(single({ root: form() }).message).toContain("version");
     });
+  });
+
+  it("provides stable codes without losing repair locations or allowed values", () => {
+    expect(single(button({ variant: "wrong" }))).toMatchObject({
+      code: "schema.enum",
+      path: "/props/variant",
+      allowed: expect.arrayContaining(["ghost"]),
+    });
+    expect(single(fieldLabel("missing"))).toMatchObject({ code: "root.missing", path: "" });
+    expect(single(fieldRoot("a", fieldLabel("b"))).code).toBe("fieldId.mismatch");
+    expect(single(form(fieldRoot("a"), fieldRoot("a"))).code).toBe("id.duplicate");
+    expect(single(form("x".repeat(10_001))).code).toBe("limit.string");
+    expect(single({ type: "Button", props: {}, children: [button()] }).code).toBe("nesting");
+    expect(single({ version: 2, root: button() }).code).toBe("version.unsupported");
   });
 });
 

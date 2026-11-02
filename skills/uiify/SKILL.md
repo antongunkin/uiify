@@ -36,21 +36,24 @@ Use this precedence: explicit brief or reference → existing project → select
 
 When images or typography shape the composition, read `references/guides/assets.md` before choosing material.
 
-## Write the page as a UI document
+## Choose the output form
+
+Always describe the page as a UI tree first (`references/guides/document.md`): it is short, checked against the real parts, and cheap to fix. Then choose what it becomes, from the request and the project, without asking.
+
+- **Components** (default): ordinary JSX importing `@gunkin/uiify/components/<name>`, written into the project's own files. A second pass turns the validated tree into JSX (`references/guides/components.md`); give it to a separate agent when the host can run one, with only the tree, the brief and that guide.
+- **Document**: the tree itself, rendered by `UiDocument` from `@gunkin/uiify/ai`. Use it only when the request or project says the UI is stored or generated rather than written once: a database, CMS, server-driven or LLM-produced page, an explicit "document" or JSON, or code that already imports `@gunkin/uiify/ai`.
+
+Both forms share the Index, references, laws and design guidance.
+
+## Select knowledge for the page
 
 `references/` paths are relative to this skill directory; `dist/` and `agents/` paths to the package root. Read each distinct file once.
 
-1. Match the needed elements to the Index by name or alias; never invent a binding. A `gap` or an unlisted element needs the catalog's native elements (`p`, `ul`, `a`, `label`, headings…) or other available parts. For each selected element with a reference path, read that file once and carry its structure and ids over to nodes; its JSX is a recipe, not code to paste. From the Composition index, read only relationships where both elements are needed. Follow linked laws.
-2. Next, read the part types and TSDoc in the package's `dist/ai/catalog.generated.d.ts`, but only `UiType` and the selected parts' `<Name>Props`, not the whole file. Use nothing it lacks.
-3. Next, write the page as a UI document with `satisfies UiNodeInput`: nodes are `{ type, props, children }`; children are nodes or strings. Values and `.map` over data are plain TypeScript; annotate callbacks `(row): UiNodeInput => …`. Import types from `@gunkin/uiify/ai`.
-4. Then render it with `UiDocument` from `@gunkin/uiify/ai`: `<Suspense><UiDocument node={page} /></Suspense>`.
-5. Last, run the project's typecheck, then validate and check the rendered HTML (Verification guidance).
+Match the needed elements to the Index by name or alias; never invent a binding. A `gap` or an unlisted element needs custom UI composed from available UIify controls or semantic native HTML, not a guessed UIify API.
 
-Label a control with a native `{ type: "label", props: { htmlFor } }` node and the control's `id`. No component part takes `as`; `Field.Label` labels only `Field.Control` (a `div`); inputs and selects need a native label. Interactivity is native only: `href`, form `method`/`action`, invoker `commandfor`/`command` (for example `ModalTrigger`); `popoverTarget` is not available on parts.
+For each selected element with a fourth-column reference path, read that file once. A blank path means no curated recipe. From the Composition index, read only relationships where both elements are needed. Follow each selected reference and linked law, including laws named by element recipes. Do not load unrelated references or the complete catalog.
 
-Not available to documents yet: Tier 2 components and the parts, with reasons, in `uiUnavailableParts` in `dist/ai/catalog.generated.d.ts` (Tabs, charts, Toast, Breadcrumb.Ellipsis…). When a page needs one, write ordinary JSX for that piece outside the document, imported from `@gunkin/uiify/components/<name>` (see `agents/components.md`), and say so.
-
-Use a part, not a raw-tag lookalike of `Button`, `Input`, `Checkbox` or `AlertModal`. Keep native elements when no part fits or the page demonstrates native semantics; keep `fieldset`, `dl` and forms.
+A reference's JSX is a recipe for structure and ids, not code to paste.
 
 ## Design guidance
 
@@ -76,7 +79,7 @@ Do not add an unrelated marketing hero or make every field group an equally prom
 
 ## Verification guidance
 
-Finish the edits first, then verify the stable result once: the project's typecheck (`tsc`), `validateDocument` on the document, then html-validate and axe-core on its rendered HTML, using the project's tooling. On failure, fix related findings together, diagnose with focused checks, then rerun the required gate. For these steps and the optional static lint and its limits, read `references/guides/verification.md`.
+Finish the edits first, then verify the stable result once: the project's typecheck (`tsc`), build and tests, `validateDocument` on the tree, and html-validate and axe-core on the rendered HTML, using the project's tooling. On failure, fix related findings together, diagnose with focused checks, then rerun the required gate. For these steps and the optional static lint and its limits, read `references/guides/verification.md`.
 
 Reuse existing browser and accessibility tooling for responsive layouts, keyboard access and requested interactions. Before installing missing Playwright or axe-core tooling, html-validate or browser binaries, notify the user what is needed and why. This is a notification, not a confirmation question; follow project rules, its package manager and development dependencies. Use Playwright for browser checks.
 

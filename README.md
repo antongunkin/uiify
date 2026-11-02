@@ -39,8 +39,9 @@ code. An agent writes it in your repository, or an LLM in your product stores it
 `UiDocument` renders it in Server Components, with SSR and hydration, and without JavaScript in
 the browser.
 
-Ask your agent, for example `/uiify Add a status filter above the orders table at /orders`.
-The result is an ordinary component:
+By default `/uiify` writes ordinary component JSX. Ask for a document when the UI is stored or
+generated, for example `/uiify Add a status filter above the orders table at /orders as a UI document`.
+The result is an ordinary component that renders one:
 
 ```tsx
 import { Suspense } from "react";

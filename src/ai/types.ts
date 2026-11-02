@@ -9,6 +9,8 @@ export interface UiDocumentData {
 
 /** One problem found in a document, written so a person or a model can repair it. */
 export interface UiValidationIssue {
+  /** Stable category for repair tooling; existing readable diagnostics remain available. */
+  readonly code?: string;
   /** JSON Pointer into the validated value, e.g. `/root/children/0/props/variant`. */
   readonly path: string;
   /** Readable location, e.g. `form › Field.Root › Button.props.variant`. */

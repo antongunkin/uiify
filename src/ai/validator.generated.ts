@@ -2824,7 +2824,7 @@ const schema19 = {
         disabled: { $ref: "#/$defs/attribute.disabled" },
         locale: { type: "string" },
         pageLabelTemplate: { type: "string" },
-        page: { type: "number" },
+        page: { type: "integer", minimum: 1, maximum: 9007199254740991 },
         selected: { type: "boolean" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -2845,12 +2845,12 @@ const schema19 = {
       type: "object",
       properties: {
         locale: { type: "string" },
-        boundaryCount: { type: "number" },
-        count: { type: "number" },
-        defaultPage: { type: "number" },
+        boundaryCount: { type: "integer", minimum: 0, maximum: 100 },
+        count: { type: "integer", minimum: 0, maximum: 9007199254740991 },
+        defaultPage: { type: "integer", minimum: 1, maximum: 9007199254740991 },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         showFirstLast: { type: "boolean" },
-        siblingCount: { type: "number" },
+        siblingCount: { type: "integer", minimum: 0, maximum: 100 },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2914,7 +2914,7 @@ const schema19 = {
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
         defaultValue: { type: "number" },
-        max: { $ref: "#/$defs/attribute.max" },
+        max: { type: "integer", minimum: 1, maximum: 100 },
         readOnly: { $ref: "#/$defs/attribute.readOnly" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -30621,7 +30621,7 @@ const schema171 = {
     disabled: { $ref: "#/$defs/attribute.disabled" },
     locale: { type: "string" },
     pageLabelTemplate: { type: "string" },
-    page: { type: "number" },
+    page: { type: "integer", minimum: 1, maximum: 9007199254740991 },
     selected: { type: "boolean" },
     id: { $ref: "#/$defs/attribute.id" },
     title: { $ref: "#/$defs/attribute.title" },
@@ -30733,13 +30733,13 @@ function validate665(
     }
     if (data.page !== undefined) {
       let data3 = data.page;
-      if (!(typeof data3 == "number" && isFinite(data3))) {
+      if (!(typeof data3 == "number" && !(data3 % 1) && !isNaN(data3) && isFinite(data3))) {
         const err4 = {
           instancePath: instancePath + "/page",
           schemaPath: "#/properties/page/type",
           keyword: "type",
-          params: { type: "number" },
-          message: "must be number",
+          params: { type: "integer" },
+          message: "must be integer",
         };
         if (vErrors === null) {
           vErrors = [err4];
@@ -30748,10 +30748,42 @@ function validate665(
         }
         errors++;
       }
+      if (typeof data3 == "number" && isFinite(data3)) {
+        if (data3 > 9007199254740991 || isNaN(data3)) {
+          const err5 = {
+            instancePath: instancePath + "/page",
+            schemaPath: "#/properties/page/maximum",
+            keyword: "maximum",
+            params: { comparison: "<=", limit: 9007199254740991 },
+            message: "must be <= 9007199254740991",
+          };
+          if (vErrors === null) {
+            vErrors = [err5];
+          } else {
+            vErrors.push(err5);
+          }
+          errors++;
+        }
+        if (data3 < 1 || isNaN(data3)) {
+          const err6 = {
+            instancePath: instancePath + "/page",
+            schemaPath: "#/properties/page/minimum",
+            keyword: "minimum",
+            params: { comparison: ">=", limit: 1 },
+            message: "must be >= 1",
+          };
+          if (vErrors === null) {
+            vErrors = [err6];
+          } else {
+            vErrors.push(err6);
+          }
+          errors++;
+        }
+      }
     }
     if (data.selected !== undefined) {
       if (typeof data.selected !== "boolean") {
-        const err5 = {
+        const err7 = {
           instancePath: instancePath + "/selected",
           schemaPath: "#/properties/selected/type",
           keyword: "type",
@@ -30759,9 +30791,9 @@ function validate665(
           message: "must be boolean",
         };
         if (vErrors === null) {
-          vErrors = [err5];
+          vErrors = [err7];
         } else {
-          vErrors.push(err5);
+          vErrors.push(err7);
         }
         errors++;
       }
@@ -30907,7 +30939,7 @@ function validate665(
       }
     }
   } else {
-    const err6 = {
+    const err8 = {
       instancePath,
       schemaPath: "#/type",
       keyword: "type",
@@ -30915,9 +30947,9 @@ function validate665(
       message: "must be object",
     };
     if (vErrors === null) {
-      vErrors = [err6];
+      vErrors = [err8];
     } else {
-      vErrors.push(err6);
+      vErrors.push(err8);
     }
     errors++;
   }
@@ -31393,12 +31425,12 @@ const schema175 = {
   type: "object",
   properties: {
     locale: { type: "string" },
-    boundaryCount: { type: "number" },
-    count: { type: "number" },
-    defaultPage: { type: "number" },
+    boundaryCount: { type: "integer", minimum: 0, maximum: 100 },
+    count: { type: "integer", minimum: 0, maximum: 9007199254740991 },
+    defaultPage: { type: "integer", minimum: 1, maximum: 9007199254740991 },
     disabled: { $ref: "#/$defs/attribute.disabled" },
     showFirstLast: { type: "boolean" },
-    siblingCount: { type: "number" },
+    siblingCount: { type: "integer", minimum: 0, maximum: 100 },
     id: { $ref: "#/$defs/attribute.id" },
     title: { $ref: "#/$defs/attribute.title" },
     "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -31475,13 +31507,13 @@ function validate682(
     }
     if (data.boundaryCount !== undefined) {
       let data1 = data.boundaryCount;
-      if (!(typeof data1 == "number" && isFinite(data1))) {
+      if (!(typeof data1 == "number" && !(data1 % 1) && !isNaN(data1) && isFinite(data1))) {
         const err3 = {
           instancePath: instancePath + "/boundaryCount",
           schemaPath: "#/properties/boundaryCount/type",
           keyword: "type",
-          params: { type: "number" },
-          message: "must be number",
+          params: { type: "integer" },
+          message: "must be integer",
         };
         if (vErrors === null) {
           vErrors = [err3];
@@ -31490,41 +31522,137 @@ function validate682(
         }
         errors++;
       }
+      if (typeof data1 == "number" && isFinite(data1)) {
+        if (data1 > 100 || isNaN(data1)) {
+          const err4 = {
+            instancePath: instancePath + "/boundaryCount",
+            schemaPath: "#/properties/boundaryCount/maximum",
+            keyword: "maximum",
+            params: { comparison: "<=", limit: 100 },
+            message: "must be <= 100",
+          };
+          if (vErrors === null) {
+            vErrors = [err4];
+          } else {
+            vErrors.push(err4);
+          }
+          errors++;
+        }
+        if (data1 < 0 || isNaN(data1)) {
+          const err5 = {
+            instancePath: instancePath + "/boundaryCount",
+            schemaPath: "#/properties/boundaryCount/minimum",
+            keyword: "minimum",
+            params: { comparison: ">=", limit: 0 },
+            message: "must be >= 0",
+          };
+          if (vErrors === null) {
+            vErrors = [err5];
+          } else {
+            vErrors.push(err5);
+          }
+          errors++;
+        }
+      }
     }
     if (data.count !== undefined) {
       let data2 = data.count;
-      if (!(typeof data2 == "number" && isFinite(data2))) {
-        const err4 = {
+      if (!(typeof data2 == "number" && !(data2 % 1) && !isNaN(data2) && isFinite(data2))) {
+        const err6 = {
           instancePath: instancePath + "/count",
           schemaPath: "#/properties/count/type",
           keyword: "type",
-          params: { type: "number" },
-          message: "must be number",
+          params: { type: "integer" },
+          message: "must be integer",
         };
         if (vErrors === null) {
-          vErrors = [err4];
+          vErrors = [err6];
         } else {
-          vErrors.push(err4);
+          vErrors.push(err6);
         }
         errors++;
+      }
+      if (typeof data2 == "number" && isFinite(data2)) {
+        if (data2 > 9007199254740991 || isNaN(data2)) {
+          const err7 = {
+            instancePath: instancePath + "/count",
+            schemaPath: "#/properties/count/maximum",
+            keyword: "maximum",
+            params: { comparison: "<=", limit: 9007199254740991 },
+            message: "must be <= 9007199254740991",
+          };
+          if (vErrors === null) {
+            vErrors = [err7];
+          } else {
+            vErrors.push(err7);
+          }
+          errors++;
+        }
+        if (data2 < 0 || isNaN(data2)) {
+          const err8 = {
+            instancePath: instancePath + "/count",
+            schemaPath: "#/properties/count/minimum",
+            keyword: "minimum",
+            params: { comparison: ">=", limit: 0 },
+            message: "must be >= 0",
+          };
+          if (vErrors === null) {
+            vErrors = [err8];
+          } else {
+            vErrors.push(err8);
+          }
+          errors++;
+        }
       }
     }
     if (data.defaultPage !== undefined) {
       let data3 = data.defaultPage;
-      if (!(typeof data3 == "number" && isFinite(data3))) {
-        const err5 = {
+      if (!(typeof data3 == "number" && !(data3 % 1) && !isNaN(data3) && isFinite(data3))) {
+        const err9 = {
           instancePath: instancePath + "/defaultPage",
           schemaPath: "#/properties/defaultPage/type",
           keyword: "type",
-          params: { type: "number" },
-          message: "must be number",
+          params: { type: "integer" },
+          message: "must be integer",
         };
         if (vErrors === null) {
-          vErrors = [err5];
+          vErrors = [err9];
         } else {
-          vErrors.push(err5);
+          vErrors.push(err9);
         }
         errors++;
+      }
+      if (typeof data3 == "number" && isFinite(data3)) {
+        if (data3 > 9007199254740991 || isNaN(data3)) {
+          const err10 = {
+            instancePath: instancePath + "/defaultPage",
+            schemaPath: "#/properties/defaultPage/maximum",
+            keyword: "maximum",
+            params: { comparison: "<=", limit: 9007199254740991 },
+            message: "must be <= 9007199254740991",
+          };
+          if (vErrors === null) {
+            vErrors = [err10];
+          } else {
+            vErrors.push(err10);
+          }
+          errors++;
+        }
+        if (data3 < 1 || isNaN(data3)) {
+          const err11 = {
+            instancePath: instancePath + "/defaultPage",
+            schemaPath: "#/properties/defaultPage/minimum",
+            keyword: "minimum",
+            params: { comparison: ">=", limit: 1 },
+            message: "must be >= 1",
+          };
+          if (vErrors === null) {
+            vErrors = [err11];
+          } else {
+            vErrors.push(err11);
+          }
+          errors++;
+        }
       }
     }
     if (data.disabled !== undefined) {
@@ -31543,7 +31671,7 @@ function validate682(
     }
     if (data.showFirstLast !== undefined) {
       if (typeof data.showFirstLast !== "boolean") {
-        const err6 = {
+        const err12 = {
           instancePath: instancePath + "/showFirstLast",
           schemaPath: "#/properties/showFirstLast/type",
           keyword: "type",
@@ -31551,29 +31679,61 @@ function validate682(
           message: "must be boolean",
         };
         if (vErrors === null) {
-          vErrors = [err6];
+          vErrors = [err12];
         } else {
-          vErrors.push(err6);
+          vErrors.push(err12);
         }
         errors++;
       }
     }
     if (data.siblingCount !== undefined) {
       let data6 = data.siblingCount;
-      if (!(typeof data6 == "number" && isFinite(data6))) {
-        const err7 = {
+      if (!(typeof data6 == "number" && !(data6 % 1) && !isNaN(data6) && isFinite(data6))) {
+        const err13 = {
           instancePath: instancePath + "/siblingCount",
           schemaPath: "#/properties/siblingCount/type",
           keyword: "type",
-          params: { type: "number" },
-          message: "must be number",
+          params: { type: "integer" },
+          message: "must be integer",
         };
         if (vErrors === null) {
-          vErrors = [err7];
+          vErrors = [err13];
         } else {
-          vErrors.push(err7);
+          vErrors.push(err13);
         }
         errors++;
+      }
+      if (typeof data6 == "number" && isFinite(data6)) {
+        if (data6 > 100 || isNaN(data6)) {
+          const err14 = {
+            instancePath: instancePath + "/siblingCount",
+            schemaPath: "#/properties/siblingCount/maximum",
+            keyword: "maximum",
+            params: { comparison: "<=", limit: 100 },
+            message: "must be <= 100",
+          };
+          if (vErrors === null) {
+            vErrors = [err14];
+          } else {
+            vErrors.push(err14);
+          }
+          errors++;
+        }
+        if (data6 < 0 || isNaN(data6)) {
+          const err15 = {
+            instancePath: instancePath + "/siblingCount",
+            schemaPath: "#/properties/siblingCount/minimum",
+            keyword: "minimum",
+            params: { comparison: ">=", limit: 0 },
+            message: "must be >= 0",
+          };
+          if (vErrors === null) {
+            vErrors = [err15];
+          } else {
+            vErrors.push(err15);
+          }
+          errors++;
+        }
       }
     }
     if (data.id !== undefined) {
@@ -31675,7 +31835,7 @@ function validate682(
       }
     }
   } else {
-    const err8 = {
+    const err16 = {
       instancePath,
       schemaPath: "#/type",
       keyword: "type",
@@ -31683,9 +31843,9 @@ function validate682(
       message: "must be object",
     };
     if (vErrors === null) {
-      vErrors = [err8];
+      vErrors = [err16];
     } else {
-      vErrors.push(err8);
+      vErrors.push(err16);
     }
     errors++;
   }
@@ -34197,7 +34357,7 @@ const schema188 = {
   properties: {
     id: { $ref: "#/$defs/attribute.id" },
     defaultValue: { type: "number" },
-    max: { $ref: "#/$defs/attribute.max" },
+    max: { type: "integer", minimum: 1, maximum: 100 },
     readOnly: { $ref: "#/$defs/attribute.readOnly" },
     disabled: { $ref: "#/$defs/attribute.disabled" },
     "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -34289,17 +34449,53 @@ function validate733(
       }
     }
     if (data.max !== undefined) {
-      if (
-        !validate253(data.max, {
+      let data2 = data.max;
+      if (!(typeof data2 == "number" && !(data2 % 1) && !isNaN(data2) && isFinite(data2))) {
+        const err3 = {
           instancePath: instancePath + "/max",
-          parentData: data,
-          parentDataProperty: "max",
-          rootData,
-          dynamicAnchors,
-        })
-      ) {
-        vErrors = vErrors === null ? validate253.errors : vErrors.concat(validate253.errors);
-        errors = vErrors.length;
+          schemaPath: "#/properties/max/type",
+          keyword: "type",
+          params: { type: "integer" },
+          message: "must be integer",
+        };
+        if (vErrors === null) {
+          vErrors = [err3];
+        } else {
+          vErrors.push(err3);
+        }
+        errors++;
+      }
+      if (typeof data2 == "number" && isFinite(data2)) {
+        if (data2 > 100 || isNaN(data2)) {
+          const err4 = {
+            instancePath: instancePath + "/max",
+            schemaPath: "#/properties/max/maximum",
+            keyword: "maximum",
+            params: { comparison: "<=", limit: 100 },
+            message: "must be <= 100",
+          };
+          if (vErrors === null) {
+            vErrors = [err4];
+          } else {
+            vErrors.push(err4);
+          }
+          errors++;
+        }
+        if (data2 < 1 || isNaN(data2)) {
+          const err5 = {
+            instancePath: instancePath + "/max",
+            schemaPath: "#/properties/max/minimum",
+            keyword: "minimum",
+            params: { comparison: ">=", limit: 1 },
+            message: "must be >= 1",
+          };
+          if (vErrors === null) {
+            vErrors = [err5];
+          } else {
+            vErrors.push(err5);
+          }
+          errors++;
+        }
       }
     }
     if (data.readOnly !== undefined) {
@@ -34415,7 +34611,7 @@ function validate733(
       }
     }
   } else {
-    const err3 = {
+    const err6 = {
       instancePath,
       schemaPath: "#/type",
       keyword: "type",
@@ -34423,9 +34619,9 @@ function validate733(
       message: "must be object",
     };
     if (vErrors === null) {
-      vErrors = [err3];
+      vErrors = [err6];
     } else {
-      vErrors.push(err3);
+      vErrors.push(err6);
     }
     errors++;
   }
@@ -34555,13 +34751,13 @@ const schema189 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate745(
+function validate744(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate745.evaluated;
+  const evaluated0 = validate744.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -34747,10 +34943,10 @@ function validate745(
     }
     errors++;
   }
-  validate745.errors = vErrors;
+  validate744.errors = vErrors;
   return errors === 0;
 }
-validate745.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate744.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema190 = {
   description: "Place inside `Select.Root`.",
   type: "object",
@@ -34778,13 +34974,13 @@ const schema191 = {
   required: ["label"],
   additionalProperties: false,
 };
-function validate748(
+function validate747(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate748.evaluated;
+  const evaluated0 = validate747.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -34968,17 +35164,17 @@ function validate748(
     }
     errors++;
   }
-  validate748.errors = vErrors;
+  validate747.errors = vErrors;
   return errors === 0;
 }
-validate748.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate747(
+validate747.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate746(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate747.evaluated;
+  const evaluated0 = validate746.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -35052,7 +35248,7 @@ function validate747(
     }
     if (data.props !== undefined) {
       if (
-        !validate748(data.props, {
+        !validate747(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -35060,7 +35256,7 @@ function validate747(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate748.errors : vErrors.concat(validate748.errors);
+        vErrors = vErrors === null ? validate747.errors : vErrors.concat(validate747.errors);
         errors = vErrors.length;
       }
     }
@@ -35164,10 +35360,10 @@ function validate747(
     }
     errors++;
   }
-  validate747.errors = vErrors;
+  validate746.errors = vErrors;
   return errors === 0;
 }
-validate747.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate746.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema192 = {
   description: "Place inside `Select.Root`.",
   type: "object",
@@ -35195,13 +35391,13 @@ const schema193 = {
   required: ["value"],
   additionalProperties: false,
 };
-function validate759(
+function validate758(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate759.evaluated;
+  const evaluated0 = validate758.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -35382,17 +35578,17 @@ function validate759(
     }
     errors++;
   }
-  validate759.errors = vErrors;
+  validate758.errors = vErrors;
   return errors === 0;
 }
-validate759.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate758(
+validate758.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate757(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate758.evaluated;
+  const evaluated0 = validate757.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -35466,7 +35662,7 @@ function validate758(
     }
     if (data.props !== undefined) {
       if (
-        !validate759(data.props, {
+        !validate758(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -35474,7 +35670,7 @@ function validate758(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate759.errors : vErrors.concat(validate759.errors);
+        vErrors = vErrors === null ? validate758.errors : vErrors.concat(validate758.errors);
         errors = vErrors.length;
       }
     }
@@ -35578,10 +35774,10 @@ function validate758(
     }
     errors++;
   }
-  validate758.errors = vErrors;
+  validate757.errors = vErrors;
   return errors === 0;
 }
-validate758.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate757.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema194 = {
   description:
     "Choose one value from a fixed list.\nUse when: The demonstrated form-grouping relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
@@ -35614,13 +35810,13 @@ const schema195 = {
   },
   additionalProperties: false,
 };
-function validate771(
+function validate770(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate771.evaluated;
+  const evaluated0 = validate770.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -35863,17 +36059,17 @@ function validate771(
     }
     errors++;
   }
-  validate771.errors = vErrors;
+  validate770.errors = vErrors;
   return errors === 0;
 }
-validate771.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate770(
+validate770.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate769(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate770.evaluated;
+  const evaluated0 = validate769.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -35947,7 +36143,7 @@ function validate770(
     }
     if (data.props !== undefined) {
       if (
-        !validate771(data.props, {
+        !validate770(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -35955,7 +36151,7 @@ function validate770(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate771.errors : vErrors.concat(validate771.errors);
+        vErrors = vErrors === null ? validate770.errors : vErrors.concat(validate770.errors);
         errors = vErrors.length;
       }
     }
@@ -36059,10 +36255,10 @@ function validate770(
     }
     errors++;
   }
-  validate770.errors = vErrors;
+  validate769.errors = vErrors;
   return errors === 0;
 }
-validate770.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate769.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema196 = {
   description: "Place inside `Select.Root`.",
   type: "object",
@@ -36073,13 +36269,13 @@ const schema196 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate785(
+function validate784(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate785.evaluated;
+  const evaluated0 = validate784.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -36180,10 +36376,10 @@ function validate785(
     }
     errors++;
   }
-  validate785.errors = vErrors;
+  validate784.errors = vErrors;
   return errors === 0;
 }
-validate785.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate784.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema197 = {
   description:
     "A known content layout is temporarily loading and a close shape preview can reduce the perception of a blank page\nUse when: A known content layout is temporarily loading and a close shape preview can reduce the perception of a blank page.\nAvoid when: The task does not need skeleton; do not add it for catalog coverage.",
@@ -36212,13 +36408,13 @@ const schema198 = {
   },
   additionalProperties: false,
 };
-function validate788(
+function validate787(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate788.evaluated;
+  const evaluated0 = validate787.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -36408,17 +36604,17 @@ function validate788(
     }
     errors++;
   }
-  validate788.errors = vErrors;
+  validate787.errors = vErrors;
   return errors === 0;
 }
-validate788.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate787(
+validate787.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate786(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate787.evaluated;
+  const evaluated0 = validate786.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -36492,7 +36688,7 @@ function validate787(
     }
     if (data.props !== undefined) {
       if (
-        !validate788(data.props, {
+        !validate787(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -36500,7 +36696,7 @@ function validate787(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate788.errors : vErrors.concat(validate788.errors);
+        vErrors = vErrors === null ? validate787.errors : vErrors.concat(validate787.errors);
         errors = vErrors.length;
       }
     }
@@ -36604,10 +36800,10 @@ function validate787(
     }
     errors++;
   }
-  validate787.errors = vErrors;
+  validate786.errors = vErrors;
   return errors === 0;
 }
-validate787.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate786.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema199 = {
   description:
     "Set a value within a continuous or stepped range.\nUse when: Set a value within a continuous or stepped range.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
@@ -36645,13 +36841,13 @@ const schema200 = {
   },
   additionalProperties: false,
 };
-function validate798(
+function validate797(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate798.evaluated;
+  const evaluated0 = validate797.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -37017,17 +37213,17 @@ function validate798(
     }
     errors++;
   }
-  validate798.errors = vErrors;
+  validate797.errors = vErrors;
   return errors === 0;
 }
-validate798.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate797(
+validate797.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate796(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate797.evaluated;
+  const evaluated0 = validate796.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -37101,7 +37297,7 @@ function validate797(
     }
     if (data.props !== undefined) {
       if (
-        !validate798(data.props, {
+        !validate797(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -37109,7 +37305,7 @@ function validate797(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate798.errors : vErrors.concat(validate798.errors);
+        vErrors = vErrors === null ? validate797.errors : vErrors.concat(validate797.errors);
         errors = vErrors.length;
       }
     }
@@ -37128,10 +37324,10 @@ function validate797(
     }
     errors++;
   }
-  validate797.errors = vErrors;
+  validate796.errors = vErrors;
   return errors === 0;
 }
-validate797.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate796.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema201 = {
   description:
     "A task is actively pending and there is no reliable completion percentage\nUse when: A task is actively pending and there is no reliable completion percentage.\nAvoid when: The task does not need spinner; do not add it for catalog coverage.",
@@ -37163,13 +37359,13 @@ const schema202 = {
   },
   additionalProperties: false,
 };
-function validate823(
+function validate822(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate823.evaluated;
+  const evaluated0 = validate822.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -37413,17 +37609,17 @@ function validate823(
     }
     errors++;
   }
-  validate823.errors = vErrors;
+  validate822.errors = vErrors;
   return errors === 0;
 }
-validate823.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate822(
+validate822.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate821(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate822.evaluated;
+  const evaluated0 = validate821.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -37497,7 +37693,7 @@ function validate822(
     }
     if (data.props !== undefined) {
       if (
-        !validate823(data.props, {
+        !validate822(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -37505,7 +37701,7 @@ function validate822(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate823.errors : vErrors.concat(validate823.errors);
+        vErrors = vErrors === null ? validate822.errors : vErrors.concat(validate822.errors);
         errors = vErrors.length;
       }
     }
@@ -37609,10 +37805,10 @@ function validate822(
     }
     errors++;
   }
-  validate822.errors = vErrors;
+  validate821.errors = vErrors;
   return errors === 0;
 }
-validate822.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate821.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema203 = {
   description:
     "Expose a binary setting that takes effect immediately.\nUse when: Expose a binary setting that takes effect immediately.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
@@ -37651,13 +37847,13 @@ const schema204 = {
   },
   additionalProperties: false,
 };
-function validate833(
+function validate832(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate833.evaluated;
+  const evaluated0 = validate832.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -38036,17 +38232,17 @@ function validate833(
     }
     errors++;
   }
-  validate833.errors = vErrors;
+  validate832.errors = vErrors;
   return errors === 0;
 }
-validate833.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate832(
+validate832.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate831(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate832.evaluated;
+  const evaluated0 = validate831.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -38120,7 +38316,7 @@ function validate832(
     }
     if (data.props !== undefined) {
       if (
-        !validate833(data.props, {
+        !validate832(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -38128,7 +38324,7 @@ function validate832(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate833.errors : vErrors.concat(validate833.errors);
+        vErrors = vErrors === null ? validate832.errors : vErrors.concat(validate832.errors);
         errors = vErrors.length;
       }
     }
@@ -38147,10 +38343,10 @@ function validate832(
     }
     errors++;
   }
-  validate832.errors = vErrors;
+  validate831.errors = vErrors;
   return errors === 0;
 }
-validate832.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate831.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema205 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -38176,13 +38372,13 @@ const schema206 = {
   },
   additionalProperties: false,
 };
-function validate859(
+function validate858(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate859.evaluated;
+  const evaluated0 = validate858.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -38348,17 +38544,17 @@ function validate859(
     }
     errors++;
   }
-  validate859.errors = vErrors;
+  validate858.errors = vErrors;
   return errors === 0;
 }
-validate859.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate858(
+validate858.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate857(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate858.evaluated;
+  const evaluated0 = validate857.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -38432,7 +38628,7 @@ function validate858(
     }
     if (data.props !== undefined) {
       if (
-        !validate859(data.props, {
+        !validate858(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -38440,7 +38636,7 @@ function validate858(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate859.errors : vErrors.concat(validate859.errors);
+        vErrors = vErrors === null ? validate858.errors : vErrors.concat(validate858.errors);
         errors = vErrors.length;
       }
     }
@@ -38544,10 +38740,10 @@ function validate858(
     }
     errors++;
   }
-  validate858.errors = vErrors;
+  validate857.errors = vErrors;
   return errors === 0;
 }
-validate858.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate857.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema207 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -38574,13 +38770,13 @@ const schema208 = {
   },
   additionalProperties: false,
 };
-function validate869(
+function validate868(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate869.evaluated;
+  const evaluated0 = validate868.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -38754,17 +38950,17 @@ function validate869(
     }
     errors++;
   }
-  validate869.errors = vErrors;
+  validate868.errors = vErrors;
   return errors === 0;
 }
-validate869.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate868(
+validate868.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate867(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate868.evaluated;
+  const evaluated0 = validate867.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -38838,7 +39034,7 @@ function validate868(
     }
     if (data.props !== undefined) {
       if (
-        !validate869(data.props, {
+        !validate868(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -38846,7 +39042,7 @@ function validate868(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate869.errors : vErrors.concat(validate869.errors);
+        vErrors = vErrors === null ? validate868.errors : vErrors.concat(validate868.errors);
         errors = vErrors.length;
       }
     }
@@ -38950,10 +39146,10 @@ function validate868(
     }
     errors++;
   }
-  validate868.errors = vErrors;
+  validate867.errors = vErrors;
   return errors === 0;
 }
-validate868.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate867.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema209 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -38965,13 +39161,13 @@ const schema209 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate878(
+function validate877(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate878.evaluated;
+  const evaluated0 = validate877.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -39157,10 +39353,10 @@ function validate878(
     }
     errors++;
   }
-  validate878.errors = vErrors;
+  validate877.errors = vErrors;
   return errors === 0;
 }
-validate878.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate877.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema210 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -39172,13 +39368,13 @@ const schema210 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate880(
+function validate879(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate880.evaluated;
+  const evaluated0 = validate879.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -39364,10 +39560,10 @@ function validate880(
     }
     errors++;
   }
-  validate880.errors = vErrors;
+  validate879.errors = vErrors;
   return errors === 0;
 }
-validate880.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate879.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema211 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -39379,13 +39575,13 @@ const schema211 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate882(
+function validate881(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate882.evaluated;
+  const evaluated0 = validate881.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -39459,7 +39655,7 @@ function validate882(
     }
     if (data.props !== undefined) {
       if (
-        !validate869(data.props, {
+        !validate868(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -39467,7 +39663,7 @@ function validate882(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate869.errors : vErrors.concat(validate869.errors);
+        vErrors = vErrors === null ? validate868.errors : vErrors.concat(validate868.errors);
         errors = vErrors.length;
       }
     }
@@ -39571,10 +39767,10 @@ function validate882(
     }
     errors++;
   }
-  validate882.errors = vErrors;
+  validate881.errors = vErrors;
   return errors === 0;
 }
-validate882.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate881.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema212 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -39604,13 +39800,13 @@ const schema213 = {
   required: ["id"],
   additionalProperties: false,
 };
-function validate885(
+function validate884(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate885.evaluated;
+  const evaluated0 = validate884.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -39834,17 +40030,17 @@ function validate885(
     }
     errors++;
   }
-  validate885.errors = vErrors;
+  validate884.errors = vErrors;
   return errors === 0;
 }
-validate885.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate884(
+validate884.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate883(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate884.evaluated;
+  const evaluated0 = validate883.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -39918,7 +40114,7 @@ function validate884(
     }
     if (data.props !== undefined) {
       if (
-        !validate885(data.props, {
+        !validate884(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -39926,7 +40122,7 @@ function validate884(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate885.errors : vErrors.concat(validate885.errors);
+        vErrors = vErrors === null ? validate884.errors : vErrors.concat(validate884.errors);
         errors = vErrors.length;
       }
     }
@@ -40030,10 +40226,10 @@ function validate884(
     }
     errors++;
   }
-  validate884.errors = vErrors;
+  validate883.errors = vErrors;
   return errors === 0;
 }
-validate884.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate883.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema214 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -40045,13 +40241,13 @@ const schema214 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate894(
+function validate893(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate894.evaluated;
+  const evaluated0 = validate893.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -40125,7 +40321,7 @@ function validate894(
     }
     if (data.props !== undefined) {
       if (
-        !validate859(data.props, {
+        !validate858(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -40133,7 +40329,7 @@ function validate894(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate859.errors : vErrors.concat(validate859.errors);
+        vErrors = vErrors === null ? validate858.errors : vErrors.concat(validate858.errors);
         errors = vErrors.length;
       }
     }
@@ -40237,10 +40433,10 @@ function validate894(
     }
     errors++;
   }
-  validate894.errors = vErrors;
+  validate893.errors = vErrors;
   return errors === 0;
 }
-validate894.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate893.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema215 = {
   description:
     "Compare structured member records.\nUse when: The demonstrated table-controls relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
@@ -40269,13 +40465,13 @@ const schema216 = {
   },
   additionalProperties: false,
 };
-function validate897(
+function validate896(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate897.evaluated;
+  const evaluated0 = validate896.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -40467,17 +40663,17 @@ function validate897(
     }
     errors++;
   }
-  validate897.errors = vErrors;
+  validate896.errors = vErrors;
   return errors === 0;
 }
-validate897.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate896(
+validate896.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate895(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate896.evaluated;
+  const evaluated0 = validate895.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -40551,7 +40747,7 @@ function validate896(
     }
     if (data.props !== undefined) {
       if (
-        !validate897(data.props, {
+        !validate896(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -40559,7 +40755,7 @@ function validate896(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate897.errors : vErrors.concat(validate897.errors);
+        vErrors = vErrors === null ? validate896.errors : vErrors.concat(validate896.errors);
         errors = vErrors.length;
       }
     }
@@ -40663,10 +40859,10 @@ function validate896(
     }
     errors++;
   }
-  validate896.errors = vErrors;
+  validate895.errors = vErrors;
   return errors === 0;
 }
-validate896.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate895.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema217 = {
   description: "Place inside `Table.Root`.",
   type: "object",
@@ -40695,13 +40891,13 @@ const schema218 = {
   required: ["id"],
   additionalProperties: false,
 };
-function validate907(
+function validate906(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate907.evaluated;
+  const evaluated0 = validate906.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -40902,17 +41098,17 @@ function validate907(
     }
     errors++;
   }
-  validate907.errors = vErrors;
+  validate906.errors = vErrors;
   return errors === 0;
 }
-validate907.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate906(
+validate906.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate905(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate906.evaluated;
+  const evaluated0 = validate905.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -40986,7 +41182,7 @@ function validate906(
     }
     if (data.props !== undefined) {
       if (
-        !validate907(data.props, {
+        !validate906(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -40994,7 +41190,7 @@ function validate906(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate907.errors : vErrors.concat(validate907.errors);
+        vErrors = vErrors === null ? validate906.errors : vErrors.concat(validate906.errors);
         errors = vErrors.length;
       }
     }
@@ -41098,10 +41294,10 @@ function validate906(
     }
     errors++;
   }
-  validate906.errors = vErrors;
+  validate905.errors = vErrors;
   return errors === 0;
 }
-validate906.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate905.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema219 = {
   description:
     "Accept a longer free-text value.\nUse when: Accept a longer free-text value.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
@@ -41138,13 +41334,13 @@ const schema220 = {
   },
   additionalProperties: false,
 };
-function validate918(
+function validate917(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate918.evaluated;
+  const evaluated0 = validate917.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -41445,17 +41641,17 @@ function validate918(
     }
     errors++;
   }
-  validate918.errors = vErrors;
+  validate917.errors = vErrors;
   return errors === 0;
 }
-validate918.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate917(
+validate917.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate916(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate917.evaluated;
+  const evaluated0 = validate916.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -41529,7 +41725,7 @@ function validate917(
     }
     if (data.props !== undefined) {
       if (
-        !validate918(data.props, {
+        !validate917(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -41537,7 +41733,7 @@ function validate917(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate918.errors : vErrors.concat(validate918.errors);
+        vErrors = vErrors === null ? validate917.errors : vErrors.concat(validate917.errors);
         errors = vErrors.length;
       }
     }
@@ -41641,10 +41837,10 @@ function validate917(
     }
     errors++;
   }
-  validate917.errors = vErrors;
+  validate916.errors = vErrors;
   return errors === 0;
 }
-validate917.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate916.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema221 = {
   description:
     "Expose a binary value with a toggle-style presentation.\nUse when: Expose a binary value with a toggle-style presentation.\nAvoid when: Use a switch for a persistent on/off setting or ordinary buttons for one-time actions.",
@@ -41670,13 +41866,13 @@ const schema222 = {
   required: ["id", "label"],
   additionalProperties: false,
 };
-function validate936(
+function validate935(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate936.evaluated;
+  const evaluated0 = validate935.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -41892,17 +42088,17 @@ function validate936(
     }
     errors++;
   }
-  validate936.errors = vErrors;
+  validate935.errors = vErrors;
   return errors === 0;
 }
-validate936.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate935(
+validate935.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate934(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate935.evaluated;
+  const evaluated0 = validate934.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -41976,7 +42172,7 @@ function validate935(
     }
     if (data.props !== undefined) {
       if (
-        !validate936(data.props, {
+        !validate935(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -41984,7 +42180,7 @@ function validate935(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate936.errors : vErrors.concat(validate936.errors);
+        vErrors = vErrors === null ? validate935.errors : vErrors.concat(validate935.errors);
         errors = vErrors.length;
       }
     }
@@ -42003,10 +42199,10 @@ function validate935(
     }
     errors++;
   }
-  validate935.errors = vErrors;
+  validate934.errors = vErrors;
   return errors === 0;
 }
-validate935.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate934.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema223 = {
   description: "Place inside `Tooltip.Root`.",
   type: "object",
@@ -42018,13 +42214,13 @@ const schema223 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate946(
+function validate945(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate946.evaluated;
+  const evaluated0 = validate945.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -42210,10 +42406,10 @@ function validate946(
     }
     errors++;
   }
-  validate946.errors = vErrors;
+  validate945.errors = vErrors;
   return errors === 0;
 }
-validate946.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate945.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema224 = {
   type: "object",
   properties: {
@@ -42229,13 +42425,13 @@ const schema225 = {
   properties: { delayDuration: { type: "number" }, skipDelayDuration: { type: "number" } },
   additionalProperties: false,
 };
-function validate949(
+function validate948(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate949.evaluated;
+  const evaluated0 = validate948.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -42311,17 +42507,17 @@ function validate949(
     }
     errors++;
   }
-  validate949.errors = vErrors;
+  validate948.errors = vErrors;
   return errors === 0;
 }
-validate949.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate948(
+validate948.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate947(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate948.evaluated;
+  const evaluated0 = validate947.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -42395,7 +42591,7 @@ function validate948(
     }
     if (data.props !== undefined) {
       if (
-        !validate949(data.props, {
+        !validate948(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -42403,7 +42599,7 @@ function validate948(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate949.errors : vErrors.concat(validate949.errors);
+        vErrors = vErrors === null ? validate948.errors : vErrors.concat(validate948.errors);
         errors = vErrors.length;
       }
     }
@@ -42507,10 +42703,10 @@ function validate948(
     }
     errors++;
   }
-  validate948.errors = vErrors;
+  validate947.errors = vErrors;
   return errors === 0;
 }
-validate948.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate947.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema226 = {
   description:
     "Add a brief supplemental label to a control without replacing its name.\nUse when: The demonstrated supplemental-label relationship is present.\nAvoid when: The information is essential or interactive; use visible text, popup, or hover-card.\nAvoid when: The tooltip would be the only label for a form field.\nPlace inside `Tooltip.Provider`.",
@@ -42528,13 +42724,13 @@ const schema227 = {
   properties: { defaultOpen: { type: "boolean" }, id: { $ref: "#/$defs/attribute.id" } },
   additionalProperties: false,
 };
-function validate952(
+function validate951(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate952.evaluated;
+  const evaluated0 = validate951.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -42605,17 +42801,17 @@ function validate952(
     }
     errors++;
   }
-  validate952.errors = vErrors;
+  validate951.errors = vErrors;
   return errors === 0;
 }
-validate952.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate951(
+validate951.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate950(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate951.evaluated;
+  const evaluated0 = validate950.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -42689,7 +42885,7 @@ function validate951(
     }
     if (data.props !== undefined) {
       if (
-        !validate952(data.props, {
+        !validate951(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -42697,7 +42893,7 @@ function validate951(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate952.errors : vErrors.concat(validate952.errors);
+        vErrors = vErrors === null ? validate951.errors : vErrors.concat(validate951.errors);
         errors = vErrors.length;
       }
     }
@@ -42801,10 +42997,10 @@ function validate951(
     }
     errors++;
   }
-  validate951.errors = vErrors;
+  validate950.errors = vErrors;
   return errors === 0;
 }
-validate951.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate950.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema228 = {
   description: "Place inside `Tooltip.Root`.",
   type: "object",
@@ -42816,13 +43012,13 @@ const schema228 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate955(
+function validate954(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate955.evaluated;
+  const evaluated0 = validate954.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43008,10 +43204,10 @@ function validate955(
     }
     errors++;
   }
-  validate955.errors = vErrors;
+  validate954.errors = vErrors;
   return errors === 0;
 }
-validate955.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate954.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema229 = {
   type: "object",
   properties: {
@@ -43032,13 +43228,13 @@ const schema230 = {
   },
   additionalProperties: false,
 };
-function validate958(
+function validate957(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate958.evaluated;
+  const evaluated0 = validate957.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43151,17 +43347,17 @@ function validate958(
     }
     errors++;
   }
-  validate958.errors = vErrors;
+  validate957.errors = vErrors;
   return errors === 0;
 }
-validate958.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate957(
+validate957.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate956(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate957.evaluated;
+  const evaluated0 = validate956.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43235,7 +43431,7 @@ function validate957(
     }
     if (data.props !== undefined) {
       if (
-        !validate958(data.props, {
+        !validate957(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -43243,7 +43439,7 @@ function validate957(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate958.errors : vErrors.concat(validate958.errors);
+        vErrors = vErrors === null ? validate957.errors : vErrors.concat(validate957.errors);
         errors = vErrors.length;
       }
     }
@@ -43347,10 +43543,10 @@ function validate957(
     }
     errors++;
   }
-  validate957.errors = vErrors;
+  validate956.errors = vErrors;
   return errors === 0;
 }
-validate957.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate956.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema231 = {
   type: "object",
   properties: {
@@ -43366,13 +43562,13 @@ const schema232 = {
   properties: { columns: { enum: [1, 2, 3, 4] }, gap: { enum: ["xs", "sm", "md", "lg", "xl"] } },
   additionalProperties: false,
 };
-function validate961(
+function validate960(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate961.evaluated;
+  const evaluated0 = validate960.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43450,17 +43646,17 @@ function validate961(
     }
     errors++;
   }
-  validate961.errors = vErrors;
+  validate960.errors = vErrors;
   return errors === 0;
 }
-validate961.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate960(
+validate960.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate959(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate960.evaluated;
+  const evaluated0 = validate959.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43534,7 +43730,7 @@ function validate960(
     }
     if (data.props !== undefined) {
       if (
-        !validate961(data.props, {
+        !validate960(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -43542,7 +43738,7 @@ function validate960(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate961.errors : vErrors.concat(validate961.errors);
+        vErrors = vErrors === null ? validate960.errors : vErrors.concat(validate960.errors);
         errors = vErrors.length;
       }
     }
@@ -43646,10 +43842,10 @@ function validate960(
     }
     errors++;
   }
-  validate960.errors = vErrors;
+  validate959.errors = vErrors;
   return errors === 0;
 }
-validate960.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate959.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema233 = {
   type: "object",
   properties: {
@@ -43669,13 +43865,13 @@ const schema234 = {
   },
   additionalProperties: false,
 };
-function validate964(
+function validate963(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate964.evaluated;
+  const evaluated0 = validate963.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43780,17 +43976,17 @@ function validate964(
     }
     errors++;
   }
-  validate964.errors = vErrors;
+  validate963.errors = vErrors;
   return errors === 0;
 }
-validate964.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate963(
+validate963.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate962(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate963.evaluated;
+  const evaluated0 = validate962.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -43864,7 +44060,7 @@ function validate963(
     }
     if (data.props !== undefined) {
       if (
-        !validate964(data.props, {
+        !validate963(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -43872,7 +44068,7 @@ function validate963(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate964.errors : vErrors.concat(validate964.errors);
+        vErrors = vErrors === null ? validate963.errors : vErrors.concat(validate963.errors);
         errors = vErrors.length;
       }
     }
@@ -43976,10 +44172,10 @@ function validate963(
     }
     errors++;
   }
-  validate963.errors = vErrors;
+  validate962.errors = vErrors;
   return errors === 0;
 }
-validate963.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate962.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema235 = {
   type: "object",
   properties: {
@@ -44004,13 +44200,13 @@ const schema236 = {
   },
   additionalProperties: false,
 };
-function validate967(
+function validate966(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate967.evaluated;
+  const evaluated0 = validate966.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -44176,17 +44372,17 @@ function validate967(
     }
     errors++;
   }
-  validate967.errors = vErrors;
+  validate966.errors = vErrors;
   return errors === 0;
 }
-validate967.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate966(
+validate966.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate965(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate966.evaluated;
+  const evaluated0 = validate965.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -44260,7 +44456,7 @@ function validate966(
     }
     if (data.props !== undefined) {
       if (
-        !validate967(data.props, {
+        !validate966(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -44268,7 +44464,7 @@ function validate966(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate967.errors : vErrors.concat(validate967.errors);
+        vErrors = vErrors === null ? validate966.errors : vErrors.concat(validate966.errors);
         errors = vErrors.length;
       }
     }
@@ -44372,10 +44568,10 @@ function validate966(
     }
     errors++;
   }
-  validate966.errors = vErrors;
+  validate965.errors = vErrors;
   return errors === 0;
 }
-validate966.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate965.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema237 = {
   type: "object",
   properties: {
@@ -44398,13 +44594,13 @@ const schema238 = {
   },
   additionalProperties: false,
 };
-function validate977(
+function validate976(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate977.evaluated;
+  const evaluated0 = validate976.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -44537,17 +44733,17 @@ function validate977(
     }
     errors++;
   }
-  validate977.errors = vErrors;
+  validate976.errors = vErrors;
   return errors === 0;
 }
-validate977.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate976(
+validate976.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate975(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate976.evaluated;
+  const evaluated0 = validate975.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -44621,7 +44817,7 @@ function validate976(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -44629,7 +44825,7 @@ function validate976(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -44733,10 +44929,10 @@ function validate976(
     }
     errors++;
   }
-  validate976.errors = vErrors;
+  validate975.errors = vErrors;
   return errors === 0;
 }
-validate976.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate975.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema239 = {
   type: "object",
   properties: {
@@ -44747,13 +44943,13 @@ const schema239 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate985(
+function validate984(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate985.evaluated;
+  const evaluated0 = validate984.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -44827,7 +45023,7 @@ function validate985(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -44835,7 +45031,7 @@ function validate985(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -44939,10 +45135,10 @@ function validate985(
     }
     errors++;
   }
-  validate985.errors = vErrors;
+  validate984.errors = vErrors;
   return errors === 0;
 }
-validate985.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate984.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema240 = {
   type: "object",
   properties: {
@@ -44953,13 +45149,13 @@ const schema240 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate987(
+function validate986(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate987.evaluated;
+  const evaluated0 = validate986.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -45033,7 +45229,7 @@ function validate987(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -45041,7 +45237,7 @@ function validate987(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -45145,10 +45341,10 @@ function validate987(
     }
     errors++;
   }
-  validate987.errors = vErrors;
+  validate986.errors = vErrors;
   return errors === 0;
 }
-validate987.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate986.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema241 = {
   type: "object",
   properties: {
@@ -45159,13 +45355,13 @@ const schema241 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate989(
+function validate988(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate989.evaluated;
+  const evaluated0 = validate988.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -45239,7 +45435,7 @@ function validate989(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -45247,7 +45443,7 @@ function validate989(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -45351,10 +45547,10 @@ function validate989(
     }
     errors++;
   }
-  validate989.errors = vErrors;
+  validate988.errors = vErrors;
   return errors === 0;
 }
-validate989.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate988.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema242 = {
   type: "object",
   properties: {
@@ -45365,13 +45561,13 @@ const schema242 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate991(
+function validate990(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate991.evaluated;
+  const evaluated0 = validate990.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -45445,7 +45641,7 @@ function validate991(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -45453,7 +45649,7 @@ function validate991(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -45557,10 +45753,10 @@ function validate991(
     }
     errors++;
   }
-  validate991.errors = vErrors;
+  validate990.errors = vErrors;
   return errors === 0;
 }
-validate991.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate990.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema243 = {
   type: "object",
   properties: {
@@ -45571,13 +45767,13 @@ const schema243 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate993(
+function validate992(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate993.evaluated;
+  const evaluated0 = validate992.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -45651,7 +45847,7 @@ function validate993(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -45659,7 +45855,7 @@ function validate993(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -45763,10 +45959,10 @@ function validate993(
     }
     errors++;
   }
-  validate993.errors = vErrors;
+  validate992.errors = vErrors;
   return errors === 0;
 }
-validate993.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate992.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema244 = {
   type: "object",
   properties: {
@@ -45777,13 +45973,13 @@ const schema244 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate995(
+function validate994(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate995.evaluated;
+  const evaluated0 = validate994.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -45857,7 +46053,7 @@ function validate995(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -45865,7 +46061,7 @@ function validate995(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -45969,10 +46165,10 @@ function validate995(
     }
     errors++;
   }
-  validate995.errors = vErrors;
+  validate994.errors = vErrors;
   return errors === 0;
 }
-validate995.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate994.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema245 = {
   type: "object",
   properties: {
@@ -45983,13 +46179,13 @@ const schema245 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate997(
+function validate996(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate997.evaluated;
+  const evaluated0 = validate996.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -46063,7 +46259,7 @@ function validate997(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -46071,7 +46267,7 @@ function validate997(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -46175,10 +46371,10 @@ function validate997(
     }
     errors++;
   }
-  validate997.errors = vErrors;
+  validate996.errors = vErrors;
   return errors === 0;
 }
-validate997.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate996.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema246 = {
   type: "object",
   properties: {
@@ -46189,13 +46385,13 @@ const schema246 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate999(
+function validate998(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate999.evaluated;
+  const evaluated0 = validate998.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -46269,7 +46465,7 @@ function validate999(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -46277,7 +46473,7 @@ function validate999(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -46381,10 +46577,10 @@ function validate999(
     }
     errors++;
   }
-  validate999.errors = vErrors;
+  validate998.errors = vErrors;
   return errors === 0;
 }
-validate999.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate998.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema247 = {
   type: "object",
   properties: {
@@ -46395,13 +46591,13 @@ const schema247 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1001(
+function validate1000(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1001.evaluated;
+  const evaluated0 = validate1000.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -46475,7 +46671,7 @@ function validate1001(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -46483,7 +46679,7 @@ function validate1001(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -46587,10 +46783,10 @@ function validate1001(
     }
     errors++;
   }
-  validate1001.errors = vErrors;
+  validate1000.errors = vErrors;
   return errors === 0;
 }
-validate1001.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1000.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema248 = {
   type: "object",
   properties: {
@@ -46601,13 +46797,13 @@ const schema248 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1003(
+function validate1002(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1003.evaluated;
+  const evaluated0 = validate1002.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -46681,7 +46877,7 @@ function validate1003(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -46689,7 +46885,7 @@ function validate1003(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -46793,10 +46989,10 @@ function validate1003(
     }
     errors++;
   }
-  validate1003.errors = vErrors;
+  validate1002.errors = vErrors;
   return errors === 0;
 }
-validate1003.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1002.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema249 = {
   type: "object",
   properties: {
@@ -46807,13 +47003,13 @@ const schema249 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1005(
+function validate1004(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1005.evaluated;
+  const evaluated0 = validate1004.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -46887,7 +47083,7 @@ function validate1005(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -46895,7 +47091,7 @@ function validate1005(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -46999,10 +47195,10 @@ function validate1005(
     }
     errors++;
   }
-  validate1005.errors = vErrors;
+  validate1004.errors = vErrors;
   return errors === 0;
 }
-validate1005.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1004.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema250 = {
   type: "object",
   properties: {
@@ -47013,13 +47209,13 @@ const schema250 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1007(
+function validate1006(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1007.evaluated;
+  const evaluated0 = validate1006.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -47093,7 +47289,7 @@ function validate1007(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -47101,7 +47297,7 @@ function validate1007(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -47205,10 +47401,10 @@ function validate1007(
     }
     errors++;
   }
-  validate1007.errors = vErrors;
+  validate1006.errors = vErrors;
   return errors === 0;
 }
-validate1007.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1006.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema251 = {
   type: "object",
   properties: {
@@ -47219,13 +47415,13 @@ const schema251 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1009(
+function validate1008(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1009.evaluated;
+  const evaluated0 = validate1008.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -47299,7 +47495,7 @@ function validate1009(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -47307,7 +47503,7 @@ function validate1009(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -47411,10 +47607,10 @@ function validate1009(
     }
     errors++;
   }
-  validate1009.errors = vErrors;
+  validate1008.errors = vErrors;
   return errors === 0;
 }
-validate1009.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1008.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema252 = {
   type: "object",
   properties: {
@@ -47425,13 +47621,13 @@ const schema252 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1011(
+function validate1010(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1011.evaluated;
+  const evaluated0 = validate1010.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -47505,7 +47701,7 @@ function validate1011(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -47513,7 +47709,7 @@ function validate1011(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -47617,10 +47813,10 @@ function validate1011(
     }
     errors++;
   }
-  validate1011.errors = vErrors;
+  validate1010.errors = vErrors;
   return errors === 0;
 }
-validate1011.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1010.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema253 = {
   type: "object",
   properties: {
@@ -47631,13 +47827,13 @@ const schema253 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1013(
+function validate1012(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1013.evaluated;
+  const evaluated0 = validate1012.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -47711,7 +47907,7 @@ function validate1013(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -47719,7 +47915,7 @@ function validate1013(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -47823,10 +48019,10 @@ function validate1013(
     }
     errors++;
   }
-  validate1013.errors = vErrors;
+  validate1012.errors = vErrors;
   return errors === 0;
 }
-validate1013.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1012.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema254 = {
   type: "object",
   properties: {
@@ -47837,13 +48033,13 @@ const schema254 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1015(
+function validate1014(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1015.evaluated;
+  const evaluated0 = validate1014.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -47917,7 +48113,7 @@ function validate1015(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -47925,7 +48121,7 @@ function validate1015(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -48029,10 +48225,10 @@ function validate1015(
     }
     errors++;
   }
-  validate1015.errors = vErrors;
+  validate1014.errors = vErrors;
   return errors === 0;
 }
-validate1015.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1014.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema255 = {
   type: "object",
   properties: {
@@ -48043,13 +48239,13 @@ const schema255 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1017(
+function validate1016(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1017.evaluated;
+  const evaluated0 = validate1016.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -48123,7 +48319,7 @@ function validate1017(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -48131,7 +48327,7 @@ function validate1017(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -48235,10 +48431,10 @@ function validate1017(
     }
     errors++;
   }
-  validate1017.errors = vErrors;
+  validate1016.errors = vErrors;
   return errors === 0;
 }
-validate1017.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1016.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema256 = {
   type: "object",
   properties: {
@@ -48249,13 +48445,13 @@ const schema256 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1019(
+function validate1018(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1019.evaluated;
+  const evaluated0 = validate1018.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -48329,7 +48525,7 @@ function validate1019(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -48337,7 +48533,7 @@ function validate1019(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -48441,10 +48637,10 @@ function validate1019(
     }
     errors++;
   }
-  validate1019.errors = vErrors;
+  validate1018.errors = vErrors;
   return errors === 0;
 }
-validate1019.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1018.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema257 = {
   type: "object",
   properties: {
@@ -48455,13 +48651,13 @@ const schema257 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1021(
+function validate1020(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1021.evaluated;
+  const evaluated0 = validate1020.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -48535,7 +48731,7 @@ function validate1021(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -48543,7 +48739,7 @@ function validate1021(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -48647,10 +48843,10 @@ function validate1021(
     }
     errors++;
   }
-  validate1021.errors = vErrors;
+  validate1020.errors = vErrors;
   return errors === 0;
 }
-validate1021.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1020.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema258 = {
   type: "object",
   properties: {
@@ -48661,13 +48857,13 @@ const schema258 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1023(
+function validate1022(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1023.evaluated;
+  const evaluated0 = validate1022.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -48741,7 +48937,7 @@ function validate1023(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -48749,7 +48945,7 @@ function validate1023(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -48853,10 +49049,10 @@ function validate1023(
     }
     errors++;
   }
-  validate1023.errors = vErrors;
+  validate1022.errors = vErrors;
   return errors === 0;
 }
-validate1023.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1022.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema259 = {
   type: "object",
   properties: {
@@ -48867,13 +49063,13 @@ const schema259 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1025(
+function validate1024(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1025.evaluated;
+  const evaluated0 = validate1024.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -48947,7 +49143,7 @@ function validate1025(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -48955,7 +49151,7 @@ function validate1025(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -49059,10 +49255,10 @@ function validate1025(
     }
     errors++;
   }
-  validate1025.errors = vErrors;
+  validate1024.errors = vErrors;
   return errors === 0;
 }
-validate1025.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1024.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema260 = {
   type: "object",
   properties: {
@@ -49073,13 +49269,13 @@ const schema260 = {
   required: ["type", "props"],
   additionalProperties: false,
 };
-function validate1027(
+function validate1026(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1027.evaluated;
+  const evaluated0 = validate1026.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49153,7 +49349,7 @@ function validate1027(
     }
     if (data.props !== undefined) {
       if (
-        !validate977(data.props, {
+        !validate976(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -49161,7 +49357,7 @@ function validate1027(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate977.errors : vErrors.concat(validate977.errors);
+        vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
         errors = vErrors.length;
       }
     }
@@ -49265,10 +49461,10 @@ function validate1027(
     }
     errors++;
   }
-  validate1027.errors = vErrors;
+  validate1026.errors = vErrors;
   return errors === 0;
 }
-validate1027.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1026.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema261 = {
   type: "object",
   properties: {
@@ -49293,13 +49489,13 @@ const schema262 = {
   },
   additionalProperties: false,
 };
-function validate1033(
+function validate1032(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1033.evaluated;
+  const evaluated0 = validate1032.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49321,17 +49517,17 @@ function validate1033(
     }
     errors++;
   }
-  validate1033.errors = vErrors;
+  validate1032.errors = vErrors;
   return errors === 0;
 }
-validate1033.evaluated = { dynamicProps: false, dynamicItems: false };
-function validate1030(
+validate1032.evaluated = { dynamicProps: false, dynamicItems: false };
+function validate1029(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1030.evaluated;
+  const evaluated0 = validate1029.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49397,7 +49593,7 @@ function validate1030(
     }
     if (data.rel !== undefined) {
       if (
-        !validate1033(data.rel, {
+        !validate1032(data.rel, {
           instancePath: instancePath + "/rel",
           parentData: data,
           parentDataProperty: "rel",
@@ -49405,7 +49601,7 @@ function validate1030(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate1033.errors : vErrors.concat(validate1033.errors);
+        vErrors = vErrors === null ? validate1032.errors : vErrors.concat(validate1032.errors);
         errors = vErrors.length;
       }
     }
@@ -49494,17 +49690,17 @@ function validate1030(
     }
     errors++;
   }
-  validate1030.errors = vErrors;
+  validate1029.errors = vErrors;
   return errors === 0;
 }
-validate1030.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate1029(
+validate1029.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate1028(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1029.evaluated;
+  const evaluated0 = validate1028.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49578,7 +49774,7 @@ function validate1029(
     }
     if (data.props !== undefined) {
       if (
-        !validate1030(data.props, {
+        !validate1029(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -49586,7 +49782,7 @@ function validate1029(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate1030.errors : vErrors.concat(validate1030.errors);
+        vErrors = vErrors === null ? validate1029.errors : vErrors.concat(validate1029.errors);
         errors = vErrors.length;
       }
     }
@@ -49690,10 +49886,10 @@ function validate1029(
     }
     errors++;
   }
-  validate1029.errors = vErrors;
+  validate1028.errors = vErrors;
   return errors === 0;
 }
-validate1029.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1028.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 const schema264 = {
   type: "object",
   properties: {
@@ -49715,13 +49911,13 @@ const schema265 = {
   },
   additionalProperties: false,
 };
-function validate1043(
+function validate1042(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1043.evaluated;
+  const evaluated0 = validate1042.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49759,17 +49955,17 @@ function validate1043(
     }
     errors++;
   }
-  validate1043.errors = vErrors;
+  validate1042.errors = vErrors;
   return errors === 0;
 }
-validate1043.evaluated = { dynamicProps: false, dynamicItems: false };
-function validate1042(
+validate1042.evaluated = { dynamicProps: false, dynamicItems: false };
+function validate1041(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1042.evaluated;
+  const evaluated0 = validate1041.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49804,7 +50000,7 @@ function validate1042(
     }
     if (data.htmlFor !== undefined) {
       if (
-        !validate1043(data.htmlFor, {
+        !validate1042(data.htmlFor, {
           instancePath: instancePath + "/htmlFor",
           parentData: data,
           parentDataProperty: "htmlFor",
@@ -49812,7 +50008,7 @@ function validate1042(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate1043.errors : vErrors.concat(validate1043.errors);
+        vErrors = vErrors === null ? validate1042.errors : vErrors.concat(validate1042.errors);
         errors = vErrors.length;
       }
     }
@@ -49887,17 +50083,17 @@ function validate1042(
     }
     errors++;
   }
-  validate1042.errors = vErrors;
+  validate1041.errors = vErrors;
   return errors === 0;
 }
-validate1042.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
-function validate1041(
+validate1041.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+function validate1040(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
 ) {
   let vErrors = null;
   let errors = 0;
-  const evaluated0 = validate1041.evaluated;
+  const evaluated0 = validate1040.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = undefined;
   }
@@ -49971,7 +50167,7 @@ function validate1041(
     }
     if (data.props !== undefined) {
       if (
-        !validate1042(data.props, {
+        !validate1041(data.props, {
           instancePath: instancePath + "/props",
           parentData: data,
           parentDataProperty: "props",
@@ -49979,7 +50175,7 @@ function validate1041(
           dynamicAnchors,
         })
       ) {
-        vErrors = vErrors === null ? validate1042.errors : vErrors.concat(validate1042.errors);
+        vErrors = vErrors === null ? validate1041.errors : vErrors.concat(validate1041.errors);
         errors = vErrors.length;
       }
     }
@@ -50083,10 +50279,10 @@ function validate1041(
     }
     errors++;
   }
-  validate1041.errors = vErrors;
+  validate1040.errors = vErrors;
   return errors === 0;
 }
-validate1041.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
+validate1040.evaluated = { props: true, dynamicProps: false, dynamicItems: false };
 function validate53(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
@@ -51590,7 +51786,7 @@ function validate53(
         }
       } else if (tag0 === "Select.Content") {
         if (
-          !validate745(data, {
+          !validate744(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51598,7 +51794,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate745.errors : vErrors.concat(validate745.errors);
+          vErrors = vErrors === null ? validate744.errors : vErrors.concat(validate744.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51606,7 +51802,7 @@ function validate53(
         }
       } else if (tag0 === "Select.Group") {
         if (
-          !validate747(data, {
+          !validate746(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51614,7 +51810,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate747.errors : vErrors.concat(validate747.errors);
+          vErrors = vErrors === null ? validate746.errors : vErrors.concat(validate746.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51622,7 +51818,7 @@ function validate53(
         }
       } else if (tag0 === "Select.Item") {
         if (
-          !validate758(data, {
+          !validate757(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51630,7 +51826,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate758.errors : vErrors.concat(validate758.errors);
+          vErrors = vErrors === null ? validate757.errors : vErrors.concat(validate757.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51638,7 +51834,7 @@ function validate53(
         }
       } else if (tag0 === "Select.Root") {
         if (
-          !validate770(data, {
+          !validate769(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51646,7 +51842,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate770.errors : vErrors.concat(validate770.errors);
+          vErrors = vErrors === null ? validate769.errors : vErrors.concat(validate769.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51654,7 +51850,7 @@ function validate53(
         }
       } else if (tag0 === "Select.Separator") {
         if (
-          !validate785(data, {
+          !validate784(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51662,7 +51858,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate785.errors : vErrors.concat(validate785.errors);
+          vErrors = vErrors === null ? validate784.errors : vErrors.concat(validate784.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51670,7 +51866,7 @@ function validate53(
         }
       } else if (tag0 === "Skeleton") {
         if (
-          !validate787(data, {
+          !validate786(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51678,7 +51874,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate787.errors : vErrors.concat(validate787.errors);
+          vErrors = vErrors === null ? validate786.errors : vErrors.concat(validate786.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51686,7 +51882,7 @@ function validate53(
         }
       } else if (tag0 === "Slider") {
         if (
-          !validate797(data, {
+          !validate796(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51694,7 +51890,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate797.errors : vErrors.concat(validate797.errors);
+          vErrors = vErrors === null ? validate796.errors : vErrors.concat(validate796.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51702,7 +51898,7 @@ function validate53(
         }
       } else if (tag0 === "Spinner") {
         if (
-          !validate822(data, {
+          !validate821(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51710,7 +51906,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate822.errors : vErrors.concat(validate822.errors);
+          vErrors = vErrors === null ? validate821.errors : vErrors.concat(validate821.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51718,7 +51914,7 @@ function validate53(
         }
       } else if (tag0 === "Switch") {
         if (
-          !validate832(data, {
+          !validate831(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51726,7 +51922,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate832.errors : vErrors.concat(validate832.errors);
+          vErrors = vErrors === null ? validate831.errors : vErrors.concat(validate831.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51734,7 +51930,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Footer") {
         if (
-          !validate858(data, {
+          !validate857(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51742,7 +51938,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate858.errors : vErrors.concat(validate858.errors);
+          vErrors = vErrors === null ? validate857.errors : vErrors.concat(validate857.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51750,7 +51946,7 @@ function validate53(
         }
       } else if (tag0 === "Table.RowHeader") {
         if (
-          !validate868(data, {
+          !validate867(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51758,7 +51954,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate868.errors : vErrors.concat(validate868.errors);
+          vErrors = vErrors === null ? validate867.errors : vErrors.concat(validate867.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51766,7 +51962,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Body") {
         if (
-          !validate878(data, {
+          !validate877(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51774,7 +51970,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate878.errors : vErrors.concat(validate878.errors);
+          vErrors = vErrors === null ? validate877.errors : vErrors.concat(validate877.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51782,7 +51978,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Caption") {
         if (
-          !validate880(data, {
+          !validate879(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51790,7 +51986,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate880.errors : vErrors.concat(validate880.errors);
+          vErrors = vErrors === null ? validate879.errors : vErrors.concat(validate879.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51798,7 +51994,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Cell") {
         if (
-          !validate882(data, {
+          !validate881(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51806,7 +52002,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate882.errors : vErrors.concat(validate882.errors);
+          vErrors = vErrors === null ? validate881.errors : vErrors.concat(validate881.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51814,7 +52010,7 @@ function validate53(
         }
       } else if (tag0 === "Table.ColumnHeader") {
         if (
-          !validate884(data, {
+          !validate883(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51822,7 +52018,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate884.errors : vErrors.concat(validate884.errors);
+          vErrors = vErrors === null ? validate883.errors : vErrors.concat(validate883.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51830,7 +52026,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Header") {
         if (
-          !validate894(data, {
+          !validate893(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51838,7 +52034,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate894.errors : vErrors.concat(validate894.errors);
+          vErrors = vErrors === null ? validate893.errors : vErrors.concat(validate893.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51846,7 +52042,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Root") {
         if (
-          !validate896(data, {
+          !validate895(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51854,7 +52050,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate896.errors : vErrors.concat(validate896.errors);
+          vErrors = vErrors === null ? validate895.errors : vErrors.concat(validate895.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51862,7 +52058,7 @@ function validate53(
         }
       } else if (tag0 === "Table.Row") {
         if (
-          !validate906(data, {
+          !validate905(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51870,7 +52066,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate906.errors : vErrors.concat(validate906.errors);
+          vErrors = vErrors === null ? validate905.errors : vErrors.concat(validate905.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51878,7 +52074,7 @@ function validate53(
         }
       } else if (tag0 === "Textarea") {
         if (
-          !validate917(data, {
+          !validate916(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51886,7 +52082,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate917.errors : vErrors.concat(validate917.errors);
+          vErrors = vErrors === null ? validate916.errors : vErrors.concat(validate916.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51894,7 +52090,7 @@ function validate53(
         }
       } else if (tag0 === "Toggle") {
         if (
-          !validate935(data, {
+          !validate934(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51902,7 +52098,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate935.errors : vErrors.concat(validate935.errors);
+          vErrors = vErrors === null ? validate934.errors : vErrors.concat(validate934.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51910,7 +52106,7 @@ function validate53(
         }
       } else if (tag0 === "Tooltip.Content") {
         if (
-          !validate946(data, {
+          !validate945(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51918,7 +52114,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate946.errors : vErrors.concat(validate946.errors);
+          vErrors = vErrors === null ? validate945.errors : vErrors.concat(validate945.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51926,7 +52122,7 @@ function validate53(
         }
       } else if (tag0 === "Tooltip.Provider") {
         if (
-          !validate948(data, {
+          !validate947(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51934,7 +52130,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate948.errors : vErrors.concat(validate948.errors);
+          vErrors = vErrors === null ? validate947.errors : vErrors.concat(validate947.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51942,7 +52138,7 @@ function validate53(
         }
       } else if (tag0 === "Tooltip.Root") {
         if (
-          !validate951(data, {
+          !validate950(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51950,7 +52146,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate951.errors : vErrors.concat(validate951.errors);
+          vErrors = vErrors === null ? validate950.errors : vErrors.concat(validate950.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51958,7 +52154,7 @@ function validate53(
         }
       } else if (tag0 === "Tooltip.Trigger") {
         if (
-          !validate955(data, {
+          !validate954(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51966,7 +52162,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate955.errors : vErrors.concat(validate955.errors);
+          vErrors = vErrors === null ? validate954.errors : vErrors.concat(validate954.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51974,7 +52170,7 @@ function validate53(
         }
       } else if (tag0 === "Stack") {
         if (
-          !validate957(data, {
+          !validate956(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51982,7 +52178,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate957.errors : vErrors.concat(validate957.errors);
+          vErrors = vErrors === null ? validate956.errors : vErrors.concat(validate956.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -51990,7 +52186,7 @@ function validate53(
         }
       } else if (tag0 === "Grid") {
         if (
-          !validate960(data, {
+          !validate959(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -51998,7 +52194,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate960.errors : vErrors.concat(validate960.errors);
+          vErrors = vErrors === null ? validate959.errors : vErrors.concat(validate959.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52006,7 +52202,7 @@ function validate53(
         }
       } else if (tag0 === "Section") {
         if (
-          !validate963(data, {
+          !validate962(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52014,7 +52210,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate963.errors : vErrors.concat(validate963.errors);
+          vErrors = vErrors === null ? validate962.errors : vErrors.concat(validate962.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52022,7 +52218,7 @@ function validate53(
         }
       } else if (tag0 === "form") {
         if (
-          !validate966(data, {
+          !validate965(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52030,7 +52226,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate966.errors : vErrors.concat(validate966.errors);
+          vErrors = vErrors === null ? validate965.errors : vErrors.concat(validate965.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52038,7 +52234,7 @@ function validate53(
         }
       } else if (tag0 === "fieldset") {
         if (
-          !validate976(data, {
+          !validate975(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52046,7 +52242,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate976.errors : vErrors.concat(validate976.errors);
+          vErrors = vErrors === null ? validate975.errors : vErrors.concat(validate975.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52054,7 +52250,7 @@ function validate53(
         }
       } else if (tag0 === "section") {
         if (
-          !validate985(data, {
+          !validate984(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52062,7 +52258,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate985.errors : vErrors.concat(validate985.errors);
+          vErrors = vErrors === null ? validate984.errors : vErrors.concat(validate984.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52070,7 +52266,7 @@ function validate53(
         }
       } else if (tag0 === "header") {
         if (
-          !validate987(data, {
+          !validate986(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52078,7 +52274,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate987.errors : vErrors.concat(validate987.errors);
+          vErrors = vErrors === null ? validate986.errors : vErrors.concat(validate986.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52086,7 +52282,7 @@ function validate53(
         }
       } else if (tag0 === "main") {
         if (
-          !validate989(data, {
+          !validate988(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52094,7 +52290,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate989.errors : vErrors.concat(validate989.errors);
+          vErrors = vErrors === null ? validate988.errors : vErrors.concat(validate988.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52102,7 +52298,7 @@ function validate53(
         }
       } else if (tag0 === "nav") {
         if (
-          !validate991(data, {
+          !validate990(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52110,7 +52306,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate991.errors : vErrors.concat(validate991.errors);
+          vErrors = vErrors === null ? validate990.errors : vErrors.concat(validate990.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52118,7 +52314,7 @@ function validate53(
         }
       } else if (tag0 === "footer") {
         if (
-          !validate993(data, {
+          !validate992(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52126,7 +52322,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate993.errors : vErrors.concat(validate993.errors);
+          vErrors = vErrors === null ? validate992.errors : vErrors.concat(validate992.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52134,7 +52330,7 @@ function validate53(
         }
       } else if (tag0 === "aside") {
         if (
-          !validate995(data, {
+          !validate994(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52142,7 +52338,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate995.errors : vErrors.concat(validate995.errors);
+          vErrors = vErrors === null ? validate994.errors : vErrors.concat(validate994.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52150,7 +52346,7 @@ function validate53(
         }
       } else if (tag0 === "ul") {
         if (
-          !validate997(data, {
+          !validate996(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52158,7 +52354,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate997.errors : vErrors.concat(validate997.errors);
+          vErrors = vErrors === null ? validate996.errors : vErrors.concat(validate996.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52166,7 +52362,7 @@ function validate53(
         }
       } else if (tag0 === "ol") {
         if (
-          !validate999(data, {
+          !validate998(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52174,7 +52370,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate999.errors : vErrors.concat(validate999.errors);
+          vErrors = vErrors === null ? validate998.errors : vErrors.concat(validate998.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52182,7 +52378,7 @@ function validate53(
         }
       } else if (tag0 === "li") {
         if (
-          !validate1001(data, {
+          !validate1000(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52190,7 +52386,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1001.errors : vErrors.concat(validate1001.errors);
+          vErrors = vErrors === null ? validate1000.errors : vErrors.concat(validate1000.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52198,7 +52394,7 @@ function validate53(
         }
       } else if (tag0 === "dl") {
         if (
-          !validate1003(data, {
+          !validate1002(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52206,7 +52402,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1003.errors : vErrors.concat(validate1003.errors);
+          vErrors = vErrors === null ? validate1002.errors : vErrors.concat(validate1002.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52214,7 +52410,7 @@ function validate53(
         }
       } else if (tag0 === "dt") {
         if (
-          !validate1005(data, {
+          !validate1004(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52222,7 +52418,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1005.errors : vErrors.concat(validate1005.errors);
+          vErrors = vErrors === null ? validate1004.errors : vErrors.concat(validate1004.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52230,7 +52426,7 @@ function validate53(
         }
       } else if (tag0 === "dd") {
         if (
-          !validate1007(data, {
+          !validate1006(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52238,7 +52434,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1007.errors : vErrors.concat(validate1007.errors);
+          vErrors = vErrors === null ? validate1006.errors : vErrors.concat(validate1006.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52246,7 +52442,7 @@ function validate53(
         }
       } else if (tag0 === "p") {
         if (
-          !validate1009(data, {
+          !validate1008(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52254,7 +52450,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1009.errors : vErrors.concat(validate1009.errors);
+          vErrors = vErrors === null ? validate1008.errors : vErrors.concat(validate1008.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52262,7 +52458,7 @@ function validate53(
         }
       } else if (tag0 === "strong") {
         if (
-          !validate1011(data, {
+          !validate1010(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52270,7 +52466,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1011.errors : vErrors.concat(validate1011.errors);
+          vErrors = vErrors === null ? validate1010.errors : vErrors.concat(validate1010.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52278,7 +52474,7 @@ function validate53(
         }
       } else if (tag0 === "em") {
         if (
-          !validate1013(data, {
+          !validate1012(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52286,7 +52482,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1013.errors : vErrors.concat(validate1013.errors);
+          vErrors = vErrors === null ? validate1012.errors : vErrors.concat(validate1012.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52294,7 +52490,7 @@ function validate53(
         }
       } else if (tag0 === "legend") {
         if (
-          !validate1015(data, {
+          !validate1014(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52302,7 +52498,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1015.errors : vErrors.concat(validate1015.errors);
+          vErrors = vErrors === null ? validate1014.errors : vErrors.concat(validate1014.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52310,7 +52506,7 @@ function validate53(
         }
       } else if (tag0 === "h1") {
         if (
-          !validate1017(data, {
+          !validate1016(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52318,7 +52514,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1017.errors : vErrors.concat(validate1017.errors);
+          vErrors = vErrors === null ? validate1016.errors : vErrors.concat(validate1016.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52326,7 +52522,7 @@ function validate53(
         }
       } else if (tag0 === "h2") {
         if (
-          !validate1019(data, {
+          !validate1018(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52334,7 +52530,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1019.errors : vErrors.concat(validate1019.errors);
+          vErrors = vErrors === null ? validate1018.errors : vErrors.concat(validate1018.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52342,7 +52538,7 @@ function validate53(
         }
       } else if (tag0 === "h3") {
         if (
-          !validate1021(data, {
+          !validate1020(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52350,7 +52546,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1021.errors : vErrors.concat(validate1021.errors);
+          vErrors = vErrors === null ? validate1020.errors : vErrors.concat(validate1020.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52358,7 +52554,7 @@ function validate53(
         }
       } else if (tag0 === "h4") {
         if (
-          !validate1023(data, {
+          !validate1022(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52366,7 +52562,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1023.errors : vErrors.concat(validate1023.errors);
+          vErrors = vErrors === null ? validate1022.errors : vErrors.concat(validate1022.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52374,7 +52570,7 @@ function validate53(
         }
       } else if (tag0 === "h5") {
         if (
-          !validate1025(data, {
+          !validate1024(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52382,7 +52578,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1025.errors : vErrors.concat(validate1025.errors);
+          vErrors = vErrors === null ? validate1024.errors : vErrors.concat(validate1024.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52390,7 +52586,7 @@ function validate53(
         }
       } else if (tag0 === "h6") {
         if (
-          !validate1027(data, {
+          !validate1026(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52398,7 +52594,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1027.errors : vErrors.concat(validate1027.errors);
+          vErrors = vErrors === null ? validate1026.errors : vErrors.concat(validate1026.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52406,7 +52602,7 @@ function validate53(
         }
       } else if (tag0 === "a") {
         if (
-          !validate1029(data, {
+          !validate1028(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52414,7 +52610,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1029.errors : vErrors.concat(validate1029.errors);
+          vErrors = vErrors === null ? validate1028.errors : vErrors.concat(validate1028.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {
@@ -52422,7 +52618,7 @@ function validate53(
         }
       } else if (tag0 === "label") {
         if (
-          !validate1041(data, {
+          !validate1040(data, {
             instancePath,
             parentData,
             parentDataProperty,
@@ -52430,7 +52626,7 @@ function validate53(
             dynamicAnchors,
           })
         ) {
-          vErrors = vErrors === null ? validate1041.errors : vErrors.concat(validate1041.errors);
+          vErrors = vErrors === null ? validate1040.errors : vErrors.concat(validate1040.errors);
           errors = vErrors.length;
         }
         if (props0 !== true) {

@@ -35,8 +35,8 @@ function isObject(value: unknown): value is object {
  */
 export function checkLimits(value: unknown): UiValidationIssue[] {
   const issues: UiValidationIssue[] = [];
-  const add = (path: string, message: string): boolean => {
-    issues.push({ path, breadcrumb: breadcrumbAt(value, path), message });
+  const add = (path: string, code: string, message: string): boolean => {
+    issues.push({ path, code, breadcrumb: breadcrumbAt(value, path), message });
     return issues.length >= MAX_ISSUES;
   };
 
@@ -59,13 +59,21 @@ export function checkLimits(value: unknown): UiValidationIssue[] {
       if (node) {
         nodes += 1;
         if (nodes > MAX_NODES) {
-          add(path, `document has more than ${MAX_NODES} nodes (text children count as nodes)`);
+          add(
+            path,
+            "limit.nodes",
+            `document has more than ${MAX_NODES} nodes (text children count as nodes)`,
+          );
           break;
         }
       }
       if (
         current.length > MAX_STRING_LENGTH &&
-        add(path, `string is ${current.length} characters long; the limit is ${MAX_STRING_LENGTH}`)
+        add(
+          path,
+          "limit.string",
+          `string is ${current.length} characters long; the limit is ${MAX_STRING_LENGTH}`,
+        )
       )
         break;
       continue;
@@ -79,6 +87,7 @@ export function checkLimits(value: unknown): UiValidationIssue[] {
         node &&
         add(
           path,
+          "limit.reference",
           "this node or list already appears elsewhere in the document; shared and circular references are not allowed",
         )
       )
@@ -97,12 +106,16 @@ export function checkLimits(value: unknown): UiValidationIssue[] {
     if (node) {
       nodes += 1;
       if (nodes > MAX_NODES) {
-        add(path, `document has more than ${MAX_NODES} nodes (text children count as nodes)`);
+        add(
+          path,
+          "limit.nodes",
+          `document has more than ${MAX_NODES} nodes (text children count as nodes)`,
+        );
         break;
       }
     }
     if (depth > MAX_DEPTH) {
-      if (add(path, `nesting is deeper than ${MAX_DEPTH} levels`)) break;
+      if (add(path, "limit.depth", `nesting is deeper than ${MAX_DEPTH} levels`)) break;
       continue;
     }
 
@@ -115,6 +128,7 @@ export function checkLimits(value: unknown): UiValidationIssue[] {
         if (
           add(
             path,
+            "limit.string",
             `property name is ${key.length} characters long; the limit is ${MAX_STRING_LENGTH}`,
           )
         )

@@ -228,6 +228,7 @@ export function toIssues(
         ? error.instancePath
         : `${error.instancePath}/${escapePointer(found.extra)}`;
     const issue: UiValidationIssue = {
+      code: `schema.${error.keyword}`,
       path,
       breadcrumb: breadcrumbOf(location, leafChildren ? [] : extra),
       message: found.message,
@@ -241,5 +242,12 @@ export function toIssues(
 
   return issues.length > 0
     ? issues
-    : [{ path: "", breadcrumb: "document", message: "does not match the UI document schema" }];
+    : [
+        {
+          code: "schema",
+          path: "",
+          breadcrumb: "document",
+          message: "does not match the UI document schema",
+        },
+      ];
 }
