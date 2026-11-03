@@ -1,59 +1,18 @@
-import type { ComponentType, ReactElement, ReactNode } from "react";
-import type { GridProps, SectionProps, StackProps } from "./catalog.generated.js";
+import type { ComponentType } from "react";
+import { Box, Grid, GridItem, Section, Stack } from "../components/layout/index.js";
+import { Heading, Text } from "../components/typography/index.js";
+import type { LayoutPart } from "../core/layout/index.js";
 
-/**
- * Layout nodes of a UI document. They are plain elements marked with `data-ui-layout`
- * and styled by `styles/components/ai-layout.css`, so they need no hooks and no client JS.
- */
+// AI is a projection of the public component layer, not its source of truth.
+export { Box, Grid, GridItem, Section, Stack, Heading, Text };
 
-export function Stack({
-  direction,
-  gap,
-  align,
-  wrap,
-  children,
-}: StackProps & { children?: ReactNode }): ReactElement {
-  return (
-    <div
-      data-ui-layout="stack"
-      data-direction={direction}
-      data-gap={gap}
-      data-align={align}
-      data-wrap={wrap ? "true" : undefined}
-    >
-      {children}
-    </div>
-  );
-}
-Stack.displayName = "Stack";
-
-export function Grid({
-  columns,
-  gap,
-  children,
-}: GridProps & { children?: ReactNode }): ReactElement {
-  return (
-    <div data-ui-layout="grid" data-columns={columns} data-gap={gap}>
-      {children}
-    </div>
-  );
-}
-Grid.displayName = "Grid";
-
-export function Section({
-  as: Tag = "section",
-  padding,
-  width,
-  children,
-}: SectionProps & { children?: ReactNode }): ReactElement {
-  return (
-    <Tag data-ui-layout="section" data-padding={padding} data-width={width}>
-      {children}
-    </Tag>
-  );
-}
-Section.displayName = "Section";
-
-// oxlint-disable-next-line typescript/no-explicit-any -- each node takes its own props
-export const layoutComponents: Readonly<Record<"Stack" | "Grid" | "Section", ComponentType<any>>> =
-  { Stack, Grid, Section };
+// oxlint-disable-next-line typescript/no-explicit-any -- each validated node has its own props
+export const layoutComponents: Readonly<Record<LayoutPart, ComponentType<any>>> = {
+  Box,
+  Grid,
+  GridItem,
+  Section,
+  Stack,
+  Heading,
+  Text,
+};

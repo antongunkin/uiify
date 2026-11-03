@@ -40,6 +40,20 @@
     "none": "Stateless markup"
   },
   "components": {
+    "layout": {
+      "tier": 0,
+      "state": "none",
+      "element": "div/section",
+      "status": "pending",
+      "note": "Stateless public Box, Section, Stack, Grid and GridItem. Static layout stylesheet owns geometry; no client entry."
+    },
+    "typography": {
+      "tier": 0,
+      "state": "none",
+      "element": "p/h1-h6",
+      "status": "pending",
+      "note": "Stateless Text and Heading; semantic tag independent of token-based optional appearance."
+    },
     "accordion": {
       "tier": 0,
       "state": "S1",

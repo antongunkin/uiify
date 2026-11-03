@@ -1,0 +1,8 @@
+/* Tokens and existing control skins without layout/typography appearance rules.
+ * Tailwind consumers supply layout utilities from the shared layout adapter. */
+@layer reset, tokens, base, demo, components, layout, utilities, theme;
+
+@import url("./tokens/theme.css");
+@import url("./base.css");
+@import url("./components/index.css");
+@import url("./i18n.css");

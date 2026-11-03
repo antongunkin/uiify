@@ -130,6 +130,7 @@ inline-alert|banner-alert,callout|alert|references/elements/inline-alert.md
 input|text-input|input|references/elements/input.md
 input-group|input-prefix-suffix|input-group|references/elements/input-group.md
 item|list-item|item|references/elements/item.md
+layout|layout-primitives,page-layout|layout|references/elements/layout.md
 line-chart|sparkline|line-chart|references/elements/line-chart.md
 logo-wall|logo-cloud,customer-logos|gap|references/elements/logo-wall.md
 modal|dialog|modal|references/elements/modal.md
@@ -164,6 +165,7 @@ toggle|toggle-button|toggle|references/elements/toggle.md
 toggle-group|button-group|toggle-group|references/elements/toggle-group.md
 toolbar||toolbar|references/elements/toolbar.md
 tooltip||tooltip|references/elements/tooltip.md
+typography|text-hierarchy,text-roles|typography|references/elements/typography.md
 virtual-scroll|virtualized-list|virtual-scroll|references/elements/virtual-scroll.md
 ```
 

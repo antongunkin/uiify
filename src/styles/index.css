@@ -6,9 +6,10 @@
  * your own. The layer order is declared up front so precedence is stable no
  * matter which entries a consumer loads, in what order.
  */
-@layer reset, tokens, base, demo, components, utilities, theme;
+@layer reset, tokens, base, demo, components, layout, utilities, theme;
 
 @import url("./tokens/theme.css");
 @import url("./base.css");
 @import url("./components/index.css");
+@import url("./layout.css");
 @import url("./i18n.css");

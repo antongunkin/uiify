@@ -52,6 +52,10 @@
   --text-xl: 1.5rem;
   --text-2xl: 2rem;
 
+  /* Tailwind v4's default --leading-tight is 1.25; UIify defines it as 1.2. */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+
   /* Font families → font-* */
   --font-sans: system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", monospace;

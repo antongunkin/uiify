@@ -118,9 +118,13 @@ export type UiType =
   | "Tooltip.Provider"
   | "Tooltip.Root"
   | "Tooltip.Trigger"
+  | "Box"
+  | "Section"
   | "Stack"
   | "Grid"
-  | "Section"
+  | "GridItem"
+  | "Text"
+  | "Heading"
   | "form"
   | "fieldset"
   | "section"
@@ -2221,22 +2225,699 @@ export interface TooltipTriggerProps {
     | `mailto:${string}`;
 }
 
-export interface StackProps {
-  readonly direction?: "block" | "inline";
-  readonly gap?: "xs" | "sm" | "md" | "lg" | "xl";
-  readonly align?: "start" | "center" | "end" | "stretch";
-  readonly wrap?: boolean;
-}
-
-export interface GridProps {
-  readonly columns?: 1 | 2 | 3 | 4;
-  readonly gap?: "xs" | "sm" | "md" | "lg" | "xl";
+export interface BoxProps {
+  readonly padding?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingInline?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingBlock?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly width?:
+    | ("auto" | "full" | "fit" | "sm" | "md" | "lg")
+    | Readonly<{
+        base?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        sm?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        md?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        lg?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+      }>;
+  readonly height?:
+    | ("auto" | "full" | "screen")
+    | Readonly<{
+        base?: "auto" | "full" | "screen";
+        sm?: "auto" | "full" | "screen";
+        md?: "auto" | "full" | "screen";
+        lg?: "auto" | "full" | "screen";
+      }>;
+  readonly minWidth?:
+    | ("zero" | "full")
+    | Readonly<{
+        base?: "zero" | "full";
+        sm?: "zero" | "full";
+        md?: "zero" | "full";
+        lg?: "zero" | "full";
+      }>;
+  readonly maxWidth?:
+    | ("none" | "sm" | "md" | "lg" | "prose")
+    | Readonly<{
+        base?: "none" | "sm" | "md" | "lg" | "prose";
+        sm?: "none" | "sm" | "md" | "lg" | "prose";
+        md?: "none" | "sm" | "md" | "lg" | "prose";
+        lg?: "none" | "sm" | "md" | "lg" | "prose";
+      }>;
+  readonly grow?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly shrink?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly overflow?:
+    | ("visible" | "hidden" | "auto")
+    | Readonly<{
+        base?: "visible" | "hidden" | "auto";
+        sm?: "visible" | "hidden" | "auto";
+        md?: "visible" | "hidden" | "auto";
+        lg?: "visible" | "hidden" | "auto";
+      }>;
+  readonly container?: true | false;
+  readonly responsive?: "container" | "viewport";
+  readonly as?: "div" | "section" | "header" | "main" | "footer" | "nav" | "aside" | "article";
+  readonly id?: string;
+  readonly "aria-label"?: string;
 }
 
 export interface SectionProps {
-  readonly as?: "section" | "header" | "main" | "footer" | "nav" | "aside";
-  readonly padding?: "xs" | "sm" | "md" | "lg" | "xl";
-  readonly width?: "sm" | "md" | "lg";
+  readonly padding?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingInline?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingBlock?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly width?:
+    | ("auto" | "full" | "fit" | "sm" | "md" | "lg")
+    | Readonly<{
+        base?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        sm?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        md?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        lg?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+      }>;
+  readonly height?:
+    | ("auto" | "full" | "screen")
+    | Readonly<{
+        base?: "auto" | "full" | "screen";
+        sm?: "auto" | "full" | "screen";
+        md?: "auto" | "full" | "screen";
+        lg?: "auto" | "full" | "screen";
+      }>;
+  readonly minWidth?:
+    | ("zero" | "full")
+    | Readonly<{
+        base?: "zero" | "full";
+        sm?: "zero" | "full";
+        md?: "zero" | "full";
+        lg?: "zero" | "full";
+      }>;
+  readonly maxWidth?:
+    | ("none" | "sm" | "md" | "lg" | "prose")
+    | Readonly<{
+        base?: "none" | "sm" | "md" | "lg" | "prose";
+        sm?: "none" | "sm" | "md" | "lg" | "prose";
+        md?: "none" | "sm" | "md" | "lg" | "prose";
+        lg?: "none" | "sm" | "md" | "lg" | "prose";
+      }>;
+  readonly grow?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly shrink?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly overflow?:
+    | ("visible" | "hidden" | "auto")
+    | Readonly<{
+        base?: "visible" | "hidden" | "auto";
+        sm?: "visible" | "hidden" | "auto";
+        md?: "visible" | "hidden" | "auto";
+        lg?: "visible" | "hidden" | "auto";
+      }>;
+  readonly container?: true | false;
+  readonly responsive?: "container" | "viewport";
+  readonly as?: "div" | "section" | "header" | "main" | "footer" | "nav" | "aside" | "article";
+  readonly id?: string;
+  readonly "aria-label"?: string;
+}
+
+export interface StackProps {
+  readonly padding?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingInline?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingBlock?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly width?:
+    | ("auto" | "full" | "fit" | "sm" | "md" | "lg")
+    | Readonly<{
+        base?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        sm?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        md?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        lg?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+      }>;
+  readonly height?:
+    | ("auto" | "full" | "screen")
+    | Readonly<{
+        base?: "auto" | "full" | "screen";
+        sm?: "auto" | "full" | "screen";
+        md?: "auto" | "full" | "screen";
+        lg?: "auto" | "full" | "screen";
+      }>;
+  readonly minWidth?:
+    | ("zero" | "full")
+    | Readonly<{
+        base?: "zero" | "full";
+        sm?: "zero" | "full";
+        md?: "zero" | "full";
+        lg?: "zero" | "full";
+      }>;
+  readonly maxWidth?:
+    | ("none" | "sm" | "md" | "lg" | "prose")
+    | Readonly<{
+        base?: "none" | "sm" | "md" | "lg" | "prose";
+        sm?: "none" | "sm" | "md" | "lg" | "prose";
+        md?: "none" | "sm" | "md" | "lg" | "prose";
+        lg?: "none" | "sm" | "md" | "lg" | "prose";
+      }>;
+  readonly grow?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly shrink?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly overflow?:
+    | ("visible" | "hidden" | "auto")
+    | Readonly<{
+        base?: "visible" | "hidden" | "auto";
+        sm?: "visible" | "hidden" | "auto";
+        md?: "visible" | "hidden" | "auto";
+        lg?: "visible" | "hidden" | "auto";
+      }>;
+  readonly container?: true | false;
+  readonly responsive?: "container" | "viewport";
+  readonly direction?:
+    | ("block" | "inline")
+    | Readonly<{
+        base?: "block" | "inline";
+        sm?: "block" | "inline";
+        md?: "block" | "inline";
+        lg?: "block" | "inline";
+      }>;
+  readonly gap?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly align?:
+    | ("start" | "center" | "end" | "stretch" | "baseline")
+    | Readonly<{
+        base?: "start" | "center" | "end" | "stretch" | "baseline";
+        sm?: "start" | "center" | "end" | "stretch" | "baseline";
+        md?: "start" | "center" | "end" | "stretch" | "baseline";
+        lg?: "start" | "center" | "end" | "stretch" | "baseline";
+      }>;
+  readonly justify?:
+    | ("start" | "center" | "end" | "between" | "around" | "evenly")
+    | Readonly<{
+        base?: "start" | "center" | "end" | "between" | "around" | "evenly";
+        sm?: "start" | "center" | "end" | "between" | "around" | "evenly";
+        md?: "start" | "center" | "end" | "between" | "around" | "evenly";
+        lg?: "start" | "center" | "end" | "between" | "around" | "evenly";
+      }>;
+  readonly wrap?:
+    | (true | false)
+    | Readonly<{ base?: true | false; sm?: true | false; md?: true | false; lg?: true | false }>;
+  readonly as?: "div" | "section" | "header" | "main" | "footer" | "nav" | "aside" | "article";
+  readonly id?: string;
+  readonly "aria-label"?: string;
+}
+
+export interface GridProps {
+  readonly padding?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingInline?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingBlock?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly width?:
+    | ("auto" | "full" | "fit" | "sm" | "md" | "lg")
+    | Readonly<{
+        base?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        sm?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        md?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        lg?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+      }>;
+  readonly height?:
+    | ("auto" | "full" | "screen")
+    | Readonly<{
+        base?: "auto" | "full" | "screen";
+        sm?: "auto" | "full" | "screen";
+        md?: "auto" | "full" | "screen";
+        lg?: "auto" | "full" | "screen";
+      }>;
+  readonly minWidth?:
+    | ("zero" | "full")
+    | Readonly<{
+        base?: "zero" | "full";
+        sm?: "zero" | "full";
+        md?: "zero" | "full";
+        lg?: "zero" | "full";
+      }>;
+  readonly maxWidth?:
+    | ("none" | "sm" | "md" | "lg" | "prose")
+    | Readonly<{
+        base?: "none" | "sm" | "md" | "lg" | "prose";
+        sm?: "none" | "sm" | "md" | "lg" | "prose";
+        md?: "none" | "sm" | "md" | "lg" | "prose";
+        lg?: "none" | "sm" | "md" | "lg" | "prose";
+      }>;
+  readonly grow?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly shrink?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly overflow?:
+    | ("visible" | "hidden" | "auto")
+    | Readonly<{
+        base?: "visible" | "hidden" | "auto";
+        sm?: "visible" | "hidden" | "auto";
+        md?: "visible" | "hidden" | "auto";
+        lg?: "visible" | "hidden" | "auto";
+      }>;
+  readonly container?: true | false;
+  readonly responsive?: "container" | "viewport";
+  readonly columns?:
+    | (
+        | 1
+        | 2
+        | 3
+        | 4
+        | 5
+        | 6
+        | 7
+        | 8
+        | 9
+        | 10
+        | 11
+        | 12
+        | "sidebar"
+        | "sidebar-end"
+        | "2:1"
+        | "1:2"
+        | "3:2"
+        | "2:3"
+      )
+    | Readonly<{
+        base?:
+          | 1
+          | 2
+          | 3
+          | 4
+          | 5
+          | 6
+          | 7
+          | 8
+          | 9
+          | 10
+          | 11
+          | 12
+          | "sidebar"
+          | "sidebar-end"
+          | "2:1"
+          | "1:2"
+          | "3:2"
+          | "2:3";
+        sm?:
+          | 1
+          | 2
+          | 3
+          | 4
+          | 5
+          | 6
+          | 7
+          | 8
+          | 9
+          | 10
+          | 11
+          | 12
+          | "sidebar"
+          | "sidebar-end"
+          | "2:1"
+          | "1:2"
+          | "3:2"
+          | "2:3";
+        md?:
+          | 1
+          | 2
+          | 3
+          | 4
+          | 5
+          | 6
+          | 7
+          | 8
+          | 9
+          | 10
+          | 11
+          | 12
+          | "sidebar"
+          | "sidebar-end"
+          | "2:1"
+          | "1:2"
+          | "3:2"
+          | "2:3";
+        lg?:
+          | 1
+          | 2
+          | 3
+          | 4
+          | 5
+          | 6
+          | 7
+          | 8
+          | 9
+          | 10
+          | 11
+          | 12
+          | "sidebar"
+          | "sidebar-end"
+          | "2:1"
+          | "1:2"
+          | "3:2"
+          | "2:3";
+      }>;
+  readonly gap?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly rowGap?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly align?:
+    | ("start" | "center" | "end" | "stretch" | "baseline")
+    | Readonly<{
+        base?: "start" | "center" | "end" | "stretch" | "baseline";
+        sm?: "start" | "center" | "end" | "stretch" | "baseline";
+        md?: "start" | "center" | "end" | "stretch" | "baseline";
+        lg?: "start" | "center" | "end" | "stretch" | "baseline";
+      }>;
+  readonly justify?:
+    | ("start" | "center" | "end" | "between" | "around" | "evenly")
+    | Readonly<{
+        base?: "start" | "center" | "end" | "between" | "around" | "evenly";
+        sm?: "start" | "center" | "end" | "between" | "around" | "evenly";
+        md?: "start" | "center" | "end" | "between" | "around" | "evenly";
+        lg?: "start" | "center" | "end" | "between" | "around" | "evenly";
+      }>;
+  readonly as?: "div" | "section" | "header" | "main" | "footer" | "nav" | "aside" | "article";
+  readonly id?: string;
+  readonly "aria-label"?: string;
+}
+
+export interface GridItemProps {
+  readonly padding?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingInline?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly paddingBlock?:
+    | ("none" | "xs" | "sm" | "md" | "lg" | "xl")
+    | Readonly<{
+        base?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        sm?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        md?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+        lg?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+      }>;
+  readonly width?:
+    | ("auto" | "full" | "fit" | "sm" | "md" | "lg")
+    | Readonly<{
+        base?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        sm?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        md?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+        lg?: "auto" | "full" | "fit" | "sm" | "md" | "lg";
+      }>;
+  readonly height?:
+    | ("auto" | "full" | "screen")
+    | Readonly<{
+        base?: "auto" | "full" | "screen";
+        sm?: "auto" | "full" | "screen";
+        md?: "auto" | "full" | "screen";
+        lg?: "auto" | "full" | "screen";
+      }>;
+  readonly minWidth?:
+    | ("zero" | "full")
+    | Readonly<{
+        base?: "zero" | "full";
+        sm?: "zero" | "full";
+        md?: "zero" | "full";
+        lg?: "zero" | "full";
+      }>;
+  readonly maxWidth?:
+    | ("none" | "sm" | "md" | "lg" | "prose")
+    | Readonly<{
+        base?: "none" | "sm" | "md" | "lg" | "prose";
+        sm?: "none" | "sm" | "md" | "lg" | "prose";
+        md?: "none" | "sm" | "md" | "lg" | "prose";
+        lg?: "none" | "sm" | "md" | "lg" | "prose";
+      }>;
+  readonly grow?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly shrink?: (0 | 1) | Readonly<{ base?: 0 | 1; sm?: 0 | 1; md?: 0 | 1; lg?: 0 | 1 }>;
+  readonly overflow?:
+    | ("visible" | "hidden" | "auto")
+    | Readonly<{
+        base?: "visible" | "hidden" | "auto";
+        sm?: "visible" | "hidden" | "auto";
+        md?: "visible" | "hidden" | "auto";
+        lg?: "visible" | "hidden" | "auto";
+      }>;
+  readonly container?: true | false;
+  readonly responsive?: "container" | "viewport";
+  readonly columnSpan?:
+    | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full")
+    | Readonly<{
+        base?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full";
+        sm?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full";
+        md?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full";
+        lg?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full";
+      }>;
+  readonly rowSpan?:
+    | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12)
+    | Readonly<{
+        base?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+        sm?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+        md?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+        lg?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+      }>;
+  readonly columnStart?:
+    | (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "auto")
+    | Readonly<{
+        base?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "auto";
+        sm?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "auto";
+        md?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "auto";
+        lg?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "auto";
+      }>;
+  readonly alignSelf?:
+    | ("auto" | "start" | "center" | "end" | "stretch" | "baseline")
+    | Readonly<{
+        base?: "auto" | "start" | "center" | "end" | "stretch" | "baseline";
+        sm?: "auto" | "start" | "center" | "end" | "stretch" | "baseline";
+        md?: "auto" | "start" | "center" | "end" | "stretch" | "baseline";
+        lg?: "auto" | "start" | "center" | "end" | "stretch" | "baseline";
+      }>;
+  readonly as?: "div" | "section" | "header" | "main" | "footer" | "nav" | "aside" | "article";
+  readonly id?: string;
+  readonly "aria-label"?: string;
+}
+
+export interface TextProps {
+  readonly size?:
+    | ("xs" | "sm" | "base" | "lg" | "xl" | "2xl")
+    | Readonly<{
+        base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+      }>;
+  readonly weight?:
+    | ("normal" | "medium" | "semibold")
+    | Readonly<{
+        base?: "normal" | "medium" | "semibold";
+        sm?: "normal" | "medium" | "semibold";
+        md?: "normal" | "medium" | "semibold";
+        lg?: "normal" | "medium" | "semibold";
+      }>;
+  readonly tone?:
+    | ("default" | "muted" | "primary" | "danger")
+    | Readonly<{
+        base?: "default" | "muted" | "primary" | "danger";
+        sm?: "default" | "muted" | "primary" | "danger";
+        md?: "default" | "muted" | "primary" | "danger";
+        lg?: "default" | "muted" | "primary" | "danger";
+      }>;
+  readonly leading?:
+    | ("normal" | "tight")
+    | Readonly<{
+        base?: "normal" | "tight";
+        sm?: "normal" | "tight";
+        md?: "normal" | "tight";
+        lg?: "normal" | "tight";
+      }>;
+  readonly align?:
+    | ("start" | "center" | "end")
+    | Readonly<{
+        base?: "start" | "center" | "end";
+        sm?: "start" | "center" | "end";
+        md?: "start" | "center" | "end";
+        lg?: "start" | "center" | "end";
+      }>;
+  readonly measure?:
+    | ("none" | "prose")
+    | Readonly<{
+        base?: "none" | "prose";
+        sm?: "none" | "prose";
+        md?: "none" | "prose";
+        lg?: "none" | "prose";
+      }>;
+  readonly wrap?:
+    | ("wrap" | "balance" | "pretty")
+    | Readonly<{
+        base?: "wrap" | "balance" | "pretty";
+        sm?: "wrap" | "balance" | "pretty";
+        md?: "wrap" | "balance" | "pretty";
+        lg?: "wrap" | "balance" | "pretty";
+      }>;
+  readonly responsive?: "container" | "viewport";
+  readonly as?: "p" | "span" | "strong" | "em" | "small" | "code";
+  readonly id?: string;
+  readonly "aria-label"?: string;
+}
+
+export interface HeadingProps {
+  readonly size?:
+    | ("xs" | "sm" | "base" | "lg" | "xl" | "2xl")
+    | Readonly<{
+        base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+      }>;
+  readonly weight?:
+    | ("normal" | "medium" | "semibold")
+    | Readonly<{
+        base?: "normal" | "medium" | "semibold";
+        sm?: "normal" | "medium" | "semibold";
+        md?: "normal" | "medium" | "semibold";
+        lg?: "normal" | "medium" | "semibold";
+      }>;
+  readonly tone?:
+    | ("default" | "muted" | "primary" | "danger")
+    | Readonly<{
+        base?: "default" | "muted" | "primary" | "danger";
+        sm?: "default" | "muted" | "primary" | "danger";
+        md?: "default" | "muted" | "primary" | "danger";
+        lg?: "default" | "muted" | "primary" | "danger";
+      }>;
+  readonly leading?:
+    | ("normal" | "tight")
+    | Readonly<{
+        base?: "normal" | "tight";
+        sm?: "normal" | "tight";
+        md?: "normal" | "tight";
+        lg?: "normal" | "tight";
+      }>;
+  readonly align?:
+    | ("start" | "center" | "end")
+    | Readonly<{
+        base?: "start" | "center" | "end";
+        sm?: "start" | "center" | "end";
+        md?: "start" | "center" | "end";
+        lg?: "start" | "center" | "end";
+      }>;
+  readonly measure?:
+    | ("none" | "prose")
+    | Readonly<{
+        base?: "none" | "prose";
+        sm?: "none" | "prose";
+        md?: "none" | "prose";
+        lg?: "none" | "prose";
+      }>;
+  readonly wrap?:
+    | ("wrap" | "balance" | "pretty")
+    | Readonly<{
+        base?: "wrap" | "balance" | "pretty";
+        sm?: "wrap" | "balance" | "pretty";
+        md?: "wrap" | "balance" | "pretty";
+        lg?: "wrap" | "balance" | "pretty";
+      }>;
+  readonly responsive?: "container" | "viewport";
+  readonly level?: 1 | 2 | 3 | 4 | 5 | 6;
+  readonly as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  readonly id?: string;
+  readonly "aria-label"?: string;
 }
 
 export interface NativeFormProps {
@@ -3141,6 +3822,18 @@ export type UiNode =
       readonly key?: never;
     }
   | {
+      readonly type: "Box";
+      readonly props: BoxProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "Section";
+      readonly props: SectionProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
       readonly type: "Stack";
       readonly props: StackProps;
       readonly children?: readonly (UiNodeInput | string)[];
@@ -3153,8 +3846,20 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Section";
-      readonly props: SectionProps;
+      readonly type: "GridItem";
+      readonly props: GridItemProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "Text";
+      readonly props: TextProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "Heading";
+      readonly props: HeadingProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3525,9 +4230,13 @@ export const uiParts: Readonly<
   "Tooltip.Provider": { kind: "component", leaf: false },
   "Tooltip.Root": { kind: "component", leaf: false, rootType: "Tooltip.Provider" },
   "Tooltip.Trigger": { kind: "component", leaf: false, rootType: "Tooltip.Root" },
+  Box: { kind: "layout", leaf: false },
+  Section: { kind: "layout", leaf: false },
   Stack: { kind: "layout", leaf: false },
   Grid: { kind: "layout", leaf: false },
-  Section: { kind: "layout", leaf: false },
+  GridItem: { kind: "layout", leaf: false },
+  Text: { kind: "layout", leaf: false },
+  Heading: { kind: "layout", leaf: false },
   form: { kind: "native", leaf: false },
   fieldset: { kind: "native", leaf: false },
   section: { kind: "native", leaf: false },

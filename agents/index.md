@@ -160,7 +160,7 @@ Components ship behavior CSS only; the theme is optional. Load both from one sty
 declare the layer order on its first line:
 
 ```css
-@layer reset, tokens, base, demo, components, utilities, theme, ui, app;
+@layer reset, tokens, base, demo, components, layout, utilities, theme, ui, app;
 @import "@gunkin/uiify/components/behavior.css";
 @import "@gunkin/uiify/styles/reset";
 @import "@gunkin/uiify/styles/tokens";
@@ -168,7 +168,7 @@ declare the layer order on its first line:
 ```
 
 `behavior.css` declares `ui.reset, ui.behavior, ui.tokens, ui.theme, app` and the theme declares
-`reset, tokens, base, demo, components, utilities, theme`. Layers rank by first declaration, so
+`reset, tokens, base, demo, components, layout, utilities, theme`. Layers rank by first declaration, so
 the statement above only works if nothing loads `behavior.css` earlier: do not also import it from
 JavaScript. Unlayered rules beat every layer.
 

@@ -139,9 +139,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/Tooltip.Provider" },
         { $ref: "#/$defs/Tooltip.Root" },
         { $ref: "#/$defs/Tooltip.Trigger" },
+        { $ref: "#/$defs/Box" },
+        { $ref: "#/$defs/Section" },
         { $ref: "#/$defs/Stack" },
         { $ref: "#/$defs/Grid" },
-        { $ref: "#/$defs/Section" },
+        { $ref: "#/$defs/GridItem" },
+        { $ref: "#/$defs/Text" },
+        { $ref: "#/$defs/Heading" },
         { $ref: "#/$defs/form" },
         { $ref: "#/$defs/fieldset" },
         { $ref: "#/$defs/section" },
@@ -1718,6 +1722,32 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
+    Box: {
+      type: "object",
+      properties: {
+        type: { const: "Box" },
+        props: { $ref: "#/$defs/Box.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    Section: {
+      type: "object",
+      properties: {
+        type: { const: "Section" },
+        props: { $ref: "#/$defs/Box.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
     Stack: {
       type: "object",
       properties: {
@@ -1744,11 +1774,37 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    Section: {
+    GridItem: {
       type: "object",
       properties: {
-        type: { const: "Section" },
-        props: { $ref: "#/$defs/Section.props" },
+        type: { const: "GridItem" },
+        props: { $ref: "#/$defs/GridItem.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    Text: {
+      type: "object",
+      properties: {
+        type: { const: "Text" },
+        props: { $ref: "#/$defs/Text.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    Heading: {
+      type: "object",
+      properties: {
+        type: { const: "Heading" },
+        props: { $ref: "#/$defs/Heading.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -2126,11 +2182,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
-        trigger: { type: "string" },
+        trigger: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         title: { $ref: "#/$defs/attribute.title" },
-        description: { type: "string" },
-        actionLabel: { type: "string" },
-        cancelLabel: { type: "string" },
+        description: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        actionLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        cancelLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
         "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
         "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
@@ -2143,8 +2199,8 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "AlertModalAction.props": {
       type: "object",
       properties: {
-        target: { type: "string", pattern: "^[A-Za-z][A-Za-z0-9_:.-]*$" },
-        command: { type: "string" },
+        target: { $ref: "#/$defs/attribute.layout.Box.id" },
+        command: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         commandfor: { $ref: "#/$defs/attribute.commandfor" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -2193,7 +2249,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         name: { $ref: "#/$defs/attribute.name" },
-        fallback: { type: "string" },
+        fallback: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         src: { $ref: "#/$defs/attribute.src" },
         size: { enum: ["sm", "md", "lg"] },
         id: { $ref: "#/$defs/attribute.id" },
@@ -2293,7 +2349,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
-        label: { type: "string" },
+        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         defaultChecked: { type: "boolean" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         name: { $ref: "#/$defs/attribute.name" },
@@ -2309,7 +2365,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         alpha: { type: "boolean" },
         colorSpace: { enum: ["limited-srgb", "display-p3"] },
         defaultValue: { type: "string", pattern: "^#[0-9a-fA-F]{6}$" },
-        label: { type: "string" },
+        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2412,10 +2468,10 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
-        trigger: { type: "string" },
+        trigger: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         title: { $ref: "#/$defs/attribute.title" },
-        description: { type: "string" },
-        closeLabel: { type: "string" },
+        description: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        closeLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         side: { enum: ["top", "right", "bottom", "left"] },
         size: { enum: ["sm", "md", "lg", "full"] },
         dismiss: { enum: ["any", "closerequest", "none"] },
@@ -2470,7 +2526,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       properties: {
         disabled: { $ref: "#/$defs/attribute.disabled" },
         required: { $ref: "#/$defs/attribute.required" },
-        fieldId: { type: "string", pattern: "^[A-Za-z][A-Za-z0-9_:.-]*$" },
+        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2488,7 +2544,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         disabled: { $ref: "#/$defs/attribute.disabled" },
         invalid: { type: "boolean" },
         required: { $ref: "#/$defs/attribute.required" },
-        fieldId: { type: "string", pattern: "^[A-Za-z][A-Za-z0-9_:.-]*$" },
+        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2504,7 +2560,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         disabled: { $ref: "#/$defs/attribute.disabled" },
-        fieldId: { type: "string", pattern: "^[A-Za-z][A-Za-z0-9_:.-]*$" },
+        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2520,7 +2576,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         invalid: { type: "boolean" },
-        fieldId: { type: "string", pattern: "^[A-Za-z][A-Za-z0-9_:.-]*$" },
+        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2661,7 +2717,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "Input.props": {
       type: "object",
       properties: {
-        defaultValue: { type: "string" },
+        defaultValue: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         readOnly: { $ref: "#/$defs/attribute.readOnly" },
         invalid: { type: "boolean" },
@@ -2723,10 +2779,10 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
-        trigger: { type: "string" },
+        trigger: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         title: { $ref: "#/$defs/attribute.title" },
-        description: { type: "string" },
-        closeLabel: { type: "string" },
+        description: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        closeLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         size: { enum: ["sm", "md", "lg", "full"] },
         align: { enum: ["center", "start"] },
         dismiss: { enum: ["any", "closerequest", "none"] },
@@ -2765,7 +2821,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         clampValueOnBlur: { type: "boolean" },
         defaultValue: { type: "number" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
-        locale: { type: "string" },
+        locale: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         max: { $ref: "#/$defs/attribute.max" },
         min: { $ref: "#/$defs/attribute.min" },
         readOnly: { $ref: "#/$defs/attribute.readOnly" },
@@ -2814,8 +2870,8 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         disabled: { $ref: "#/$defs/attribute.disabled" },
-        locale: { type: "string" },
-        pageLabelTemplate: { type: "string" },
+        locale: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        pageLabelTemplate: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         page: { type: "integer", minimum: 1, maximum: 9007199254740991 },
         selected: { type: "boolean" },
         id: { $ref: "#/$defs/attribute.id" },
@@ -2836,7 +2892,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "Pagination.Root.props": {
       type: "object",
       properties: {
-        locale: { type: "string" },
+        locale: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         boundaryCount: { type: "integer", minimum: 0, maximum: 100 },
         count: { type: "integer", minimum: 0, maximum: 9007199254740991 },
         defaultPage: { type: "integer", minimum: 1, maximum: 9007199254740991 },
@@ -2922,7 +2978,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "Select.Group.props": {
       type: "object",
       properties: {
-        label: { type: "string" },
+        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2954,7 +3010,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "Select.Root.props": {
       type: "object",
       properties: {
-        defaultValue: { type: "string" },
+        defaultValue: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         name: { $ref: "#/$defs/attribute.name" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         size: { enum: ["sm", "md", "lg"] },
@@ -3021,7 +3077,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       properties: {
         align: { enum: ["center", "fixed", "absolute"] },
         delay: { type: "number" },
-        label: { type: "string" },
+        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         showLabel: { type: "boolean" },
         size: { enum: ["sm", "md", "lg"] },
         value: { type: "number" },
@@ -3148,7 +3204,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "Textarea.props": {
       type: "object",
       properties: {
-        defaultValue: { type: "string" },
+        defaultValue: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         autoSize: { type: "boolean" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         readOnly: { $ref: "#/$defs/attribute.readOnly" },
@@ -3173,7 +3229,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
-        label: { type: "string" },
+        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         defaultPressed: { type: "boolean" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -3196,30 +3252,136 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       properties: { defaultOpen: { type: "boolean" }, id: { $ref: "#/$defs/attribute.id" } },
       additionalProperties: false,
     },
+    "Box.props": {
+      type: "object",
+      properties: {
+        padding: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingInline: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingBlock: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        width: { $ref: "#/$defs/attribute.layout.Box.width" },
+        height: { $ref: "#/$defs/attribute.layout.Box.height" },
+        minWidth: { $ref: "#/$defs/attribute.layout.Box.minWidth" },
+        maxWidth: { $ref: "#/$defs/attribute.layout.Box.maxWidth" },
+        grow: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        shrink: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        overflow: { $ref: "#/$defs/attribute.layout.Box.overflow" },
+        container: { $ref: "#/$defs/attribute.layout.Box.container" },
+        responsive: { $ref: "#/$defs/attribute.layout.Box.responsive" },
+        as: { $ref: "#/$defs/attribute.layout.Box.as" },
+        id: { $ref: "#/$defs/attribute.id" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+      },
+      additionalProperties: false,
+    },
     "Stack.props": {
       type: "object",
       properties: {
-        direction: { enum: ["block", "inline"] },
-        gap: { enum: ["xs", "sm", "md", "lg", "xl"] },
-        align: { enum: ["start", "center", "end", "stretch"] },
-        wrap: { type: "boolean" },
+        padding: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingInline: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingBlock: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        width: { $ref: "#/$defs/attribute.layout.Box.width" },
+        height: { $ref: "#/$defs/attribute.layout.Box.height" },
+        minWidth: { $ref: "#/$defs/attribute.layout.Box.minWidth" },
+        maxWidth: { $ref: "#/$defs/attribute.layout.Box.maxWidth" },
+        grow: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        shrink: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        overflow: { $ref: "#/$defs/attribute.layout.Box.overflow" },
+        container: { $ref: "#/$defs/attribute.layout.Box.container" },
+        responsive: { $ref: "#/$defs/attribute.layout.Box.responsive" },
+        direction: { $ref: "#/$defs/attribute.layout.Stack.direction" },
+        gap: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        align: { $ref: "#/$defs/attribute.layout.Stack.align" },
+        justify: { $ref: "#/$defs/attribute.layout.Stack.justify" },
+        wrap: { $ref: "#/$defs/attribute.layout.Stack.wrap" },
+        as: { $ref: "#/$defs/attribute.layout.Box.as" },
+        id: { $ref: "#/$defs/attribute.id" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
       },
       additionalProperties: false,
     },
     "Grid.props": {
       type: "object",
       properties: {
-        columns: { enum: [1, 2, 3, 4] },
-        gap: { enum: ["xs", "sm", "md", "lg", "xl"] },
+        padding: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingInline: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingBlock: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        width: { $ref: "#/$defs/attribute.layout.Box.width" },
+        height: { $ref: "#/$defs/attribute.layout.Box.height" },
+        minWidth: { $ref: "#/$defs/attribute.layout.Box.minWidth" },
+        maxWidth: { $ref: "#/$defs/attribute.layout.Box.maxWidth" },
+        grow: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        shrink: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        overflow: { $ref: "#/$defs/attribute.layout.Box.overflow" },
+        container: { $ref: "#/$defs/attribute.layout.Box.container" },
+        responsive: { $ref: "#/$defs/attribute.layout.Box.responsive" },
+        columns: { $ref: "#/$defs/attribute.layout.Grid.columns" },
+        gap: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        rowGap: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        align: { $ref: "#/$defs/attribute.layout.Stack.align" },
+        justify: { $ref: "#/$defs/attribute.layout.Stack.justify" },
+        as: { $ref: "#/$defs/attribute.layout.Box.as" },
+        id: { $ref: "#/$defs/attribute.id" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
       },
       additionalProperties: false,
     },
-    "Section.props": {
+    "GridItem.props": {
       type: "object",
       properties: {
-        as: { enum: ["section", "header", "main", "footer", "nav", "aside"] },
-        padding: { enum: ["xs", "sm", "md", "lg", "xl"] },
-        width: { enum: ["sm", "md", "lg"] },
+        padding: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingInline: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        paddingBlock: { $ref: "#/$defs/attribute.layout.Box.padding" },
+        width: { $ref: "#/$defs/attribute.layout.Box.width" },
+        height: { $ref: "#/$defs/attribute.layout.Box.height" },
+        minWidth: { $ref: "#/$defs/attribute.layout.Box.minWidth" },
+        maxWidth: { $ref: "#/$defs/attribute.layout.Box.maxWidth" },
+        grow: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        shrink: { $ref: "#/$defs/attribute.layout.Box.grow" },
+        overflow: { $ref: "#/$defs/attribute.layout.Box.overflow" },
+        container: { $ref: "#/$defs/attribute.layout.Box.container" },
+        responsive: { $ref: "#/$defs/attribute.layout.Box.responsive" },
+        columnSpan: { $ref: "#/$defs/attribute.layout.GridItem.columnSpan" },
+        rowSpan: { $ref: "#/$defs/attribute.layout.GridItem.rowSpan" },
+        columnStart: { $ref: "#/$defs/attribute.layout.GridItem.columnStart" },
+        alignSelf: { $ref: "#/$defs/attribute.layout.GridItem.alignSelf" },
+        as: { $ref: "#/$defs/attribute.layout.Box.as" },
+        id: { $ref: "#/$defs/attribute.id" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+      },
+      additionalProperties: false,
+    },
+    "Text.props": {
+      type: "object",
+      properties: {
+        size: { $ref: "#/$defs/attribute.layout.Text.size" },
+        weight: { $ref: "#/$defs/attribute.layout.Text.weight" },
+        tone: { $ref: "#/$defs/attribute.layout.Text.tone" },
+        leading: { $ref: "#/$defs/attribute.layout.Text.leading" },
+        align: { $ref: "#/$defs/attribute.layout.Text.align" },
+        measure: { $ref: "#/$defs/attribute.layout.Text.measure" },
+        wrap: { $ref: "#/$defs/attribute.layout.Text.wrap" },
+        responsive: { $ref: "#/$defs/attribute.layout.Box.responsive" },
+        as: { $ref: "#/$defs/attribute.layout.Text.as" },
+        id: { $ref: "#/$defs/attribute.id" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+      },
+      additionalProperties: false,
+    },
+    "Heading.props": {
+      type: "object",
+      properties: {
+        size: { $ref: "#/$defs/attribute.layout.Text.size" },
+        weight: { $ref: "#/$defs/attribute.layout.Text.weight" },
+        tone: { $ref: "#/$defs/attribute.layout.Text.tone" },
+        leading: { $ref: "#/$defs/attribute.layout.Text.leading" },
+        align: { $ref: "#/$defs/attribute.layout.Text.align" },
+        measure: { $ref: "#/$defs/attribute.layout.Text.measure" },
+        wrap: { $ref: "#/$defs/attribute.layout.Text.wrap" },
+        responsive: { $ref: "#/$defs/attribute.layout.Box.responsive" },
+        level: { $ref: "#/$defs/attribute.layout.Heading.level" },
+        as: { $ref: "#/$defs/attribute.layout.Heading.as" },
+        id: { $ref: "#/$defs/attribute.id" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
       },
       additionalProperties: false,
     },
@@ -3360,5 +3522,429 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         "hidden",
       ],
     },
+    "attribute.layout.Box.padding": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.0" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.0" },
+            sm: { $ref: "#/$defs/attribute.layout-value.0" },
+            md: { $ref: "#/$defs/attribute.layout-value.0" },
+            lg: { $ref: "#/$defs/attribute.layout-value.0" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.width": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.1" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.1" },
+            sm: { $ref: "#/$defs/attribute.layout-value.1" },
+            md: { $ref: "#/$defs/attribute.layout-value.1" },
+            lg: { $ref: "#/$defs/attribute.layout-value.1" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.height": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.2" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.2" },
+            sm: { $ref: "#/$defs/attribute.layout-value.2" },
+            md: { $ref: "#/$defs/attribute.layout-value.2" },
+            lg: { $ref: "#/$defs/attribute.layout-value.2" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.minWidth": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.3" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.3" },
+            sm: { $ref: "#/$defs/attribute.layout-value.3" },
+            md: { $ref: "#/$defs/attribute.layout-value.3" },
+            lg: { $ref: "#/$defs/attribute.layout-value.3" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.maxWidth": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.4" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.4" },
+            sm: { $ref: "#/$defs/attribute.layout-value.4" },
+            md: { $ref: "#/$defs/attribute.layout-value.4" },
+            lg: { $ref: "#/$defs/attribute.layout-value.4" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.grow": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.5" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.5" },
+            sm: { $ref: "#/$defs/attribute.layout-value.5" },
+            md: { $ref: "#/$defs/attribute.layout-value.5" },
+            lg: { $ref: "#/$defs/attribute.layout-value.5" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.overflow": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.6" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.6" },
+            sm: { $ref: "#/$defs/attribute.layout-value.6" },
+            md: { $ref: "#/$defs/attribute.layout-value.6" },
+            lg: { $ref: "#/$defs/attribute.layout-value.6" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Box.container": { enum: [true, false] },
+    "attribute.layout.Box.responsive": { enum: ["container", "viewport"] },
+    "attribute.layout.Box.as": {
+      enum: ["div", "section", "header", "main", "footer", "nav", "aside", "article"],
+    },
+    "attribute.layout.Box.id": { type: "string", pattern: "^[A-Za-z][A-Za-z0-9_:.-]*$" },
+    "attribute.layout.Box.aria-label": { type: "string" },
+    "attribute.layout.Stack.direction": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.7" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.7" },
+            sm: { $ref: "#/$defs/attribute.layout-value.7" },
+            md: { $ref: "#/$defs/attribute.layout-value.7" },
+            lg: { $ref: "#/$defs/attribute.layout-value.7" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Stack.align": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.8" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.8" },
+            sm: { $ref: "#/$defs/attribute.layout-value.8" },
+            md: { $ref: "#/$defs/attribute.layout-value.8" },
+            lg: { $ref: "#/$defs/attribute.layout-value.8" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Stack.justify": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.9" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.9" },
+            sm: { $ref: "#/$defs/attribute.layout-value.9" },
+            md: { $ref: "#/$defs/attribute.layout-value.9" },
+            lg: { $ref: "#/$defs/attribute.layout-value.9" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Stack.wrap": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.10" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.10" },
+            sm: { $ref: "#/$defs/attribute.layout-value.10" },
+            md: { $ref: "#/$defs/attribute.layout-value.10" },
+            lg: { $ref: "#/$defs/attribute.layout-value.10" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Grid.columns": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.11" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.11" },
+            sm: { $ref: "#/$defs/attribute.layout-value.11" },
+            md: { $ref: "#/$defs/attribute.layout-value.11" },
+            lg: { $ref: "#/$defs/attribute.layout-value.11" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.GridItem.columnSpan": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.12" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.12" },
+            sm: { $ref: "#/$defs/attribute.layout-value.12" },
+            md: { $ref: "#/$defs/attribute.layout-value.12" },
+            lg: { $ref: "#/$defs/attribute.layout-value.12" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.GridItem.rowSpan": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.13" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.13" },
+            sm: { $ref: "#/$defs/attribute.layout-value.13" },
+            md: { $ref: "#/$defs/attribute.layout-value.13" },
+            lg: { $ref: "#/$defs/attribute.layout-value.13" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.GridItem.columnStart": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.14" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.14" },
+            sm: { $ref: "#/$defs/attribute.layout-value.14" },
+            md: { $ref: "#/$defs/attribute.layout-value.14" },
+            lg: { $ref: "#/$defs/attribute.layout-value.14" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.GridItem.alignSelf": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.15" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.15" },
+            sm: { $ref: "#/$defs/attribute.layout-value.15" },
+            md: { $ref: "#/$defs/attribute.layout-value.15" },
+            lg: { $ref: "#/$defs/attribute.layout-value.15" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.size": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.16" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.16" },
+            sm: { $ref: "#/$defs/attribute.layout-value.16" },
+            md: { $ref: "#/$defs/attribute.layout-value.16" },
+            lg: { $ref: "#/$defs/attribute.layout-value.16" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.weight": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.17" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.17" },
+            sm: { $ref: "#/$defs/attribute.layout-value.17" },
+            md: { $ref: "#/$defs/attribute.layout-value.17" },
+            lg: { $ref: "#/$defs/attribute.layout-value.17" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.tone": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.18" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.18" },
+            sm: { $ref: "#/$defs/attribute.layout-value.18" },
+            md: { $ref: "#/$defs/attribute.layout-value.18" },
+            lg: { $ref: "#/$defs/attribute.layout-value.18" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.leading": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.19" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.19" },
+            sm: { $ref: "#/$defs/attribute.layout-value.19" },
+            md: { $ref: "#/$defs/attribute.layout-value.19" },
+            lg: { $ref: "#/$defs/attribute.layout-value.19" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.align": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.20" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.20" },
+            sm: { $ref: "#/$defs/attribute.layout-value.20" },
+            md: { $ref: "#/$defs/attribute.layout-value.20" },
+            lg: { $ref: "#/$defs/attribute.layout-value.20" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.measure": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.21" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.21" },
+            sm: { $ref: "#/$defs/attribute.layout-value.21" },
+            md: { $ref: "#/$defs/attribute.layout-value.21" },
+            lg: { $ref: "#/$defs/attribute.layout-value.21" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.wrap": {
+      anyOf: [
+        { $ref: "#/$defs/attribute.layout-value.22" },
+        {
+          type: "object",
+          properties: {
+            base: { $ref: "#/$defs/attribute.layout-value.22" },
+            sm: { $ref: "#/$defs/attribute.layout-value.22" },
+            md: { $ref: "#/$defs/attribute.layout-value.22" },
+            lg: { $ref: "#/$defs/attribute.layout-value.22" },
+          },
+          minProperties: 1,
+          additionalProperties: false,
+        },
+      ],
+    },
+    "attribute.layout.Text.as": { enum: ["p", "span", "strong", "em", "small", "code"] },
+    "attribute.layout.Heading.level": { enum: [1, 2, 3, 4, 5, 6] },
+    "attribute.layout.Heading.as": { enum: ["h1", "h2", "h3", "h4", "h5", "h6"] },
+    "attribute.layout-value.0": { enum: ["none", "xs", "sm", "md", "lg", "xl"] },
+    "attribute.layout-value.1": { enum: ["auto", "full", "fit", "sm", "md", "lg"] },
+    "attribute.layout-value.2": { enum: ["auto", "full", "screen"] },
+    "attribute.layout-value.3": { enum: ["zero", "full"] },
+    "attribute.layout-value.4": { enum: ["none", "sm", "md", "lg", "prose"] },
+    "attribute.layout-value.5": { enum: [0, 1] },
+    "attribute.layout-value.6": { enum: ["visible", "hidden", "auto"] },
+    "attribute.layout-value.7": { enum: ["block", "inline"] },
+    "attribute.layout-value.8": { enum: ["start", "center", "end", "stretch", "baseline"] },
+    "attribute.layout-value.9": { enum: ["start", "center", "end", "between", "around", "evenly"] },
+    "attribute.layout-value.10": { enum: [true, false] },
+    "attribute.layout-value.11": {
+      enum: [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        "sidebar",
+        "sidebar-end",
+        "2:1",
+        "1:2",
+        "3:2",
+        "2:3",
+      ],
+    },
+    "attribute.layout-value.12": { enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "full"] },
+    "attribute.layout-value.13": { enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    "attribute.layout-value.14": { enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "auto"] },
+    "attribute.layout-value.15": {
+      enum: ["auto", "start", "center", "end", "stretch", "baseline"],
+    },
+    "attribute.layout-value.16": { enum: ["xs", "sm", "base", "lg", "xl", "2xl"] },
+    "attribute.layout-value.17": { enum: ["normal", "medium", "semibold"] },
+    "attribute.layout-value.18": { enum: ["default", "muted", "primary", "danger"] },
+    "attribute.layout-value.19": { enum: ["normal", "tight"] },
+    "attribute.layout-value.20": { enum: ["start", "center", "end"] },
+    "attribute.layout-value.21": { enum: ["none", "prose"] },
+    "attribute.layout-value.22": { enum: ["wrap", "balance", "pretty"] },
   },
 };

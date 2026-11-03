@@ -123,6 +123,8 @@ async function main() {
     await writeFile(
       smokeModule,
       [
+        'import { existsSync } from "node:fs";',
+        'import { fileURLToPath } from "node:url";',
         'import "@gunkin/uiify";',
         'import "@gunkin/uiify/components/button";',
         'import { AspectRatio } from "@gunkin/uiify";',
@@ -134,8 +136,8 @@ async function main() {
         'import "@gunkin/uiify/elements/dialog";',
         'import "@gunkin/uiify/core/render";',
         'import "@gunkin/uiify/hooks";',
-        'for (const specifier of ["@gunkin/uiify/components/behavior.css", "@gunkin/uiify/styles", "@gunkin/uiify/styles/tokens", "@gunkin/uiify/styles/reset"]) {',
-        "  if (!import.meta.resolve(specifier)) throw new Error(`unresolved ${specifier}`);",
+        'for (const specifier of ["@gunkin/uiify/components/behavior.css", "@gunkin/uiify/styles", "@gunkin/uiify/styles/tokens", "@gunkin/uiify/styles/layout", "@gunkin/uiify/styles/layout.css", "@gunkin/uiify/styles/controls", "@gunkin/uiify/styles/controls.css", "@gunkin/uiify/styles/reset"]) {',
+        "  if (!existsSync(fileURLToPath(import.meta.resolve(specifier)))) throw new Error(`unresolved ${specifier}`);",
         "}",
       ].join("\n"),
     );
@@ -207,7 +209,7 @@ async function main() {
           files: packed.files?.length ?? 0,
           imports:
             "root, components/alert (all parts), components/aspect-ratio, components/button, elements/dialog, core/render, hooks",
-          css: "behavior.css, styles, styles/tokens, styles/reset",
+          css: "behavior.css, styles, styles/tokens, styles/layout, styles/layout.css, styles/controls, styles/controls.css, styles/reset",
           skillLint: "runs with the consumer's installed TypeScript parser",
           secrets: "none detected",
         },

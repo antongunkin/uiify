@@ -26,6 +26,8 @@ UI documents (`@gunkin/uiify/ai`) use many of these components as parts; the par
 
 | Component | Import | Tier | State | Native element | Types | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| [layout](./reference/components/layout.md) | `@gunkin/uiify/components/layout` | 0 | none | `div/section` | `dist/components/layout.d.ts` | Stateless public Box, Section, Stack, Grid and GridItem. Static layout stylesheet owns geometry; no client entry. Status: pending. |
+| [typography](./reference/components/typography.md) | `@gunkin/uiify/components/typography` | 0 | none | `p/h1-h6` | `dist/components/typography.d.ts` | Stateless Text and Heading; semantic tag independent of token-based optional appearance. Status: pending. |
 | [accordion](./reference/components/accordion.md) | `@gunkin/uiify/components/accordion` | 0 | S1 | `details[name]` | `dist/components/accordion.d.ts` | Native details/summary disclosure; name groups single-open items. Built on @gunkin/uiify/elements/details. |
 | [alert-modal](./reference/components/alert-modal.md) | `@gunkin/uiify/components/alert-modal` | 0 | S1 | `dialog[role=alertdialog] + command=show-modal` | `dist/components/alert-modal.d.ts` | Native modal alertdialog via show-modal; Cancel/Action are request-close invokers. Baseline Chrome 139 / Firefox 147 / Safari 26.2; below it UIEnhance's invoker fallback runs the command after hydration. |
 | [breadcrumb](./reference/components/breadcrumb.md) | `@gunkin/uiify/components/breadcrumb` | 0 | none | `nav>ol` | `dist/components/breadcrumb.d.ts` | Ellipsis expand/collapse is a native details/summary disclosure, built on @gunkin/uiify/elements/details. |

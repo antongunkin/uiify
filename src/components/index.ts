@@ -60,3 +60,5 @@ export * from "./header/index.js";
 export * from "./virtual-scroll/index.js";
 
 export * from "./table-of-contents/index.js";
+export * from "./layout/index.js";
+export * from "./typography/index.js";

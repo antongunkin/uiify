@@ -1,0 +1,4 @@
+/* Mandatory geometry; load tokens separately when using token-based values. */
+@layer reset, tokens, base, demo, components, layout, utilities, theme;
+
+@import url("./layout.generated.css");

@@ -3,6 +3,6 @@
  * the built-in themes. Import this if you want the design tokens (and theming) but
  * not the component skins or base layer.
  */
-@layer reset, tokens, base, components, utilities;
+@layer reset, tokens, base, components, layout, utilities;
 
 @import url("./tokens/theme.css");

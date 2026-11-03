@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Grid, layoutComponents, Section, Stack } from "./layout.js";
+import { Box, Grid, GridItem, Heading, layoutComponents, Section, Stack, Text } from "./layout.js";
 
 describe("layout nodes", () => {
   it("renders Stack with its direction and gap", () => {
@@ -64,7 +64,7 @@ describe("layout nodes", () => {
     expect(renderToStaticMarkup(<Stack wrap={false} />)).toBe('<div data-ui-layout="stack"></div>');
   });
 
-  it("registers the three layout components", () => {
-    expect(layoutComponents).toEqual({ Stack, Grid, Section });
+  it("registers public layout and typography components", () => {
+    expect(layoutComponents).toEqual({ Box, Stack, Grid, GridItem, Section, Heading, Text });
   });
 });

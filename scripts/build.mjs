@@ -13,6 +13,8 @@ const entries = [
   { entry: "src/styles/index.css", out: "dist/styles/index.css" },
   { entry: "src/styles/tokens.css", out: "dist/styles/tokens.css" },
   { entry: "src/styles/reset.css", out: "dist/styles/reset.css" },
+  { entry: "src/styles/layout.css", out: "dist/styles/layout.css" },
+  { entry: "src/styles/controls.css", out: "dist/styles/controls.css" },
 ];
 
 await mkdir(resolve(root, "dist/styles"), { recursive: true });
