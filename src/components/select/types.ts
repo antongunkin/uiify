@@ -2,16 +2,32 @@ import type { ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 import type { ControlSize } from "../internal/control-size/types.js";
 
-export interface SelectRootOwnProps {
+interface SelectRootShellOwnProps {
   readonly children?: ReactNode;
-  readonly value?: string;
-  readonly defaultValue?: string;
-  readonly onValueChange?: (value: string) => void;
-  readonly name?: string;
   readonly disabled?: boolean;
+  readonly name?: string;
   /** Sets the control's height and text size; `md` is the default. */
   readonly size?: ControlSize;
 }
+
+export interface SelectRootSingleOwnProps extends SelectRootShellOwnProps {
+  readonly defaultValue?: string;
+  readonly multiple?: false;
+  /** Called with the selected value. */
+  readonly onValueChange?: (value: string) => void;
+  readonly value?: string;
+}
+
+export interface SelectRootMultiOwnProps extends SelectRootShellOwnProps {
+  /** Selects several options through the native `multiple` select. */
+  readonly defaultValue?: readonly string[];
+  readonly multiple: true;
+  /** Called with every selected value in option order. */
+  readonly onValueChange?: (value: string[]) => void;
+  readonly value?: readonly string[];
+}
+
+export type SelectRootOwnProps = SelectRootSingleOwnProps | SelectRootMultiOwnProps;
 
 export type SelectRootProps<TAs extends ElementType = "select"> = RenderableProps<
   TAs,

@@ -22,7 +22,7 @@ const textEntryControls = [
 // Pill controls are sized like Button: the base text step, which is already 16px.
 const pillControls = [
   ["components/select.css", "[data-uiify-select]"],
-  ["components/combobox.css", '[data-uiify-combobox] [data-part="input"]'],
+  ["components/combobox.css", ".ui-cb-input {"],
 ] as const;
 
 describe("touch text-entry controls", () => {

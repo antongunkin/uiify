@@ -12,8 +12,8 @@
 
 ## Exports
 
-- Runtime: `Combobox`, `ComboboxControl`, `ComboboxContent`, `ComboboxEmpty`, `ComboboxInput`, `ComboboxItem`, `ComboboxRoot`, `ComboboxTags`, `ComboboxTrigger`
-- Types: `ComboboxContentOwnProps`, `ComboboxControlOwnProps`, `ComboboxControlProps`, `ComboboxEmptyOwnProps`, `ComboboxFilterFn`, `ComboboxInputOwnProps`, `ComboboxInputProps`, `ComboboxItemData`, `ComboboxItemOwnProps`, `ComboboxRootControlledOwnProps`, `ComboboxRootShellOwnProps`, `ComboboxRootShellProps`, `ComboboxRootProps`, `ComboboxTagsOwnProps`, `ComboboxTagsSlotProps`, `ComboboxTagsProps`, `ComboboxTriggerOwnProps`, `ComboboxTriggerProps`
+- Runtime: `Combobox`, `ComboboxControl`, `ComboboxContent`, `ComboboxEmpty`, `ComboboxFormControl`, `ComboboxGroup`, `ComboboxGroupLabel`, `ComboboxInput`, `ComboboxItem`, `ComboboxRoot`, `ComboboxStatus`, `ComboboxTags`, `ComboboxTrigger`, `createComboboxItems`
+- Types: `ComboboxContentOwnProps`, `ComboboxControlOwnProps`, `ComboboxControlProps`, `ComboboxEmptyOwnProps`, `ComboboxFilterFn`, `ComboboxFormControlProps`, `ComboboxGroupOwnProps`, `ComboboxGroupLabelOwnProps`, `ComboboxInputOwnProps`, `ComboboxInputProps`, `ComboboxItemData`, `ComboboxStatusProps`, `ComboboxItemAdapterOptions`, `ComboboxItemCollection`, `ComboboxItemOwnProps`, `ComboboxRootControlledOwnProps`, `ComboboxRootShellOwnProps`, `ComboboxRootShellProps`, `ComboboxRootProps`, `ComboboxSingleValueOptions`, `ComboboxTagsOwnProps`, `ComboboxTagsSlotProps`, `ComboboxTagsProps`, `ComboboxTriggerOwnProps`, `ComboboxTriggerProps`
 
 ## Values
 
@@ -28,6 +28,21 @@
 | `disabled` | `boolean` | no |  |
 | `label` | `string` | yes |  |
 | `value` | `string` | yes |  |
+
+### ComboboxItemAdapterOptions
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `getValue` | `(record: T) => string` | yes |  |
+| `getLabel` | `(record: T) => string` | yes |  |
+| `isDisabled` | `(record: T) => boolean` | no |  |
+
+### ComboboxItemCollection
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly ComboboxItemData[]` | yes |  |
+| `getItem` | `(value: string) => T \| undefined` | yes |  |
 
 ### ComboboxActiveStore
 
@@ -49,21 +64,54 @@
 | `maxValues` | `number` | no |  |
 | `validateValue` | `(value: string) => boolean` | no |  |
 
+### ComboboxSingleValueOptions
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `allowCustomValue` | `boolean` | no | Allows a nonempty unmatched value to commit on Enter. |
+| `validateValue` | `(value: string) => boolean` | no | Rejects a custom value when it returns false. |
+
+### ComboboxFormState
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `required` | `boolean` | yes |  |
+| `invalid` | `boolean` | yes |  |
+
+### ComboboxFormControlProps
+
+Native submission bridge; selection and option content are owned by Root.
+
+Extends: `Omit<ComponentPropsWithRef<"select">, "children" | "multiple" | "value" | "defaultValue" | "onChange">`, `ConsumerDataAttributes`
+
+No own members.
+
 ### ComboboxContextValue
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `reset` | `() => void` | yes |  |
+| `formState` | `ComboboxFormState` | yes |  |
+| `hasControl` | `boolean` | yes |  |
+| `setHasControl` | `(value: boolean) => void` | yes |  |
+| `registerFormControl` | `(node: HTMLSelectElement) => () => void` | yes |  |
+| `setFormState` | `(state: ComboboxFormState) => void` | yes |  |
 | `activeStore` | `ComboboxActiveStore` | yes |  |
 | `addOnPaste` | `boolean` | yes |  |
+| `allowCustomValue` | `boolean` | yes |  |
 | `anchorProps` | `UseAnchorPositionReturn["anchorProps"]` | yes |  |
 | `anchorRef` | `UseAnchorPositionReturn["anchorRef"]` | yes |  |
 | `close` | `() => void` | yes |  |
 | `filterFn` | `ComboboxFilterFn` | yes |  |
+| `filterQuery` | `string` | yes |  |
 | `inputNode` | `HTMLElement \| null` | yes |  |
 | `inputValue` | `string` | yes |  |
+| `loading` | `boolean` | yes |  |
 | `items` | `readonly ComboboxItemData[]` | yes |  |
 | `listboxId` | `string` | yes |  |
 | `delimiters` | `readonly string[]` | yes |  |
+| `disabled` | `boolean` | yes |  |
+| `isDisabled` | `() => boolean` | yes |  |
 | `multiple` | `boolean` | yes |  |
 | `selectedValues` | `readonly string[]` | yes |  |
 | `getValueLabel` | `(value: string) => string` | yes |  |
@@ -71,6 +119,7 @@
 | `toggleValue` | `(item: ComboboxItemData) => void` | yes |  |
 | `removeValue` | `(value: string) => void` | yes |  |
 | `commitValue` | `(value: string) => boolean` | yes |  |
+| `commitSingleValue` | `(value: string) => boolean` | yes |  |
 | `open` | `() => void` | yes |  |
 | `openState` | `boolean` | yes |  |
 | `popupProps` | `UsePopoverReturn["popupProps"]` | yes |  |
@@ -80,20 +129,22 @@
 | `selectItem` | `(item: ComboboxItemData) => void` | yes |  |
 | `setInputElement` | `(element: HTMLElement \| null) => void` | yes |  |
 | `setInputValue` | `(value: string) => void` | yes |  |
-| `value` | `string \| readonly string[] \| undefined` | no |  |
+| `value` | `string \| null \| readonly string[] \| undefined` | no |  |
 
 ### ComboboxRootShellOwnProps
 
-Extends: `Omit<ComponentPropsWithRef<"div">, "children">`
+Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "defaultValue">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `className` | `string` | no |  |
 | `defaultInputValue` | `string` | no |  |
 | `defaultOpen` | `boolean` | no |  |
-| `defaultValue` | `string` | no |  |
+| `defaultValue` | `string \| null` | no | In single mode, `null` means no selection; an empty string is a valid item ID. |
+| `disabled` | `boolean` | no | Blocks model mutations and supplies the default disabled state to native controls. |
 | `filterFn` | `ComboboxFilterFn` | no |  |
 | `items` | `readonly ComboboxItemData[]` | yes |  |
+| `loading` | `boolean` | no | Marks consumer-managed results as loading while keeping existing options available. |
 | `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
 
 ### ComboboxRootControlledOwnProps
@@ -103,9 +154,9 @@ Extends: `Omit<ComponentPropsWithRef<"div">, "children">`
 | `inputValue` | `string` | no |  |
 | `onInputValueChange` | `(value: string) => void` | no |  |
 | `onOpenChange` | `PopoverChangeHandler` | no |  |
-| `onValueChange` | `(value: string) => void` | no |  |
+| `onValueChange` | `(value: string \| null) => void` | no |  |
 | `open` | `boolean` | no |  |
-| `value` | `string \| readonly string[]` | no |  |
+| `value` | `string \| null \| readonly string[]` | no |  |
 
 ### ComboboxRootShellProps
 
@@ -117,14 +168,14 @@ Extends: `ComboboxRootShellOwnProps`
 
 ### ComboboxRootSingleProps
 
-Extends: `ComboboxRootShellOwnProps`, `Omit<ComboboxRootControlledOwnProps, "onValueChange" | "value">`
+Extends: `ComboboxRootShellOwnProps`, `ComboboxSingleValueOptions`, `Omit<ComboboxRootControlledOwnProps, "onValueChange" | "value">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `multiple` | `false` | no |  |
-| `defaultValue` | `string` | no |  |
-| `onValueChange` | `(value: string) => void` | no |  |
-| `value` | `string` | no |  |
+| `defaultValue` | `string \| null` | no |  |
+| `onValueChange` | `(value: string \| null) => void` | no |  |
+| `value` | `string \| null` | no |  |
 | `children` | `ReactNode` | no |  |
 
 ### ComboboxRootMultiProps
@@ -180,13 +231,38 @@ Extends: `SlotProps<"div">`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
+| `children` | `ReactNode` | no | Option content; when omitted, the item's string label is rendered. |
 | `item` | `ComboboxItemData` | yes |  |
+
+### ComboboxGroupOwnProps
+
+Extends: `SlotProps<"div">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no | Options in this named group. Link it to `GroupLabel` with `aria-labelledby`. |
+
+### ComboboxGroupLabelOwnProps
+
+Extends: `SlotProps<"div">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no | Visible heading referenced by the group's `aria-labelledby`. |
 
 ### ComboboxEmptyOwnProps
 
 Extends: `Omit<ComponentPropsWithRef<"div">, "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
 No own members.
+
+### ComboboxStatusProps
+
+Extends: `SlotProps<"div">`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | no |  |
 
 ## Other types
 

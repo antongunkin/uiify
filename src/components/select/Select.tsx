@@ -2,7 +2,9 @@ import type { ElementType, ReactElement, SyntheticEvent } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import type {
+  SelectRootMultiOwnProps,
   SelectRootProps,
+  SelectRootSingleOwnProps,
   SelectContentOwnProps,
   SelectItemProps,
   SelectGroupProps,
@@ -18,6 +20,7 @@ export function SelectRoot<TAs extends ElementType = "select">(
     value,
     defaultValue,
     onValueChange,
+    multiple = false,
     name,
     disabled = false,
     size,
@@ -28,7 +31,13 @@ export function SelectRoot<TAs extends ElementType = "select">(
   const isControlled = value !== undefined;
 
   const handleChange = (event: SyntheticEvent<HTMLSelectElement>): void => {
-    onValueChange?.(event.currentTarget.value);
+    if (multiple) {
+      (onValueChange as SelectRootMultiOwnProps["onValueChange"])?.(
+        Array.from(event.currentTarget.selectedOptions, (option) => option.value),
+      );
+      return;
+    }
+    (onValueChange as SelectRootSingleOwnProps["onValueChange"])?.(event.currentTarget.value);
   };
 
   const consumerOnChange = (
@@ -47,6 +56,7 @@ export function SelectRoot<TAs extends ElementType = "select">(
       ...(size !== undefined ? { "data-size": size } : {}),
       "data-disabled": disabled ? "" : undefined,
       disabled: disabled || undefined,
+      multiple: multiple || undefined,
       name,
       onChange: onValueChange
         ? composeEventHandlers(consumerOnChange, handleChange)

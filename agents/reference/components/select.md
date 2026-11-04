@@ -15,21 +15,31 @@
 ## Exports
 
 - Runtime: `Select`, `SelectContent`, `SelectGroup`, `SelectItem`, `SelectRoot`, `SelectSeparator`
-- Types: `SelectContentOwnProps`, `SelectGroupOwnProps`, `SelectGroupProps`, `SelectItemOwnProps`, `SelectItemProps`, `SelectRootOwnProps`, `SelectRootProps`, `SelectSeparatorOwnProps`, `SelectSeparatorProps`
+- Types: `SelectContentOwnProps`, `SelectGroupOwnProps`, `SelectGroupProps`, `SelectItemOwnProps`, `SelectItemProps`, `SelectRootMultiOwnProps`, `SelectRootOwnProps`, `SelectRootProps`, `SelectRootSingleOwnProps`, `SelectSeparatorOwnProps`, `SelectSeparatorProps`
 
 ## Props and shapes
 
-### SelectRootOwnProps
+### SelectRootSingleOwnProps
+
+Extends: `SelectRootShellOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | no |  |
-| `value` | `string` | no |  |
 | `defaultValue` | `string` | no |  |
-| `onValueChange` | `(value: string) => void` | no |  |
-| `name` | `string` | no |  |
-| `disabled` | `boolean` | no |  |
-| `size` | `ControlSize` | no | Sets the control's height and text size; `md` is the default. |
+| `multiple` | `false` | no |  |
+| `onValueChange` | `(value: string) => void` | no | Called with the selected value. |
+| `value` | `string` | no |  |
+
+### SelectRootMultiOwnProps
+
+Extends: `SelectRootShellOwnProps`
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `defaultValue` | `readonly string[]` | no | Selects several options through the native `multiple` select. |
+| `multiple` | `true` | yes |  |
+| `onValueChange` | `(value: string[]) => void` | no | Called with every selected value in option order. |
+| `value` | `readonly string[]` | no |  |
 
 ### SelectContentOwnProps
 
@@ -60,6 +70,7 @@
 
 ## Other types
 
+- `SelectRootOwnProps`: `SelectRootSingleOwnProps | SelectRootMultiOwnProps`
 - `SelectRootProps<TAs>`: `RenderableProps<TAs, SelectRootOwnProps, SelectRootOwnProps, HTMLSelectElement>`
 - `SelectItemProps<TAs>`: `RenderableProps<TAs, SelectItemOwnProps, { disabled: boolean }, HTMLOptionElement>`
 - `SelectGroupProps<TAs>`: `RenderableProps<TAs, SelectGroupOwnProps, SelectGroupOwnProps, HTMLOptGroupElement>`

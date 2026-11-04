@@ -30,6 +30,370 @@ function MultiCombobox(props: MultiComboboxProps) {
 MultiCombobox.displayName = "MultiCombobox";
 
 describe("Combobox", () => {
+  it("uses null for no selection while preserving an empty-string item ID", () => {
+    const onValueChange = vi.fn();
+    const emptyIdItems = [{ label: "Empty ID option", value: "" }];
+    render(
+      <Combobox.Root
+        defaultValue={null}
+        defaultOpen
+        items={emptyIdItems}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Choice" />
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    const input = screen.getByRole("combobox") as HTMLInputElement;
+    const option = screen.getByRole("option", { name: "Empty ID option" });
+    expect(input.value).toBe("");
+    expect(option.getAttribute("aria-selected")).toBe("false");
+    fireEvent.click(option);
+    expect(onValueChange).toHaveBeenCalledWith("");
+    expect(input.value).toBe("Empty ID option");
+    expect(option.getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("uses the selected label for its initial query unless defaultInputValue is explicit", () => {
+    const selected = [{ label: "Apple", value: "apple" }];
+    const markup = renderToStaticMarkup(
+      <Combobox.Root defaultValue="apple" items={selected}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    const overridden = renderToStaticMarkup(
+      <Combobox.Root defaultValue="apple" defaultInputValue="Search instead" items={selected}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    expect(markup).toContain('value="Apple"');
+    expect(overridden).toContain('value="Search instead"');
+  });
+
+  it("syncs external values and label refreshes without overwriting a dirty query", () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <Combobox.Root
+        value="apple"
+        items={[{ label: "Apple", value: "apple" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    const input = screen.getByRole("combobox") as HTMLInputElement;
+    expect(input.value).toBe("Apple");
+
+    rerender(
+      <Combobox.Root
+        value="apple"
+        items={[{ label: "Red Apple", value: "apple" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    expect(input.value).toBe("Red Apple");
+
+    fireEvent.change(input, { target: { value: "draft" } });
+    rerender(
+      <Combobox.Root
+        value="apple"
+        items={[{ label: "Fresh Apple", value: "apple" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    expect(input.value).toBe("draft");
+
+    rerender(
+      <Combobox.Root
+        value="banana"
+        items={[{ label: "Banana", value: "banana" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    expect(input.value).toBe("Banana");
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    rerender(
+      <Combobox.Root
+        inputValue="Controlled query"
+        value="apple"
+        items={[{ label: "Apple", value: "apple" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    rerender(
+      <Combobox.Root
+        inputValue="Controlled query"
+        value="banana"
+        items={[{ label: "Banana", value: "banana" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    expect(input.value).toBe("Controlled query");
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it("does not optimistically change a fully controlled value when the owner refuses", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Combobox.Root defaultOpen value={null} items={items} onValueChange={onValueChange}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+    const input = screen.getByRole("combobox") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "Apple" } });
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith("apple");
+    expect(input.value).toBe("Apple");
+    expect(document.querySelector('[role="option"]')?.getAttribute("aria-selected")).toBe("false");
+  });
+
+  it("keeps every mutation path disabled when the root is disabled", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Combobox.Root
+        disabled
+        multiple
+        defaultOpen
+        defaultValue={["apple"]}
+        items={items}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Control>
+          <Combobox.Tags />
+          <Combobox.Input aria-label="Fruit" disabled={false} />
+          <Combobox.Trigger>Toggle options</Combobox.Trigger>
+        </Combobox.Control>
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    const input = screen.getByRole("combobox") as HTMLInputElement;
+    const trigger = screen.getByRole("button", { name: "Toggle options" });
+    const remove = screen.getByRole("button", { name: "Remove Apple" });
+    expect(input.disabled).toBe(false);
+    expect(trigger.hasAttribute("disabled")).toBe(true);
+    expect(remove.hasAttribute("disabled")).toBe(true);
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Backspace" });
+    fireEvent.click(screen.getByRole("option", { name: "Banana" }));
+    fireEvent.click(remove);
+    fireEvent.click(trigger);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("option", { name: "Apple" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+  });
+
+  it("follows native disabled fieldset state without blocking its first legend", () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <fieldset disabled>
+        <Combobox.Root defaultOpen items={items} onValueChange={onValueChange}>
+          <Combobox.Input aria-label="Fruit" />
+          <Combobox.Content>
+            {(filteredItems) =>
+              filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+            }
+          </Combobox.Content>
+        </Combobox.Root>
+      </fieldset>,
+    );
+    fireEvent.click(screen.getByRole("option", { name: "Apple" }));
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    rerender(
+      <fieldset>
+        <Combobox.Root defaultOpen items={items} onValueChange={onValueChange}>
+          <Combobox.Input aria-label="Fruit" />
+          <Combobox.Content>
+            {(filteredItems) =>
+              filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+            }
+          </Combobox.Content>
+        </Combobox.Root>
+      </fieldset>,
+    );
+    fireEvent.click(screen.getByRole("option", { name: "Apple" }));
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith("apple");
+
+    rerender(
+      <fieldset disabled>
+        <legend>
+          <Combobox.Root defaultOpen items={items} onValueChange={onValueChange}>
+            <Combobox.Input aria-label="Fruit" />
+            <Combobox.Content>
+              {(filteredItems) =>
+                filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+              }
+            </Combobox.Content>
+          </Combobox.Root>
+        </legend>
+      </fieldset>,
+    );
+    fireEvent.click(screen.getByRole("option", { name: "Apple" }));
+    expect(onValueChange).toHaveBeenCalledTimes(2);
+  });
+
+  it("commits an enabled exact match or a validated custom single value on Enter", () => {
+    const onValueChange = vi.fn();
+    const customItems = [
+      { label: "Disabled match", value: "blocked", disabled: true },
+      { label: "Duplicate", value: "first" },
+      { label: "Duplicate", value: "second" },
+    ];
+    render(
+      <Combobox.Root defaultOpen allowCustomValue items={customItems} onValueChange={onValueChange}>
+        <Combobox.Input aria-label="Choice" />
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+    const input = screen.getByRole("combobox");
+
+    fireEvent.change(input, { target: { value: "Duplicate" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueChange).toHaveBeenLastCalledWith("first");
+
+    fireEvent.change(input, { target: { value: "  New value  " } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueChange).toHaveBeenLastCalledWith("New value");
+    expect((input as HTMLInputElement).value).toBe("New value");
+    expect(document.querySelector('[role="listbox"]')?.getAttribute("data-state")).toBe("closed");
+
+    fireEvent.change(input, { target: { value: "Disabled match" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueChange).toHaveBeenCalledTimes(2);
+
+    fireEvent.change(input, { target: { value: "   " } });
+    const enter = new KeyboardEvent("keydown", { bubbles: true, cancelable: true, key: "Enter" });
+    input.dispatchEvent(enter);
+    expect(enter.defaultPrevented).toBe(true);
+    expect(onValueChange).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps controlled selection authoritative when a custom commit is refused", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Combobox.Root
+        defaultOpen
+        allowCustomValue
+        value={null}
+        items={[]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Choice" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    const input = screen.getByRole("combobox") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "Draft" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith("Draft");
+    expect(input.value).toBe("Draft");
+    expect(screen.getByRole("listbox").getAttribute("data-state")).toBe("open");
+  });
+
+  it("does not create a single custom value on blur, Tab, Escape, or IME confirmation", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Combobox.Root defaultOpen allowCustomValue items={[]} onValueChange={onValueChange}>
+        <Combobox.Input aria-label="Choice" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: "First" } });
+    fireEvent.blur(input);
+    fireEvent.keyDown(input, { key: "Tab" });
+    fireEvent.keyDown(input, { key: "Escape" });
+    fireEvent.change(input, { target: { value: "Second" } });
+    fireEvent.keyDown(input, { key: "Enter", isComposing: true, keyCode: 229 });
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it("blocks invalid custom Enter but preserves native submit for unmatched default mode", () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <Combobox.Root
+        defaultOpen
+        allowCustomValue
+        validateValue={() => false}
+        items={[]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Choice" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: "Rejected" } });
+    const invalidEnter = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      key: "Enter",
+    });
+    input.dispatchEvent(invalidEnter);
+    expect(invalidEnter.defaultPrevented).toBe(true);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect((input as HTMLInputElement).value).toBe("Rejected");
+
+    rerender(
+      <Combobox.Root defaultOpen items={[]} onValueChange={onValueChange}>
+        <Combobox.Input aria-label="Choice" />
+        <Combobox.Content>{() => null}</Combobox.Content>
+      </Combobox.Root>,
+    );
+    const defaultInput = screen.getByRole("combobox");
+    fireEvent.change(defaultInput, { target: { value: "Unmatched" } });
+    const nativeSubmit = new KeyboardEvent("keydown", {
+      bubbles: true,
+      cancelable: true,
+      key: "Enter",
+    });
+    defaultInput.dispatchEvent(nativeSubmit);
+    expect(nativeSubmit.defaultPrevented).toBe(false);
+  });
+
   it("forwards a declared root id to the rendered root element", () => {
     const rootRef = createRef<HTMLDivElement>();
     const onClick = vi.fn();
@@ -52,7 +416,7 @@ describe("Combobox", () => {
 
     const root = screen.getByTestId("fruit-root");
     expect(root.id).toBe("fruit-picker");
-    expect(root.className).toBe("fruit-root");
+    expect(root.classList.contains("fruit-root")).toBe(true);
     expect((root as HTMLDivElement).style.color).toBe("red");
     expect(root.getAttribute("data-purpose")).toBe("picker");
     expect(root.getAttribute("data-uiify-combobox")).toBe("consumer-value");
@@ -93,7 +457,7 @@ describe("Combobox", () => {
     const control = screen.getByTestId("control");
     const input = screen.getByRole("combobox");
     expect(control.tagName).toBe("SECTION");
-    expect(control.className).toBe("fruit-control");
+    expect(control.classList.contains("fruit-control")).toBe(true);
     expect(control.getAttribute("data-part")).toBe("control");
     expect(controlRef.current).toBe(control);
     expect(control.querySelector('[data-part="tags"]')).not.toBeNull();
@@ -200,6 +564,140 @@ describe("Combobox", () => {
     expect(screen.getByTestId("option-apple").classList.contains("fruit-option")).toBe(true);
   });
 
+  it("renders rich content while filtering and committing the canonical label and value", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Combobox.Root
+        defaultOpen
+        items={[{ label: "Ada Lovelace", value: "ada" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Person" />
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => (
+              <Combobox.Item item={item} key={item.value} aria-describedby="ada-description">
+                <span aria-hidden="true">AL</span>
+                <span>
+                  <span data-part="item-primary">Ada Lovelace</span>
+                  <span data-part="item-secondary" id="ada-description">
+                    Engineering
+                  </span>
+                </span>
+              </Combobox.Item>
+            ))
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    const option = screen.getByRole("option", { name: "Ada Lovelace" });
+    expect(option.getAttribute("aria-label")).toBe("Ada Lovelace");
+    expect(
+      document.getElementById(option.getAttribute("aria-describedby") ?? "")?.textContent,
+    ).toBe("Engineering");
+    expect(screen.getByText("Engineering")).toBeTruthy();
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Engineering" } });
+    expect(screen.queryByRole("option")).toBeNull();
+
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Ada" } });
+    fireEvent.click(screen.getByRole("option", { name: "Ada Lovelace" }));
+    expect(onValueChange).toHaveBeenCalledWith("ada");
+    expect((screen.getByRole("combobox") as HTMLInputElement).value).toBe("Ada Lovelace");
+  });
+
+  it("selects clicked values in uncontrolled single mode", () => {
+    render(
+      <Combobox.Root defaultOpen defaultValue="apple" items={items}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Trigger>Toggle options</Combobox.Trigger>
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    expect(screen.getByRole("option", { name: "Apple" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+    fireEvent.click(screen.getByRole("option", { name: "Banana" }));
+    expect((screen.getByRole("combobox") as HTMLInputElement).value).toBe("Banana");
+
+    fireEvent.click(screen.getByRole("button", { name: "Toggle options" }));
+    expect(screen.getByRole("option", { name: "Banana" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+  });
+
+  it("uses the label when children are undefined and preserves explicitly empty children", () => {
+    const cases = [undefined, null, false, ""] as const;
+    for (const [index, children] of cases.entries()) {
+      const { unmount } = render(
+        <Combobox.Root defaultOpen items={[{ label: `Person ${index}`, value: `${index}` }]}>
+          <Combobox.Input aria-label="Person" />
+          <Combobox.Content>
+            {(filteredItems) =>
+              filteredItems.map((item) => (
+                <Combobox.Item item={item} key={item.value}>
+                  {children}
+                </Combobox.Item>
+              ))
+            }
+          </Combobox.Content>
+        </Combobox.Root>,
+      );
+
+      const option = screen.getByRole("option", { name: `Person ${index}` });
+      expect(option.textContent).toBe(children === undefined ? `Person ${index}` : "");
+      unmount();
+    }
+  });
+
+  it("exposes named groups without registering their labels as options", () => {
+    render(
+      <Combobox.Root defaultOpen items={items}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>
+          {(filteredItems) => (
+            <>
+              <Combobox.Group aria-labelledby="fruit-group-label" data-testid="fruit-group">
+                <Combobox.GroupLabel id="fruit-group-label">Fresh fruit</Combobox.GroupLabel>
+                {filteredItems.slice(0, 1).map((item) => (
+                  <Combobox.Item item={item} key={item.value} />
+                ))}
+              </Combobox.Group>
+              <Combobox.Group aria-labelledby="other-group-label">
+                <Combobox.GroupLabel id="other-group-label">Other fruit</Combobox.GroupLabel>
+                {filteredItems.slice(1, 2).map((item) => (
+                  <Combobox.Item item={item} key={item.value} />
+                ))}
+              </Combobox.Group>
+            </>
+          )}
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    expect(screen.getByRole("group", { name: "Fresh fruit" }).getAttribute("data-part")).toBe(
+      "group",
+    );
+    expect(screen.getByRole("group", { name: "Other fruit" })).toBeTruthy();
+    expect(screen.getAllByRole("option")).toHaveLength(2);
+    expect(screen.getByTestId("fruit-group").querySelector('[data-part="group-label"]')?.id).toBe(
+      "fruit-group-label",
+    );
+
+    const input = screen.getByRole("combobox");
+    input.focus();
+    const options = screen.getAllByRole("option");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input.getAttribute("aria-activedescendant")).toBe(options[0]?.id);
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    expect(input.getAttribute("aria-activedescendant")).toBe(options[1]?.id);
+  });
+
   it("forwards native props to the empty state and generated listbox", () => {
     render(
       <Combobox.Root defaultInputValue="not found" defaultOpen items={items}>
@@ -257,8 +755,48 @@ describe("Combobox", () => {
     fireEvent.keyDown(input, { key: "ArrowDown" });
     const firstOption = screen.getByRole("option", { name: "Apple" });
     expect(input.getAttribute("aria-activedescendant")).toBe(firstOption.id);
-    expect(firstOption.getAttribute("aria-selected")).toBe("true");
+    expect(firstOption.getAttribute("aria-selected")).toBe("false");
+    expect(firstOption.getAttribute("data-highlighted")).toBe("");
     expect(document.activeElement).toBe(input);
+  });
+
+  it("clears an active descendant when its item is removed", () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <Combobox.Root defaultOpen items={items} onValueChange={onValueChange}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    const input = screen.getByRole("combobox");
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    const removedId = input.getAttribute("aria-activedescendant");
+    expect(removedId).not.toBeNull();
+
+    rerender(
+      <Combobox.Root
+        defaultOpen
+        items={[{ label: "Banana", value: "banana" }]}
+        onValueChange={onValueChange}
+      >
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>
+          {(filteredItems) =>
+            filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+          }
+        </Combobox.Content>
+      </Combobox.Root>,
+    );
+
+    expect(document.getElementById(removedId!)).toBeNull();
+    expect(input.getAttribute("aria-activedescendant")).toBeNull();
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 
   it("skips disabled items when navigating and refuses to select them on click", () => {
@@ -893,4 +1431,60 @@ describe("Combobox", () => {
       expect(input.getAttribute("aria-expanded")).toBe("true");
     });
   });
+});
+
+it("navigates keyed options in their reordered DOM sequence while skipping headings and disabled items", () => {
+  const apple = items[0]!;
+  const banana = items[1]!;
+  const cherry = items[2]!;
+  const disabled = { label: "Disabled fruit", value: "disabled", disabled: true };
+  function renderOrder(ordered: readonly ComboboxItemData[]) {
+    return (
+      <Combobox.Root defaultOpen items={ordered}>
+        <Combobox.Input aria-label="Fruit" />
+        <Combobox.Content>
+          {(filtered) => (
+            <Combobox.Group aria-labelledby="reorder-heading">
+              <Combobox.GroupLabel id="reorder-heading">Fruit group</Combobox.GroupLabel>
+              {filtered.map((item) => (
+                <Combobox.Item item={item} key={item.value} id={`reorder-${item.value}`} />
+              ))}
+            </Combobox.Group>
+          )}
+        </Combobox.Content>
+      </Combobox.Root>
+    );
+  }
+  const { rerender } = render(renderOrder([apple, cherry, disabled, banana]));
+  const input = screen.getByRole("combobox");
+  const cherryNode = screen.getByRole("option", { name: "Cherry" });
+  fireEvent.keyDown(input, { key: "ArrowDown" });
+  fireEvent.keyDown(input, { key: "ArrowDown" });
+  expect(input.getAttribute("aria-activedescendant")).toBe("reorder-cherry");
+
+  rerender(renderOrder([cherry, disabled, apple, banana]));
+  expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual([
+    "Cherry",
+    "Disabled fruit",
+    "Apple",
+    "Banana",
+  ]);
+  expect(screen.getByRole("option", { name: "Cherry" })).toBe(cherryNode);
+  fireEvent.keyDown(input, { key: "ArrowDown" });
+  expect(input.getAttribute("aria-activedescendant")).toBe("reorder-apple");
+});
+
+it("keeps the input controlled when a mounted Root switches from multiple to single", () => {
+  const error = vi.spyOn(console, "error").mockImplementation(() => {});
+  const items = [{ label: "Apple", value: "apple" }];
+  const view = (multiple: boolean) => (
+    <Combobox.Root {...(multiple ? { multiple: true, defaultValue: ["apple"] } : {})} items={items}>
+      <Combobox.Input aria-label="Fruit" />
+    </Combobox.Root>
+  );
+  const { rerender } = render(view(true));
+  rerender(view(false));
+  expect((screen.getByRole("combobox") as HTMLInputElement).value).toBe("");
+  expect(error).not.toHaveBeenCalled();
+  error.mockRestore();
 });

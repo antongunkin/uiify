@@ -19,7 +19,18 @@ export function canAddComboboxValue(
   options: ComboboxMultiValueOptions,
 ): boolean {
   const normalizedValue = normalizeComboboxValue(value);
-  if (normalizedValue.length === 0 || selectedValues.includes(normalizedValue)) return false;
+  return (
+    normalizedValue.length > 0 && canSelectComboboxValue(normalizedValue, selectedValues, options)
+  );
+}
+
+/** Known option IDs are opaque identities, including empty strings and surrounding whitespace. */
+export function canSelectComboboxValue(
+  value: string,
+  selectedValues: readonly string[],
+  options: ComboboxMultiValueOptions,
+): boolean {
+  if (selectedValues.includes(value)) return false;
   if (options.maxValues !== undefined && selectedValues.length >= options.maxValues) return false;
-  return options.validateValue?.(normalizedValue) ?? true;
+  return options.validateValue?.(value) ?? true;
 }

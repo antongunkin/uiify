@@ -46,15 +46,15 @@ Optional `children`: nodes or strings.
 
 ## Select.Root
 
-Choose one value from a fixed list.
+Choose one or several values from a fixed list.
 Use when: The demonstrated form-grouping relationship is present.
 Avoid when: The task does not need this element; do not add it for coverage.
 
 Optional `children`: nodes or strings.
 
-- `defaultValue` (optional): `string`
-- `name` (optional): `string`
+- `multiple` (optional): `boolean`
 - `disabled` (optional): `boolean`
+- `name` (optional): `string`
 - `size` (optional): `"sm" | "md" | "lg"`; allowed: "sm", "md", "lg". Sets the control's height and text size; `md` is the default.
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
@@ -64,7 +64,6 @@ Optional `children`: nodes or strings.
 - `autoComplete` (optional): `string`
 - `hidden` (optional): `boolean`
 - `required` (optional): `boolean`
-- `multiple` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
 ## Select.Separator

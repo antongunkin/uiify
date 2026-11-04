@@ -40,8 +40,10 @@ export const PART_NAMES = [
   "fallback",
   "file-info",
   "footer",
+  "form-control",
   "grabber",
   "group",
+  "group-label", // Visible heading for a named Combobox option group.
   "handle",
   "header",
   "image",
@@ -50,9 +52,12 @@ export const PART_NAMES = [
   "input",
   "input-slot",
   "item",
+  "item-content", // Existing rich Combobox text hooks retained during the class migration.
   "item-description",
   "item-icon",
   "item-indicator",
+  "item-primary",
+  "item-secondary",
   "item-text",
   "label",
   "legend",

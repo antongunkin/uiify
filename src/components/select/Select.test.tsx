@@ -202,6 +202,74 @@ describe("Select", () => {
     expect(html).toContain('<option value="cat" selected="">Cat</option>');
   });
 
+  it("reports every selected value from a native multiple select", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Select.Root multiple defaultValue={["a"]} name="tags" onValueChange={onValueChange}>
+        <Select.Content>
+          <Select.Item value="a">A</Select.Item>
+          <Select.Item value="b">B</Select.Item>
+          <Select.Item value="c">C</Select.Item>
+        </Select.Content>
+      </Select.Root>,
+    );
+
+    const select = screen.getByRole("listbox") as HTMLSelectElement;
+    expect(select.multiple).toBe(true);
+    select.options[2]!.selected = true;
+    fireEvent.change(select);
+    expect(onValueChange).toHaveBeenCalledWith(["a", "c"]);
+  });
+
+  it("reflects a controlled array value on a multiple select", () => {
+    render(
+      <Select.Root multiple value={["a", "c"]} name="tags" onValueChange={() => {}}>
+        <Select.Content>
+          <Select.Item value="a">A</Select.Item>
+          <Select.Item value="b">B</Select.Item>
+          <Select.Item value="c">C</Select.Item>
+        </Select.Content>
+      </Select.Root>,
+    );
+
+    const select = screen.getByRole("listbox") as HTMLSelectElement;
+    expect(Array.from(select.selectedOptions, (option) => option.value)).toEqual(["a", "c"]);
+  });
+
+  it("submits every selected value through FormData", () => {
+    render(
+      <form data-testid="form">
+        <Select.Root multiple defaultValue={["a", "b"]} name="tag">
+          <Select.Content>
+            <Select.Item value="a">A</Select.Item>
+            <Select.Item value="b">B</Select.Item>
+            <Select.Item value="c">C</Select.Item>
+          </Select.Content>
+        </Select.Root>
+      </form>,
+    );
+
+    const form = screen.getByTestId("form") as HTMLFormElement;
+    expect(new FormData(form).getAll("tag")).toEqual(["a", "b"]);
+  });
+
+  it("keeps a scalar value and callback for a single select", () => {
+    const onValueChange = vi.fn();
+    render(
+      <Select.Root defaultValue="a" name="plan" onValueChange={onValueChange}>
+        <Select.Content>
+          <Select.Item value="a">A</Select.Item>
+          <Select.Item value="b">B</Select.Item>
+        </Select.Content>
+      </Select.Root>,
+    );
+
+    const select = screen.getByRole("combobox") as HTMLSelectElement;
+    expect(select.multiple).toBe(false);
+    fireEvent.change(select, { target: { value: "b" } });
+    expect(onValueChange).toHaveBeenCalledWith("b");
+  });
+
   it("keeps the native select tree valid in React clients", () => {
     const html = renderToStaticMarkup(
       <Select.Root defaultValue="dog" name="pet">

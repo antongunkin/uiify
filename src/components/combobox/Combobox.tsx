@@ -14,7 +14,7 @@ import {
   useIsomorphicLayoutEffect,
   useMergedRefs,
 } from "@gunkin/uiify/hooks";
-import { createPartContext, splitRef } from "@gunkin/uiify/core";
+import { splitRef } from "@gunkin/uiify/core";
 import { useAnchorPosition } from "@gunkin/uiify/core/anchor-position";
 import {
   CollectionProvider,
@@ -22,6 +22,8 @@ import {
   useCollectionItem,
 } from "@gunkin/uiify/core/collection";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
+import { cn } from "../../core/class-names.js";
+import { sortByDocumentOrder } from "../../core/dom-order.js";
 import { DismissableLayer } from "@gunkin/uiify/core/dismissable-layer";
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { usePopover } from "@gunkin/uiify/core/popover";
@@ -33,11 +35,14 @@ import {
   moveActiveId,
 } from "./combobox-store.js";
 import {
-  canAddComboboxValue,
+  canSelectComboboxValue,
   normalizeComboboxValue,
   splitComboboxValues,
 } from "./combobox-values.js";
+import { ComboboxProvider, useComboboxContext } from "./combobox-context.js";
+import { ComboboxFormControl } from "./ComboboxFormControl.js";
 import type {
+  ComboboxFormState,
   ComboboxActiveStore,
   ComboboxControlProps,
   ComboboxItemData,
@@ -49,17 +54,30 @@ import type {
   ComboboxTriggerProps,
   ComboboxContentOwnProps,
   ComboboxItemOwnProps,
+  ComboboxGroupOwnProps,
+  ComboboxGroupLabelOwnProps,
   ComboboxEmptyOwnProps,
+  ComboboxStatusProps,
 } from "./types.js";
 
+export { ComboboxFormControl } from "./ComboboxFormControl.js";
 export type { ComboboxItemData } from "./types.js";
 
-const [ComboboxProvider, useComboboxContext] = createPartContext<ComboboxContextValue>("Combobox");
 const DEFAULT_MULTI_DELIMITERS = [","] as const;
 const EMPTY_DELIMITERS: readonly string[] = [];
 
-function getEnabledIds(collection: ReturnType<typeof useCollection<ComboboxItemData>>): string[] {
-  return collection.filter((entry) => !entry.data.disabled).map((entry) => entry.id);
+function getEnabledIds(
+  collection: ReturnType<typeof useCollection<ComboboxItemData>>,
+  treeRoot: Document | ShadowRoot | undefined,
+): string[] {
+  const enabled = collection
+    .filter((entry) => !entry.data.disabled)
+    .map((entry) => ({
+      id: entry.id,
+      element: treeRoot?.getElementById?.(entry.id) ?? null,
+    }));
+  // Stable keyed nodes can move without changing their collection registration.
+  return sortByDocumentOrder(enabled, (entry) => entry.element).map((entry) => entry.id);
 }
 
 export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
@@ -73,10 +91,12 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     defaultOpen,
     defaultValue,
     delimiters: configuredDelimiters,
+    disabled = false,
     filterFn = defaultComboboxFilter,
     id,
     inputValue: controlledInputValue,
     items,
+    loading = false,
     maxValues: configuredMaxValues,
     multiple: multipleMode,
     onInputValueChange,
@@ -88,38 +108,61 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     value: controlledValue,
     ...consumerProps
   } = rootProps;
+  const [formState, updateFormState] = useState<ComboboxFormState>({
+    required: false,
+    invalid: false,
+  });
+  const [hasControl, setHasControl] = useState(false);
+  const formControlRef = useRef<HTMLSelectElement | null>(null);
+  const setFormState = useCallback((next: ComboboxFormState) => {
+    updateFormState((current) =>
+      current.required === next.required && current.invalid === next.invalid ? current : next,
+    );
+  }, []);
+  const registerFormControl = useCallback(
+    (node: HTMLSelectElement) => {
+      if (formControlRef.current && formControlRef.current !== node) {
+        throw new Error("Combobox accepts only one FormControl per Root.");
+      }
+      formControlRef.current = node;
+      return () => {
+        if (formControlRef.current !== node) return;
+        formControlRef.current = null;
+        setFormState({ required: false, invalid: false });
+      };
+    },
+    [setFormState],
+  );
   const multiple = multipleMode === true;
   let multiDefaultValue: readonly string[] = [];
   let multiValue: readonly string[] | undefined;
   let multiOnValueChange: ((value: string[]) => void) | undefined;
-  let singleOnValueChange: ((value: string) => void) | undefined;
-  let singleValue: string | undefined;
 
   if (multipleMode === true) {
     multiDefaultValue = (defaultValue as readonly string[] | undefined) ?? [];
     multiValue = controlledValue as readonly string[] | undefined;
     multiOnValueChange = onValueChange as ((value: string[]) => void) | undefined;
-  } else {
-    singleOnValueChange = onValueChange as ((value: string) => void) | undefined;
-    singleValue = (controlledValue as string | undefined) ?? (defaultValue as string | undefined);
   }
 
   const addOnPaste = multiple ? (configuredAddOnPaste ?? true) : false;
-  const allowCustomValue = multiple ? (configuredAllowCustomValue ?? false) : false;
+  const allowCustomValue = configuredAllowCustomValue ?? false;
   const delimiters = multiple
     ? (configuredDelimiters ?? DEFAULT_MULTI_DELIMITERS)
     : EMPTY_DELIMITERS;
   const maxValues = multiple ? configuredMaxValues : undefined;
-  const validateValue = multiple ? configuredValidateValue : undefined;
+  const validateValue = configuredValidateValue;
 
   const listboxId = useId();
   const activeStoreRef = useRef<ComboboxActiveStore | null>(null);
   activeStoreRef.current ??= createComboboxActiveStore();
   const activeStore = activeStoreRef.current;
   const inputRef = useRef<HTMLElement | null>(null);
+  const isDisabled = useCallback(
+    () => disabled || inputRef.current?.matches(":disabled") === true,
+    [disabled],
+  );
   const [inputNode, setInputNode] = useState<HTMLElement | null>(null);
-  const [internalInputValue, setInternalInputValue] = useState(defaultInputValue ?? "");
-  const inputValue = controlledInputValue ?? internalInputValue;
+  const [queryDirty, setQueryDirty] = useState(false);
   const [selectedValues, setSelectedValues] = useControllableState<readonly string[]>({
     defaultValue: [...multiDefaultValue],
     ...(multiValue !== undefined ? { value: multiValue } : {}),
@@ -127,6 +170,88 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       ? { onChange: (next: readonly string[]) => multiOnValueChange([...next]) }
       : {}),
   });
+  const [singleValue, setSingleValue] = useControllableState<string | null>({
+    // Always seeded: a Root can switch from multiple to single after mount.
+    defaultValue: typeof defaultValue === "string" ? defaultValue : null,
+    ...(!multiple && controlledValue !== undefined
+      ? { value: controlledValue as string | null }
+      : {}),
+    ...(!multiple && onValueChange
+      ? { onChange: onValueChange as (value: string | null) => void }
+      : {}),
+  });
+  const initialSingleLabel =
+    multiple || singleValue === null
+      ? ""
+      : (items.find((item) => item.value === singleValue)?.label ?? singleValue);
+  const [internalInputValue, setInternalInputValue] = useState(
+    () => defaultInputValue ?? initialSingleLabel,
+  );
+  const [initialDefaults] = useState(() => ({
+    values: [...multiDefaultValue],
+    value: typeof defaultValue === "string" ? defaultValue : null,
+    query:
+      defaultInputValue ??
+      (!multiple && typeof defaultValue === "string"
+        ? (items.find((item) => item.value === defaultValue)?.label ?? defaultValue)
+        : ""),
+  }));
+  const [resetRevision, setResetRevision] = useState(0);
+  const previousResetRevisionRef = useRef(resetRevision);
+  const inputValue = controlledInputValue ?? internalInputValue;
+  const filterQuery =
+    multiple || controlledInputValue !== undefined || defaultInputValue !== undefined || queryDirty
+      ? inputValue
+      : "";
+  const previousSingleLabelRef = useRef(initialSingleLabel);
+  const previousSingleValueRef = useRef(singleValue);
+  const previousControlledValueRef = useRef(controlledValue);
+  const didSyncInitialSingleQueryRef = useRef(false);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!didSyncInitialSingleQueryRef.current) {
+      didSyncInitialSingleQueryRef.current = true;
+      previousSingleValueRef.current = singleValue;
+      previousControlledValueRef.current = controlledValue;
+      return;
+    }
+
+    const wasReset = previousResetRevisionRef.current !== resetRevision;
+    previousResetRevisionRef.current = resetRevision;
+    const selectedLabelChanged = previousSingleLabelRef.current !== initialSingleLabel;
+    previousSingleLabelRef.current = initialSingleLabel;
+    const controlledSelectionChanged =
+      controlledValue !== undefined &&
+      !Object.is(previousControlledValueRef.current, controlledValue);
+    const singleSelectionChanged = !Object.is(previousSingleValueRef.current, singleValue);
+    if (
+      !wasReset &&
+      !multiple &&
+      controlledInputValue === undefined &&
+      (controlledSelectionChanged ||
+        singleSelectionChanged ||
+        (selectedLabelChanged && !queryDirty))
+    ) {
+      const nextLabel =
+        singleValue === null
+          ? ""
+          : (items.find((item) => item.value === singleValue)?.label ?? singleValue);
+      setInternalInputValue(nextLabel);
+      if (controlledSelectionChanged) setQueryDirty(false);
+    }
+
+    previousSingleValueRef.current = singleValue;
+    previousControlledValueRef.current = controlledValue;
+  }, [
+    controlledInputValue,
+    controlledValue,
+    initialSingleLabel,
+    items,
+    multiple,
+    queryDirty,
+    resetRevision,
+    singleValue,
+  ]);
 
   const popover = usePopover({
     mode: "auto",
@@ -134,6 +259,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     ...(controlledOpen !== undefined ? { open: controlledOpen } : {}),
     ...(onOpenChange ? { onOpenChange } : {}),
   });
+  const showPopover = popover.openPopover;
   const anchor = useAnchorPosition();
 
   const setInputElement = useCallback((element: HTMLElement | null) => {
@@ -141,13 +267,60 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     setInputNode(element);
   }, []);
 
+  const openPopover = useCallback(() => {
+    if (!isDisabled()) showPopover();
+  }, [isDisabled, showPopover]);
+
   const setInputValue = useCallback(
     (next: string) => {
-      if (controlledInputValue === undefined) setInternalInputValue(next);
+      if (controlledInputValue === undefined) {
+        setInternalInputValue(next);
+        setQueryDirty(true);
+      }
       onInputValueChange?.(next);
     },
     [controlledInputValue, onInputValueChange],
   );
+
+  const setCommittedInputValue = useCallback(
+    (next: string) => {
+      if (controlledInputValue === undefined) {
+        setInternalInputValue(next);
+        setQueryDirty(false);
+      }
+      onInputValueChange?.(next);
+    },
+    [controlledInputValue, onInputValueChange],
+  );
+
+  const reset = useCallback(() => {
+    if (multiple) {
+      if (
+        selectedValues.length !== initialDefaults.values.length ||
+        selectedValues.some((value, index) => value !== initialDefaults.values[index])
+      ) {
+        setSelectedValues([...initialDefaults.values]);
+      }
+    } else if (singleValue !== initialDefaults.value) {
+      setSingleValue(initialDefaults.value);
+    }
+    if (inputValue !== initialDefaults.query) setCommittedInputValue(initialDefaults.query);
+    setQueryDirty(false);
+    activeStore.setActiveId(null);
+    if (popover.open) popover.close();
+    setResetRevision((current) => current + 1);
+  }, [
+    activeStore,
+    initialDefaults,
+    inputValue,
+    multiple,
+    popover,
+    selectedValues,
+    setCommittedInputValue,
+    setSelectedValues,
+    setSingleValue,
+    singleValue,
+  ]);
 
   const isValueSelected = useCallback(
     (value: string) => multiple && selectedValues.includes(value),
@@ -161,13 +334,13 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
 
   const removeValue = useCallback(
     (value: string) => {
-      if (!multiple) return;
+      if (!multiple || isDisabled()) return;
       setSelectedValues((current) => {
         if (!current.includes(value)) return current;
         return current.filter((selectedValue) => selectedValue !== value);
       });
     },
-    [multiple, setSelectedValues],
+    [isDisabled, multiple, setSelectedValues],
   );
 
   const addValue = useCallback(
@@ -175,7 +348,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       let added = false;
       setSelectedValues((current) => {
         if (
-          !canAddComboboxValue(value, current, {
+          !canSelectComboboxValue(value, current, {
             ...(maxValues !== undefined ? { maxValues } : {}),
             ...(validateValue ? { validateValue } : {}),
           })
@@ -195,14 +368,14 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
 
   const toggleValue = useCallback(
     (item: ComboboxItemData) => {
-      if (!multiple || item.disabled) return;
+      if (!multiple || item.disabled || isDisabled()) return;
       let added = false;
       setSelectedValues((current) => {
         if (current.includes(item.value)) {
           return current.filter((value) => value !== item.value);
         }
         if (
-          !canAddComboboxValue(item.value, current, {
+          !canSelectComboboxValue(item.value, current, {
             ...(maxValues !== undefined ? { maxValues } : {}),
             ...(validateValue ? { validateValue } : {}),
           })
@@ -213,34 +386,87 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       });
       if (added) setInputValue("");
     },
-    [maxValues, multiple, setInputValue, setSelectedValues, validateValue],
+    [isDisabled, maxValues, multiple, setInputValue, setSelectedValues, validateValue],
   );
 
   const commitValue = useCallback(
     (value: string): boolean => {
-      if (!multiple) return false;
+      if (!multiple || isDisabled()) return false;
       const normalizedValue = normalizeComboboxValue(value);
+      if (!normalizedValue) return false;
       const item = items.find(
         (candidate) => candidate.value === normalizedValue || candidate.label === normalizedValue,
       );
       if (item?.disabled || (!item && !allowCustomValue)) return false;
       return addValue(item?.value ?? normalizedValue);
     },
-    [addValue, allowCustomValue, items, multiple],
+    [addValue, allowCustomValue, isDisabled, items, multiple],
   );
 
   const selectItem = useCallback(
     (item: ComboboxItemData) => {
+      if (isDisabled()) return;
       if (multiple) {
         toggleValue(item);
         return;
       }
-      singleOnValueChange?.(item.value);
-      setInputValue(item.label);
+      setSingleValue(item.value);
+      if (controlledValue === undefined || singleValue === item.value) {
+        setCommittedInputValue(item.label);
+      }
       activeStore.setActiveId(null);
       popover.close();
     },
-    [activeStore, multiple, popover, setInputValue, singleOnValueChange, toggleValue],
+    [
+      activeStore,
+      controlledValue,
+      isDisabled,
+      multiple,
+      popover,
+      setCommittedInputValue,
+      setSingleValue,
+      singleValue,
+      toggleValue,
+    ],
+  );
+
+  const commitSingleValue = useCallback(
+    (value: string): boolean => {
+      if (multiple || isDisabled()) return false;
+      const normalizedValue = normalizeComboboxValue(value);
+      if (!normalizedValue) return false;
+      const exactItem =
+        items.find((item) => item.value === normalizedValue) ??
+        items.find((item) => item.label === normalizedValue);
+      if (exactItem) {
+        if (exactItem.disabled) return false;
+        selectItem(exactItem);
+        return true;
+      }
+      if (!allowCustomValue || !(validateValue?.(normalizedValue) ?? true)) return false;
+
+      setSingleValue(normalizedValue);
+      if (controlledValue === undefined || singleValue === normalizedValue) {
+        setCommittedInputValue(normalizedValue);
+        activeStore.setActiveId(null);
+        popover.close();
+      }
+      return true;
+    },
+    [
+      activeStore,
+      allowCustomValue,
+      controlledValue,
+      isDisabled,
+      items,
+      multiple,
+      popover,
+      selectItem,
+      setCommittedInputValue,
+      setSingleValue,
+      singleValue,
+      validateValue,
+    ],
   );
 
   useIsomorphicLayoutEffect(() => {
@@ -249,15 +475,26 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
 
   const contextValue = useMemo<ComboboxContextValue>(
     () => ({
+      reset,
+      formState,
+      hasControl,
+      registerFormControl,
+      setFormState,
+      setHasControl,
       activeStore,
       addOnPaste,
+      allowCustomValue,
       anchorProps: anchor.anchorProps,
       anchorRef: anchor.anchorRef,
       close: popover.close,
       filterFn,
+      filterQuery,
+      disabled,
+      isDisabled,
       inputNode,
       inputValue,
       items,
+      loading,
       listboxId,
       delimiters,
       multiple,
@@ -267,7 +504,8 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       toggleValue,
       removeValue,
       commitValue,
-      open: popover.openPopover,
+      commitSingleValue,
+      open: openPopover,
       openState: popover.open,
       popupProps: popover.popupProps,
       popupRef: popover.popupRef,
@@ -276,32 +514,39 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       selectItem,
       setInputElement,
       setInputValue,
-      ...(multiple
-        ? { value: selectedValues }
-        : singleValue !== undefined
-          ? { value: singleValue }
-          : {}),
+      value: multiple ? selectedValues : singleValue,
     }),
     [
+      reset,
+      formState,
+      hasControl,
+      registerFormControl,
+      setFormState,
       activeStore,
       addOnPaste,
+      allowCustomValue,
       anchor.anchorProps,
       anchor.anchorRef,
       anchor.positionerProps,
       anchor.positionerRef,
       commitValue,
+      commitSingleValue,
       delimiters,
       filterFn,
+      filterQuery,
+      disabled,
+      isDisabled,
       getValueLabel,
       inputNode,
       inputValue,
       items,
+      loading,
       isValueSelected,
       listboxId,
       multiple,
       popover.close,
       popover.open,
-      popover.openPopover,
+      openPopover,
       popover.popupProps,
       popover.popupRef,
       selectItem,
@@ -320,7 +565,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       {...(size !== undefined ? { "data-size": size } : {})}
       {...consumerProps}
       id={id}
-      className={className}
+      className={cn("ui-cb", className)}
     >
       <CollectionProvider>
         <ComboboxProvider value={contextValue}>{children}</ComboboxProvider>
@@ -335,14 +580,21 @@ export function ComboboxControl<TAs extends ElementType = "div">(
 ): ReactElement | null {
   const { as, render, children, className, ...consumerProps } =
     props as ComboboxControlProps<ElementType>;
+  const { anchorProps, setHasControl } = useComboboxContext("Control");
+  // The surrounding control, not the inner input, is the popup's visual anchor.
+  useIsomorphicLayoutEffect(() => {
+    setHasControl(true);
+    return () => setHasControl(false);
+  }, [setHasControl]);
 
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
+      ...anchorProps,
       "data-part": "control",
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("ui-cb-control", className),
       children,
     },
     render,
@@ -356,20 +608,27 @@ function ComboboxTagsMultiple<TAs extends ElementType = "div">(
 ): ReactElement | null {
   const { as, render, children, className, slotProps, ...consumerProps } =
     props as ComboboxTagsProps<ElementType>;
-  const { getValueLabel, removeValue, selectedValues } = useComboboxContext("Tags");
+  const { disabled, getValueLabel, removeValue, selectedValues } = useComboboxContext("Tags");
 
   const tags = selectedValues.map((value) => {
     const label = getValueLabel(value);
     const tagProps = resolveRepeatedSlotProps(slotProps?.tag, value);
     const removeProps = resolveRepeatedSlotProps(slotProps?.remove, value);
     return (
-      <span data-part="tag" {...tagProps} key={value}>
+      <span
+        data-part="tag"
+        {...tagProps}
+        className={cn("ui-cb-tag", tagProps.className)}
+        key={value}
+      >
         {label}
         <button
           aria-label={`Remove ${label}`}
+          disabled={disabled}
           data-part="tag-remove"
           type="button"
           {...removeProps}
+          className={cn("ui-cb-remove", removeProps.className)}
           onMouseDown={composeEventHandlers(removeProps.onMouseDown, (event) =>
             event.preventDefault(),
           )}
@@ -387,7 +646,7 @@ function ComboboxTagsMultiple<TAs extends ElementType = "div">(
     props: {
       "data-part": "tags",
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("ui-cb-tags", className),
       children: (
         <>
           {tags}
@@ -418,13 +677,21 @@ export function ComboboxInput<TAs extends ElementType = "input">(
   const {
     activeStore,
     addOnPaste,
+    allowCustomValue,
     anchorProps,
     anchorRef,
     close,
+    commitSingleValue,
+    formState,
+    hasControl,
+    inputNode,
     inputValue,
+    items,
     listboxId,
     commitValue,
     delimiters,
+    disabled,
+    isDisabled,
     multiple,
     open,
     openState,
@@ -436,6 +703,13 @@ export function ComboboxInput<TAs extends ElementType = "input">(
   } = useComboboxContext("Input");
   const collection = useCollection<ComboboxItemData>();
   const activeId = useSyncExternalStore(activeStore.subscribe, activeStore.getActiveId, () => null);
+  const treeRoot = inputNode?.getRootNode() as Document | ShadowRoot | undefined;
+  const validActiveId =
+    activeId &&
+    collection.some((entry) => entry.id === activeId) &&
+    treeRoot?.getElementById?.(activeId)
+      ? activeId
+      : null;
   const [consumerRef, withoutRef] = splitRef<HTMLInputElement, typeof consumerProps>(consumerProps);
   const mergedRef = useMergedRefs(anchorRef, setInputElement, consumerRef);
   const {
@@ -449,31 +723,45 @@ export function ComboboxInput<TAs extends ElementType = "input">(
   };
 
   const navigate = (direction: "first" | "last" | "next" | "prev") => {
-    const nextId = moveActiveId(getEnabledIds(collection), activeId, direction);
+    const currentRoot = inputNode?.getRootNode() as Document | ShadowRoot | undefined;
+    const nextId = moveActiveId(getEnabledIds(collection, currentRoot), validActiveId, direction);
     activeStore.setActiveId(nextId);
   };
 
   const handleChange = (event: SyntheticEvent<HTMLInputElement>) => {
+    if (isDisabled()) return;
     setInputValue(event.currentTarget.value);
     if (!openState) open();
     activeStore.setActiveId(null);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (isComposingKeyEvent(event)) return;
+    if (isDisabled() || isComposingKeyEvent(event)) return;
     const isDelimiterKey = event.key.length === 1 && delimiters.includes(event.key);
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (!openState) open();
-      navigate(activeId ? "next" : "first");
+      navigate(validActiveId ? "next" : "first");
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
       if (!openState) open();
-      navigate(activeId ? "prev" : "last");
-    } else if (event.key === "Enter" && openState && activeId) {
+      navigate(validActiveId ? "prev" : "last");
+    } else if (event.key === "Enter" && openState && validActiveId) {
       event.preventDefault();
-      const match = collection.find((entry) => entry.id === activeId);
+      const match = collection.find((entry) => entry.id === validActiveId);
       if (match) selectItem(match.data);
+    } else if (
+      !multiple &&
+      event.key === "Enter" &&
+      (allowCustomValue ||
+        items.some(
+          (item) =>
+            item.value === normalizeComboboxValue(inputValue) ||
+            item.label === normalizeComboboxValue(inputValue),
+        ))
+    ) {
+      const committed = commitSingleValue(inputValue);
+      if (committed || allowCustomValue) event.preventDefault();
     } else if (multiple && (event.key === "Enter" || isDelimiterKey)) {
       event.preventDefault();
       commitValue(inputValue);
@@ -488,7 +776,7 @@ export function ComboboxInput<TAs extends ElementType = "input">(
   };
 
   const handlePaste = (event: ClipboardEvent<HTMLInputElement>) => {
-    if (!multiple || !addOnPaste) return;
+    if (isDisabled() || !multiple || !addOnPaste) return;
     const text = event.clipboardData.getData("text");
     const separators = [...delimiters, "\n", "\r", "\t"];
     if (!separators.some((delimiter) => delimiter.length > 0 && text.includes(delimiter))) return;
@@ -500,14 +788,17 @@ export function ComboboxInput<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...anchorProps,
+      ...(hasControl ? {} : anchorProps),
       role: "combobox",
+      "aria-required": formState.required || undefined,
+      "aria-invalid": formState.invalid || undefined,
       "aria-autocomplete": "list",
       "aria-controls": listboxId,
       "aria-expanded": openState,
-      ...(activeId ? { "aria-activedescendant": activeId } : {}),
+      ...(validActiveId ? { "aria-activedescendant": validActiveId } : {}),
       "data-part": "input",
-      ...(className ? { className } : {}),
+      className: cn("ui-cb-input", className),
+      disabled,
       value: inputValue,
       ...withoutRef,
       ref: mergedRef,
@@ -525,13 +816,15 @@ export function ComboboxTrigger<TAs extends ElementType = "button">(
 ): ReactElement | null {
   const { as, render, children, className, ...consumerProps } =
     props as ComboboxTriggerProps<"button">;
-  const { close, inputNode, listboxId, open, openState } = useComboboxContext("Trigger");
+  const { close, disabled, inputNode, isDisabled, listboxId, open, openState } =
+    useComboboxContext("Trigger");
   const nativeButton = !as || as === "button";
   const { onClick: consumerOnClick } = consumerProps as {
     onClick?: (event: SyntheticEvent<HTMLElement>) => void;
   };
 
   const handleClick = () => {
+    if (isDisabled()) return;
     if (openState) close();
     else open();
     inputNode?.focus({ preventScroll: true });
@@ -544,8 +837,9 @@ export function ComboboxTrigger<TAs extends ElementType = "button">(
       "aria-expanded": openState,
       "aria-controls": listboxId,
       "aria-haspopup": "listbox",
+      ...(nativeButton ? { disabled } : {}),
       ...(nativeButton ? { type: "button" } : {}),
-      ...(className ? { className } : {}),
+      className: cn("ui-cb-trigger", className),
       "data-part": "trigger",
       ...consumerProps,
       children,
@@ -560,10 +854,11 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
   const { align = "start", children, className, side = "bottom", ...consumerProps } = props;
   const {
     close,
+    filterQuery,
     filterFn,
     inputNode,
-    inputValue,
     items,
+    loading,
     listboxId,
     multiple,
     openState,
@@ -573,7 +868,7 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
     positionerRef,
   } = useComboboxContext("Content");
 
-  const filteredItems = useMemo(() => filterFn(items, inputValue), [filterFn, inputValue, items]);
+  const filteredItems = useMemo(() => filterFn(items, filterQuery), [filterFn, filterQuery, items]);
 
   const branches = useMemo(() => {
     const set = new Set<Element>();
@@ -594,13 +889,14 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
       // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- ARIA combobox popup
       role="listbox"
       aria-multiselectable={multiple ? true : undefined}
+      aria-busy={loading ? true : undefined}
       data-align={align}
       data-part="content"
       data-side={side}
       data-state={openState ? "open" : "closed"}
       {...domProps}
       ref={mergedRef}
-      {...(className ? { className } : {})}
+      className={cn("ui-cb-content", className)}
     >
       {children(filteredItems)}
     </DismissableLayer>
@@ -610,6 +906,7 @@ ComboboxContent.displayName = "ComboboxContent";
 
 export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
   const {
+    children,
     className,
     item,
     onClick: consumerOnClick,
@@ -617,16 +914,34 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
     ref: consumerRef,
     ...consumerProps
   } = props;
-  const { activeStore, isValueSelected, multiple, selectItem } = useComboboxContext("Item");
-  const id = useId();
+  const { activeStore, isDisabled, isValueSelected, multiple, selectItem, value } =
+    useComboboxContext("Item");
+  const generatedId = useId();
+  const id = props.id ?? generatedId;
   const collectionRef = useCollectionItem({ data: item, id });
-  const ref = useMergedRefs(collectionRef, consumerRef);
+  const itemRef = useRef<HTMLElement | null>(null);
+  const ref = useMergedRefs(collectionRef, consumerRef, itemRef);
   const active = useSyncExternalStore(
     (onStoreChange) => activeStore.subscribeItem(id, onStoreChange),
     () => activeStore.isActive(id),
     () => false,
   );
-  const selected = multiple ? isValueSelected(item.value) : active;
+  useIsomorphicLayoutEffect(() => {
+    if (!active) return undefined;
+    let canceled = false;
+    // Parent layout effects open the native popover after its children's effects run.
+    queueMicrotask(() => {
+      if (!canceled && activeStore.isActive(id)) {
+        itemRef.current?.scrollIntoView?.({ block: "nearest" });
+      }
+    });
+    return () => {
+      canceled = true;
+    };
+  }, [active, activeStore, id]);
+  const selected = multiple
+    ? isValueSelected(item.value)
+    : typeof value === "string" && value === item.value;
 
   return useRenderElement({
     defaultTag: "div",
@@ -634,46 +949,91 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
       id,
       role: "option",
       "aria-disabled": item.disabled ? true : undefined,
+      "aria-label": children === undefined ? undefined : item.label,
       "aria-selected": selected,
       "data-disabled": item.disabled ? "" : undefined,
       "data-highlighted": active ? "" : undefined,
-      "data-selected": multiple && selected ? "" : undefined,
+      "data-selected": selected ? "" : undefined,
       "data-part": "item",
       ...consumerProps,
       ref,
-      ...(className ? { className } : {}),
-      children: item.label,
+      className: cn("ui-cb-item", className),
+      children: children === undefined ? item.label : children,
       onMouseDown: composeEventHandlers(consumerOnMouseDown, (event) => event.preventDefault()),
       onClick: composeEventHandlers(consumerOnClick, () => {
-        if (!item.disabled) selectItem(item);
+        if (!item.disabled && !isDisabled()) selectItem(item);
       }),
     },
     state: { active, disabled: Boolean(item.disabled), selected },
   });
 }
 
+export function ComboboxGroup(props: ComboboxGroupOwnProps): ReactElement | null {
+  const { children, className, ...consumerProps } = props;
+  return (
+    <div role="group" data-part="group" {...consumerProps} className={cn("ui-cb-group", className)}>
+      {children}
+    </div>
+  );
+}
+ComboboxGroup.displayName = "ComboboxGroup";
+
+export function ComboboxGroupLabel(props: ComboboxGroupLabelOwnProps): ReactElement | null {
+  const { children, className, ...consumerProps } = props;
+  return (
+    <div data-part="group-label" {...consumerProps} className={cn("ui-cb-label", className)}>
+      {children}
+    </div>
+  );
+}
+ComboboxGroupLabel.displayName = "ComboboxGroupLabel";
+
 export function ComboboxEmpty(props: ComboboxEmptyOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
-  return useRenderElement({
+  const { loading } = useComboboxContext("Empty");
+  const element = useRenderElement({
     defaultTag: "div",
     props: {
       role: "presentation",
       "data-part": "empty",
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("ui-cb-empty", className),
+      children,
+    },
+    state: {},
+  });
+  return loading ? null : element;
+}
+
+export function ComboboxStatus(props: ComboboxStatusProps): ReactElement | null {
+  const { children, className, ...consumerProps } = props;
+  return useRenderElement({
+    defaultTag: "div",
+    props: {
+      role: "status",
+      "aria-live": "polite",
+      "aria-atomic": true,
+      "data-part": "status",
+      ...consumerProps,
+      className: cn("ui-cb-status", className),
       children,
     },
     state: {},
   });
 }
+ComboboxStatus.displayName = "ComboboxStatus";
 
 export const Combobox = {
   Control: ComboboxControl,
   Content: ComboboxContent,
   Empty: ComboboxEmpty,
+  FormControl: ComboboxFormControl,
+  Group: ComboboxGroup,
+  GroupLabel: ComboboxGroupLabel,
   Input: ComboboxInput,
   Item: ComboboxItem,
   Root: ComboboxRoot,
+  Status: ComboboxStatus,
   Tags: ComboboxTags,
   Trigger: ComboboxTrigger,
 };

@@ -10,7 +10,7 @@ describe("Combobox value helpers", () => {
   it("keeps single and multi value callbacks type-safe", () => {
     const singleProps = {
       items: [],
-      onValueChange: (value: string) => value,
+      onValueChange: (value: string | null) => value,
     } satisfies ComboboxRootSingleProps;
     const multiProps = {
       items: [],

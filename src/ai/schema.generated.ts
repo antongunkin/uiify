@@ -1447,7 +1447,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     },
     "Select.Root": {
       description:
-        "Choose one value from a fixed list.\nUse when: The demonstrated form-grouping relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
+        "Choose one or several values from a fixed list.\nUse when: The demonstrated form-grouping relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
       type: "object",
       properties: {
         type: { const: "Select.Root" },
@@ -3010,9 +3010,9 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "Select.Root.props": {
       type: "object",
       properties: {
-        defaultValue: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
-        name: { $ref: "#/$defs/attribute.name" },
+        multiple: { $ref: "#/$defs/attribute.multiple" },
         disabled: { $ref: "#/$defs/attribute.disabled" },
+        name: { $ref: "#/$defs/attribute.name" },
         size: { enum: ["sm", "md", "lg"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -3022,7 +3022,6 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         autoComplete: { $ref: "#/$defs/attribute.autoComplete" },
         hidden: { $ref: "#/$defs/attribute.hidden" },
         required: { $ref: "#/$defs/attribute.required" },
-        multiple: { $ref: "#/$defs/attribute.multiple" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
       additionalProperties: false,

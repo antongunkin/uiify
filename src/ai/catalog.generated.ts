@@ -1837,14 +1837,14 @@ export interface SelectItemProps {
 }
 
 /**
- * Choose one value from a fixed list.
+ * Choose one or several values from a fixed list.
  * Use when: The demonstrated form-grouping relationship is present.
  * Avoid when: The task does not need this element; do not add it for coverage.
  */
 export interface SelectRootProps {
-  readonly defaultValue?: string;
-  readonly name?: string;
+  readonly multiple?: boolean;
   readonly disabled?: boolean;
+  readonly name?: string;
   readonly size?: "sm" | "md" | "lg";
   readonly id?: string;
   readonly title?: string;
@@ -1854,7 +1854,6 @@ export interface SelectRootProps {
   readonly autoComplete?: string;
   readonly hidden?: boolean;
   readonly required?: boolean;
-  readonly multiple?: boolean;
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 

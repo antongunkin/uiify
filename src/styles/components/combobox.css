@@ -1,14 +1,15 @@
 /* Combobox — text input + listbox surface + option rows. The active option is
-   tracked via aria-activedescendant, surfaced here as [data-highlighted]. */
+   tracked via aria-activedescendant, surfaced here as [data-highlighted].
+   Rich text selectors retain data-part fallbacks for existing authored children. */
 
 @layer components {
-  [data-uiify-combobox] {
+  .ui-cb {
     position: relative;
     inline-size: 100%;
     max-inline-size: 18rem;
   }
 
-  [data-uiify-combobox] [data-part="control"] {
+  .ui-cb-control {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -17,7 +18,7 @@
     box-sizing: border-box;
     min-block-size: var(--uiify-control-size, var(--control-md));
     padding-block: var(--space-xs);
-    padding-inline: var(--space-lg);
+    padding-inline: var(--space-sm);
     border: var(--border-width) solid var(--input);
 
     /* A pill on one row; when tags wrap onto more rows the corners stay that same radius
@@ -28,59 +29,66 @@
     transition: var(--transition-colors);
   }
 
-  [data-uiify-combobox] [data-part="control"]:focus-within {
+  .ui-cb-control:focus-within {
     border-color: var(--primary);
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 
-  [data-uiify-combobox] [data-part="control"][data-disabled],
-  [data-uiify-combobox] [data-part="control"]:has([data-part="input"]:disabled) {
+  .ui-cb-control[data-disabled],
+  .ui-cb-control:has(.ui-cb-input:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  [data-uiify-combobox] [data-part="control"] [data-part="tags"] {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-xs);
+  .ui-cb-control .ui-cb-tags {
+    display: contents;
   }
 
-  [data-uiify-combobox] [data-part="control"] [data-part="tag"] {
+  .ui-cb-control .ui-cb-tag {
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
-    padding-block: var(--space-xs);
-    padding-inline: var(--space-sm);
-    border-radius: var(--radius-xs);
-    background-color: var(--accent);
-    color: var(--accent-foreground);
-    font-size: var(--text-xs);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    padding-block: 0;
+    padding-inline: var(--space-sm) var(--space-xs);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-full);
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    font-size: var(--text-sm);
     font-weight: var(--weight-medium);
+    line-height: var(--leading-normal);
+    overflow-wrap: anywhere;
   }
 
-  [data-uiify-combobox] [data-part="control"] [data-part="tag-remove"] {
+  .ui-cb-control .ui-cb-remove {
     display: inline-grid;
     place-items: center;
-    inline-size: 1.25rem;
-    block-size: 1.25rem;
-    flex: 0 0 1.25rem;
+    inline-size: var(--space-xl);
+    block-size: var(--space-xl);
+    flex: 0 0 var(--space-xl);
     padding: 0;
     border: 0;
     border-radius: var(--radius-xs);
     background: transparent;
-    color: inherit;
+    color: var(--muted-foreground);
     font: inherit;
     line-height: 1;
     cursor: pointer;
   }
 
-  [data-uiify-combobox] [data-part="control"] [data-part="tag-remove"]:hover,
-  [data-uiify-combobox] [data-part="control"] [data-part="tag-remove"]:focus-visible {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+  .ui-cb-control .ui-cb-remove:hover {
+    color: var(--foreground);
   }
 
-  [data-uiify-combobox] [data-part="input"] {
+  .ui-cb-control .ui-cb-remove:focus-visible {
+    outline: var(--border-width) solid var(--primary);
+    outline-offset: var(--border-width);
+    color: var(--foreground);
+  }
+
+  .ui-cb-input {
     inline-size: 100%;
     box-sizing: border-box;
     block-size: var(--uiify-control-size, var(--control-md));
@@ -94,31 +102,44 @@
     transition: var(--transition-colors);
   }
 
-  [data-uiify-combobox] [data-part="input"]:focus-visible {
+  .ui-cb-input:focus-visible {
     border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
   }
 
-  [data-uiify-combobox] [data-part="control"] [data-part="input"] {
-    flex: 1 1 5rem;
-    min-inline-size: 5rem;
+  .ui-cb-input::placeholder {
+    color: var(--muted-foreground);
+  }
+
+  .ui-cb-control .ui-cb-input {
+    flex: 1 1 calc(var(--space-xl) * 8);
+    min-inline-size: min(100%, calc(var(--space-xl) * 8));
     inline-size: auto;
     block-size: auto;
-    padding-block: var(--space-xs);
-    padding-inline: 0;
+    min-block-size: calc(
+      var(--uiify-control-size, var(--control-md)) - 2 * var(--space-xs) - 2 * var(--border-width)
+    );
+    padding-block: 0;
+    padding-inline: calc(var(--space-sm) + var(--border-width));
     border: 0;
     border-radius: 0;
     background: transparent;
+    font-size: var(--uiify-control-font, var(--text-base));
     outline: none;
     box-shadow: none;
   }
 
-  [data-uiify-combobox] [data-part="content"]:where(:not([popover]), :popover-open) {
+  .ui-cb-content:where(:not([popover]), :popover-open) {
     display: flex;
   }
 
-  [data-uiify-combobox] [data-part="content"] {
+  .ui-cb-content {
     flex-direction: column;
     min-inline-size: 12rem;
+
+    /* Match the anchored control's width; engines without anchor-size keep the line above. */
+    min-inline-size: max(12rem, anchor-size(inline));
     max-block-size: min(24rem, calc(100dvb - 2rem));
     overflow-block: auto;
     overscroll-behavior: contain;
@@ -131,13 +152,14 @@
     transform-origin: var(--transform-origin, top);
   }
 
-  [data-uiify-combobox] [data-part="content"][data-state="closed"] {
+  .ui-cb-content[data-state="closed"] {
     display: none;
   }
 
-  [data-uiify-combobox] [data-part="item"] {
+  .ui-cb-item {
     display: flex;
     align-items: center;
+    gap: var(--space-md);
     inline-size: 100%;
     padding-block: var(--space-sm);
     padding-inline: var(--space-md);
@@ -153,40 +175,80 @@
     user-select: none;
   }
 
-  [data-uiify-combobox] [data-part="item"]:hover,
-  [data-uiify-combobox] [data-part="item"]:focus-visible,
-  [data-uiify-combobox] [data-part="item"][data-highlighted],
-  [data-uiify-combobox] [data-part="item"][aria-selected="true"],
-  [data-uiify-combobox] [data-part="item"][data-selected] {
+  .ui-cb-label {
+    margin-block: var(--space-sm) var(--space-xs);
+    padding-inline: var(--space-md);
+    color: var(--muted-foreground);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+  }
+
+  :is(.ui-cb-text, .ui-cb :where([data-part="item-content"])) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+
+  :is(.ui-cb-primary, .ui-cb :where([data-part="item-primary"])),
+  :is(.ui-cb-secondary, .ui-cb :where([data-part="item-secondary"])) {
+    display: block;
+  }
+
+  :is(.ui-cb-primary, .ui-cb :where([data-part="item-primary"])) {
+    font-weight: var(--weight-medium);
+  }
+
+  :is(.ui-cb-secondary, .ui-cb :where([data-part="item-secondary"])) {
+    color: var(--muted-foreground);
+    font-size: var(--text-sm);
+  }
+
+  .ui-cb-item:where(
+      :hover,
+      :focus-visible,
+      [data-highlighted],
+      [aria-selected="true"],
+      [data-selected]
+    )
+    :is(.ui-cb-secondary, .ui-cb :where([data-part="item-secondary"])) {
+    color: inherit;
+  }
+
+  .ui-cb-item:hover,
+  .ui-cb-item:focus-visible,
+  .ui-cb-item[data-highlighted],
+  .ui-cb-item[aria-selected="true"],
+  .ui-cb-item[data-selected] {
     background-color: var(--accent);
     color: var(--accent-foreground);
     outline: none;
   }
 
-  [data-uiify-combobox] [data-part="item"][aria-disabled="true"],
-  [data-uiify-combobox] [data-part="item"][data-disabled] {
+  .ui-cb-item[aria-disabled="true"],
+  .ui-cb-item[data-disabled] {
     opacity: 0.5;
     pointer-events: none;
   }
 
-  [data-uiify-combobox] [data-part="empty"] {
+  .ui-cb-empty {
     padding: var(--space-sm) var(--space-md);
     color: var(--muted-foreground);
     font-size: var(--text-base);
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-combobox] [data-part="content"] {
+    .ui-cb-content {
       transition: var(--transition-presence);
     }
 
-    [data-uiify-combobox] [data-part="content"][popover]:not(:popover-open) {
+    .ui-cb-content[popover]:not(:popover-open) {
       opacity: 0;
       scale: var(--presence-scale);
     }
 
     @starting-style {
-      [data-uiify-combobox] [data-part="content"]:popover-open {
+      .ui-cb-content:popover-open {
         opacity: 0;
         scale: var(--presence-scale);
       }

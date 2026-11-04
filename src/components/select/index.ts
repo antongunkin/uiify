@@ -12,8 +12,10 @@ export type {
   SelectGroupProps,
   SelectItemOwnProps,
   SelectItemProps,
+  SelectRootMultiOwnProps,
   SelectRootOwnProps,
   SelectRootProps,
+  SelectRootSingleOwnProps,
   SelectSeparatorOwnProps,
   SelectSeparatorProps,
 } from "./types.js";

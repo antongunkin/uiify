@@ -2,11 +2,11 @@
 
 Binding: select
 
-Choose one value from a fixed list.
+Choose one or several values from a fixed list.
 
 ## Use when
 
-Choose one value from a finite list, especially when the form benefits from a native control.
+Choose one value from a finite list, especially when the form benefits from a native control. Add `multiple` to choose several values; `value` and `defaultValue` then accept string arrays and `onValueChange` receives every selected value in option order.
 
 ## Avoid when
 
@@ -14,7 +14,7 @@ Avoid a select when users must compare several options at once or when the task 
 
 ## Structure
 
-Wrap `Select.Root` in a native `<label>` as in the example. Alternatively, match a native label's `htmlFor` to an explicit unique `id` on Select.Root. `Field.Label` derives the ID for Field.Control; it does not label a standalone Select.Root. Do not reuse Field.Root's ID on the select. Group related options with `optgroup`; an empty prompt is for an optional value.
+Wrap `Select.Root` in a native `<label>` as in the example. Alternatively, match a native label's `htmlFor` to an explicit unique `id` on Select.Root. `Field.Label` derives the ID for Field.Control; it does not label a standalone Select.Root. Do not reuse Field.Root's ID on the select. Group related options with `optgroup`; an empty prompt is for an optional value. A `multiple` select submits one entry per selected option under the same `name`; keep `size` in mind because a multiple select renders as a listbox rather than a closed control.
 
 ## Responsive
 
