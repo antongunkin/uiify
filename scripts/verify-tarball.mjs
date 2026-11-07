@@ -24,7 +24,11 @@ export function assertPackFiles(files) {
     const path = typeof file === "string" ? file : file.path;
     return typeof path !== "string" || !allowedPath.test(path.replace(/^package\//, ""));
   });
-  assert.equal(unexpected.length, 0, `unexpected files in npm tarball: ${unexpected.map((file) => (typeof file === "string" ? file : file.path)).join(", ")}`);
+  assert.equal(
+    unexpected.length,
+    0,
+    `unexpected files in npm tarball: ${unexpected.map((file) => (typeof file === "string" ? file : file.path)).join(", ")}`,
+  );
 }
 
 // The shipped skill carries curated rules only; the owner's reasons, decisions and examples stay inside the harness.
