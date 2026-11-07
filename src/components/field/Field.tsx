@@ -1,132 +1,52 @@
-import type { ElementType, ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
+import type { ElementType, ReactElement, ReactNode } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import { getFieldIds } from "./field-ids.js";
 import type {
-  FieldRootProps,
-  FieldControlProps,
+  FieldContentProps,
+  FieldGroupProps,
   FieldLabelProps,
   FieldDescriptionProps,
   FieldErrorProps,
+  FieldProps,
+  FieldSeparatorProps,
+  FieldTitleProps,
 } from "./types.js";
 
-export function FieldRoot<TAs extends ElementType = "div">(
-  props: FieldRootProps<TAs>,
-): ReactElement | null {
-  const {
-    as,
-    render,
-    id,
-    invalid = false,
-    required = false,
-    disabled = false,
-    // Accepted for API compatibility but not rendered — a bare `name` isn't
-    // meaningful on the wrapper element itself, only on the actual control.
-    name: _name,
-    ...consumerProps
-  } = props as FieldRootProps<ElementType>;
+const hasContent = (children: ReactNode) =>
+  children !== undefined && children !== null && children !== false;
 
-  return useRenderElement({
-    as,
-    defaultTag: "div",
-    props: {
-      "data-disabled": disabled ? "" : undefined,
-      "data-invalid": invalid ? "" : undefined,
-      "data-required": required ? "" : undefined,
-      "data-uiify-field": "",
-      id,
-      ...consumerProps,
-    },
-    render,
-    state: { disabled, invalid, required, id },
-  });
-}
+/** Content that renders something: `""`, `true` and empty arrays render nothing. */
+const rendersContent = (children: ReactNode): boolean =>
+  Array.isArray(children)
+    ? children.some(rendersContent)
+    : hasContent(children) && children !== "" && children !== true;
 
 export function FieldLabel(props: FieldLabelProps): ReactElement | null {
-  const {
-    className,
-    children,
-    fieldId,
-    disabled = false,
-    required = false,
-    ...consumerProps
-  } = props;
-  const { controlId, labelId } = getFieldIds(fieldId);
+  const { className, children, disabled = false, required = false, ...consumerProps } = props;
 
+  // The consumer's htmlFor names the control.
   return useRenderElement({
     defaultTag: "label",
     props: {
-      id: labelId,
-      htmlFor: controlId,
-      "data-part": "label",
       "data-disabled": disabled ? "" : undefined,
       "data-required": required ? "" : undefined,
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("uiify-field-label", className),
       children,
     },
     state: { disabled, required },
   });
 }
 
-export function FieldControl<TAs extends ElementType = "div">(
-  props: FieldControlProps<TAs>,
-): ReactElement | null {
-  const {
-    as,
-    render,
-    fieldId,
-    disabled = false,
-    invalid = false,
-    required = false,
-    ...consumerProps
-  } = props as FieldControlProps<ElementType>;
-  const { controlId, descriptionId, errorId, labelId } = getFieldIds(fieldId);
-  const describedBy = [descriptionId, invalid ? errorId : undefined].filter(Boolean).join(" ");
-  const controlIdentity =
-    as === "input"
-      ? { "data-uiify-input": "" }
-      : as === "textarea"
-        ? { "data-uiify-textarea": "" }
-        : {};
-
-  return useRenderElement({
-    as,
-    defaultTag: "div",
-    props: {
-      ...controlIdentity,
-      ...(as === "input" || as === "textarea" || as === "select"
-        ? { disabled: disabled || undefined, required: required || undefined }
-        : (as !== undefined && typeof as !== "string") || render
-          ? { disabled, required }
-          : {}),
-      id: controlId,
-      "data-part": "control",
-      "aria-labelledby": labelId,
-      "aria-describedby": describedBy || undefined,
-      "aria-invalid": invalid || undefined,
-      "aria-required": required || undefined,
-      "data-disabled": disabled ? "" : undefined,
-      "data-invalid": invalid ? "" : undefined,
-      "data-required": required ? "" : undefined,
-      ...consumerProps,
-    },
-    render,
-    state: { disabled, invalid, required },
-  });
-}
-
 export function FieldDescription(props: FieldDescriptionProps): ReactElement | null {
-  const { className, children, fieldId, disabled = false, ...consumerProps } = props;
-  const { descriptionId } = getFieldIds(fieldId);
+  const { className, children, disabled = false, ...consumerProps } = props;
 
   return useRenderElement({
     defaultTag: "p",
     props: {
-      id: descriptionId,
-      "data-part": "description",
       "data-disabled": disabled ? "" : undefined,
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("uiify-field-description", className),
       children,
     },
     state: { disabled },
@@ -134,32 +54,127 @@ export function FieldDescription(props: FieldDescriptionProps): ReactElement | n
 }
 
 export function FieldError(props: FieldErrorProps): ReactElement | null {
-  const { className, children, fieldId, invalid = false, ...consumerProps } = props;
-  const { errorId } = getFieldIds(fieldId);
+  const { className, children, ...consumerProps } = props;
+  // Rendered only with content: the consumer passes the message for an invalid value.
+  const shown = rendersContent(children);
 
   const element = useRenderElement({
     defaultTag: "p",
     props: {
-      id: errorId,
-      "data-part": "error",
       role: "alert",
       "data-invalid": "",
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("uiify-field-error", className),
       children,
     },
-    state: { invalid },
+    state: { invalid: shown },
   });
 
-  if (!invalid) return null;
+  if (!shown) return null;
 
   return element;
 }
 
-export const Field = {
-  Root: FieldRoot,
-  Label: FieldLabel,
-  Control: FieldControl,
-  Description: FieldDescription,
-  Error: FieldError,
-};
+// API informed by shadcn/ui public documentation (names and props only).
+export function FieldContent<TAs extends ElementType = "div">(
+  props: FieldContentProps<TAs>,
+): ReactElement | null {
+  const { as, render, ...consumerProps } = props as FieldContentProps<"div">;
+  return useRenderElement({
+    as,
+    defaultTag: "div",
+    props: { ...consumerProps, className: cn("uiify-field-content", consumerProps.className) },
+    render,
+    state: {},
+  });
+}
+
+// API informed by shadcn/ui public documentation (names and props only).
+export function FieldTitle<TAs extends ElementType = "div">(
+  props: FieldTitleProps<TAs>,
+): ReactElement | null {
+  const { as, render, ...consumerProps } = props as FieldTitleProps<"div">;
+  return useRenderElement({
+    as,
+    defaultTag: "div",
+    props: { ...consumerProps, className: cn("uiify-field-title", consumerProps.className) },
+    render,
+    state: {},
+  });
+}
+
+// API informed by shadcn/ui public documentation (names and props only).
+export function FieldGroup<TAs extends ElementType = "div">(
+  props: FieldGroupProps<TAs>,
+): ReactElement | null {
+  const { as, render, ...consumerProps } = props as FieldGroupProps<"div">;
+  return useRenderElement({
+    as,
+    defaultTag: "div",
+    props: { ...consumerProps, className: cn("uiify-field-group", consumerProps.className) },
+    render,
+    state: {},
+  });
+}
+
+// API informed by shadcn/ui public documentation (names and props only).
+// oxlint-disable-next-line react/display-name -- set in the PURE Object.assign below, so bundles can drop it
+function FieldSeparatorComponent(props: FieldSeparatorProps): ReactElement | null {
+  const { children, slotProps, ...consumerProps } = props;
+  const content = hasContent(children);
+  const lineProps = slotProps?.line;
+  const contentProps = slotProps?.content;
+  const line = (
+    <hr
+      role={content ? "presentation" : undefined}
+      {...lineProps}
+      className={cn("uiify-field-separator-line", lineProps?.className)}
+    />
+  );
+  return useRenderElement({
+    defaultTag: "div",
+    props: {
+      "data-content": content ? "" : undefined,
+      ...consumerProps,
+      className: cn("uiify-field-separator", consumerProps.className),
+      children: content ? (
+        <>
+          {line}
+          <span
+            {...contentProps}
+            className={cn("uiify-field-separator-content", contentProps?.className)}
+          >
+            {children}
+          </span>
+          {line}
+        </>
+      ) : (
+        line
+      ),
+    },
+    state: {},
+  });
+}
+
+/** displayName is set inside the PURE call: a top-level assignment would keep the separator in
+ * every bundle that imports this module. */
+export const FieldSeparator = /* @__PURE__ */ Object.assign(FieldSeparatorComponent, {
+  displayName: "FieldSeparator",
+});
+
+// API informed by shadcn/ui public documentation (names and props only).
+export function Field(props: FieldProps): ReactElement | null {
+  const { orientation = "vertical", invalid = false, variant, ...consumerProps } = props;
+  return useRenderElement({
+    defaultTag: "div",
+    props: {
+      role: "group",
+      "data-orientation": orientation,
+      "data-invalid": invalid ? "" : undefined,
+      "data-variant": variant,
+      ...consumerProps,
+      className: cn("uiify-field", consumerProps.className),
+    },
+    state: { orientation, invalid },
+  });
+}

@@ -12,7 +12,8 @@ import {
   ViewTransition,
 } from "react";
 import type { FocusEvent, KeyboardEvent, PointerEvent, ReactElement } from "react";
-import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
+import { cn } from "../../core/class-names.js";
+import { useEventCallback, useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { VisuallyHidden } from "@gunkin/uiify/core/visually-hidden";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
@@ -27,7 +28,6 @@ import {
 } from "./ToastElements.js";
 import type {
   ToastInput,
-  ToastStore,
   ToastContextValue,
   ToastProviderOwnProps,
   ToastViewportOwnProps,
@@ -66,7 +66,7 @@ const DEFAULT_TOAST_LABELS: ToastLabels = {
   close: "Close",
 };
 
-/** Transition type and view-transition-class shared with behavior.css and styles/toast.css. */
+/** Transition type and view-transition-class shared with behavior.css and styles/uiify/effects.css. */
 const TOAST_TRANSITION = "uiify-toast";
 
 const [ToastStoreProvider, useToastStoreContext] = createPartContext<ToastContextValue>(
@@ -79,9 +79,7 @@ export { ToastDescription, ToastTitle };
 export function ToastProvider(props: ToastProviderOwnProps): ReactElement | null {
   const { children, limit = 3, labels, slotProps } = props;
   const resolvedLabels = useMemo(() => ({ ...DEFAULT_TOAST_LABELS, ...labels }), [labels]);
-  const storeRef = useRef<ToastStore | null>(null);
-  storeRef.current ??= createToastStore({ limit });
-  const store = storeRef.current;
+  const [store] = useState(() => createToastStore({ limit }));
 
   const dismiss = useCallback((id: string) => store.dismiss(id), [store]);
   const pause = useCallback((id: string) => store.pause(id), [store]);
@@ -178,9 +176,20 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
   const { dismiss, pause, resume, labels: providerLabels } = useToastStoreContext("Root");
   const labels = { ...providerLabels, ...labelOverrides };
   const swipeRef = useRef<PointerEvent<HTMLDivElement> | null>(null);
-  const endSwipe = (event: PointerEvent<HTMLDivElement>) => {
+  const endSwipe = useEventCallback((event: PointerEvent<HTMLDivElement>) => {
     if (swipeRef.current?.pointerId === event.pointerId) swipeRef.current = null;
-  };
+  });
+  const startSwipe = useEventCallback((event: PointerEvent<HTMLDivElement>) => {
+    if (!swipeRef.current && event.isPrimary) swipeRef.current = event;
+  });
+  const moveSwipe = useEventCallback((event: PointerEvent<HTMLDivElement>) => {
+    const swipe = swipeRef.current;
+    if (swipe?.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - swipe.clientX;
+    const deltaY = event.clientY - swipe.clientY;
+    if (Math.abs(deltaX) <= 80 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+    dismiss(toast.id);
+  });
   const rootProps = consumerRootProps;
   const titleProps = resolveRepeatedSlotProps(slotProps?.title, toast.id);
   const descriptionProps = resolveRepeatedSlotProps(slotProps?.description, toast.id);
@@ -192,11 +201,10 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
     <div
       aria-label={typeof toast.title === "string" ? toast.title : labels.notification}
       data-state="open"
-      data-part="item"
-      data-uiify-toast=""
       role="group"
       tabIndex={0}
       {...rootProps}
+      className={cn("uiify-toast-item", rootProps.className)}
       onFocus={composeEventHandlers(rootProps.onFocus, () => pause(toast.id))}
       onBlur={composeEventHandlers(rootProps.onBlur, (event: FocusEvent<HTMLDivElement>) => {
         if (!event.currentTarget.matches(":hover, :focus-within")) resume(toast.id);
@@ -218,23 +226,8 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
         },
       )}
       onPointerCancel={composeEventHandlers(rootProps.onPointerCancel, endSwipe)}
-      onPointerDown={composeEventHandlers(
-        rootProps.onPointerDown,
-        (event: PointerEvent<HTMLDivElement>) => {
-          if (!swipeRef.current && event.isPrimary) swipeRef.current = event;
-        },
-      )}
-      onPointerMove={composeEventHandlers(
-        rootProps.onPointerMove,
-        (event: PointerEvent<HTMLDivElement>) => {
-          const swipe = swipeRef.current;
-          if (swipe?.pointerId !== event.pointerId) return;
-          const deltaX = event.clientX - swipe.clientX;
-          const deltaY = event.clientY - swipe.clientY;
-          if (Math.abs(deltaX) <= 80 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
-          dismiss(toast.id);
-        },
-      )}
+      onPointerDown={composeEventHandlers(rootProps.onPointerDown, startSwipe)}
+      onPointerMove={composeEventHandlers(rootProps.onPointerMove, moveSwipe)}
       onPointerUp={composeEventHandlers(rootProps.onPointerUp, endSwipe)}
     >
       {toast.title ? <ToastTitle {...titleProps}>{toast.title}</ToastTitle> : null}

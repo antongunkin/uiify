@@ -5,7 +5,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-uiify-menu-bar=",
+      "class=uiify-dropdown-menu-bar",
       "role=menubar",
       "tabindex=-1",
     ],
@@ -14,7 +14,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-uiify-menu=",
+      "class=uiify-dropdown-menu",
     ],
     null,
   ],
@@ -24,12 +24,11 @@ exports[`preserves default DropdownMenu DOM 1`] = `
       "aria-controls=actions",
       "aria-expanded=false",
       "aria-haspopup=menu",
+      "class=uiify-button uiify-menu-trigger",
       "command=toggle-popover",
       "commandfor=actions",
       "data-anchor=--ui-_R_0H1_",
-      "data-part=trigger",
       "data-state=closed",
-      "data-uiify-button=",
       "type=button",
     ],
     "Actions",
@@ -37,11 +36,11 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
+      "class=uiify-menu-content",
       "data-align=start",
       "data-anchor=--ui-_R_0H1_",
       "data-native=",
       "data-orientation=vertical",
-      "data-part=content",
       "data-positioning=native",
       "data-side=bottom",
       "data-state=closed",
@@ -54,7 +53,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-part=label",
+      "class=uiify-menu-label",
       "role=presentation",
     ],
     "Tools",
@@ -62,7 +61,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-part=group",
+      "class=uiify-menu-group",
       "role=group",
     ],
     null,
@@ -70,7 +69,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-part=item",
+      "class=uiify-menu-item",
       "id=uiify-_R_2l_",
       "role=menuitem",
       "tabindex=-1",
@@ -81,8 +80,8 @@ exports[`preserves default DropdownMenu DOM 1`] = `
     "div",
     [
       "aria-disabled=true",
+      "class=uiify-menu-item",
       "data-disabled=",
-      "data-part=item",
       "id=uiify-_R_4l_",
       "role=menuitem",
       "tabindex=-1",
@@ -92,7 +91,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-part=separator",
+      "class=uiify-menu-separator",
       "role=separator",
     ],
     "",
@@ -101,7 +100,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
     "div",
     [
       "aria-checked=true",
-      "data-part=checkbox-item",
+      "class=uiify-menu-item",
       "data-state=checked",
       "id=uiify-_R_15_",
       "role=menuitemcheckbox",
@@ -112,7 +111,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "span",
     [
-      "data-part=item-indicator",
+      "class=uiify-menu-item-indicator",
       "data-state=checked",
     ],
     "",
@@ -120,7 +119,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-part=radio-group",
+      "class=uiify-menu-radio-group",
       "role=group",
     ],
     null,
@@ -129,7 +128,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
     "div",
     [
       "aria-checked=true",
-      "data-part=radio-item",
+      "class=uiify-menu-item",
       "data-state=checked",
       "id=uiify-_R_1d_",
       "role=menuitemradio",
@@ -143,10 +142,10 @@ exports[`preserves default DropdownMenu DOM 1`] = `
       "aria-controls=uiify-_R_1l_",
       "aria-expanded=false",
       "aria-haspopup=menu",
+      "class=uiify-menu-item uiify-menu-sub-trigger",
       "command=show-popover",
       "commandfor=uiify-_R_1l_",
       "data-anchor=--ui-_R_1lH1_",
-      "data-part=sub-trigger",
       "data-state=closed",
       "id=uiify-_R_7l_",
       "role=menuitem",
@@ -158,11 +157,11 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
+      "class=uiify-menu-content uiify-menu-sub-content",
       "data-align=start",
       "data-anchor=--ui-_R_1lH1_",
       "data-native=",
       "data-orientation=vertical",
-      "data-part=sub-content",
       "data-positioning=native",
       "data-side=right",
       "data-state=closed",
@@ -175,7 +174,7 @@ exports[`preserves default DropdownMenu DOM 1`] = `
   [
     "div",
     [
-      "data-part=item",
+      "class=uiify-menu-item",
       "id=uiify-_R_bl_",
       "role=menuitem",
       "tabindex=-1",

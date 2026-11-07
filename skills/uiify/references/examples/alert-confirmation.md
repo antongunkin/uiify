@@ -1,6 +1,6 @@
 # Example: alert-confirmation
 
-Element: references/elements/alert-modal.md
+Element: references/elements/alert-dialog.md
 
 Export: `AlertConfirmation`
 
@@ -10,7 +10,7 @@ Export: `AlertConfirmation`
 "use client";
 
 import { useRef, useState } from "react";
-import { AlertModalAction, AlertModalCancel, AlertModalContent, AlertModalTrigger } from "@gunkin/uiify/components/alert-modal";
+import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogTrigger } from "@gunkin/uiify/components/alert-dialog";
 
 export function AlertConfirmation() {
   const [deleted, setDeleted] = useState(false);
@@ -19,16 +19,16 @@ export function AlertConfirmation() {
     <section>
       <h2 ref={heading} tabIndex={-1}>Draft</h2>
       {deleted ? <p role="status">Draft removed from this demo.</p> : <>
-        <AlertModalTrigger target="delete-draft">Delete draft</AlertModalTrigger>
-        <AlertModalContent id="delete-draft" aria-labelledby="delete-draft-title" aria-describedby="delete-draft-description">
+        <AlertDialogTrigger target="delete-draft">Delete draft</AlertDialogTrigger>
+        <AlertDialogContent id="delete-draft" aria-labelledby="delete-draft-title" aria-describedby="delete-draft-description">
           <h3 id="delete-draft-title">Delete draft?</h3>
           <p id="delete-draft-description">This removes the draft from this demo.</p>
-          <AlertModalCancel target="delete-draft">Keep draft</AlertModalCancel>
-          <AlertModalAction target="delete-draft" onClick={() => {
+          <AlertDialogCancel target="delete-draft">Keep draft</AlertDialogCancel>
+          <AlertDialogAction target="delete-draft" onClick={() => {
             setDeleted(true);
             requestAnimationFrame(() => heading.current?.focus());
-          }}>Delete</AlertModalAction>
-        </AlertModalContent>
+          }}>Delete</AlertDialogAction>
+        </AlertDialogContent>
       </>}
     </section>
   );
@@ -38,9 +38,25 @@ export function AlertConfirmation() {
 ## CSS
 
 ```css
-[data-uiify-field] { display: grid; gap: 0.5rem; }
-[data-uiify-field] input,
-[data-uiify-select] { min-block-size: 2.75rem; padding-inline: 0.75rem; }
-table { border-collapse: collapse; inline-size: 100%; }
-th, td { padding: 0.5rem; text-align: start; }
+.uiify-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.uiify-field input,
+.uiify-native-select {
+  min-block-size: 2.75rem;
+  padding-inline: 0.75rem;
+}
+
+table {
+  border-collapse: collapse;
+  inline-size: 100%;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: start;
+}
 ```

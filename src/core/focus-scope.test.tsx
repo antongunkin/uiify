@@ -67,7 +67,11 @@ describe("fallback interaction primitives", () => {
 
   it("owns FocusScope's tabIndex, not overridable by the consumer", () => {
     render(
-      <FocusScope data-testid="scope" tabIndex={3}>
+      <FocusScope
+        data-testid="scope"
+        // oxlint-disable-next-line jsx-a11y/tabindex-no-positive -- The focus scope owns its tab index.
+        tabIndex={3}
+      >
         <button>First</button>
       </FocusScope>,
     );

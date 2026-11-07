@@ -14,7 +14,7 @@ Use a number field when people need exact numeric entry or the range has too man
 
 ## Structure
 
-Use the documented Slider for one value and label it with the quantity and units. State the current value in adjacent text when it is not otherwise clear; set min, max, and step to match the task. Use SliderClient for a range with two thumbs, labels, or marks.
+Use the documented Slider for one value and label it with the quantity and units. State the current value in adjacent text when it is not otherwise clear; set min, max, and step to match the task. Use SliderClient for a range with two thumbs, labels, or marks. Set minStepsBetweenValues when thumbs must keep a minimum separation; both pointer and keyboard movement clamp to it.
 
 ## Responsive
 

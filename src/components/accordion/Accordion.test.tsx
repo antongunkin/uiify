@@ -1,182 +1,90 @@
-import { createRef } from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import { Accordion } from "./Accordion.js";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./index.js";
 
-const items = [
-  { value: "shipping", label: "Shipping", panel: <>Ships in 2-3 days.</> },
-  { value: "returns", label: "Returns", panel: <>30-day window.</> },
-];
+/** Elements and attributes in document order; attributes sorted so source order cannot matter. */
+function outline(html: string): string[] {
+  const host = document.createElement("div");
+  host.innerHTML = html;
+  return [...host.querySelectorAll("*")].map((element) => {
+    const attributes = [...element.attributes]
+      .map((attribute) => `${attribute.name}="${attribute.value}"`)
+      .sort();
+    return `${element.localName} ${attributes.join(" ")}`.trim();
+  });
+}
 
 describe("Accordion", () => {
-  it("renders a details/summary pair per item, no input", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,
-    );
-    expect(markup).toContain("<details");
-    expect(markup).toContain("<summary");
-    expect(markup).not.toContain("<input");
+  it("renders a plain div root with the identity class", () => {
+    render(<Accordion data-testid="faq" />);
+    const root = screen.getByTestId("faq");
+    expect(root.localName).toBe("div");
+    expect(root.className).toBe("uiify-accordion");
+    expect([...root.attributes].map(({ name }) => name).sort()).toEqual(["class", "data-testid"]);
+  });
+});
+
+describe("AccordionItem", () => {
+  it("renders a closed native details with data-value and no name by default", () => {
+    expect(outline(renderToStaticMarkup(<AccordionItem value="shipping" />))).toEqual([
+      'details class="uiify-native-details uiify-accordion-item" data-value="shipping"',
+    ]);
   });
 
-  it("keeps the component identity on the root, not on each item", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,
-    );
-    expect(markup.match(/data-uiify-accordion=""/g)).toHaveLength(1);
-    expect(markup).not.toContain('data-part="item" data-uiify-accordion=""');
+  it("writes name for single-open groups and open for defaultOpen", () => {
+    expect(
+      outline(renderToStaticMarkup(<AccordionItem value="shipping" name="faq" defaultOpen />)),
+    ).toEqual([
+      'details class="uiify-native-details uiify-accordion-item" data-value="shipping" name="faq" open=""',
+    ]);
+  });
+});
+
+describe("AccordionTrigger", () => {
+  it("renders a summary with the trigger class", () => {
+    expect(outline(renderToStaticMarkup(<AccordionTrigger>Shipping</AccordionTrigger>))).toEqual([
+      'summary class="uiify-accordion-trigger"',
+    ]);
   });
 
-  it("sets a shared name on every item for type=single, enabling exclusivity", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,
-    );
-    const nameCount = markup.match(/name="faq"/g)?.length ?? 0;
-    expect(nameCount).toBe(2);
+  it("marks a disabled summary aria-disabled and unfocusable", () => {
+    expect(
+      outline(renderToStaticMarkup(<AccordionTrigger disabled>Shipping</AccordionTrigger>)),
+    ).toEqual(['summary aria-disabled="true" class="uiify-accordion-trigger" tabindex="-1"']);
   });
+});
 
-  it("omits the name attribute entirely for type=multiple", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion defaultValue={["shipping"]} id="faq" items={items} type="multiple" />,
-    );
-    expect(markup).not.toContain("name=");
+describe("AccordionContent", () => {
+  it("renders a div with the content class", () => {
+    expect(outline(renderToStaticMarkup(<AccordionContent>Body</AccordionContent>))).toEqual([
+      'div class="uiify-accordion-content"',
+    ]);
   });
+});
 
-  it("marks the matching item open for type=single", () => {
+describe("Accordion composition", () => {
+  it("renders summary then content inside each details", () => {
     const markup = renderToStaticMarkup(
-      <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,
-    );
-    const openCount = markup.match(/open=""/g)?.length ?? 0;
-    expect(openCount).toBe(1);
-  });
-
-  it("marks every listed item open for type=multiple", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion defaultValue={["shipping", "returns"]} id="faq" items={items} type="multiple" />,
-    );
-    const openCount = markup.match(/open=""/g)?.length ?? 0;
-    expect(openCount).toBe(2);
-  });
-
-  it("marks a disabled item's summary aria-disabled and unfocusable, not the input", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion
-        id="faq"
-        items={[{ value: "shipping", label: "Shipping", disabled: true, panel: <>Panel</> }]}
-        type="single"
-      />,
-    );
-    expect(markup).toContain('data-disabled=""');
-    expect(markup).toContain('aria-disabled="true"');
-    expect(markup).toContain('tabindex="-1"');
-  });
-
-  it("does not disable a non-disabled item's summary", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion defaultValue="shipping" id="faq" items={items} type="single" />,
-    );
-    expect(markup).not.toContain("aria-disabled");
-    expect(markup).not.toContain("tabindex");
-  });
-
-  it("forwards root props and per-slot props to their corresponding nodes", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion
-        data-testid="faq-root"
-        id="faq"
-        items={items}
-        slotProps={{
-          item: {
-            className: "item-base",
-            style: { color: "red" },
-            byItemValue: {
-              shipping: {
-                className: "shipping-item",
-                style: { backgroundColor: "blue" },
-                "data-testid": "shipping",
-              },
-            },
-          },
-          trigger: { className: "trigger", "data-testid": "faq-trigger" },
-          panel: { className: "panel", "aria-label": "answer" },
-        }}
-        style={{ color: "red" }}
-        title="Frequently asked questions"
-      />,
-    );
-
-    expect(markup).toContain('id="faq"');
-    expect(markup).toContain('data-testid="faq-root"');
-    expect(markup).toContain('style="color:red"');
-    expect(markup).toContain('title="Frequently asked questions"');
-    expect(markup).toContain('class="item-base shipping-item"');
-    expect(markup).toContain('style="color:red;background-color:blue"');
-    expect(markup).toContain('data-testid="shipping"');
-    expect(markup).toContain('class="trigger"');
-    expect(markup).toContain('data-testid="faq-trigger"');
-    expect(markup).toContain('class="panel"');
-    expect(markup).toContain('aria-label="answer"');
-  });
-
-  it("keeps per-item slot classes, refs, and events attached by value after reordering", () => {
-    const shippingRef = createRef<HTMLDetailsElement>();
-    const returnsRef = createRef<HTMLDetailsElement>();
-    const onShippingToggle = vi.fn();
-    const onReturnsToggle = vi.fn();
-    const slotProps = {
-      item: {
-        byItemValue: {
-          shipping: {
-            className: "shipping-item",
-            ref: shippingRef,
-            onToggle: onShippingToggle,
-            "data-testid": "shipping-item",
-          },
-          returns: {
-            className: "returns-item",
-            ref: returnsRef,
-            onToggle: onReturnsToggle,
-            "data-testid": "returns-item",
-          },
-        },
-      },
-    };
-    const view = render(<Accordion id="faq" items={items} slotProps={slotProps} />);
-
-    expect(screen.getByTestId("shipping-item").className).toContain("shipping-item");
-    expect(screen.getByTestId("returns-item").className).toContain("returns-item");
-    expect(shippingRef.current).toBe(screen.getByTestId("shipping-item"));
-    expect(returnsRef.current).toBe(screen.getByTestId("returns-item"));
-    fireEvent(screen.getByTestId("shipping-item"), new Event("toggle"));
-    expect(onShippingToggle).toHaveBeenCalledOnce();
-    expect(onReturnsToggle).not.toHaveBeenCalled();
-
-    view.rerender(<Accordion id="faq" items={[...items].reverse()} slotProps={slotProps} />);
-
-    expect(screen.getByTestId("shipping-item").className).toContain("shipping-item");
-    expect(screen.getByTestId("returns-item").className).toContain("returns-item");
-    expect(shippingRef.current).toBe(screen.getByTestId("shipping-item"));
-    expect(returnsRef.current).toBe(screen.getByTestId("returns-item"));
-  });
-
-  it("lets slot props replace generated markers per item", () => {
-    const markup = renderToStaticMarkup(
-      <Accordion
-        defaultValue="shipping"
-        id="faq"
-        items={items}
-        slotProps={{
-          item: { byItemValue: { shipping: { "data-part": "card", name: "custom", open: false } } },
-          trigger: { "data-part": undefined, "aria-disabled": false, tabIndex: 0 },
-          panel: { byItemValue: { shipping: { "data-uiify-details": "x" } } },
-        }}
-      />,
+      <Accordion>
+        <AccordionItem value="shipping" name="faq" defaultOpen>
+          <AccordionTrigger>Shipping</AccordionTrigger>
+          <AccordionContent>Ships in 2-3 days.</AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="returns" name="faq">
+          <AccordionTrigger>Returns</AccordionTrigger>
+          <AccordionContent>30-day window.</AccordionContent>
+        </AccordionItem>
+      </Accordion>,
     );
     const host = document.createElement("div");
     host.innerHTML = markup;
-    expect(host.querySelector('details[data-part="card"]')?.getAttribute("name")).toBe("custom");
-    expect(host.querySelector("details")?.hasAttribute("open")).toBe(false);
-    expect(host.querySelector("summary")?.hasAttribute("data-part")).toBe(false);
-    expect(host.querySelector('[data-part="panel"][data-uiify-details="x"]')).not.toBeNull();
+    const items = host.querySelectorAll(".uiify-accordion > details");
+    expect(items).toHaveLength(2);
+    for (const item of items) {
+      expect([...item.children].map((child) => child.localName)).toEqual(["summary", "div"]);
+      expect(item.getAttribute("name")).toBe("faq");
+    }
+    expect(markup).not.toContain("<input");
   });
 });

@@ -2,7 +2,7 @@
 // Independently written; see NOTICE and the clean-room research notes.
 import { createElement } from "react";
 import type { CSSProperties, ElementType, ReactElement } from "react";
-import { useRenderElement } from "../../core/render.js";
+import { cn, useRenderElement } from "../../core/render.js";
 import {
   createAnchorPositionerProps,
   createAnchorTriggerProps,
@@ -29,7 +29,7 @@ export function TableOfContentsRoot<TAs extends ElementType = "nav">(
     as,
     render,
     defaultTag: "nav",
-    props: { ...rest, "data-uiify-table-of-contents": "" },
+    props: { ...rest, className: cn("uiify-table-of-contents", rest.className) },
     state: {},
   });
 }
@@ -38,12 +38,12 @@ export function TableOfContentsTrigger<TAs extends ElementType = "button">(
 ): ReactElement {
   const { as, target, ...rest } = props as TableOfContentsTriggerProps<"button">;
   return createElement(as ?? "button", {
-    ...rest,
     ...createAnchorTriggerProps(anchorFor(target)),
-    "data-part": "trigger",
     type: "button",
     popoverTarget: target,
     popoverTargetAction: "toggle",
+    ...rest,
+    className: cn("uiify-table-of-contents-trigger", rest.className),
   });
 }
 export function TableOfContentsRail<TAs extends ElementType = "span">(
@@ -54,7 +54,11 @@ export function TableOfContentsRail<TAs extends ElementType = "span">(
     as,
     render,
     defaultTag: "span",
-    props: { ...rest, "aria-hidden": true, "data-part": "rail" },
+    props: {
+      "aria-hidden": true,
+      ...rest,
+      className: cn("uiify-table-of-contents-rail", rest.className),
+    },
     state: {},
   });
 }
@@ -76,10 +80,10 @@ export function TableOfContentsIndicator<TAs extends ElementType = "span">(
     defaultTag: "span",
     props: {
       ...rest,
-      style: { ...style, "--uiify-toc-level": level } as CSSProperties,
+      style: { "--uiify-toc-level": level, ...style } as CSSProperties,
       "aria-hidden": true,
-      "data-part": "indicator",
       "data-selected": selected ? "" : undefined,
+      className: cn("uiify-table-of-contents-indicator", rest.className),
     },
     state: { selected },
   });
@@ -100,11 +104,11 @@ export function TableOfContentsContent<TAs extends ElementType = "div">(
     render,
     defaultTag: "div",
     props: {
-      ...rest,
       ...createAnchorPositionerProps({ anchorName: anchorFor(id), side, align }),
       id,
       popover: "auto",
-      "data-part": "content",
+      ...rest,
+      className: cn("uiify-table-of-contents-content", rest.className),
     },
     state: {},
   });
@@ -117,7 +121,7 @@ export function TableOfContentsList<TAs extends ElementType = "div">(
     as,
     render,
     defaultTag: "div",
-    props: { ...rest, "data-part": "list" },
+    props: { ...rest, className: cn("uiify-table-of-contents-list", rest.className) },
     state: {},
   });
 }
@@ -139,10 +143,10 @@ export function TableOfContentsLink<TAs extends ElementType = "a">(
     defaultTag: "a",
     props: {
       ...rest,
-      style: { ...style, "--uiify-toc-level": level } as CSSProperties,
-      "data-part": "link",
+      style: { "--uiify-toc-level": level, ...style } as CSSProperties,
       "data-selected": current ? "" : undefined,
       ...(selected === undefined ? {} : { "aria-current": selected ? "location" : undefined }),
+      className: cn("uiify-table-of-contents-link", rest.className),
     },
     state: { selected: current },
   });

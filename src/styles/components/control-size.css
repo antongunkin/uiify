@@ -3,29 +3,13 @@
    metrics as fallback. Corners stay `--radius-full` at every size, as on Button. */
 
 @layer components {
-  :is(
-    [data-uiify-input],
-    [data-uiify-select],
-    [data-uiify-date-picker],
-    [data-uiify-input-group],
-    [data-uiify-combobox],
-    [data-uiify-otp-input],
-    [data-uiify-segmented-control]
-  )[data-size="sm"] {
+  :is(.uiify-date-picker, .uiify-input-group, .uiify-combobox, .uiify-input-otp)[data-size="sm"] {
     --uiify-control-size: var(--control-sm);
-    --uiify-control-font: var(--text-sm);
+    --uiify-control-font: 0.875rem;
   }
 
-  :is(
-    [data-uiify-input],
-    [data-uiify-select],
-    [data-uiify-date-picker],
-    [data-uiify-input-group],
-    [data-uiify-combobox],
-    [data-uiify-otp-input],
-    [data-uiify-segmented-control]
-  )[data-size="lg"] {
+  :is(.uiify-date-picker, .uiify-input-group, .uiify-combobox, .uiify-input-otp)[data-size="lg"] {
     --uiify-control-size: var(--control-lg);
-    --uiify-control-font: var(--text-lg);
+    --uiify-control-font: 1.125rem;
   }
 }

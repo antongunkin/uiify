@@ -14,7 +14,7 @@ Do not use Badge as a control, for long explanations, or for status conveyed by 
 
 ## Structure
 
-`Badge` renders a text `span`. Its `variant` (`secondary`, `success`, `warning`, or `destructive`) and `size` (`sm`, `md`, or `lg`) write `data-variant` and `data-size`. Keep the state or category in the text.
+`Badge` renders a text `span`. Its `variant` (`secondary`, `outline`, `success`, `warning`, or `destructive`) and `size` (`sm`, `md`, or `lg`) write `data-variant` and `data-size`; `variant="default"` is the unset look and writes no attribute. Keep the state or category in the text.
 
 ## Responsive
 

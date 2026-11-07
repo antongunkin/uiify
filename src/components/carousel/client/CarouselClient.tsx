@@ -62,6 +62,7 @@ export function CarouselClient(props: CarouselClientProps): ReactElement | null 
   useEffect(() => {
     if (!root) return;
     const attached = createCarouselController(root, options());
+    // oxlint-disable-next-line react/set-state-in-effect -- the instance attaches to the DOM node, so it is created in an effect and exposed to render as state.
     setController(attached);
     return () => {
       attached.destroy();
@@ -77,6 +78,7 @@ export function CarouselClient(props: CarouselClientProps): ReactElement | null 
   useEffect(() => {
     if (!root || !controller || !autoplayEnabled) return;
     const rotation = createCarouselAutoplay(root, controller, rotationOptions());
+    // oxlint-disable-next-line react/set-state-in-effect -- the instance attaches to the DOM node, so it is created in an effect and exposed to render as state.
     setAutoplay(rotation);
     return () => {
       rotation.destroy();

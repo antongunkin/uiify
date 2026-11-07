@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "./components/test-utils/ssr.js";
-import { Accordion } from "./components/accordion/Accordion.js";
-import { AlertModal } from "./components/alert-modal/AlertModal.js";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./components/accordion/Accordion.js";
+import { AlertDialog } from "./components/alert-dialog/AlertDialog.js";
 import { Collapsible } from "./components/collapsible/Collapsible.js";
 import { DrawerPanel } from "./components/drawer/DrawerNative.js";
 
@@ -22,23 +27,29 @@ function outline(node: ReactNode): string[] {
   });
 }
 
-const accordionItems = [
-  { value: "a", label: "A", panel: "Panel A" },
-  { value: "b", label: "B", panel: "Panel B", disabled: true },
-];
+function accordion(name: string | undefined, open: readonly string[]) {
+  return (
+    <Accordion>
+      {["a", "b"].map((value) => (
+        <AccordionItem key={value} value={value} name={name} defaultOpen={open.includes(value)}>
+          <AccordionTrigger disabled={value === "b"}>{value.toUpperCase()}</AccordionTrigger>
+          <AccordionContent>Panel {value}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+}
 
 it("keeps the default DOM of migrated components", () => {
   expect({
-    accordionSingle: outline(<Accordion defaultValue="a" id="faq" items={accordionItems} />),
-    accordionMultiple: outline(
-      <Accordion defaultValue={["a", "b"]} id="faq" items={accordionItems} type="multiple" />,
-    ),
+    accordionSingle: outline(accordion("faq", ["a"])),
+    accordionMultiple: outline(accordion(undefined, ["a", "b"])),
     collapsible: outline(<Collapsible content="Body" defaultOpen id="filters" label="Filters" />),
     collapsibleDisabled: outline(<Collapsible content="Body" disabled id="f" label="Filters" />),
     alertModal: outline(
-      <AlertModal description="Cannot be undone." id="del" title="Delete" trigger="Delete">
+      <AlertDialog description="Cannot be undone." id="del" title="Delete" trigger="Delete">
         Body
-      </AlertModal>,
+      </AlertDialog>,
     ),
     drawerPanel: outline(
       <DrawerPanel footer="Actions" id="d" size="lg" title="Settings" trigger="Open">

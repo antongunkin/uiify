@@ -1,10 +1,11 @@
-export { Accordion } from "./Accordion.js";
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./Accordion.js";
 export type {
-  AccordionItem,
-  AccordionItemSlotProps,
-  AccordionPanelSlotProps,
+  AccordionContentOwnProps,
+  AccordionContentProps,
+  AccordionItemOwnProps,
+  AccordionItemProps,
+  AccordionOwnProps,
   AccordionProps,
-  AccordionSlotProps,
-  AccordionTriggerSlotProps,
-  AccordionType,
+  AccordionTriggerOwnProps,
+  AccordionTriggerProps,
 } from "./types.js";

@@ -1,6 +1,6 @@
 import type { ElementType, ReactElement, SyntheticEvent } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type { SwitchProps } from "./types.js";
 
 export function Switch<TAs extends ElementType = "input">(
@@ -39,7 +39,7 @@ export function Switch<TAs extends ElementType = "input">(
       disabled: disabled || undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-state": isControlled ? (checked ? "checked" : "unchecked") : undefined,
-      "data-uiify-switch": "",
+      className: cn("uiify-switch", consumerProps.className),
       onChange: composeEventHandlers(consumerOnChange, handleChange),
       ...(isControlled ? { checked } : defaultChecked !== undefined ? { defaultChecked } : {}),
     },

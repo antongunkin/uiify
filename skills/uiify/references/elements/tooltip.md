@@ -10,7 +10,7 @@ Add a short, supplemental explanation to an icon-only control or unfamiliar acti
 
 ## Avoid when
 
-Do not put essential instructions or interactive content in a tooltip. Keep field labels visible; use `popup` or `hover-card` for content that needs interaction.
+Do not put essential instructions or interactive content in a tooltip. Keep field labels visible; use `popover` or `hover-card` for content that needs interaction.
 
 ## Structure
 

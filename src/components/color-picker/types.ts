@@ -3,8 +3,7 @@ import type { ConsumerDataAttributes, SlotProps } from "../../core/slot-props.js
 
 export type ColorSpace = "limited-srgb" | "display-p3";
 
-/** The field id is the required Field.Root wiring input; use ColorPicker.id. */
-export type ColorPickerFieldSlotProps = Omit<SlotProps<"div">, "id">;
+export type ColorPickerFieldSlotProps = SlotProps<"div">;
 export type ColorPickerLabelSlotProps = SlotProps<"label">;
 export type ColorPickerSurfaceSlotProps = SlotProps<"div">;
 export type ColorPickerControlSlotProps = SlotProps<"input">;

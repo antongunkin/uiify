@@ -4,18 +4,24 @@ import type { UiType } from "./catalog.generated.js";
 
 /** Loads each component part from its component entry, so a document loads only what it uses. */
 export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentType<any>>>>> = {
+  Accordion: () => import("../components/accordion/index.js").then((m) => m.Accordion),
+  AccordionContent: () =>
+    import("../components/accordion/index.js").then((m) => m.AccordionContent),
+  AccordionItem: () => import("../components/accordion/index.js").then((m) => m.AccordionItem),
+  AccordionTrigger: () =>
+    import("../components/accordion/index.js").then((m) => m.AccordionTrigger),
   Alert: () => import("../components/alert/index.js").then((m) => m.Alert),
   AlertDescription: () => import("../components/alert/index.js").then((m) => m.AlertDescription),
   AlertTitle: () => import("../components/alert/index.js").then((m) => m.AlertTitle),
-  AlertModal: () => import("../components/alert-modal/index.js").then((m) => m.AlertModal),
-  AlertModalAction: () =>
-    import("../components/alert-modal/index.js").then((m) => m.AlertModalAction),
-  AlertModalCancel: () =>
-    import("../components/alert-modal/index.js").then((m) => m.AlertModalCancel),
-  AlertModalContent: () =>
-    import("../components/alert-modal/index.js").then((m) => m.AlertModalContent),
-  AlertModalTrigger: () =>
-    import("../components/alert-modal/index.js").then((m) => m.AlertModalTrigger),
+  AlertDialog: () => import("../components/alert-dialog/index.js").then((m) => m.AlertDialog),
+  AlertDialogAction: () =>
+    import("../components/alert-dialog/index.js").then((m) => m.AlertDialogAction),
+  AlertDialogCancel: () =>
+    import("../components/alert-dialog/index.js").then((m) => m.AlertDialogCancel),
+  AlertDialogContent: () =>
+    import("../components/alert-dialog/index.js").then((m) => m.AlertDialogContent),
+  AlertDialogTrigger: () =>
+    import("../components/alert-dialog/index.js").then((m) => m.AlertDialogTrigger),
   AspectRatio: () => import("../components/aspect-ratio/index.js").then((m) => m.AspectRatio),
   Avatar: () => import("../components/avatar/index.js").then((m) => m.Avatar),
   Badge: () => import("../components/badge/index.js").then((m) => m.Badge),
@@ -31,6 +37,12 @@ export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentT
     import("../components/breadcrumb/index.js").then((m) => m.Breadcrumb.Separator),
   Button: () => import("../components/button/index.js").then((m) => m.Button),
   Card: () => import("../components/card/index.js").then((m) => m.Card),
+  CardAction: () => import("../components/card/index.js").then((m) => m.CardAction),
+  CardContent: () => import("../components/card/index.js").then((m) => m.CardContent),
+  CardDescription: () => import("../components/card/index.js").then((m) => m.CardDescription),
+  CardFooter: () => import("../components/card/index.js").then((m) => m.CardFooter),
+  CardHeader: () => import("../components/card/index.js").then((m) => m.CardHeader),
+  CardTitle: () => import("../components/card/index.js").then((m) => m.CardTitle),
   Checkbox: () => import("../components/checkbox/index.js").then((m) => m.Checkbox),
   ColorPicker: () => import("../components/color-picker/index.js").then((m) => m.ColorPicker),
   DatePicker: () => import("../components/date-picker/index.js").then((m) => m.DatePicker),
@@ -40,6 +52,16 @@ export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentT
     import("../components/description-list/index.js").then((m) => m.DescriptionList),
   DescriptionTerm: () =>
     import("../components/description-list/index.js").then((m) => m.DescriptionTerm),
+  Dialog: () => import("../components/dialog/index.js").then((m) => m.Dialog),
+  DialogBody: () => import("../components/dialog/index.js").then((m) => m.DialogBody),
+  DialogClose: () => import("../components/dialog/index.js").then((m) => m.DialogClose),
+  DialogContent: () => import("../components/dialog/index.js").then((m) => m.DialogContent),
+  DialogDescription: () => import("../components/dialog/index.js").then((m) => m.DialogDescription),
+  DialogFooter: () => import("../components/dialog/index.js").then((m) => m.DialogFooter),
+  DialogGrabber: () => import("../components/dialog/index.js").then((m) => m.DialogGrabber),
+  DialogHeader: () => import("../components/dialog/index.js").then((m) => m.DialogHeader),
+  DialogTitle: () => import("../components/dialog/index.js").then((m) => m.DialogTitle),
+  DialogTrigger: () => import("../components/dialog/index.js").then((m) => m.DialogTrigger),
   "Drawer.Close": () => import("../components/drawer/index.js").then((m) => m.DrawerClose),
   "Drawer.Content": () => import("../components/drawer/index.js").then((m) => m.DrawerContent),
   "Drawer.Description": () =>
@@ -58,14 +80,12 @@ export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentT
   EmptyContent: () => import("../components/empty/index.js").then((m) => m.EmptyContent),
   EmptyDescription: () => import("../components/empty/index.js").then((m) => m.EmptyDescription),
   EmptyTitle: () => import("../components/empty/index.js").then((m) => m.EmptyTitle),
-  "Field.Root": () => import("../components/field/index.js").then((m) => m.Field.Root),
-  "Field.Label": () => import("../components/field/index.js").then((m) => m.Field.Label),
-  "Field.Control": () => import("../components/field/index.js").then((m) => m.Field.Control),
-  "Field.Description": () =>
-    import("../components/field/index.js").then((m) => m.Field.Description),
-  "Field.Error": () => import("../components/field/index.js").then((m) => m.Field.Error),
-  Fieldset: () => import("../components/fieldset/index.js").then((m) => m.Fieldset),
-  FieldsetLegend: () => import("../components/fieldset/index.js").then((m) => m.FieldsetLegend),
+  Field: () => import("../components/field/index.js").then((m) => m.Field),
+  FieldDescription: () => import("../components/field/index.js").then((m) => m.FieldDescription),
+  FieldError: () => import("../components/field/index.js").then((m) => m.FieldError),
+  FieldLabel: () => import("../components/field/index.js").then((m) => m.FieldLabel),
+  FieldLegend: () => import("../components/field/index.js").then((m) => m.FieldLegend),
+  FieldSet: () => import("../components/field/index.js").then((m) => m.FieldSet),
   "FileUpload.Dropzone": () =>
     import("../components/file-upload/index.js").then((m) => m.FileUploadDropzone),
   "FileUpload.HiddenInput": () =>
@@ -91,16 +111,15 @@ export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentT
   ItemContent: () => import("../components/item/index.js").then((m) => m.ItemContent),
   ItemMedia: () => import("../components/item/index.js").then((m) => m.ItemMedia),
   ItemMetadata: () => import("../components/item/index.js").then((m) => m.ItemMetadata),
-  Modal: () => import("../components/modal/index.js").then((m) => m.Modal),
-  ModalBody: () => import("../components/modal/index.js").then((m) => m.ModalBody),
-  ModalClose: () => import("../components/modal/index.js").then((m) => m.ModalClose),
-  ModalContent: () => import("../components/modal/index.js").then((m) => m.ModalContent),
-  ModalDescription: () => import("../components/modal/index.js").then((m) => m.ModalDescription),
-  ModalFooter: () => import("../components/modal/index.js").then((m) => m.ModalFooter),
-  ModalGrabber: () => import("../components/modal/index.js").then((m) => m.ModalGrabber),
-  ModalHeader: () => import("../components/modal/index.js").then((m) => m.ModalHeader),
-  ModalTitle: () => import("../components/modal/index.js").then((m) => m.ModalTitle),
-  ModalTrigger: () => import("../components/modal/index.js").then((m) => m.ModalTrigger),
+  NativeSelectContent: () =>
+    import("../components/native-select/index.js").then((m) => m.NativeSelectContent),
+  NativeSelectOptGroup: () =>
+    import("../components/native-select/index.js").then((m) => m.NativeSelectOptGroup),
+  NativeSelectOption: () =>
+    import("../components/native-select/index.js").then((m) => m.NativeSelectOption),
+  NativeSelect: () => import("../components/native-select/index.js").then((m) => m.NativeSelect),
+  NativeSelectSeparator: () =>
+    import("../components/native-select/index.js").then((m) => m.NativeSelectSeparator),
   "NumberField.Root": () =>
     import("../components/number-field/index.js").then((m) => m.NumberFieldRoot),
   "NumberField.Group": () =>
@@ -121,20 +140,13 @@ export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentT
     import("../components/pagination/index.js").then((m) => m.PaginationList),
   "Pagination.Root": () =>
     import("../components/pagination/index.js").then((m) => m.PaginationRoot),
-  "Popup.Close": () => import("../components/popup/index.js").then((m) => m.Popup.Close),
-  "Popup.Content": () => import("../components/popup/index.js").then((m) => m.Popup.Content),
-  "Popup.Root": () => import("../components/popup/index.js").then((m) => m.Popup.Root),
-  "Popup.Trigger": () => import("../components/popup/index.js").then((m) => m.Popup.Trigger),
-  PopupClose: () => import("../components/popup/index.js").then((m) => m.PopupClose),
-  PopupContent: () => import("../components/popup/index.js").then((m) => m.PopupContent),
-  PopupTrigger: () => import("../components/popup/index.js").then((m) => m.PopupTrigger),
+  PopoverClose: () => import("../components/popover/index.js").then((m) => m.PopoverClose),
+  PopoverContent: () => import("../components/popover/index.js").then((m) => m.PopoverContent),
+  PopoverTrigger: () => import("../components/popover/index.js").then((m) => m.PopoverTrigger),
   Progress: () => import("../components/progress/index.js").then((m) => m.Progress),
+  RadioGroup: () => import("../components/radio-group/index.js").then((m) => m.RadioGroup),
+  RadioGroupItem: () => import("../components/radio-group/index.js").then((m) => m.RadioGroupItem),
   Rating: () => import("../components/rating/index.js").then((m) => m.Rating),
-  "Select.Content": () => import("../components/select/index.js").then((m) => m.Select.Content),
-  "Select.Group": () => import("../components/select/index.js").then((m) => m.Select.Group),
-  "Select.Item": () => import("../components/select/index.js").then((m) => m.Select.Item),
-  "Select.Root": () => import("../components/select/index.js").then((m) => m.Select.Root),
-  "Select.Separator": () => import("../components/select/index.js").then((m) => m.Select.Separator),
   Skeleton: () => import("../components/skeleton/index.js").then((m) => m.Skeleton),
   Slider: () => import("../components/slider/index.js").then((m) => m.Slider),
   Spinner: () => import("../components/spinner/index.js").then((m) => m.Spinner),
@@ -149,6 +161,10 @@ export const uiLoaders: Readonly<Partial<Record<UiType, () => Promise<ComponentT
   "Table.Header": () => import("../components/table/index.js").then((m) => m.Table.Header),
   "Table.Root": () => import("../components/table/index.js").then((m) => m.Table.Root),
   "Table.Row": () => import("../components/table/index.js").then((m) => m.Table.Row),
+  Tabs: () => import("../components/tabs/index.js").then((m) => m.Tabs),
+  TabsContent: () => import("../components/tabs/index.js").then((m) => m.TabsContent),
+  TabsList: () => import("../components/tabs/index.js").then((m) => m.TabsList),
+  TabsTrigger: () => import("../components/tabs/index.js").then((m) => m.TabsTrigger),
   Textarea: () => import("../components/textarea/index.js").then((m) => m.Textarea),
   Toggle: () => import("../components/toggle/index.js").then((m) => m.Toggle),
   "Tooltip.Content": () => import("../components/tooltip/index.js").then((m) => m.TooltipContent),

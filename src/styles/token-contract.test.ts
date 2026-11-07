@@ -6,7 +6,8 @@ const packageRoot = resolve(import.meta.dirname, "../..");
 const repositoryRoot = existsSync(resolve(packageRoot, "../../apps/site/src/docs"))
   ? resolve(packageRoot, "../..")
   : packageRoot;
-const themeSource = readFileSync(resolve(packageRoot, "src/styles/tokens/theme.css"), "utf8");
+const themeSource = readFileSync(resolve(packageRoot, "src/styles/themes/basic.css"), "utf8");
+const tailwindSource = readFileSync(resolve(packageRoot, "src/styles/tailwind.css"), "utf8");
 
 const canonicalSemanticTokens = [
   "background",
@@ -97,12 +98,19 @@ describe("canonical semantic token contract", () => {
       "--gray-0",
       "--blue-6",
       "--red-7",
-      "--space-md",
       "--radius-1",
       "--font-sans",
       "--shadow-1",
     ]) {
       expect(themeSource).toContain(`${token}:`);
     }
+    expect(tailwindSource).toContain("--spacing: 0.25rem;");
+    expect(tailwindSource).toContain("--text-sm: 0.875rem;");
+    expect(themeSource).not.toMatch(/--(?:space-[\w-]+|text-[\w-]+)\s*:/);
+  });
+
+  test("maps spacing and typography through the Tailwind scale", () => {
+    expect(tailwindSource).toContain("--spacing:");
+    expect(tailwindSource).toContain("--text-sm:");
   });
 });

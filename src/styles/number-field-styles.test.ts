@@ -1,20 +1,28 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { numberField } from "./uiify/number-field.js";
+import { normalizeCss } from "./test-css.js";
 
-const css = readFileSync(resolve(import.meta.dirname, "components/number-field.css"), "utf8");
+const css = normalizeCss(
+  readFileSync(resolve(import.meta.dirname, "../../dist/styles/uiify/number-field.css"), "utf8"),
+);
 
 describe("NumberField styles", () => {
   it("styles the documented Group wrapper and its public controls", () => {
-    expect(css).toContain('[data-uiify-number-field] > [data-part="group"]');
-    expect(css).toContain('[data-part="group"] > [role="spinbutton"]');
-    expect(css).toContain('[data-part="group"] > [data-part="increment"]');
-    expect(css).toContain('[data-part="group"] > [data-part="decrement"]');
+    if (typeof numberField.base === "string") {
+      throw new Error("NumberField base classes must be keyed by part");
+    }
+    expect(Object.keys(numberField.base)).toEqual(
+      expect.arrayContaining(["group", "input", "decrement", "increment"]),
+    );
+    expect(numberField.base.group).toContain("inline-flex items-stretch");
+    expect(numberField.base.input).toContain("w-16 min-h-9");
   });
 
   it("hides generated arrows from assistive technology and mirrors them in RTL", () => {
-    expect(css).toMatch(/content:\s*"←"\s*\/\s*"";/);
-    expect(css).toMatch(/content:\s*"→"\s*\/\s*"";/);
-    expect(css).toMatch(/\[data-uiify-number-field\]:dir\(rtl\)[\s\S]*?scale:\s*-1 1;/);
+    expect(css).toContain(normalizeCss(".uiify-number-field-decrement:empty:before"));
+    expect(css).toContain(normalizeCss(".uiify-number-field-increment:empty:before"));
+    expect(css).toContain(normalizeCss(":dir(rtl)"));
   });
 });

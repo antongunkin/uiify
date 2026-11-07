@@ -16,11 +16,11 @@ Read `native.md`, `layout.md`, `select.md` and `button.md`. A native label names
     "children": [
       { "type": "label", "props": { "htmlFor": "status" }, "children": ["Status"] },
       {
-        "type": "Select.Root",
+        "type": "NativeSelect",
         "props": { "id": "status", "name": "status" },
         "children": [
-          { "type": "Select.Item", "props": { "value": "open" }, "children": ["Open"] },
-          { "type": "Select.Item", "props": { "value": "closed" }, "children": ["Closed"] }
+          { "type": "NativeSelectOption", "props": { "value": "open" }, "children": ["Open"] },
+          { "type": "NativeSelectOption", "props": { "value": "closed" }, "children": ["Closed"] }
         ]
       },
       { "type": "Button", "props": { "type": "submit" }, "children": ["Apply"] }

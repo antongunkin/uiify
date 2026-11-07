@@ -42,6 +42,7 @@ describe("Switch", () => {
         checked
         disabled
         type="radio"
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role, jsx-a11y/role-has-required-aria-props -- The switch owns its role and checked state.
         role="checkbox"
         data-disabled="no"
         data-state="unchecked"
@@ -77,5 +78,6 @@ describe("Switch", () => {
     const markup = renderToStaticMarkup(<Switch defaultChecked aria-label="Wi-Fi" />);
     expect(markup).toContain('role="switch"');
     expect(markup).toContain('type="checkbox"');
+    expect(markup).toContain('class="uiify-switch"');
   });
 });

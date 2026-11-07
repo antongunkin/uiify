@@ -111,7 +111,7 @@ export function createCarouselAutoplay(
   }
 
   function belongsToRoot(target: EventTarget | null) {
-    return target instanceof Element && target.closest("[data-uiify-carousel]") === root;
+    return target instanceof Element && target.closest(".uiify-carousel") === root;
   }
 
   function userIntent(event: Event) {

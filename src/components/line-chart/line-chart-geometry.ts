@@ -2,34 +2,34 @@ import type { CSSProperties, ReactNode } from "react";
 import type { LineChartAxisLabel, LineChartData } from "./types.js";
 
 export interface PointStyle extends CSSProperties {
-  "--line-prev-x"?: string;
-  "--line-prev-y"?: string;
-  "--line-rise"?: string;
-  "--line-slot": string;
-  "--line-x": string;
-  "--line-y": string;
-  "--line-cursor-y"?: string;
+  "--uiify-line-prev-x"?: string;
+  "--uiify-line-prev-y"?: string;
+  "--uiify-line-rise"?: string;
+  "--uiify-line-slot": string;
+  "--uiify-line-x": string;
+  "--uiify-line-y": string;
+  "--uiify-line-cursor-y"?: string;
 }
 
 export interface PointsStyle extends CSSProperties {
-  "--line-count": string;
+  "--uiify-line-count": string;
   /** One segment's width in percentage points of the viewport width, unitless. */
-  "--line-run": string;
-  "--line-segment-slot": string;
+  "--uiify-line-run": string;
+  "--uiify-line-segment-slot": string;
 }
 
 export interface CrosshairStyle extends CSSProperties {
-  "--line-crosshair-x": string;
-  "--line-cursor-y"?: string;
+  "--uiify-line-crosshair-x": string;
+  "--uiify-line-cursor-y"?: string;
 }
 
 export interface CursorStyle extends CSSProperties {
-  "--line-cursor-y"?: string;
+  "--uiify-line-cursor-y"?: string;
 }
 
 export interface AxisStyle extends CSSProperties {
-  "--line-axis-x"?: string;
-  "--line-axis-y"?: string;
+  "--uiify-line-axis-x"?: string;
+  "--uiify-line-axis-y"?: string;
 }
 
 type LineTrend = "down" | "flat" | "up";
@@ -155,21 +155,21 @@ export function geometryFor(
 
 export function pointStyle(geometry: LinePointGeometry, cursorY: number | undefined): PointStyle {
   return {
-    ...(geometry.previousX === undefined ? {} : { "--line-prev-x": geometry.previousX }),
-    ...(geometry.previousY === undefined ? {} : { "--line-prev-y": geometry.previousY }),
-    ...(geometry.rise === undefined ? {} : { "--line-rise": geometry.rise }),
-    "--line-slot": geometry.slot,
-    "--line-x": geometry.x,
-    "--line-y": geometry.y,
-    ...(cursorY === undefined ? {} : { "--line-cursor-y": `${Math.max(0, cursorY)}px` }),
+    ...(geometry.previousX === undefined ? {} : { "--uiify-line-prev-x": geometry.previousX }),
+    ...(geometry.previousY === undefined ? {} : { "--uiify-line-prev-y": geometry.previousY }),
+    ...(geometry.rise === undefined ? {} : { "--uiify-line-rise": geometry.rise }),
+    "--uiify-line-slot": geometry.slot,
+    "--uiify-line-x": geometry.x,
+    "--uiify-line-y": geometry.y,
+    ...(cursorY === undefined ? {} : { "--uiify-line-cursor-y": `${Math.max(0, cursorY)}px` }),
   };
 }
 
 export function pointsStyle(count: number): PointsStyle {
   return {
-    "--line-count": String(Math.max(count, 1)),
-    "--line-run": String(Math.round((count > 1 ? 100 / (count - 1) : 100) * 10000) / 10000),
-    "--line-segment-slot": percent(count > 1 ? 100 / (count - 1) : 100),
+    "--uiify-line-count": String(Math.max(count, 1)),
+    "--uiify-line-run": String(Math.round((count > 1 ? 100 / (count - 1) : 100) * 10000) / 10000),
+    "--uiify-line-segment-slot": percent(count > 1 ? 100 / (count - 1) : 100),
   };
 }
 
@@ -179,8 +179,8 @@ export function crosshairStyle(
   cursorY: number | undefined,
 ): CrosshairStyle {
   return {
-    "--line-crosshair-x": percent(pointPosition(index, count)),
-    ...(cursorY === undefined ? {} : { "--line-cursor-y": `${Math.max(0, cursorY)}px` }),
+    "--uiify-line-crosshair-x": percent(pointPosition(index, count)),
+    ...(cursorY === undefined ? {} : { "--uiify-line-cursor-y": `${Math.max(0, cursorY)}px` }),
   };
 }
 
@@ -191,19 +191,19 @@ export function slotCrosshairStyle(
   cursorY: number | undefined,
 ): CrosshairStyle {
   return {
-    "--line-crosshair-x": percent(((index + 0.5) / Math.max(count, 1)) * 100),
-    ...(cursorY === undefined ? {} : { "--line-cursor-y": `${Math.max(0, cursorY)}px` }),
+    "--uiify-line-crosshair-x": percent(((index + 0.5) / Math.max(count, 1)) * 100),
+    ...(cursorY === undefined ? {} : { "--uiify-line-cursor-y": `${Math.max(0, cursorY)}px` }),
   };
 }
 
 export function cursorStyle(cursorY: number | undefined): CursorStyle {
-  return cursorY === undefined ? {} : { "--line-cursor-y": `${Math.max(0, cursorY)}px` };
+  return cursorY === undefined ? {} : { "--uiify-line-cursor-y": `${Math.max(0, cursorY)}px` };
 }
 
 export function axisStyle(axis: "x" | "y", position: number): AxisStyle {
   const value = percent(Math.min(100, Math.max(0, position)));
-  if (axis === "x") return { "--line-axis-x": value };
-  return { "--line-axis-y": value };
+  if (axis === "x") return { "--uiify-line-axis-x": value };
+  return { "--uiify-line-axis-y": value };
 }
 
 export function axisLabelsFor(

@@ -1,10 +1,12 @@
-export { Tabs } from "./Tabs.js";
+export { Tabs, TabsContent, TabsList, TabsTrigger } from "./Tabs.js";
 export type {
-  TabsInputSlotProps,
-  TabsItem,
-  TabsItemSlotProps,
-  TabsPanelSlotProps,
+  TabsContentOwnProps,
+  TabsContentProps,
+  TabsListOwnProps,
+  TabsListProps,
+  TabsOrientation,
+  TabsOwnProps,
   TabsProps,
-  TabsSlotProps,
-  TabsTriggerSlotProps,
+  TabsTriggerOwnProps,
+  TabsTriggerProps,
 } from "./types.js";

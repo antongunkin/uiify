@@ -6,10 +6,12 @@ describe("InputGroup", () => {
   it("composes labeled native input and a separate native action", () => {
     render(
       <>
-        <label htmlFor="website">Website</label>
+        <label id="website-label" htmlFor="website">
+          Website
+        </label>
         <InputGroup>
           <InputGroupAddon align="start">https://</InputGroupAddon>
-          <input id="website" name="website" type="url" />
+          <input id="website" aria-labelledby="website-label" name="website" type="url" />
           <InputGroupAddon align="end">
             <button type="button">Verify</button>
           </InputGroupAddon>
@@ -21,7 +23,7 @@ describe("InputGroup", () => {
     expect(screen.getByRole("button", { name: "Verify" })).toBeTruthy();
   });
 
-  it("owns markers while forwarding consumer attributes and styling", () => {
+  it("emits recipe identity while forwarding consumer attributes and styling", () => {
     render(
       <InputGroup
         className="consumer-group"
@@ -36,12 +38,14 @@ describe("InputGroup", () => {
     );
 
     const group = screen.getByText("Action").parentElement;
-    expect(group?.getAttribute("data-part")).toBe("root");
-    expect(group?.getAttribute("data-uiify-input-group")).toBe("");
+    expect(group?.className).toBe("uiify-input-group consumer-group");
+    expect(group?.hasAttribute("data-part")).toBe(false);
+    expect(group?.getAttribute("data-uiify-input-group")).toBe("changed");
     expect(group?.getAttribute("data-density")).toBe("compact");
-    expect(group?.className).toBe("consumer-group");
     expect(group?.style.inlineSize).toBe("20rem");
     expect(screen.getByText("Action").getAttribute("data-align")).toBe("end");
-    expect(screen.getByText("Action").getAttribute("data-uiify-input-group")).toBe("");
+    expect(screen.getByText("Action").className).toBe("uiify-input-group-addon");
+    expect(screen.getByText("Action").hasAttribute("data-part")).toBe(false);
+    expect(screen.getByText("Action").getAttribute("data-uiify-input-group")).toBe("changed");
   });
 });

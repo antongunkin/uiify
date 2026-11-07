@@ -14,7 +14,7 @@ export function createCarouselController(
   root: HTMLElement,
   initialOptions: CarouselControllerOptions,
 ): CarouselController {
-  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
+  const viewport = root.querySelector<HTMLElement>(":scope > .uiify-carousel-viewport");
   if (!viewport) throw new Error("Carousel viewport is missing");
   const observer = observeCarousel(root);
   const listeners = new Set<() => void>();
@@ -43,7 +43,7 @@ export function createCarouselController(
   let touchActive = false;
   const resizedSlides = new Set<Element>();
   const slides = () =>
-    Array.from(viewport.children).filter((node) => node.getAttribute("data-part") === "slide");
+    Array.from(viewport.children).filter((node) => node.classList.contains("uiify-carousel-slide"));
   function publish(next: CarouselSnapshot) {
     if (JSON.stringify(snapshot) === JSON.stringify(next)) return;
     snapshot = next;
@@ -191,7 +191,7 @@ export function createCarouselController(
   };
   // Native touch events continue after pointercancel when the browser takes over scrolling.
   const touchStart = (event: TouchEvent) => {
-    if (event.target instanceof Element && event.target.closest("[data-uiify-carousel]") === root) {
+    if (event.target instanceof Element && event.target.closest(".uiify-carousel") === root) {
       touchActive = true;
       touch = false;
     }
@@ -203,8 +203,7 @@ export function createCarouselController(
     measure((value) => observe(value, true));
   };
   const pointer = (event: PointerEvent) => {
-    if (event.target instanceof Element && event.target.closest("[data-uiify-carousel]") !== root)
-      return;
+    if (event.target instanceof Element && event.target.closest(".uiify-carousel") !== root) return;
     if (snapshot.moving) {
       ++token;
       reason = "scroll";

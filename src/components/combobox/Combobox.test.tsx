@@ -1,4 +1,4 @@
-import { createRef, Profiler } from "react";
+import { createRef, Profiler, useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
@@ -458,15 +458,17 @@ describe("Combobox", () => {
     const input = screen.getByRole("combobox");
     expect(control.tagName).toBe("SECTION");
     expect(control.classList.contains("fruit-control")).toBe(true);
-    expect(control.getAttribute("data-part")).toBe("control");
+    expect(control.classList.contains("uiify-combobox-control")).toBe(true);
     expect(controlRef.current).toBe(control);
-    expect(control.querySelector('[data-part="tags"]')).not.toBeNull();
+    expect(control.querySelector(".uiify-combobox-tags")).not.toBeNull();
     expect(screen.getByTestId("apple-tag").classList.contains("apple-tag")).toBe(true);
     expect(screen.getByTestId("apple-remove").classList.contains("apple-remove")).toBe(true);
-    expect(screen.getByText("Apple").getAttribute("data-part")).toBe("tag");
-    expect(screen.getByRole("button", { name: "Remove Apple" }).getAttribute("data-part")).toBe(
-      "tag-remove",
-    );
+    expect(screen.getByText("Apple").classList.contains("uiify-combobox-tag")).toBe(true);
+    expect(
+      screen
+        .getByRole("button", { name: "Remove Apple" })
+        .classList.contains("uiify-combobox-tag-remove"),
+    ).toBe(true);
     expect(input.getAttribute("aria-controls")).not.toBeNull();
     expect(input.getAttribute("aria-expanded")).toBe("false");
   });
@@ -514,7 +516,7 @@ describe("Combobox", () => {
       </Combobox.Root>,
     );
 
-    expect(container.querySelector('[data-part="tags"]')).toBeNull();
+    expect(container.querySelector(".uiify-combobox-tags")).toBeNull();
     expect(renderTags).not.toHaveBeenCalled();
   });
 
@@ -533,8 +535,8 @@ describe("Combobox", () => {
 
     const firstMarkup = renderMarkup();
     expect(firstMarkup).toBe(renderMarkup());
-    expect(firstMarkup).toContain('data-part="control"');
-    expect(firstMarkup).toContain('data-part="tags"');
+    expect(firstMarkup).toContain('class="uiify-combobox-control"');
+    expect(firstMarkup).toContain("uiify-combobox-tags");
     expect(firstMarkup).toContain('aria-label="Remove Apple"');
     expect(firstMarkup).toContain("aria-controls=");
     expect(firstMarkup).toContain('aria-expanded="false"');
@@ -680,12 +682,12 @@ describe("Combobox", () => {
       </Combobox.Root>,
     );
 
-    expect(screen.getByRole("group", { name: "Fresh fruit" }).getAttribute("data-part")).toBe(
-      "group",
-    );
+    expect(
+      screen.getByRole("group", { name: "Fresh fruit" }).classList.contains("uiify-combobox-group"),
+    ).toBe(true);
     expect(screen.getByRole("group", { name: "Other fruit" })).toBeTruthy();
     expect(screen.getAllByRole("option")).toHaveLength(2);
-    expect(screen.getByTestId("fruit-group").querySelector('[data-part="group-label"]')?.id).toBe(
+    expect(screen.getByTestId("fruit-group").querySelector(".uiify-combobox-group-label")?.id).toBe(
       "fruit-group-label",
     );
 
@@ -836,6 +838,39 @@ describe("Combobox", () => {
     const banana = screen.getByRole("option", { name: "Banana" });
     fireEvent.click(banana);
     expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it("reports the selected label to a parent that controls both value and input text", () => {
+    function Controlled() {
+      const [inputValue, setInputValue] = useState("");
+      const [value, setValue] = useState<string | null>(null);
+      return (
+        <Combobox.Root
+          inputValue={inputValue}
+          items={items}
+          onInputValueChange={setInputValue}
+          onValueChange={setValue}
+          value={value}
+        >
+          <Combobox.Input aria-label="Fruit" />
+          <Combobox.Content>
+            {(filteredItems) =>
+              filteredItems.map((item) => <Combobox.Item item={item} key={item.value} />)
+            }
+          </Combobox.Content>
+        </Combobox.Root>
+      );
+    }
+    Controlled.displayName = "Controlled";
+    render(<Controlled />);
+
+    const input = screen.getByRole("combobox") as HTMLInputElement;
+    input.focus();
+    fireEvent.change(input, { target: { value: "ban" } });
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(input.value).toBe("Banana");
   });
 
   it("selects the active option on Enter", () => {
@@ -1009,9 +1044,11 @@ describe("Combobox", () => {
       <Combobox.Root defaultOpen inputValue="" items={items} onInputValueChange={() => {}}>
         <Combobox.Input
           aria-label="Fruit"
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The combobox input owns its role.
           role="textbox"
           aria-autocomplete="both"
           aria-controls="bogus"
+          // oxlint-disable-next-line jsx-a11y/role-supports-aria-props -- The combobox input owns its expanded state.
           aria-expanded="false"
           value="bogus"
         />
@@ -1482,6 +1519,7 @@ it("keeps the input controlled when a mounted Root switches from multiple to sin
       <Combobox.Input aria-label="Fruit" />
     </Combobox.Root>
   );
+  view.displayName = "ControlledModeView";
   const { rerender } = render(view(true));
   rerender(view(false));
   expect((screen.getByRole("combobox") as HTMLInputElement).value).toBe("");

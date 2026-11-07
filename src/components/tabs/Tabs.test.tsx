@@ -1,157 +1,120 @@
-import { createRef } from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Tabs } from "./Tabs.js";
+import { renderToStaticMarkup } from "../test-utils/ssr.js";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./index.js";
+
+/** Elements and attributes in document order; attributes sorted so source order cannot matter. */
+function outline(html: string): string[] {
+  const host = document.createElement("div");
+  host.innerHTML = html;
+  return [...host.querySelectorAll("*")].map((element) => {
+    const attributes = [...element.attributes]
+      .map((attribute) => `${attribute.name}="${attribute.value}"`)
+      .sort();
+    return `${element.localName} ${attributes.join(" ")}`.trim();
+  });
+}
 
 describe("Tabs", () => {
-  it("renders one radio, one label, and one panel per item", () => {
+  it("renders a div root with the identity class and horizontal orientation", () => {
+    render(<Tabs data-testid="tabs" />);
+    const root = screen.getByTestId("tabs");
+    expect(root.localName).toBe("div");
+    expect(root.className).toBe("uiify-tabs");
+    expect(root.getAttribute("data-orientation")).toBe("horizontal");
+  });
+
+  it("writes orientation as data-orientation", () => {
+    render(<Tabs orientation="vertical" data-testid="tabs" />);
+    expect(screen.getByTestId("tabs").getAttribute("data-orientation")).toBe("vertical");
+  });
+});
+
+describe("TabsList", () => {
+  it("renders a plain div with the list class and no ARIA role", () => {
+    render(<TabsList data-testid="list" />);
+    const list = screen.getByTestId("list");
+    expect(list.localName).toBe("div");
+    expect(list.className).toBe("uiify-tabs-list");
+    expect(list.hasAttribute("role")).toBe(false);
+  });
+});
+
+describe("TabsTrigger", () => {
+  it("renders a contents span holding a visually hidden radio immediately followed by its label", () => {
+    expect(
+      outline(
+        renderToStaticMarkup(
+          <TabsTrigger name="account" value="profile" defaultChecked>
+            Profile
+          </TabsTrigger>,
+        ),
+      ),
+    ).toEqual([
+      'span class="uiify-tabs-item"',
+      'input checked="" class="peer/tabs uiify-tabs-control" id="account-profile" name="account" type="radio" value="profile"',
+      'label class="uiify-tabs-trigger" for="account-profile"',
+    ]);
+  });
+
+  it("names the radio by its label and honours an explicit id", () => {
     render(
-      <Tabs
-        id="settings"
-        defaultValue="overview"
-        items={[
-          { value: "overview", label: "Overview", panel: <>Overview panel</> },
-          { value: "settings", label: "Settings", panel: <>Settings panel</> },
-        ]}
-      />,
+      <TabsTrigger name="account" value="security" id="custom">
+        Security
+      </TabsTrigger>,
     );
-
-    expect(screen.getAllByRole("radio", { hidden: true })).toHaveLength(2);
-    expect(screen.getByLabelText("Overview")).toBeTruthy();
-    expect(document.getElementById("settings-panel-overview")).toBeTruthy();
+    const radio = screen.getByRole("radio", { name: "Security" });
+    expect(radio.id).toBe("custom");
+    expect(screen.getByText("Security").getAttribute("for")).toBe("custom");
   });
 
-  it("forwards root, repeated part and append slot props to their concrete elements", () => {
-    const rootRef = createRef<HTMLDivElement>();
-    const commonInputRef = createRef<HTMLInputElement>();
-    const itemInputRef = createRef<HTMLInputElement>();
-    const view = render(
-      <Tabs
-        data-testid="tabs-root"
-        id="settings"
-        ref={rootRef}
-        items={[
-          { value: "overview", label: "Overview", panel: <>Overview panel</> },
-          { value: "settings", label: "Settings", panel: <>Settings panel</> },
-        ]}
-        slotProps={{
-          item: {
-            className: "item",
-            byItemValue: { settings: { "data-testid": "settings-item" } },
-          },
-          input: {
-            ref: commonInputRef,
-            byItemValue: {
-              overview: { "data-testid": "overview-control", ref: itemInputRef },
-            },
-          },
-          trigger: { className: "trigger" },
-          panel: { className: "panel" },
-          append: { className: "append", "data-testid": "append-slot" },
-        }}
-        append={<button type="button">Add tab</button>}
-        style={{ color: "red" }}
-      />,
+  it("disables the native radio and marks the label", () => {
+    const markup = renderToStaticMarkup(
+      <TabsTrigger name="account" value="billing" disabled>
+        Billing
+      </TabsTrigger>,
     );
-
-    expect(screen.getByTestId("tabs-root").getAttribute("style")).toContain("color: red");
-    expect(screen.getByTestId("settings-item").className).toContain("item");
-    expect(screen.getByTestId("overview-control").tagName).toBe("INPUT");
-    expect(screen.getByText("Overview").className).toContain("trigger");
-    expect(screen.getByText("Overview").getAttribute("data-part")).toBe("trigger");
-    expect(screen.getByText("Overview panel").closest("[data-part='panel']")?.className).toContain(
-      "panel",
-    );
-    expect(screen.getByTestId("append-slot").className).toContain("append");
-    expect(rootRef.current).toBe(screen.getByTestId("tabs-root"));
-    const controls = screen.getAllByRole("radio", { hidden: true });
-    expect(commonInputRef.current).toBe(controls[1]);
-    expect(itemInputRef.current).toBe(screen.getByTestId("overview-control"));
-    view.unmount();
-    expect(rootRef.current).toBeNull();
-    expect(commonInputRef.current).toBeNull();
-    expect(itemInputRef.current).toBeNull();
+    expect(outline(markup)).toEqual([
+      'span class="uiify-tabs-item"',
+      'input class="peer/tabs uiify-tabs-control" disabled="" id="account-billing" name="account" type="radio" value="billing"',
+      'label class="uiify-tabs-trigger" data-disabled="" for="account-billing"',
+    ]);
   });
+});
 
-  it("runs common and per-item slot event handlers in order", () => {
-    const calls: string[] = [];
-    render(
-      <Tabs
-        id="settings"
-        items={[{ value: "overview", label: "Overview" }]}
-        slotProps={{
-          input: {
-            onChange: () => calls.push("common"),
-            byItemValue: { overview: { onChange: () => calls.push("item") } },
-          },
-        }}
-      />,
-    );
-
-    fireEvent.click(screen.getByRole("radio", { name: "Overview" }));
-    expect(calls).toEqual(["common", "item"]);
+describe("TabsContent", () => {
+  it("renders a div with the content class and data-value", () => {
+    expect(
+      outline(renderToStaticMarkup(<TabsContent value="profile">Profile</TabsContent>)),
+    ).toEqual(['div class="uiify-tabs-content" data-value="profile"']);
   });
+});
 
-  it("keeps per-item classes, refs, and events attached by value after reordering", () => {
-    const overviewRef = createRef<HTMLInputElement>();
-    const settingsRef = createRef<HTMLInputElement>();
-    const calls: string[] = [];
-    const slotProps = {
-      input: {
-        byItemValue: {
-          overview: {
-            className: "overview-input",
-            ref: overviewRef,
-            onChange: () => calls.push("overview"),
-            "data-testid": "overview-input",
-          },
-          settings: {
-            className: "settings-input",
-            ref: settingsRef,
-            onChange: () => calls.push("settings"),
-            "data-testid": "settings-input",
-          },
-        },
-      },
-    };
-    const items = [
-      { value: "overview", label: "Overview" },
-      { value: "settings", label: "Settings" },
-    ];
-    const view = render(<Tabs id="account" items={items} slotProps={slotProps} />);
-
-    expect(screen.getByTestId("overview-input").className).toContain("overview-input");
-    expect(screen.getByTestId("settings-input").className).toContain("settings-input");
-    expect(overviewRef.current).toBe(screen.getByTestId("overview-input"));
-    expect(settingsRef.current).toBe(screen.getByTestId("settings-input"));
-    fireEvent.click(screen.getByTestId("settings-input"));
-    expect(calls).toEqual(["settings"]);
-
-    view.rerender(<Tabs id="account" items={[...items].reverse()} slotProps={slotProps} />);
-
-    expect(screen.getByTestId("overview-input").className).toContain("overview-input");
-    expect(screen.getByTestId("settings-input").className).toContain("settings-input");
-    expect(overviewRef.current).toBe(screen.getByTestId("overview-input"));
-    expect(settingsRef.current).toBe(screen.getByTestId("settings-input"));
-  });
-
-  it("lets slot props override generated defaults per item", () => {
-    render(
-      <Tabs
-        id="t"
-        items={[
-          { value: "a", label: "A", panel: "Panel A" },
-          { value: "b", label: "B", panel: "Panel B" },
-        ]}
-        defaultValue="a"
-        slotProps={{
-          panel: { byItemValue: { b: { id: "custom-panel", "data-part": "sheet" } } },
-        }}
-      />,
+describe("Tabs composition", () => {
+  it("keeps triggers inside the list and contents as direct children of the root, in order", () => {
+    const markup = renderToStaticMarkup(
+      <Tabs>
+        <TabsList>
+          <TabsTrigger name="t" value="a" defaultChecked>
+            A
+          </TabsTrigger>
+          <TabsTrigger name="t" value="b">
+            B
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="a">Panel A</TabsContent>
+        <TabsContent value="b">Panel B</TabsContent>
+      </Tabs>,
     );
-    const panel = screen.getByText("Panel B");
-    expect(panel.id).toBe("custom-panel");
-    expect(panel.getAttribute("data-part")).toBe("sheet");
-    expect(screen.getByText("Panel A").getAttribute("data-part")).toBe("panel");
+    const host = document.createElement("div");
+    host.innerHTML = markup;
+    const root = host.querySelector(".uiify-tabs")!;
+    expect(root.querySelectorAll(":scope > .uiify-tabs-list > .uiify-tabs-item")).toHaveLength(2);
+    expect(
+      [...root.querySelectorAll(":scope > .uiify-tabs-content")].map((node) =>
+        node.getAttribute("data-value"),
+      ),
+    ).toEqual(["a", "b"]);
+    expect(markup).not.toMatch(/role=|aria-selected|data-part/);
   });
 });

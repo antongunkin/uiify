@@ -1,5 +1,6 @@
 "use client";
 import { useRef, type ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { useControllableState, useId } from "@gunkin/uiify/hooks";
 import { FileUploadProvider } from "./file-upload-context.js";
 import { validateFiles } from "./file-upload-store.js";
@@ -49,7 +50,11 @@ export function FileUploadRootClient({
     if (accepted.length) setFiles(multiple ? [...files, ...accepted] : accepted);
   };
   return (
-    <div {...consumerProps} data-uiify-file-upload="" data-disabled={disabled ? "" : undefined}>
+    <div
+      data-disabled={disabled ? "" : undefined}
+      {...consumerProps}
+      className={cn("uiify-file-upload", consumerProps.className)}
+    >
       <FileUploadProvider
         value={{
           accept,

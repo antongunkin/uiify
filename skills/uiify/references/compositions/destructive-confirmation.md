@@ -1,6 +1,6 @@
 # destructive-confirmation
 
-Use when both alert-modal and button are present.
+Use when both alert-dialog and button are present.
 
 Law: references/laws/error-prevention.md
 

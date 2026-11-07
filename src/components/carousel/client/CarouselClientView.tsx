@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { ReactElement } from "react";
 import { useIsomorphicLayoutEffect } from "../../../hooks/use-isomorphic-layout-effect.js";
 import { CarouselMarkup } from "../CarouselMarkup.js";
@@ -32,6 +32,8 @@ const emptyAutoplaySnapshot: CarouselAutoplaySnapshot = {
 export const getCarouselServerSnapshot = () => emptyCarouselSnapshot;
 const getAutoplayServerSnapshot = () => emptyAutoplaySnapshot;
 export const subscribeToNothing = () => () => {};
+const isClient = () => true;
+const isServer = () => false;
 
 export function CarouselClientView({
   base,
@@ -57,10 +59,9 @@ export function CarouselClientView({
     if (!root) return;
     return attachCarouselFocus(root, setPreserveFallbackFocus);
   }, [base.id, base.items.length]);
-  // Flips true only after the client's first commit — SSR and the first hydrated
-  // render must stay identical, so pagination still claims no current slide until then.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // False for SSR and the hydration render, so both stay identical and pagination
+  // still claims no current slide until the client takes over.
+  const mounted = useSyncExternalStore(subscribeToNothing, isClient, isServer);
   // Wrappers pass their complete client props as base; the pure renderer still accepts only server props.
   const rewind = "rewind" in base && base.rewind === true && snapshot.pages.length > 1;
   return (

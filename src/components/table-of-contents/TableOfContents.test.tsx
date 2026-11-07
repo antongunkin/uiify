@@ -36,7 +36,7 @@ describe("native TableOfContents", () => {
   it("wires an accessible native popover to real fragment links", () => {
     const { container } = render(<Navigation />);
     const root = screen.getByRole("navigation", { name: "On this page" });
-    expect(root?.getAttribute("data-uiify-table-of-contents")).toBe("");
+    expect(root?.classList.contains("uiify-table-of-contents")).toBe(true);
     expect(
       screen.getByRole("button", { name: "Open contents" })?.getAttribute("popovertarget"),
     ).toBe("toc-panel");
@@ -44,14 +44,16 @@ describe("native TableOfContents", () => {
     expect(panel?.getAttribute("popover")).toBe("auto");
     expect(panel?.getAttribute("data-side")).toBe("left");
     expect(panel?.getAttribute("data-align")).toBe("start");
-    expect(container.querySelectorAll('[data-part="indicator"]')).toHaveLength(3);
+    expect(container.querySelectorAll(".uiify-table-of-contents-indicator")).toHaveLength(3);
     expect([...container.querySelectorAll("a")].map((link) => link.getAttribute("href"))).toEqual([
       "#intro",
       "#setup",
       "#config",
     ]);
-    expect(container.querySelector('[data-part="rail"]')?.getAttribute("aria-hidden")).toBe("true");
-    expect(container.querySelector('[data-part="rail"]')?.tagName).toBe("SPAN");
+    expect(
+      container.querySelector(".uiify-table-of-contents-rail")?.getAttribute("aria-hidden"),
+    ).toBe("true");
+    expect(container.querySelector(".uiify-table-of-contents-rail")?.tagName).toBe("SPAN");
   });
   it("forwards native classes, data props, and refs through every public part", () => {
     const refs = {
@@ -108,7 +110,7 @@ describe("native TableOfContents", () => {
 
     for (const [part, ref] of Object.entries(refs)) {
       const element = screen.getByTestId(`toc-${part}`);
-      expect(element.className).toBe(`toc-${part}`);
+      expect(element.className).toContain(`toc-${part}`);
       expect(ref.current).toBe(element);
     }
   });
@@ -134,7 +136,7 @@ describe("native TableOfContents", () => {
     const link = screen.getByRole("link", { name: "Setup" });
     expect(link?.getAttribute("aria-current")).toBe("location");
     expect(link?.getAttribute("data-selected")).toBe("");
-    expect(link?.getAttribute("data-part")).toBe("link");
+    expect(link?.classList.contains("uiify-table-of-contents-link")).toBe(true);
     expect(link?.getAttribute("data-consumer")).toBe("kept");
     expect(link.classList.contains("custom")).toBe(true);
     expect(link.style.color).toBe("red");
@@ -151,7 +153,7 @@ describe("native TableOfContents", () => {
         </TableOfContents.Link>
       </>,
     );
-    const indicator = container.querySelector('[data-part="indicator"]') as HTMLElement;
+    const indicator = container.querySelector(".uiify-table-of-contents-indicator") as HTMLElement;
     expect(indicator.hasAttribute("data-selected")).toBe(false);
     expect(indicator.style.getPropertyValue("--uiify-toc-level")).toBe("3");
     expect(screen.getByRole("link").hasAttribute("aria-current")).toBe(false);
@@ -171,7 +173,7 @@ describe("native TableOfContents", () => {
     const link = screen.getByRole("link", { name: "Custom" });
     expect(link?.getAttribute("href")).toBe("#intro");
     expect(link?.getAttribute("aria-current")).toBe("location");
-    expect(link?.getAttribute("data-part")).toBe("link");
+    expect(link?.classList.contains("uiify-table-of-contents-link")).toBe(true);
   });
 });
 

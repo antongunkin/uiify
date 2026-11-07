@@ -20,9 +20,9 @@ describe("CandleChart", () => {
       />,
     );
 
-    expect(container.querySelector('[data-part="candle-hit"]')?.getAttribute("aria-label")).toBe(
-      "شمعة 2026-01-01",
-    );
+    expect(
+      container.querySelector(".uiify-candle-chart-candle-hit")?.getAttribute("aria-label"),
+    ).toBe("شمعة 2026-01-01");
   });
 
   it("uses localized labels for the chart, axes and data table", () => {
@@ -44,7 +44,7 @@ describe("CandleChart", () => {
       />,
     );
     expect(container.querySelector("figure")?.getAttribute("aria-label")).toBe("مخطط الشموع");
-    expect(container.querySelector('[data-part="candles"]')?.getAttribute("aria-label")).toBe(
+    expect(container.querySelector(".uiify-candle-chart-candles")?.getAttribute("aria-label")).toBe(
       "مخطط الشموع شموع",
     );
     expect(container.querySelector('[data-axis="time"]')?.getAttribute("aria-label")).toBe(
@@ -74,7 +74,7 @@ describe("CandleChart", () => {
     );
 
     expect(container.querySelector("figure")?.getAttribute("aria-label")).toBe("Market overview");
-    expect(container.querySelector('[data-part="candles"]')?.getAttribute("aria-label")).toBe(
+    expect(container.querySelector(".uiify-candle-chart-candles")?.getAttribute("aria-label")).toBe(
       "Market overview bars",
     );
     expect(container.querySelector('[data-axis="time"]')?.getAttribute("aria-label")).toBe(
@@ -91,7 +91,7 @@ describe("CandleChart", () => {
   it("preserves the default composed accessible names", () => {
     const { container } = render(<CandleChart data={DATA} />);
 
-    expect(container.querySelector('[data-part="candles"]')?.getAttribute("aria-label")).toBe(
+    expect(container.querySelector(".uiify-candle-chart-candles")?.getAttribute("aria-label")).toBe(
       "Candlestick chart candles",
     );
     expect(container.querySelector('[data-axis="time"]')?.getAttribute("aria-label")).toBe(
@@ -108,10 +108,10 @@ describe("CandleChart", () => {
   it("renders each OHLC item as a decorative candle with responsive geometry", () => {
     const { container } = render(<CandleChart data={DATA} data-testid="chart" />);
     const chart = container.querySelector("[data-testid='chart']") as HTMLElement;
-    const candles = [...chart.querySelectorAll('[data-part="candles"] > li')];
+    const candles = [...chart.querySelectorAll(".uiify-candle-chart-candles > li")];
 
     expect(chart.tagName).toBe("FIGURE");
-    expect(chart.getAttribute("data-uiify-candle-chart")).toBe("");
+    expect(chart.classList.contains("uiify-candle-chart")).toBe(true);
     expect(candles).toHaveLength(2);
     expect(chart.querySelectorAll("i")).toHaveLength(0);
     expect(chart.querySelectorAll("ol > li > *")).toHaveLength(0);
@@ -119,11 +119,11 @@ describe("CandleChart", () => {
     expect(candles[0]?.getAttribute("data-direction")).toBe("up");
     expect(candles[1]?.getAttribute("data-direction")).toBe("down");
     expect(candles[0]?.getAttribute("data-time")).toBe("2026-09-01");
-    expect(candles[0]?.getAttribute("style")).toContain("--candle-x: 0%");
-    expect(candles[0]?.getAttribute("style")).toContain("--candle-slot: 50%");
-    expect(candles[0]?.getAttribute("style")).not.toContain("--candle-open");
-    expect(candles[0]?.getAttribute("style")).toContain("--candle-body-top:");
-    expect(candles[0]?.getAttribute("style")).toContain("--candle-wick-height:");
+    expect(candles[0]?.getAttribute("style")).toContain("--uiify-candle-x: 0%");
+    expect(candles[0]?.getAttribute("style")).toContain("--uiify-candle-slot: 50%");
+    expect(candles[0]?.getAttribute("style")).not.toContain("--uiify-candle-open");
+    expect(candles[0]?.getAttribute("style")).toContain("--uiify-candle-body-top:");
+    expect(candles[0]?.getAttribute("style")).toContain("--uiify-candle-wick-height:");
   });
 
   it("renders a table fallback with the original OHLC values", () => {
@@ -168,7 +168,7 @@ describe("CandleChart", () => {
     );
 
     expect(container.querySelector('[data-testid="caption"]')?.className).toContain("caption");
-    expect(container.querySelectorAll('[data-part="candle"]')[0]?.className).toContain(
+    expect(container.querySelectorAll(".uiify-candle-chart-candle")[0]?.className).toContain(
       "all-candles",
     );
     expect(container.querySelector('[data-testid="candle-1"]')?.className).toContain(
@@ -195,7 +195,7 @@ describe("CandleChart", () => {
       />,
     );
 
-    fireEvent.click(container.querySelector('[data-part="candle-hit"]') as HTMLButtonElement);
+    fireEvent.click(container.querySelector(".uiify-candle-chart-candle-hit") as HTMLButtonElement);
     expect(onClick).toHaveBeenCalledOnce();
     expect(onCandleClick).not.toHaveBeenCalled();
   });
@@ -206,14 +206,14 @@ describe("CandleChart", () => {
         data={DATA}
         slotProps={{
           candle: { byItemIndex: { 0: { "data-direction": "custom" } } },
-          priceAxis: { "data-part": "custom-axis" },
+          priceAxis: { "data-testid": "custom-axis" },
         }}
       />,
     );
-    expect(container.querySelector('[data-part="candle"]')?.getAttribute("data-direction")).toBe(
-      "custom",
-    );
-    expect(container.querySelector('[data-part="custom-axis"]')).not.toBeNull();
+    expect(
+      container.querySelector(".uiify-candle-chart-candle")?.getAttribute("data-direction"),
+    ).toBe("custom");
+    expect(container.querySelector('[data-testid="custom-axis"]')).not.toBeNull();
   });
 
   it("renders the active candle readout with React values", () => {
@@ -228,21 +228,23 @@ describe("CandleChart", () => {
         onCandleClick={onCandleClick}
       />,
     );
-    const candles = container.querySelectorAll('[data-part="candles"] > li');
+    const candles = container.querySelectorAll(".uiify-candle-chart-candles > li");
     const active = candles[1];
 
-    expect(container.querySelector('[data-part="plot"]')?.getAttribute("aria-hidden")).toBeNull();
-    expect(active?.querySelector('[data-part="candle-hit"]')?.tagName).toBe("BUTTON");
+    expect(
+      container.querySelector(".uiify-candle-chart-plot")?.getAttribute("aria-hidden"),
+    ).toBeNull();
+    expect(active?.querySelector(".uiify-candle-chart-candle-hit")?.tagName).toBe("BUTTON");
     expect(active?.getAttribute("data-crosshair-active")).toBe("");
     expect(active?.getAttribute("data-tooltip-open")).toBeNull();
-    expect(active?.getAttribute("style")).not.toContain("--candle-open");
-    expect(active?.querySelector('[data-part="crosshair"]')).toBeNull();
-    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("O 108");
-    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("H 110");
-    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("L 98");
-    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("C 101");
+    expect(active?.getAttribute("style")).not.toContain("--uiify-candle-open");
+    expect(active?.querySelector(".uiify-candle-chart-crosshair")).toBeNull();
+    expect(container.querySelector(".uiify-candle-chart-readout")?.textContent).toContain("O 108");
+    expect(container.querySelector(".uiify-candle-chart-readout")?.textContent).toContain("H 110");
+    expect(container.querySelector(".uiify-candle-chart-readout")?.textContent).toContain("L 98");
+    expect(container.querySelector(".uiify-candle-chart-readout")?.textContent).toContain("C 101");
     expect(
-      container.querySelector('[data-part="viewport"] > [data-part="crosshair"]'),
+      container.querySelector(".uiify-candle-chart-viewport > .uiify-candle-chart-crosshair"),
     ).not.toBeNull();
   });
 
@@ -252,7 +254,7 @@ describe("CandleChart", () => {
     );
 
     expect(
-      container.querySelector('[data-part="candles"] > li')?.getAttribute("data-direction"),
+      container.querySelector(".uiify-candle-chart-candles > li")?.getAttribute("data-direction"),
     ).toBe("flat");
   });
 
@@ -261,9 +263,9 @@ describe("CandleChart", () => {
       <CandleChart data={[{ time: 1, open: 10, high: 10, low: 10, close: 10 }]} />,
     );
 
-    expect(container.querySelector('[data-part="candles"] > li')?.getAttribute("style")).toContain(
-      "--candle-body-top: 50%",
-    );
+    expect(
+      container.querySelector(".uiify-candle-chart-candles > li")?.getAttribute("style"),
+    ).toContain("--uiify-candle-body-top: 50%");
   });
 
   it("renders month and price legends from the OHLC range", () => {
@@ -273,24 +275,24 @@ describe("CandleChart", () => {
     ] satisfies readonly CandleChartData[];
     const { container } = render(<CandleChart data={data} />);
 
-    const timeViewport = container.querySelector('[data-part="time-viewport"]');
-    const scrollViewport = container.querySelector('[data-part="scroll-viewport"]');
-    const canvas = container.querySelector('[data-part="canvas"]');
+    const timeViewport = container.querySelector(".uiify-candle-chart-time-viewport");
+    const scrollViewport = container.querySelector(".uiify-candle-chart-scroll-viewport");
+    const canvas = container.querySelector(".uiify-candle-chart-canvas");
     const months = container.querySelectorAll("[data-axis='time'] > li");
     const prices = container.querySelectorAll("[data-axis='price'] > li");
 
     expect(timeViewport).not.toBeNull();
     expect(scrollViewport).not.toBeNull();
-    expect(scrollViewport?.querySelector('[data-part="canvas"]')).toBe(canvas);
+    expect(scrollViewport?.querySelector(".uiify-candle-chart-canvas")).toBe(canvas);
     expect(timeViewport?.querySelector("[data-axis='time']")).not.toBeNull();
     expect(months).toHaveLength(2);
     expect(months[0]?.textContent).toContain("Sep");
     expect(months[1]?.textContent).toContain("Oct");
-    expect(months[1]?.getAttribute("style")).toContain("--candle-axis-x:");
+    expect(months[1]?.getAttribute("style")).toContain("--uiify-candle-axis-x:");
     expect(prices).toHaveLength(6);
     expect(prices[0]?.textContent).toBe("120");
     expect(prices[5]?.textContent).toBe("96");
-    expect(prices[3]?.getAttribute("style")).toContain("--candle-axis-y:");
+    expect(prices[3]?.getAttribute("style")).toContain("--uiify-candle-axis-y:");
   });
 
   it("formats axis labels with the locale prop and defaults to en-US", () => {
@@ -323,9 +325,13 @@ describe("CandleChart", () => {
     const yAxis = container.querySelector("[data-axis='price']");
 
     expect(xAxis?.textContent).toBe("Launch");
-    expect(xAxis?.querySelector("li")?.getAttribute("style")).toContain("--candle-axis-x: 0%");
+    expect(xAxis?.querySelector("li")?.getAttribute("style")).toContain(
+      "--uiify-candle-axis-x: 0%",
+    );
     expect(yAxis?.textContent).toBe("$100.25");
-    expect(yAxis?.querySelector("li")?.getAttribute("style")).toContain("--candle-axis-y: 100%");
+    expect(yAxis?.querySelector("li")?.getAttribute("style")).toContain(
+      "--uiify-candle-axis-y: 100%",
+    );
   });
 
   it("formats numeric dates without a hardcoded month-name fixture", () => {
@@ -344,7 +350,7 @@ describe("CandleChart", () => {
     expect(container.querySelector("figure")?.className).toContain("custom");
 
     const html = assertSSRRenderable(<CandleChart data={DATA} aria-label="Server candles" />);
-    expect(html).toContain("data-uiify-candle-chart");
+    expect(html).toContain('class="uiify-candle-chart');
     expect(html).not.toContain("use client");
   });
 });

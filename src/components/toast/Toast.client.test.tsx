@@ -111,9 +111,9 @@ describe("Toast client", () => {
     );
 
     const root = screen.getByTestId("authored-toast");
-    expect(root.className).toBe("authored-toast");
+    expect(root.className).toContain("authored-toast");
     expect(root.getAttribute("style")).toContain("order: 3");
-    expect(root.getAttribute("data-part")).toBe("item");
+    expect(root.classList.contains("uiify-toast-item")).toBe(true);
   });
 
   it("passes provider label overrides to the live viewport and generated toast controls", () => {
@@ -139,12 +139,10 @@ describe("Toast client", () => {
     fireEvent.click(screen.getByRole("button", { name: "Show untitled" }));
     expect(screen.getByTestId("toast-viewport").getAttribute("aria-label")).toBe("Alertes");
     const viewport = screen.getByTestId("toast-viewport");
-    expect(viewport.querySelector('[data-part="item"]')?.getAttribute("aria-label")).toBe(
+    expect(viewport.querySelector(".uiify-toast-item")?.getAttribute("aria-label")).toBe(
       "Notification",
     );
-    expect(viewport.querySelector('[data-part="close"]')?.getAttribute("aria-label")).toBe(
-      "Fermer",
-    );
+    expect(viewport.querySelector(".uiify-toast-close")?.getAttribute("aria-label")).toBe("Fermer");
   });
 
   it("marks every public toast part in the client entry", () => {
@@ -156,14 +154,20 @@ describe("Toast client", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Show parts" }));
 
-    expect(screen.getByText("Saved").getAttribute("data-part")).toBe("title");
-    expect(screen.getByText("Profile updated").getAttribute("data-part")).toBe("description");
+    expect(screen.getByText("Saved").classList.contains("uiify-toast-title")).toBe(true);
+    expect(screen.getByText("Profile updated").classList.contains("uiify-toast-description")).toBe(
+      true,
+    );
     expect(
-      screen.getByRole("button", { name: "Undo", hidden: true }).getAttribute("data-part"),
-    ).toBe("action");
+      screen
+        .getByRole("button", { name: "Undo", hidden: true })
+        .classList.contains("uiify-toast-action"),
+    ).toBe(true);
     expect(
-      screen.getByRole("button", { name: "Close", hidden: true }).getAttribute("data-part"),
-    ).toBe("close");
+      screen
+        .getByRole("button", { name: "Close", hidden: true })
+        .classList.contains("uiify-toast-close"),
+    ).toBe(true);
   });
 
   it("forwards slot props to generated viewport, toast content, and live-region nodes", () => {
@@ -228,11 +232,11 @@ describe("Toast client", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Show slotted toast" }));
 
-    expect(screen.getByTestId("custom-toast-viewport").className).toBe("toast-viewport-class");
-    expect(screen.getByTestId("toast-item-saved").className).toBe(
+    expect(screen.getByTestId("custom-toast-viewport").className).toContain("toast-viewport-class");
+    expect(screen.getByTestId("toast-item-saved").className).toContain(
       "toast-item-common toast-item-saved",
     );
-    expect(screen.getByTestId("toast-title").className).toBe("toast-title");
+    expect(screen.getByTestId("toast-title").className).toContain("toast-title");
     expect(screen.getByTestId("toast-close")).toBeTruthy();
     fireEvent.click(screen.getByTestId("toast-action-saved"));
     expect(action).not.toHaveBeenCalled();

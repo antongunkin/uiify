@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { Combobox } from "./combobox/index.js";
 import { ContextMenu } from "./context-menu/index.js";
 import { DropdownMenu } from "./dropdown-menu/index.js";
-import { OtpInput } from "./otp-input/index.js";
+import { InputOTP, InputOTPHiddenInput, InputOTPSlot } from "./input-otp/index.js";
 import { TagsInput } from "./tags-input/index.js";
 
 describe("Tier 2 pre-hydration SSR markup", () => {
@@ -59,11 +59,11 @@ describe("Tier 2 pre-hydration SSR markup", () => {
             <TagsInput.Input aria-label="Add tag" />
           </TagsInput.List>
         </TagsInput.Root>
-        <OtpInput.Root length={4} defaultValue="12">
-          <OtpInput.Slot index={0} />
-          <OtpInput.Slot index={1} />
-          <OtpInput.HiddenInput />
-        </OtpInput.Root>
+        <InputOTP length={4} defaultValue="12">
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPHiddenInput />
+        </InputOTP>
       </>,
     );
     expect(screen.getByText("Design")).toBeTruthy();

@@ -17,7 +17,7 @@
 
 ## Values
 
-- `BadgeVariant`: `"secondary" | "success" | "warning" | "destructive"`
+- `BadgeVariant`: `"default" | "secondary" | "outline" | "success" | "warning" | "destructive"` — `default` is the unset look; `outline` drops the fill for a bordered rim.
 - `BadgeSize`: `"sm" | "md" | "lg"`
 
 ## Props and shapes

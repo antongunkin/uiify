@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Tabs } from "../tabs/index.js";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs/index.js";
 import { attachEnhancers } from "./listeners.js";
 
 let detach: (() => void) | undefined;
@@ -61,20 +61,21 @@ describe("attachEnhancers", () => {
   });
 
   it("syncs tabs from a change event on a tabs radio", () => {
-    // Rendered from the real component, not hand-written: the previous fixture
-    // invented `data-uiify-tabs-root`, which Tabs never emits (its root carries
-    // `data-uiify-tabs` + `id`). That divergence let the listener select a
-    // non-existent attribute and made syncTabs dead code in production while
-    // this test stayed green.
+    // Rendered from the real component so the enhancement follows its public
+    // identity classes, not an invented marker shape.
     document.body.innerHTML = renderToStaticMarkup(
-      createElement(Tabs, {
-        id: "t1",
-        defaultValue: "a",
-        items: [
-          { value: "a", label: "Overview", panel: null },
-          { value: "b", label: "Settings", panel: null },
-        ],
-      }),
+      createElement(
+        Tabs,
+        null,
+        createElement(
+          TabsList,
+          null,
+          createElement(TabsTrigger, { name: "t1", value: "a", defaultChecked: true }, "Overview"),
+          createElement(TabsTrigger, { name: "t1", value: "b" }, "Settings"),
+        ),
+        createElement(TabsContent, { value: "a" }),
+        createElement(TabsContent, { value: "b" }),
+      ),
     );
     detach = attachEnhancers();
 
@@ -82,15 +83,11 @@ describe("attachEnhancers", () => {
     inputB.checked = true;
     inputB.dispatchEvent(new Event("change", { bubbles: true }));
 
-    const [triggerA, triggerB] = [
-      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="trigger"]'),
-    ];
+    const [triggerA, triggerB] = [...document.querySelectorAll<HTMLElement>(".uiify-tabs-trigger")];
     expect(triggerA!.getAttribute("aria-selected")).toBe("false");
     expect(triggerB!.getAttribute("aria-selected")).toBe("true");
 
-    const [panelA, panelB] = [
-      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="panel"]'),
-    ];
+    const [panelA, panelB] = [...document.querySelectorAll<HTMLElement>(".uiify-tabs-content")];
     expect(panelA!.dataset["state"]).toBe("inactive");
     expect(panelB!.dataset["state"]).toBe("active");
   });

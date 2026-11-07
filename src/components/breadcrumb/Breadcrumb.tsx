@@ -1,6 +1,11 @@
 import type { ElementType, ReactElement, ReactNode } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
+import {
+  NativeDetailsContent,
+  NativeDetailsRoot,
+  NativeDetailsSummary,
+} from "../../elements/native-details/index.js";
 import { collapseBreadcrumbItems } from "./breadcrumb-collapse.js";
 import type {
   BreadcrumbLabels,
@@ -30,8 +35,11 @@ export function BreadcrumbRoot<TAs extends ElementType = "nav">(
     defaultTag: "nav",
     props: {
       "aria-label": resolvedLabels.root,
-      "data-uiify-breadcrumb": "",
       ...consumerProps,
+      className: cn(
+        "uiify-breadcrumb",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
     },
     render,
     state: {},
@@ -116,7 +124,14 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
   return useRenderElement({
     as,
     defaultTag: "ol",
-    props: { "data-part": "list", ...consumerProps, children: content },
+    props: {
+      ...consumerProps,
+      className: cn(
+        "uiify-breadcrumb-list",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
+      children: content,
+    },
     render,
     state: {},
   });
@@ -131,7 +146,14 @@ export function BreadcrumbItem<TAs extends ElementType = "li">(
   return useRenderElement({
     as,
     defaultTag: "li",
-    props: { "data-part": "item", ...consumerProps, children },
+    props: {
+      ...consumerProps,
+      className: cn(
+        "uiify-breadcrumb-item",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
+      children,
+    },
     render,
     state: {},
   });
@@ -153,11 +175,14 @@ export function BreadcrumbLink<TAs extends ElementType = "a">(
     as,
     defaultTag: "a",
     props: {
-      "data-part": "link",
       "aria-current": current ? "page" : undefined,
       "data-current": current ? "" : undefined,
       href,
       ...consumerProps,
+      className: cn(
+        "uiify-breadcrumb-link",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
       children,
     },
     render,
@@ -178,16 +203,22 @@ export function BreadcrumbSeparator<TAs extends ElementType = "span">(
   return useRenderElement({
     as,
     defaultTag: "span",
-    props: { "aria-hidden": true, "data-part": "separator", ...consumerProps, children },
+    props: {
+      "aria-hidden": true,
+      ...consumerProps,
+      className: cn(
+        "uiify-breadcrumb-separator",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
+      children,
+    },
     render,
     state: {},
   });
 }
 
 /**
- * Built on `@gunkin/uiify/elements/details`: `Details.Summary`/`Details.Content` are used without a
- * `part` (this trigger and panel carry no `data-part`, unlike Accordion/Collapsible's), and
- * `Details.Content` renders as `<ol>` via `as` instead of the default `<div>`.
+ * Built on the native Details Element so the collapsed links work without JavaScript.
  */
 function BreadcrumbEllipsis({
   hiddenItems,
@@ -197,16 +228,18 @@ function BreadcrumbEllipsis({
 }: BreadcrumbEllipsisProps): ReactElement {
   return (
     <BreadcrumbItem {...slotProps?.ellipsisItem}>
-      <details
-        data-part="ellipsis"
-        data-uiify-breadcrumb=""
-        data-uiify-details=""
+      <NativeDetailsRoot
         {...slotProps?.ellipsis}
+        className={cn("uiify-breadcrumb-ellipsis", slotProps?.ellipsis?.className)}
       >
-        <summary aria-label={labels.showCollapsed} {...slotProps?.ellipsisTrigger}>
+        <NativeDetailsSummary aria-label={labels.showCollapsed} {...slotProps?.ellipsisTrigger}>
           …
-        </summary>
-        <ol {...slotProps?.ellipsisContent}>
+        </NativeDetailsSummary>
+        <NativeDetailsContent
+          as="ol"
+          {...slotProps?.ellipsisContent}
+          className={cn("uiify-breadcrumb-ellipsis-content", slotProps?.ellipsisContent?.className)}
+        >
           {hiddenItems.map((item) => (
             <BreadcrumbLink
               key={item.key}
@@ -217,8 +250,8 @@ function BreadcrumbEllipsis({
               {item.label}
             </BreadcrumbLink>
           ))}
-        </ol>
-      </details>
+        </NativeDetailsContent>
+      </NativeDetailsRoot>
       {separator}
     </BreadcrumbItem>
   );

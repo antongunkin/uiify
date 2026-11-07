@@ -9,7 +9,7 @@ describe("base positioning skin", () => {
   it("keeps native geometry in behavior.css", () => {
     expect(css).not.toContain("position-area");
     expect(css).toContain(
-      '[data-positioning="native"] { --uiify-anchor-offset: var(--space-sm); }',
+      '[data-positioning="native"] { --uiify-anchor-offset: calc(var(--spacing) * 2); }',
     );
   });
 

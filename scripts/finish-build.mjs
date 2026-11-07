@@ -42,7 +42,8 @@ const tierManifest = JSON.parse(await readFile(resolve(root, "src/component-tier
 await writePublicWrappers("components", [
   ...Object.keys(tierManifest.components),
   "enhance",
-  "modal/client",
+  "checkbox/client",
+  "dialog/client",
   "header/client",
   "table-of-contents/client",
   "rating/client",
@@ -60,8 +61,9 @@ const elementManifest = JSON.parse(
 );
 await writePublicWrappers("elements", Object.keys(elementManifest.elements));
 
-const { stdout, stderr } = await execFileAsync(process.execPath, ["scripts/build.mjs"], {
-  cwd: root,
-});
-process.stdout.write(stdout);
-process.stderr.write(stderr);
+// build-styles first: it regenerates src/styles/generated, which build.mjs bundles into index.css.
+for (const script of ["scripts/build-styles.mjs", "scripts/build.mjs"]) {
+  const { stdout, stderr } = await execFileAsync(process.execPath, [script], { cwd: root });
+  process.stdout.write(stdout);
+  process.stderr.write(stderr);
+}

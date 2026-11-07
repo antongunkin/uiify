@@ -30,6 +30,7 @@ it("lets native props override avatar root, image and fallback defaults", () => 
       name="Ada"
       fallback="A"
       src="/ada.png"
+      // oxlint-disable-next-line jsx-a11y/aria-role -- This tests removal of the generated role.
       role={undefined}
       aria-label={undefined}
       data-uiify-avatar="custom"

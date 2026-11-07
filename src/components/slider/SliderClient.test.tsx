@@ -49,8 +49,8 @@ describe("SliderClient", () => {
     const lower = screen.getByRole("slider", { name: "Minimum" });
 
     expect(screen.getByTestId("track").className).toContain("track");
-    expect(container.querySelector('[data-part="range"]')?.className).toContain("range");
-    const firstMark = screen.getByText("Half").closest('[data-part="mark"]')!;
+    expect(container.querySelector(".uiify-slider-range")?.className).toContain("range");
+    const firstMark = screen.getByText("Half").closest(".uiify-slider-mark")!;
     expect(firstMark.className).toContain("mark value-50");
     expect(screen.getByTestId("mark-duplicate").textContent).toBe("Repeated half");
     expect(screen.getByTestId("visual-minimum")).toBeTruthy();
@@ -62,6 +62,18 @@ describe("SliderClient", () => {
     expect(onLowerChange).toHaveBeenCalledOnce();
     expect(onMinimumKeyDown).toHaveBeenCalledOnce();
     expect(onValueChange).toHaveBeenCalledWith([30, 80]);
+  });
+
+  it("uses recipe part classes for every slider client part", () => {
+    const { container } = render(
+      <SliderClient defaultValue={40} marks={[{ value: 50, label: "Half" }]} />,
+    );
+
+    expect(container.querySelector(".uiify-slider-client-track")).not.toBeNull();
+    expect(container.querySelector(".uiify-slider-client-range")).not.toBeNull();
+    expect(container.querySelector(".uiify-slider-client-mark")).not.toBeNull();
+    expect(container.querySelector(".uiify-slider-client-visual-thumb")).not.toBeNull();
+    expect(container.querySelector(".uiify-slider-client-thumb")).not.toBeNull();
   });
 
   it("lets an input slot cancel the internal value update", () => {
@@ -228,6 +240,59 @@ describe("SliderClient", () => {
       target: { value: "90" },
     });
     expect(onValueChange).toHaveBeenLastCalledWith([70, 70]);
+  });
+
+  it("keeps a minimum value gap between range thumbs", () => {
+    const onValueChange = vi.fn();
+    render(
+      <SliderClient
+        value={[20, 80]}
+        minStepsBetweenValues={10}
+        thumbLabels={["Minimum", "Maximum"]}
+        onValueChange={onValueChange}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("slider", { name: "Minimum" }), {
+      target: { value: "90" },
+    });
+    expect(onValueChange).toHaveBeenLastCalledWith([70, 80]);
+
+    fireEvent.change(screen.getByRole("slider", { name: "Maximum" }), {
+      target: { value: "25" },
+    });
+    expect(onValueChange).toHaveBeenLastCalledWith([20, 30]);
+  });
+
+  it("applies the minimum value gap to marks-only stops", () => {
+    const onValueChange = vi.fn();
+    render(
+      <SliderClient
+        defaultValue={[0, 100]}
+        marks={[{ value: 0 }, { value: 30 }, { value: 70 }, { value: 100 }]}
+        minStepsBetweenValues={15}
+        step={null}
+        thumbLabels={["Minimum", "Maximum"]}
+        onValueChange={onValueChange}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("slider", { name: "Minimum" }), {
+      target: { value: "90" },
+    });
+    expect(onValueChange).toHaveBeenLastCalledWith([70, 100]);
+  });
+
+  it("separates initially overlapping thumbs by the minimum gap", () => {
+    const html = renderToStaticMarkup(
+      <SliderClient
+        defaultValue={[50, 55]}
+        minStepsBetweenValues={10}
+        thumbLabels={["Minimum", "Maximum"]}
+      />,
+    );
+    expect(html).toContain('value="45"');
+    expect(html).toContain('value="55"');
   });
 
   it("does not report changes from a disabled slider", () => {

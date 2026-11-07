@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useControllableState, useId, useIsomorphicLayoutEffect } from "@gunkin/uiify/hooks";
 import { createHoverIntentStore, type HoverIntentStore } from "./hover-intent-store.js";
 import { emitProgrammaticOpenChange } from "./open-change-details.js";
@@ -60,17 +60,14 @@ export function useHoverOverlay(options: UseHoverOverlayOptions): UseHoverOverla
     ...(open !== undefined ? { value: open } : {}),
   });
   const [contentId, setContentId] = useState(`${generatedId}-content`);
-  const intentRef = useRef<HoverIntentStore | null>(null);
-  intentRef.current ??= createHoverIntentStore({ closeDelay, openDelay });
+  const [intent] = useState(() => createHoverIntentStore({ closeDelay, openDelay }));
 
   useIsomorphicLayoutEffect(() => {
-    intentRef.current?.updateOptions({ closeDelay, openDelay });
-  }, [closeDelay, openDelay]);
+    intent.updateOptions({ closeDelay, openDelay });
+  }, [closeDelay, intent, openDelay]);
 
   const openOverlay = useCallback(
     (immediate = false) => {
-      const intent = intentRef.current;
-      if (!intent) return;
       intent.clearCloseTimer();
       const delay = immediate || (shouldSkipDelay?.() ?? false) ? 0 : openDelay;
       intent.scheduleOpen(() => {
@@ -78,26 +75,26 @@ export function useHoverOverlay(options: UseHoverOverlayOptions): UseHoverOverla
         onOpened?.();
       }, delay);
     },
-    [onOpened, openDelay, setResolvedOpen, shouldSkipDelay],
+    [intent, onOpened, openDelay, setResolvedOpen, shouldSkipDelay],
   );
 
   const closeOverlay = useCallback(() => {
-    intentRef.current?.clearAll();
+    intent.clearAll();
     setResolvedOpen(false);
-  }, [setResolvedOpen]);
+  }, [intent, setResolvedOpen]);
 
   useIsomorphicLayoutEffect(
     () => () => {
-      intentRef.current?.clearAll();
+      intent.clearAll();
     },
-    [],
+    [intent],
   );
 
   return {
     anchorId: generatedId,
     closeOverlay,
     contentId,
-    intent: intentRef.current!,
+    intent,
     open: resolvedOpen,
     openOverlay,
     setContentId,

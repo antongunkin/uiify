@@ -14,7 +14,7 @@ Do not expect this static component to validate fields, announce dynamic updates
 
 ## Structure
 
-`FormErrorSummary` takes required `title: ReactNode` and `errors: readonly { href: string; message: ReactNode }[]`. It renders a `section`, heading, and list of links. Name the section with native `aria-label` when useful. Each `href` must target a unique field ID in the same form instance. Use the published `Input` or `Field.Control` for matching fields, and associate matching inline error text with the control using caller-owned `aria-describedby`. An empty error array renders `null`.
+`FormErrorSummary` takes required `title: ReactNode` and `errors: readonly { href: string; message: ReactNode }[]`. It renders a `section`, heading, and list of links. Name the section with native `aria-label` when useful. Each `href` must target a unique field ID in the same form instance. Use the published `Input` or `Textarea` inside a `Field` for matching fields, and associate matching inline error text with the control using caller-owned `aria-describedby`. An empty error array renders `null`.
 
 Use `slotProps.title` and `slotProps.list` for the heading and list. Use
 `slotProps.item` and `slotProps.link` for each error row and link. Repeated

@@ -20,16 +20,14 @@ function single(value: unknown) {
 
 const button = (props: Json = {}): Json => ({ type: "Button", props, children: ["Go"] });
 const form = (...children: unknown[]): Json => ({ type: "form", props: {}, children });
-const fieldRoot = (id: string, ...children: unknown[]): Json => ({
-  type: "Field.Root",
-  props: { id },
-  children,
-});
-const fieldLabel = (fieldId: string): Json => ({
-  type: "Field.Label",
-  props: { fieldId },
+const field = (...children: unknown[]): Json => ({ type: "Field", props: {}, children });
+const fieldLabel = (htmlFor: string): Json => ({
+  type: "FieldLabel",
+  props: { htmlFor },
   children: ["Name"],
 });
+const input = (props: Json): Json => ({ type: "Input", props });
+const breadcrumbList = (): Json => ({ type: "Breadcrumb.List", props: {}, children: [] });
 
 describe("validateDocument", () => {
   it.each([
@@ -79,23 +77,30 @@ describe("validateDocument", () => {
       expect(issue.path).toBe("/root/children/0/props/variant");
       expect(issue.breadcrumb).toBe("form › Button.props.variant");
       expect(issue.message).toContain('"primary"');
-      expect(issue.allowed).toEqual(["secondary", "outline", "ghost", "destructive", "link"]);
+      expect(issue.allowed).toEqual([
+        "default",
+        "secondary",
+        "outline",
+        "ghost",
+        "destructive",
+        "link",
+      ]);
     });
 
     it("rejects a missing required prop", () => {
-      const issue = single(fieldRoot("a", { type: "Field.Label", props: {}, children: ["Name"] }));
-      expect(issue.breadcrumb).toBe("Field.Root › Field.Label.props.fieldId");
-      expect(issue.message).toContain('missing required prop "fieldId"');
+      const issue = single(form({ type: "Checkbox", props: {} }));
+      expect(issue.breadcrumb).toBe("form › Checkbox.props.id");
+      expect(issue.message).toContain('missing required prop "id"');
     });
 
     it("rejects children on a leaf part", () => {
       const issue = single({
-        type: "Select.Root",
+        type: "NativeSelect",
         props: {},
-        children: [{ type: "Select.Separator", props: {}, children: ["x"] }],
+        children: [{ type: "NativeSelectSeparator", props: {}, children: ["x"] }],
       });
-      expect(issue.breadcrumb).toBe("Select.Root › Select.Separator");
-      expect(issue.message).toBe("Select.Separator takes no children");
+      expect(issue.breadcrumb).toBe("NativeSelect › NativeSelectSeparator");
+      expect(issue.message).toBe("NativeSelectSeparator takes no children");
     });
 
     it("rejects an unsafe URL scheme", () => {
@@ -125,7 +130,7 @@ describe("validateDocument", () => {
       for (const variant of [cyclic, 10n]) {
         const issue = single(form(button({ variant })));
         expect(issue.breadcrumb).toBe("form › Button.props.variant");
-        expect(issue.allowed).toHaveLength(5);
+        expect(issue.allowed).toHaveLength(6);
       }
     });
 
@@ -161,13 +166,10 @@ describe("validateDocument", () => {
         type: "ColorPicker",
         props: { label: "Brand", ...props },
       });
-      const popup = (id: string): Json => ({
-        type: "Popup.Root",
+      const popover = (id: string): Json => ({
+        type: "PopoverContent",
         props: { id },
-        children: [
-          { type: "Popup.Trigger", props: {}, children: ["Open"] },
-          { type: "Popup.Content", props: {}, children: ["Body"] },
-        ],
+        children: ["Body"],
       });
 
       it("rejects a ColorPicker color that is not #rrggbb", () => {
@@ -184,23 +186,23 @@ describe("validateDocument", () => {
         }
       });
 
-      it("rejects a Popup.Root id that would leave the anchor custom property", () => {
+      it("rejects an id that could leave a custom property", () => {
         for (const id of ["a;position:fixed", "a}b", "x{", "1abc", "has space", ""]) {
-          const issue = single(popup(id));
-          expect(issue.breadcrumb).toBe("Popup.Root.props.id");
+          const issue = single(popover(id));
+          expect(issue.breadcrumb).toBe("PopoverContent.props.id");
           expect(issue.message).toContain("not a valid id");
         }
-        expect(validateDocument(popup("menu-1")).ok).toBe(true);
+        expect(validateDocument(popover("menu-1")).ok).toBe(true);
       });
 
       it("checks every id reference against the id token", () => {
         const trigger = (target: string): Json => ({
-          type: "ModalTrigger",
+          type: "DialogTrigger",
           props: { target },
           children: ["Open"],
         });
-        expect(single(trigger("a;b")).breadcrumb).toBe("ModalTrigger.props.target");
-        expect(single(fieldRoot("a", fieldLabel("a;b"))).message).toContain("not a valid id");
+        expect(single(trigger("a;b")).breadcrumb).toBe("DialogTrigger.props.target");
+        expect(single(field(fieldLabel("a;b"))).message).toContain("not a valid id");
         expect(
           single({ type: "label", props: { htmlFor: "a b" }, children: ["x"] }).message,
         ).toContain("not a valid id");
@@ -278,37 +280,49 @@ describe("validateDocument", () => {
 
   describe("rules", () => {
     it("rejects a part outside its root", () => {
-      const issue = single(form(fieldLabel("status")));
-      expect(issue.breadcrumb).toBe("form › Field.Label");
-      expect(issue.message).toContain(uiParts["Field.Label"].rootType);
-      expect(issue.message).toContain("Field.Root");
+      const issue = single(form(breadcrumbList()));
+      expect(issue.breadcrumb).toBe("form › Breadcrumb.List");
+      expect(issue.message).toContain(uiParts["Breadcrumb.List"].rootType);
+      expect(issue.message).toContain("Breadcrumb.Root");
     });
 
     it("accepts a part inside its root through layout nodes", () => {
-      const stack = { type: "Stack", props: {}, children: [fieldLabel("status")] };
-      expect(validateDocument(fieldRoot("status", stack)).ok).toBe(true);
+      const stack = { type: "Stack", props: {}, children: [breadcrumbList()] };
+      const root = { type: "Breadcrumb.Root", props: {}, children: [stack] };
+      expect(validateDocument(root).ok).toBe(true);
     });
 
-    it("rejects a fieldId that names another root", () => {
-      const issue = single({ version: 1, root: fieldRoot("status", fieldLabel("other")) });
-      expect(issue.path).toBe("/root/children/0/props/fieldId");
-      expect(issue.breadcrumb).toBe("Field.Root › Field.Label.props.fieldId");
-      expect(issue.message).toContain('"other"');
-      expect(issue.allowed).toEqual(["status"]);
+    it("validator rejects a FieldLabel htmlFor with no target", () => {
+      const issue = single({
+        version: 1,
+        root: form(field(fieldLabel("missing"), input({ id: "email" }))),
+      });
+      expect(issue.code).toBe("field.label-target");
+      expect(issue.path).toBe("/root/children/0/children/0/props/htmlFor");
+      expect(issue.breadcrumb).toBe("form › Field › FieldLabel.props.htmlFor");
+      expect(issue.message).toContain('"missing"');
+      expect(issue.allowed).toEqual(["email"]);
     });
 
-    it("uses the nearest root for fieldId", () => {
-      const inner = fieldRoot("inner", fieldLabel("inner"));
-      expect(validateDocument(fieldRoot("outer", inner)).ok).toBe(true);
-      expect(single(fieldRoot("outer", fieldRoot("inner", fieldLabel("outer")))).message).toContain(
-        '"inner"',
+    it("validator rejects an aria-describedby id with no target", () => {
+      const hint = { type: "FieldDescription", props: { id: "hint" }, children: ["x"] };
+      const issue = single(
+        form(
+          field(fieldLabel("email"), input({ id: "email", "aria-describedby": "hint gone" }), hint),
+        ),
       );
+      expect(issue.code).toBe("field.describedby-target");
+      expect(issue.path).toBe("/children/0/children/1/props/aria-describedby");
+      expect(issue.breadcrumb).toBe("form › Field › Input.props.aria-describedby");
+      expect(issue.message).toContain('"gone"');
+      expect(issue.message).not.toContain('"hint"');
     });
 
     it("rejects a duplicate id", () => {
-      const issue = single({ version: 1, root: form(fieldRoot("same"), fieldRoot("same")) });
+      const same = (): Json => ({ type: "Field", props: { id: "same" }, children: [] });
+      const issue = single({ version: 1, root: form(same(), same()) });
       expect(issue.path).toBe("/root/children/1/props/id");
-      expect(issue.breadcrumb).toBe("form › Field.Root.props.id");
+      expect(issue.breadcrumb).toBe("form › Field.props.id");
       expect(issue.message).toContain('duplicate id "same"');
       expect(issue.message).toContain("/root/children/0");
     });
@@ -443,9 +457,9 @@ describe("validateDocument", () => {
         expect(
           validateDocument(
             node(
-              "Select.Root",
-              node("Select.Content", {
-                type: "Select.Item",
+              "NativeSelect",
+              node("NativeSelectContent", {
+                type: "NativeSelectOption",
                 props: { value: "a" },
                 children: ["A"],
               }),
@@ -615,9 +629,11 @@ describe("validateDocument", () => {
       path: "/props/variant",
       allowed: expect.arrayContaining(["ghost"]),
     });
-    expect(single(fieldLabel("missing"))).toMatchObject({ code: "root.missing", path: "" });
-    expect(single(fieldRoot("a", fieldLabel("b"))).code).toBe("fieldId.mismatch");
-    expect(single(form(fieldRoot("a"), fieldRoot("a"))).code).toBe("id.duplicate");
+    expect(single(breadcrumbList())).toMatchObject({ code: "root.missing", path: "" });
+    expect(single(field(fieldLabel("b"))).code).toBe("field.label-target");
+    expect(
+      single(form(input({ id: "a" }), { type: "Field", props: { id: "a" }, children: [] })).code,
+    ).toBe("id.duplicate");
     expect(single(form("x".repeat(10_001))).code).toBe("limit.string");
     expect(single({ type: "Button", props: {}, children: [button()] }).code).toBe("nesting");
     expect(single({ version: 2, root: button() }).code).toBe("version.unsupported");

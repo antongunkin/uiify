@@ -14,23 +14,27 @@ Do not use a field wrapper without a real form control, or hide instructions nee
 
 ## Structure
 
-Use `Field.Root`, `Field.Label`, `Field.Control`, `Field.Description`, and `Field.Error` with the same `id` on Root and `fieldId` on every part. Put native props such as `name`, `type`, and `autoComplete` on `Field.Control`. Pass `invalid`, `required`, and `disabled` to the parts that need those states; Root does not inject props into them.
+`Field` (`role="group"`) holds `FieldLabel htmlFor="x"` and a published control with `id="x"` (`Input`, `Textarea`, or `Checkbox`/`Switch` without their own `label`). Give `FieldDescription`/`FieldError` an `id` and list it in the control's `aria-describedby`. `orientation="horizontal"` puts a checkbox beside `FieldContent` (label and description). Stack fields in `FieldGroup`. Use `FieldTitle as="span"` inside a label.
+
+Group related controls in `FieldSet` (native `fieldset`) with `FieldLegend` first (`variant="label"` for label size); each control keeps its own label.
+
+`variant="card"`: choice card, see `radio-group`; its `FieldLabel` holds text only.
 
 ## Responsive
 
-Keep labels and help text close to the control at narrow widths. Let long instructions and error messages wrap without clipping.
+Keep help text close to the control and let long messages wrap. `orientation="responsive"` is a column until its `FieldGroup` (the size container) is 28rem wide, then a row.
 
 ## States
 
-Native required validation works without JavaScript. For application validation, set `invalid` on Root and Control and render `Field.Error` with the same state after validation. Keep `Field.Description` mounted alongside the conditional Error: Control always references its derived description ID. Parts write their IDs and Control's ARIA relationships by default; overriding `id`/`aria-describedby` breaks those links, so omit manual overrides. The error is included while invalid.
+Native constraint validation (`required`, `type`) works without JavaScript. For application validation set `invalid` on the control (`aria-invalid`) and on `Field`, and render `FieldError` with the message on the server; without content it renders nothing. No CSS reveals errors.
 
 ## Verify
 
-Click the label and confirm its control receives focus. Inspect the accessibility tree for the control's name and associated description; submit an invalid value and confirm a textual error appears and is announced. Check required, disabled, read-only, and long-message states.
+Click the label: its control gets focus. In the accessibility tree the control's description includes the error text when invalid. Check required, disabled, and long-message states.
 
 ## Common mistake
 
-Use `Field.Control as="input"`, which supplies the UIify Input marker and derived control ID. A standalone `Input id={rootId}` duplicates Root's ID and disconnects Field.Label. Do not guess ID suffixes; adapt the complete example. Click the label to verify the relationship.
+A description or error whose `id` is missing from the control's `aria-describedby` is never read (`screen-field-description`). `htmlFor` must equal the control's `id`. `FieldGroup` is a size container: in a shrink-to-fit context (inline flex row, popover) give it a width or it collapses.
 
 Example: `references/examples/field-validation.md`.
 
@@ -42,3 +46,5 @@ Related laws: references/laws/proximity.md, references/laws/accessibility.md
 - [www.w3.org](https://www.w3.org/WAI/tutorials/forms/labels/) (verified 2026-10-17)
 - [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html) (verified 2026-10-17)
 - [www.w3.org](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html) (verified 2026-10-17)
+- [design-system.service.gov.uk](https://design-system.service.gov.uk/components/fieldset/) (verified 2026-10-17)
+- [html.spec.whatwg.org](https://html.spec.whatwg.org/multipage/forms.html) (verified 2026-10-17)

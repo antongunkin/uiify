@@ -192,7 +192,9 @@ describe("enhanced TableOfContents", () => {
     expect(
       screen.getByRole("link", { name: "Setup", hidden: true }).getAttribute("aria-current"),
     ).toBe("location");
-    expect(root().querySelectorAll('[data-part="indicator"][data-selected]')).toHaveLength(1);
+    expect(
+      root().querySelectorAll(".uiify-table-of-contents-indicator[data-selected]"),
+    ).toHaveLength(1);
     rerender(<Contents value="intro" />);
     expect(
       screen.getByRole("link", { name: "Introduction", hidden: true }).getAttribute("aria-current"),
@@ -229,7 +231,7 @@ describe("enhanced TableOfContents", () => {
   });
   it("follows a highlighted line by mouse while touch opens the contents", () => {
     render(<Contents />);
-    const indicator = root().querySelector('[data-part="indicator"]')!;
+    const indicator = root().querySelector(".uiify-table-of-contents-indicator")!;
     indicator.setAttribute("data-highlighted", "");
     const link = screen.getByRole("link", { name: "Introduction", hidden: true });
     const click = vi.spyOn(link, "click");

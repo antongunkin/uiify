@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type { AlertDescriptionProps, AlertProps, AlertTitleProps } from "./types.js";
 
 const symbols = { secondary: "ⓘ", success: "✓", warning: "⚠︎", destructive: "×" };
@@ -16,17 +16,22 @@ export function Alert<TAs extends ElementType = "div">(
     children,
     ...consumerProps
   } = props as AlertProps<"div">;
+  const symbolProps = slotProps?.symbol;
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
-      "data-uiify-alert": "",
       "data-variant": variant,
       ...consumerProps,
+      className: cn("uiify-alert", (consumerProps as { className?: string }).className),
       children: (
         <>
           {symbol !== false && (
-            <span data-part="symbol" aria-hidden="true" {...slotProps?.symbol}>
+            <span
+              aria-hidden="true"
+              {...symbolProps}
+              className={cn("uiify-alert-symbol", symbolProps?.className)}
+            >
               {symbol}
             </span>
           )}
@@ -48,7 +53,10 @@ export function AlertTitle<TAs extends ElementType = "div">(
   return useRenderElement({
     as,
     defaultTag: "div",
-    props: { "data-uiify-alert-title": "", "data-part": "title", ...consumerProps },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-alert-title", (consumerProps as { className?: string }).className),
+    },
     render,
     state: {},
   });
@@ -62,9 +70,8 @@ export function AlertDescription<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      "data-uiify-alert-description": "",
-      "data-part": "description",
       ...consumerProps,
+      className: cn("uiify-alert-description", (consumerProps as { className?: string }).className),
     },
     render,
     state: {},

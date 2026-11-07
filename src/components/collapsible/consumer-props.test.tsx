@@ -35,7 +35,7 @@ it("lets native details and slots override disclosure defaults", () => {
       open={false}
       name="filters-group"
       data-uiify-collapsible={undefined}
-      data-uiify-details="native"
+      data-consumer="native"
       data-disabled={undefined}
       data-testid="root"
       slotProps={{
@@ -47,7 +47,7 @@ it("lets native details and slots override disclosure defaults", () => {
   const root = screen.getByTestId("root");
   expect(root.hasAttribute("open")).toBe(false);
   expect(root.getAttribute("name")).toBe("filters-group");
-  expect(root.getAttribute("data-uiify-details")).toBe("native");
+  expect(root.getAttribute("data-consumer")).toBe("native");
   expect(root.hasAttribute("data-uiify-collapsible")).toBe(false);
   expect(root.hasAttribute("data-disabled")).toBe(false);
   expect(screen.getByText("Filters").getAttribute("aria-disabled")).toBe("false");

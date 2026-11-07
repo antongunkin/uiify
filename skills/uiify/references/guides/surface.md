@@ -18,7 +18,7 @@ For documentation, articles, and changelogs, prioritize a readable line length, 
 
 ## View
 
-For galleries and portfolios, let the work lead and keep surrounding chrome quiet. Avoid controls or labels that compete with the work, while keeping meaningful descriptions and navigation available. Typical choices include `image-gallery`, `carousel`, `card`, `badge`, and `divider`.
+For galleries and portfolios, let the work lead and keep surrounding chrome quiet. Avoid controls or labels that compete with the work, while keeping meaningful descriptions and navigation available. Typical choices include `image-gallery`, `carousel`, `card`, `badge`, and `separator`.
 
 ## Review with evidence
 

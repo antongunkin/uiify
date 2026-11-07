@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import type {
@@ -38,13 +39,11 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
   return (
     <section
       aria-label={resolvedLabels.region}
-      data-part="viewport"
       data-testid="toast-viewport"
-      data-uiify-toast=""
       {...safeConsumerProps}
       ref={ref}
       {...(popover ? { popover } : {})}
-      {...(className ? { className } : {})}
+      className={cn("uiify-toast-viewport", className)}
     >
       {children}
     </section>
@@ -65,11 +64,10 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
   return (
     <div
       aria-label={typeof toast.title === "string" ? toast.title : resolvedLabels.notification}
-      data-part="item"
       data-state="open"
-      data-uiify-toast=""
       role="group"
       {...rootProps}
+      className={cn("uiify-toast-item", rootProps.className)}
     >
       {toast.title ? <ToastTitle {...titleProps}>{toast.title}</ToastTitle> : null}
       {toast.description ? (
@@ -89,9 +87,8 @@ export function ToastTitle(props: ToastTitleOwnProps): ReactElement | null {
   return useRenderElement({
     defaultTag: "div",
     props: {
-      "data-part": "title",
       ...safeConsumerProps,
-      className,
+      className: cn("uiify-toast-title", className),
       children,
     },
     state: {},
@@ -104,9 +101,8 @@ export function ToastDescription(props: ToastDescriptionOwnProps): ReactElement 
   return useRenderElement({
     defaultTag: "div",
     props: {
-      "data-part": "description",
       ...safeConsumerProps,
-      className,
+      className: cn("uiify-toast-description", className),
       children,
     },
     state: {},
@@ -120,9 +116,8 @@ export function ToastAction(props: ToastActionProps): ReactElement | null {
     defaultTag: "button",
     props: {
       type: "button",
-      "data-part": "action",
       ...safeConsumerProps,
-      className,
+      className: cn("uiify-toast-action", className),
       onClick,
       children,
     },
@@ -140,9 +135,8 @@ export function ToastClose(props: ToastCloseProps): ReactElement | null {
       type: "button",
       "aria-label":
         typeof resolvedChildren === "string" ? resolvedChildren : DEFAULT_TOAST_LABELS.close,
-      "data-part": "close",
       ...safeConsumerProps,
-      className,
+      className: cn("uiify-toast-close", className),
       onClick,
       children: resolvedChildren,
     },

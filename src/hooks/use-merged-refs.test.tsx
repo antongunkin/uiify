@@ -6,7 +6,7 @@ import { useMergedRefs } from "./use-merged-refs.js";
 function Probe({ cb }: { cb: (node: HTMLDivElement | null) => void }) {
   const objectRef = createRef<HTMLDivElement>();
   const merged = useMergedRefs<HTMLDivElement>(objectRef, cb);
-  return <div ref={merged} data-object={objectRef.current ? "set" : "unset"} />;
+  return <div ref={merged} />;
 }
 Probe.displayName = "Probe";
 

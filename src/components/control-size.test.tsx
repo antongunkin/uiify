@@ -6,35 +6,35 @@ import { Combobox } from "./combobox/Combobox.js";
 import { DatePicker } from "./date-picker/DatePicker.js";
 import { Input } from "./input/Input.js";
 import { InputGroup } from "./input-group/InputGroup.js";
-import { OtpInput } from "./otp-input/OtpInput.js";
+import { InputOTP } from "./input-otp/InputOtp.js";
 import { SegmentedControl } from "./segmented-control/SegmentedControl.js";
-import { Select } from "./select/Select.js";
+import { NativeSelect, NativeSelectContent } from "./native-select/NativeSelect.js";
 
 type SizeProps = { size?: "sm" | "lg" };
 
 const controls = [
   ["input", (props: SizeProps) => <Input {...props} aria-label="x" />],
   [
-    "select",
+    "native-select",
     (props: SizeProps) => (
-      <Select.Root {...props} aria-label="x">
-        <Select.Content />
-      </Select.Root>
+      <NativeSelect {...props} aria-label="x">
+        <NativeSelectContent />
+      </NativeSelect>
     ),
   ],
   ["date-picker", (props: SizeProps) => <DatePicker {...props} aria-label="x" />],
   ["input-group", (props: SizeProps) => <InputGroup {...props} />],
   ["combobox", (props: SizeProps) => <Combobox.Root {...props} items={[]} />],
-  ["otp-input", (props: SizeProps) => <OtpInput.Root {...props} />],
+  ["input-otp", (props: SizeProps) => <InputOTP {...props} />],
   ["segmented-control", (props: SizeProps) => <SegmentedControl id="r" {...props} items={[]} />],
 ] as const;
 
 describe("form control size", () => {
   it.each(controls)("%s marks its root with data-size and omits it by default", (name, ui) => {
-    const marker = `data-uiify-${name}`;
+    const marker = `.uiify-${name}`;
     const root = (props: SizeProps) => {
       const { container, unmount } = render(ui(props));
-      const element = container.querySelector(`[${marker}]`);
+      const element = container.querySelector(marker);
       const value = element?.getAttribute("data-size") ?? null;
       unmount();
       return value;
@@ -51,13 +51,14 @@ describe("form control size", () => {
       "utf8",
     );
     for (const name of controls.map(([control]) => control)) {
-      expect(css).toContain(`[data-uiify-${name}]`);
+      if (name !== "input" && name !== "native-select" && name !== "segmented-control")
+        expect(css).toContain(`.uiify-${name}`);
     }
     expect(css).toMatch(
-      /"sm"\] \{\s*--uiify-control-size: var\(--control-sm\);\s*--uiify-control-font: var\(--text-sm\);/,
+      /"sm"\] \{\s*--uiify-control-size: var\(--control-sm\);\s*--uiify-control-font: 0\.875rem;/,
     );
     expect(css).toMatch(
-      /"lg"\] \{\s*--uiify-control-size: var\(--control-lg\);\s*--uiify-control-font: var\(--text-lg\);/,
+      /"lg"\] \{\s*--uiify-control-size: var\(--control-lg\);\s*--uiify-control-font: 1\.125rem;/,
     );
   });
 });

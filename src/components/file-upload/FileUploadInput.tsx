@@ -1,6 +1,7 @@
 "use client";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import type { ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { useMergedRefs } from "@gunkin/uiify/hooks";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useFileUploadContext } from "./file-upload-context.js";
@@ -15,19 +16,19 @@ export function FileUploadHiddenInput({
   const { accept, disabled, hiddenInputRef, inputId, multiple, processFiles, files, reset } =
     useFileUploadContext("HiddenInput");
   const mergedRef = useMergedRefs(ref, hiddenInputRef);
-  const syncFiles = () => {
+  const syncFiles = useCallback(() => {
     // DOM-less consumers do not provide a native file-list constructor.
     if (typeof DataTransfer === "undefined" || !hiddenInputRef.current) return;
     const transfer = new DataTransfer();
     files.forEach((file) => transfer.items.add(file));
     hiddenInputRef.current.files = transfer.files;
-  };
+  }, [files, hiddenInputRef]);
   useEffect(() => {
     syncFiles();
     const input = hiddenInputRef.current;
     input?.addEventListener("cancel", syncFiles);
     return () => input?.removeEventListener("cancel", syncFiles);
-  }, [files, hiddenInputRef]);
+  }, [hiddenInputRef, syncFiles]);
   useEffect(() => {
     const form = hiddenInputRef.current?.form;
     if (!form) return;
@@ -40,7 +41,7 @@ export function FileUploadHiddenInput({
       ref={mergedRef}
       id={inputId}
       type="file"
-      data-part="input"
+      className={cn("uiify-file-upload-input", consumerProps.className)}
       accept={accept.length ? accept.join(",") : undefined}
       disabled={disabled}
       multiple={multiple}

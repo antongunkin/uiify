@@ -1,43 +1,65 @@
+// Tabs, TabsList, TabsTrigger and TabsContent names informed by shadcn/ui public documentation
+// (names and props only).
 import type { ComponentPropsWithRef, ReactNode } from "react";
-import type { SlotProps } from "../../core/slot-props.js";
-import type {
-  ChoiceGroupSlotProps,
-  ChoiceOrientation,
-  ChoicePanelItem,
-} from "../internal/choice-family/types.js";
 
-export interface TabsStore {
-  readonly getValue: () => string | undefined;
-  readonly isSelected: (itemValue: string) => boolean;
-  readonly setValue: (next: string | undefined) => void;
-  readonly subscribe: (listener: () => void) => () => void;
-  readonly subscribeItem: (itemValue: string, listener: () => void) => () => void;
-}
-
-export interface TabsItem extends ChoicePanelItem {}
-
-export type TabsItemSlotProps = NonNullable<ChoiceGroupSlotProps["item"]>;
-export type TabsInputSlotProps = NonNullable<ChoiceGroupSlotProps["input"]>;
-export type TabsTriggerSlotProps = NonNullable<ChoiceGroupSlotProps["label"]>;
-export type TabsPanelSlotProps = NonNullable<ChoiceGroupSlotProps["panel"]>;
-
-export interface TabsSlotProps {
-  readonly item?: TabsItemSlotProps;
-  readonly input?: TabsInputSlotProps;
-  readonly trigger?: TabsTriggerSlotProps;
-  readonly panel?: TabsPanelSlotProps;
-  readonly append?: SlotProps<"div">;
-}
+export type TabsOrientation = "horizontal" | "vertical";
 
 export interface TabsOwnProps {
-  readonly id: string;
-  readonly items: readonly TabsItem[];
-  readonly defaultValue?: string;
-  readonly orientation?: ChoiceOrientation;
-  /** Optional control rendered at the end of the tab bar. */
-  readonly append?: ReactNode;
-  readonly slotProps?: TabsSlotProps;
+  /** One TabsList, then one TabsContent per TabsTrigger, in trigger order. */
+  readonly children?: ReactNode;
+  /**
+   * Written as data-orientation.
+   * @default "horizontal"
+   */
+  readonly orientation?: TabsOrientation;
 }
 
+/**
+ * A `div` that pairs the i-th checked TabsTrigger with the i-th TabsContent in CSS (up to 12
+ * tabs). It has no `defaultValue`: select initially with `defaultChecked` on one TabsTrigger.
+ */
 export type TabsProps = TabsOwnProps &
-  Omit<ComponentPropsWithRef<"div">, keyof TabsOwnProps | "children" | "dangerouslySetInnerHTML">;
+  // `defaultValue` is omitted: without context a div cannot select a trigger.
+  Omit<ComponentPropsWithRef<"div">, keyof TabsOwnProps | "defaultValue">;
+
+export interface TabsListOwnProps {
+  /** TabsTrigger parts, as direct children. */
+  readonly children?: ReactNode;
+}
+
+export type TabsListProps = TabsListOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof TabsListOwnProps>;
+
+export interface TabsTriggerOwnProps {
+  /** Same literal name on every trigger of one Tabs; the browser groups the radios by name. */
+  readonly name: string;
+  /** The radio's value; list TabsContent in the same order as the triggers. */
+  readonly value: string;
+  /**
+   * The radio's id, which the label points at.
+   * @default `${name}-${value}`
+   */
+  readonly id?: string;
+  /** Selects this tab initially; set it on one trigger. */
+  readonly defaultChecked?: boolean;
+  /** Native `disabled` on the radio, `data-disabled` on the label. */
+  readonly disabled?: boolean;
+  /** The visible label. */
+  readonly children?: ReactNode;
+}
+
+/**
+ * A native `input type="radio"` (visually hidden) and its `label`, wrapped in a
+ * `display: contents` span. Native props, `className`, `style` and `ref` go to the label.
+ */
+export type TabsTriggerProps = TabsTriggerOwnProps &
+  Omit<ComponentPropsWithRef<"label">, keyof TabsTriggerOwnProps | "htmlFor">;
+
+export interface TabsContentOwnProps {
+  /** The value of the matching TabsTrigger; written as data-value. Pairing is by position. */
+  readonly value: string;
+  readonly children?: ReactNode;
+}
+
+export type TabsContentProps = TabsContentOwnProps &
+  Omit<ComponentPropsWithRef<"div">, keyof TabsContentOwnProps>;

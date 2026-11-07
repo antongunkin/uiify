@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { cn } from "../../core/class-names.js";
 import type {
   ElementType,
   FocusEvent,
@@ -10,7 +11,9 @@ import type {
   RefObject,
   SyntheticEvent,
 } from "react";
-import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
+import { useEventCallback, useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
+import { useAnchorPosition } from "@gunkin/uiify/core/anchor-position";
+import { usePopover } from "@gunkin/uiify/core/popover";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
@@ -125,7 +128,7 @@ export function ContextMenuTrigger<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       ...anchorProps,
-      ...(className ? { className } : {}),
+      className,
       ...withoutRef,
       ref: mergedRef,
       onContextMenu: composeEventHandlers(consumerOnContextMenu, openAtPointer),
@@ -169,11 +172,9 @@ export function ContextMenuContent<TAs extends ElementType = "div">(
     ...popupProps,
     ...positionerProps,
     role: "menu",
-    "data-part": "content",
-    "data-uiify-menu": "",
     "data-state": open ? "open" : "closed",
-    ...(className ? { className } : {}),
     ...withoutRef,
+    className: cn("uiify-menu-content", className),
     ref: mergedRef,
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     children,
@@ -223,8 +224,8 @@ export function ContextMenuItem<TAs extends ElementType = "div">(
   };
   const itemProps = {
     role: "menuitem",
-    "data-part": "item",
-    ...(className ? { className } : {}),
+
+    className: cn("uiify-menu-item", className),
     ...consumerProps,
     onClick: composeEventHandlers(consumerOnClick, handleSelect),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
@@ -308,10 +309,10 @@ export function ContextMenuCheckboxItem(
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
         role: "menuitemcheckbox",
-        "data-part": "item",
+
         "aria-checked": (isIndeterminate ? "mixed" : isChecked) as boolean | "mixed",
         "data-state": isIndeterminate ? "indeterminate" : isChecked ? "checked" : "unchecked",
-        ...(className ? { className } : {}),
+        className: cn("uiify-menu-item", className),
         ...consumerProps,
         onClick: composeEventHandlers(consumerOnClick, handleSelect),
         onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
@@ -341,10 +342,10 @@ export function ContextMenuRadioItem(props: ContextMenuRadioItemOwnProps): React
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
         role: "menuitemradio",
-        "data-part": "item",
+
         "aria-checked": checked,
         "data-state": checked ? "checked" : "unchecked",
-        ...(className ? { className } : {}),
+        className: cn("uiify-menu-item", className),
         ...consumerProps,
         onClick: composeEventHandlers(consumerOnClick, handleSelect),
         onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
@@ -354,8 +355,14 @@ export function ContextMenuRadioItem(props: ContextMenuRadioItemOwnProps): React
   );
 }
 ContextMenuRadioItem.displayName = "ContextMenuRadioItem";
+type ContextMenuSubSide = "left" | "right";
 interface ContextMenuSubValue {
+  readonly anchor: ReturnType<typeof useAnchorPosition>;
+  readonly popover: ReturnType<typeof usePopover>;
   readonly open: boolean;
+  /** Inline-end side of the trigger, resolved from its text direction when the submenu opens. */
+  readonly side: ContextMenuSubSide;
+  readonly openFrom: (trigger: HTMLElement) => void;
   readonly setOpen: (open: boolean) => void;
   readonly skipFocusOpenRef: RefObject<boolean>;
   readonly triggerRef: RefObject<HTMLElement | null>;
@@ -367,9 +374,24 @@ const [ContextMenuSubProvider, useContextMenuSubContext] = createPartContext<Con
 export function ContextMenuSub(props: ContextMenuSubOwnProps): ReactElement | null {
   const { children } = props;
   const [open, setOpen] = useState(false);
+  const [side, setSide] = useState<ContextMenuSubSide>("right");
   const triggerRef = useRef<HTMLElement | null>(null);
   const skipFocusOpenRef = useRef(false);
-  const value = useMemo(() => ({ open, setOpen, skipFocusOpenRef, triggerRef }), [open]);
+  const anchor = useAnchorPosition({ side: "right", align: "start" });
+  // The submenu sits inside the parent menu's scrollport; a manual popover lifts it into the
+  // top layer while open so native anchor positioning can place it beside its trigger.
+  const popover = usePopover({ mode: "manual", open, onOpenChange: setOpen });
+  // A manual popover outlives its parent menu, so close the submenu whenever the menu closes.
+  const { open: menuOpen } = useContextMenuContext("Sub");
+  if (!menuOpen && open) setOpen(false);
+  const openFrom = useCallback((trigger: HTMLElement) => {
+    setSide(resolveDirection(trigger) === "rtl" ? "left" : "right");
+    setOpen(true);
+  }, []);
+  const value = useMemo(
+    () => ({ anchor, open, openFrom, popover, setOpen, side, skipFocusOpenRef, triggerRef }),
+    [anchor, open, openFrom, popover, side],
+  );
   return <ContextMenuSubProvider value={value}>{children}</ContextMenuSubProvider>;
 }
 ContextMenuSub.displayName = "ContextMenuSub";
@@ -391,7 +413,7 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
     const openKey = resolveDirection(event.currentTarget) === "rtl" ? "ArrowLeft" : "ArrowRight";
     if (event.key === openKey) {
       event.preventDefault();
-      sub.setOpen(true);
+      sub.openFrom(event.currentTarget);
     }
   };
   return (
@@ -400,15 +422,18 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
       {...(textValue !== undefined ? { textValue } : {})}
       {...{
         role: "menuitem",
-        "data-part": "item",
+
         "aria-haspopup": "menu" as const,
         "aria-expanded": sub.open,
-        ...(className ? { className } : {}),
+        ...sub.anchor.anchorProps,
+        className: cn("uiify-menu-item", className),
         ...withoutRef,
         ref: mergedRef,
-        onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => sub.setOpen(true)),
-        onFocus: composeEventHandlers(consumerOnFocus, () => {
-          if (!sub.skipFocusOpenRef.current) sub.setOpen(true);
+        onPointerEnter: composeEventHandlers(consumerOnPointerEnter, (event) =>
+          sub.openFrom(event.currentTarget),
+        ),
+        onFocus: composeEventHandlers(consumerOnFocus, (event) => {
+          if (!sub.skipFocusOpenRef.current) sub.openFrom(event.currentTarget);
         }),
         onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
         children,
@@ -418,9 +443,11 @@ export function ContextMenuSubTrigger(props: ContextMenuSubTriggerOwnProps): Rea
 }
 ContextMenuSubTrigger.displayName = "ContextMenuSubTrigger";
 export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): ReactElement | null {
-  const { children, className, onKeyDown: consumerOnKeyDown, ...consumerProps } = props;
+  const { children, className, onKeyDown: consumerOnKeyDown, ...restProps } = props;
   const sub = useContextMenuSubContext("SubContent");
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+  const [consumerRef, consumerProps] = splitRef<HTMLElement, typeof restProps>(restProps);
+  const ref = useMergedRefs(sub.popover.popupRef, consumerRef);
+  const handleKeyDown = useEventCallback((event: KeyboardEvent<HTMLElement>) => {
     const closeKey = resolveDirection(event.currentTarget) === "rtl" ? "ArrowRight" : "ArrowLeft";
     if (event.key !== closeKey && event.key !== "Escape") return;
     // Escape closes only this submenu, not the menu around it.
@@ -428,26 +455,31 @@ export function ContextMenuSubContent(props: ContextMenuSubContentOwnProps): Rea
     event.stopPropagation();
     sub.setOpen(false);
     // The trigger opens its submenu on focus; skip that while returning focus.
-    sub.skipFocusOpenRef.current = true;
-    sub.triggerRef.current?.focus();
-    sub.skipFocusOpenRef.current = false;
-  };
+    const { skipFocusOpenRef, triggerRef } = sub;
+    skipFocusOpenRef.current = true;
+    triggerRef.current?.focus();
+    skipFocusOpenRef.current = false;
+  });
   const element = useRenderElement({
     defaultTag: "div",
     props: {
       role: "menu",
-      "data-part": "sub-content",
-      "data-uiify-menu": "",
+      ...sub.popover.popupProps,
+      ...sub.anchor.positionerProps,
+      "data-side": sub.side,
       "data-state": sub.open ? "open" : "closed",
       hidden: !sub.open ? true : undefined,
-      ...(className ? { className } : {}),
       ...consumerProps,
+      ref,
+      className: cn("uiify-menu-content", "uiify-menu-sub-content", className),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       children: sub.open ? children : null,
     },
     state: { open: sub.open },
   });
-  if (!sub.open) return null;
+  // Natively it stays mounted as a closed popover, like DropdownMenu's submenu: a popover shown
+  // in the same commit that mounts it was not placed against its anchor on its first open.
+  if (!sub.open && !sub.popover.isNative) return null;
   return element;
 }
 export const ContextMenuLabel = MenuLabel;

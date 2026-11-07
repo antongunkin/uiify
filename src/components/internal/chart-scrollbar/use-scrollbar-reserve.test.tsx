@@ -4,7 +4,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { useScrollbarReserve } from "./use-scrollbar-reserve.js";
 
 afterEach(() => vi.unstubAllGlobals());
-it.each(["--line-scrollbar-size", "--candle-scrollbar-size"] as const)(
+it.each(["--uiify-line-scrollbar-size", "--uiify-candle-scrollbar-size"] as const)(
   "keeps consumer %s on mount, observation and latest undefined removal",
   (variable) => {
     let notify: (() => void) | undefined;
@@ -37,7 +37,7 @@ it.each(["--line-scrollbar-size", "--candle-scrollbar-size"] as const)(
     const rootRef = { current: root };
     const { rerender, unmount } = renderHook(
       ({ style }: { style: CSSProperties | undefined }) =>
-        useScrollbarReserve(rootRef, variable, style),
+        useScrollbarReserve(rootRef, variable, style, '[data-part="scroll-viewport"]'),
       { initialProps: { style: { [variable]: "7px" } as CSSProperties | undefined } },
     );
     expect(root.style.getPropertyValue(variable)).toBe("7px");

@@ -1,0 +1,74 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default AlertDialog DOM 1`] = `
+[
+  [
+    "div",
+    [
+      "class=uiify-alert-dialog",
+    ],
+    null,
+  ],
+  [
+    "button",
+    [
+      "class=uiify-alert-dialog-trigger uiify-button",
+      "command=show-modal",
+      "commandfor=delete",
+      "type=button",
+    ],
+    "Delete",
+  ],
+  [
+    "dialog",
+    [
+      "aria-describedby=delete-description",
+      "aria-labelledby=delete-title",
+      "class=uiify-alert-dialog-content",
+      "id=delete",
+      "role=alertdialog",
+    ],
+    null,
+  ],
+  [
+    "h2",
+    [
+      "class=uiify-alert-dialog-title",
+      "id=delete-title",
+    ],
+    "Delete item",
+  ],
+  [
+    "p",
+    [
+      "class=uiify-alert-dialog-description",
+      "id=delete-description",
+    ],
+    "Cannot undo",
+  ],
+  [
+    "button",
+    [
+      "class=uiify-alert-dialog-cancel uiify-button",
+      "command=request-close",
+      "commandfor=delete",
+      "data-variant=secondary",
+      "type=button",
+      "value=cancel",
+    ],
+    "Cancel",
+  ],
+  [
+    "button",
+    [
+      "class=uiify-alert-dialog-action uiify-button",
+      "command=request-close",
+      "commandfor=delete",
+      "data-variant=destructive",
+      "type=button",
+      "value=confirm",
+    ],
+    "Confirm",
+  ],
+]
+`;

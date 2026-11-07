@@ -1,5 +1,6 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { cn } from "../../core/class-names.js";
 import type {
   CSSProperties,
   ElementType,
@@ -8,7 +9,7 @@ import type {
   PointerEvent,
   ReactElement,
 } from "react";
-import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
+import { useEventCallback, useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import {
   createAnchorPositionerProps,
   createAnchorTriggerProps,
@@ -51,14 +52,11 @@ const [TooltipContextProvider, useTooltipContext] =
   createPartContext<TooltipClientContextValue>("Tooltip");
 export function TooltipProvider(props: TooltipProviderOwnProps): ReactElement | null {
   const { children, delayDuration = 300, skipDelayDuration = 300 } = props;
-  const storeRef = useRef<TooltipProviderStore | null>(null);
-  storeRef.current ??= createTooltipProviderStore({ delayDuration, skipDelayDuration });
+  const [store] = useState(() => createTooltipProviderStore({ delayDuration, skipDelayDuration }));
   useIsomorphicLayoutEffect(() => {
-    storeRef.current?.updateOptions({ delayDuration, skipDelayDuration });
-  }, [delayDuration, skipDelayDuration]);
-  return (
-    <TooltipProviderStoreProvider value={storeRef.current}>{children}</TooltipProviderStoreProvider>
-  );
+    store.updateOptions({ delayDuration, skipDelayDuration });
+  }, [delayDuration, skipDelayDuration, store]);
+  return <TooltipProviderStoreProvider value={store}>{children}</TooltipProviderStoreProvider>;
 }
 TooltipProvider.displayName = "TooltipProvider";
 export function TooltipRoot(props: TooltipRootProps): ReactElement | null {
@@ -120,28 +118,30 @@ export function TooltipTrigger<TAs extends ElementType = "button">(
     onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
     onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
   };
+  const handleFocus = useEventCallback(() => {
+    if (!pointerFocusRef.current) openTooltip(true);
+    pointerFocusRef.current = false;
+  });
+  const handlePointerDown = useEventCallback(() => {
+    pointerFocusRef.current = true;
+  });
   return useRenderElement({
     as,
     defaultTag: "button",
     props: {
       "aria-describedby": open ? contentId : undefined,
-      ...(nativeButton ? { type: "button", "data-uiify-button": "" } : {}),
-      ...(className ? { className } : {}),
+      ...(nativeButton ? { type: "button" } : {}),
+      className: cn(nativeButton ? "uiify-button" : undefined, className),
       ...anchorProps,
       ...consumerProps,
       onBlur: composeEventHandlers(consumerOnBlur, () => {
         closeTooltip();
       }),
-      onFocus: composeEventHandlers(consumerOnFocus, () => {
-        if (!pointerFocusRef.current) openTooltip(true);
-        pointerFocusRef.current = false;
-      }),
+      onFocus: composeEventHandlers(consumerOnFocus, handleFocus),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, (event: KeyboardEvent<HTMLElement>) => {
         if (event.key === "Escape") closeTooltip();
       }),
-      onPointerDown: composeEventHandlers(consumerOnPointerDown, () => {
-        pointerFocusRef.current = true;
-      }),
+      onPointerDown: composeEventHandlers(consumerOnPointerDown, handlePointerDown),
       onPointerEnter: composeEventHandlers(
         consumerOnPointerEnter,
         (event: PointerEvent<HTMLElement>) => {
@@ -223,10 +223,8 @@ export function TooltipContent<TAs extends ElementType = "div">(
       // The consumer's own non-empty `id` wins; otherwise the context-generated id is used.
       id: resolvedId,
       role: "tooltip",
-      "data-part": "content",
-      "data-uiify-tooltip": "",
       "data-state": open ? "open" : "closed",
-      ...(className ? { className } : {}),
+      className: cn("uiify-tooltip", className),
       ...domProps,
       ref: mergedRef,
       onPointerEnter: composeEventHandlers(consumerOnPointerEnter, () => {

@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 
 import type {
   TableFooterProps,
@@ -33,13 +33,13 @@ export function TableRoot<TAs extends ElementType = "table">(
     as,
     defaultTag: "table",
     props: {
-      ...consumerProps,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
-      "data-uiify-table": "",
       ...(layout ? { "data-layout": layout } : {}),
       ...(size ? { "data-size": size } : {}),
       ...(variant ? { "data-variant": variant } : {}),
+      ...consumerProps,
+      className: cn("uiify-table", consumerProps.className),
     },
     render,
     state: {},
@@ -53,7 +53,11 @@ export function TableHeader<TAs extends ElementType = "thead">(
   return useRenderElement({
     as,
     defaultTag: "thead",
-    props: { ...consumerProps, "data-part": "header", "data-sticky": sticky ? "" : undefined },
+    props: {
+      "data-sticky": sticky ? "" : undefined,
+      ...consumerProps,
+      className: cn("uiify-table-header", consumerProps.className),
+    },
     render,
     state: {},
   });
@@ -66,7 +70,11 @@ export function TableBody<TAs extends ElementType = "tbody">(
   return useRenderElement({
     as,
     defaultTag: "tbody",
-    props: { ...consumerProps, children, "data-part": "body" },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-table-body", consumerProps.className),
+      children,
+    },
     render,
     state: {},
   });
@@ -90,12 +98,12 @@ export function TableRow<TAs extends ElementType = "tr">(
     defaultTag: "tr",
     props: {
       ...consumerProps,
-      "data-part": "row",
       "data-sticky": sticky ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-selected": selected ? "" : undefined,
       "data-state": selected ? "selected" : undefined,
       id,
+      className: cn("uiify-table-row", consumerProps.className),
     },
     render,
     state: { selected },
@@ -124,11 +132,11 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
     props: {
       ...consumerProps,
       "aria-sort": allowsSorting ? (sortDirection ?? "none") : undefined,
-      onClick,
       scope: "col",
-      "data-part": "column-header",
       ...(align ? { "data-align": align } : {}),
       "data-sticky": sticky,
+      className: cn("uiify-table-column-header", consumerProps.className),
+      onClick,
       children,
       id,
     },
@@ -146,10 +154,10 @@ export function TableCell<TAs extends ElementType = "td">(
     defaultTag: "td",
     props: {
       ...consumerProps,
-      children,
-      "data-part": "cell",
       ...(align ? { "data-align": align } : {}),
       "data-sticky": sticky,
+      className: cn("uiify-table-cell", consumerProps.className),
+      children,
     },
     render,
     state: {},
@@ -163,7 +171,11 @@ export function TableCaption<TAs extends ElementType = "caption">(
   return useRenderElement({
     as,
     defaultTag: "caption",
-    props: { ...consumerProps, children },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-table-caption", consumerProps.className),
+      children,
+    },
     render,
     state: {},
   });
@@ -176,7 +188,11 @@ export function TableFooter<TAs extends ElementType = "tfoot">(
   return useRenderElement({
     as,
     defaultTag: "tfoot",
-    props: { ...consumerProps, "data-part": "footer", "data-sticky": sticky ? "" : undefined },
+    props: {
+      "data-sticky": sticky ? "" : undefined,
+      ...consumerProps,
+      className: cn("uiify-table-footer", consumerProps.className),
+    },
     render,
     state: {},
   });
@@ -190,9 +206,9 @@ export function TableRowHeader<TAs extends ElementType = "th">(
     defaultTag: "th",
     props: {
       ...consumerProps,
-      "data-part": "row-header",
       ...(align ? { "data-align": align } : {}),
       "data-sticky": sticky,
+      className: cn("uiify-table-row-header", consumerProps.className),
       scope: "row",
     },
     render,

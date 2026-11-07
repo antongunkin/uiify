@@ -27,24 +27,21 @@ it("preserves default alert DOM", () => {
 it("allows native overrides and explicit undefined on alert parts and symbol", () => {
   render(
     <Alert
-      data-uiify-alert="custom"
+      data-record="custom"
       data-variant={undefined}
       data-testid="root"
       slotProps={{
-        symbol: { "data-part": "glyph", "aria-hidden": undefined, "data-testid": "symbol" },
+        symbol: { "data-record": "glyph", "aria-hidden": undefined, "data-testid": "symbol" },
       }}
     >
-      <AlertTitle data-part="heading" data-uiify-alert-title={undefined}>
-        Notice
-      </AlertTitle>
-      <AlertDescription data-part={undefined}>Details</AlertDescription>
+      <AlertTitle data-record="heading">Notice</AlertTitle>
+      <AlertDescription aria-label="Details label">Details</AlertDescription>
     </Alert>,
   );
-  expect(screen.getByTestId("root").getAttribute("data-uiify-alert")).toBe("custom");
+  expect(screen.getByTestId("root").getAttribute("data-record")).toBe("custom");
   expect(screen.getByTestId("root").hasAttribute("data-variant")).toBe(false);
-  expect(screen.getByTestId("symbol").getAttribute("data-part")).toBe("glyph");
+  expect(screen.getByTestId("symbol").getAttribute("data-record")).toBe("glyph");
   expect(screen.getByTestId("symbol").hasAttribute("aria-hidden")).toBe(false);
-  expect(screen.getByText("Notice").getAttribute("data-part")).toBe("heading");
-  expect(screen.getByText("Notice").hasAttribute("data-uiify-alert-title")).toBe(false);
-  expect(screen.getByText("Details").hasAttribute("data-part")).toBe(false);
+  expect(screen.getByText("Notice").getAttribute("data-record")).toBe("heading");
+  expect(screen.getByText("Details").getAttribute("aria-label")).toBe("Details label");
 });

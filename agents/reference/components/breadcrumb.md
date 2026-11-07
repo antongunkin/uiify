@@ -5,8 +5,8 @@
 - Tier 0 (RSC — zero client JavaScript); state source none; native element `nav>ol`
 - Without JavaScript: full
 - Types file: `dist/components/breadcrumb.d.ts`
-- Related native Element (manifest): [details](../elements/details.md)
-- Note: Ellipsis expand/collapse is a native details/summary disclosure, built on @gunkin/uiify/elements/details.
+- Related native Element (manifest): [native-details](../elements/native-details.md)
+- Note: Ellipsis expand/collapse is a native details/summary disclosure, built on @gunkin/uiify/elements/native-details.
 
 ## Related knowledge
 

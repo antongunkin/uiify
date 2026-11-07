@@ -9,7 +9,7 @@ export function attachFadeSwipe(
   controller: CarouselController,
   mouseDrag: boolean,
 ): () => void {
-  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
+  const viewport = root.querySelector<HTMLElement>(":scope > .uiify-carousel-viewport");
   if (!viewport) return () => {};
   let width = 0;
   let state: { id: number; x: number; y: number; captured: boolean } | undefined;
@@ -48,7 +48,7 @@ export function attachFadeSwipe(
       !controller.getSnapshot().ready ||
       controller.getSnapshot().moving ||
       !(event.target instanceof Element) ||
-      event.target.closest("[data-uiify-carousel]") !== root ||
+      event.target.closest(".uiify-carousel") !== root ||
       event.target.closest(interactive) ||
       root.ownerDocument.getSelection()?.isCollapsed === false
     )
@@ -95,7 +95,7 @@ export function attachFadeSwipe(
     if (
       !cancelClick ||
       !(event.target instanceof Element) ||
-      event.target.closest("[data-uiify-carousel]") !== root
+      event.target.closest(".uiify-carousel") !== root
     )
       return;
     cancelClick = false;

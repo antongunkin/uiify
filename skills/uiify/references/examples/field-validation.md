@@ -10,18 +10,28 @@ Export: `FieldValidation`
 "use client";
 
 import { useState } from "react";
-import { Field } from "@gunkin/uiify/components/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@gunkin/uiify/components/field";
+import { Input } from "@gunkin/uiify/components/input";
 
 export function FieldValidation() {
   const [email, setEmail] = useState("");
   const invalid = email.length > 0 && !email.includes("@");
   return (
-    <Field.Root id="email" invalid={invalid}>
-      <Field.Label fieldId="email">Email</Field.Label>
-      <Field.Control fieldId="email" as="input" name="email" type="email" invalid={invalid} value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
-      <Field.Description fieldId="email">We will send your receipt here.</Field.Description>
-      {invalid ? <Field.Error fieldId="email" invalid>Enter a valid email address.</Field.Error> : null}
-    </Field.Root>
+    <Field invalid={invalid}>
+      <FieldLabel htmlFor="email">Email</FieldLabel>
+      <Input
+        id="email"
+        name="email"
+        type="email"
+        invalid={invalid}
+        // A listed id that is not rendered yet is ignored, so one literal covers both states.
+        aria-describedby="email-description email-error"
+        value={email}
+        onValueChange={setEmail}
+      />
+      <FieldDescription id="email-description">We will send your receipt here.</FieldDescription>
+      {invalid ? <FieldError id="email-error">Enter a valid email address.</FieldError> : null}
+    </Field>
   );
 }
 ```
@@ -29,9 +39,25 @@ export function FieldValidation() {
 ## CSS
 
 ```css
-[data-uiify-field] { display: grid; gap: 0.5rem; }
-[data-uiify-field] input,
-[data-uiify-select] { min-block-size: 2.75rem; padding-inline: 0.75rem; }
-table { border-collapse: collapse; inline-size: 100%; }
-th, td { padding: 0.5rem; text-align: start; }
+.uiify-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.uiify-field input,
+.uiify-native-select {
+  min-block-size: 2.75rem;
+  padding-inline: 0.75rem;
+}
+
+table {
+  border-collapse: collapse;
+  inline-size: 100%;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: start;
+}
 ```

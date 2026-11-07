@@ -13,44 +13,47 @@ function ruleBody(css: string, selector: string): string {
 }
 
 // iOS Safari zooms the page when a text-entry control below 16px takes focus.
-const textEntryControls = [
-  ["components/field.css", ":where([data-uiify-input], [data-uiify-textarea])"],
-  ["components/number-field.css", '[data-uiify-number-field] > [role="spinbutton"]'],
-  ["components/tags-input.css", '[data-uiify-tags-input] [data-part="input"]'],
-] as const;
+const textEntryControls = [["uiify/effects.css", ".uiify-tags-input-input {"]] as const;
 
 // Pill controls are sized like Button: the base text step, which is already 16px.
-const pillControls = [
-  ["components/select.css", "[data-uiify-select]"],
-  ["components/combobox.css", ".ui-cb-input {"],
-] as const;
+const pillControls = [["uiify/effects.css", ".uiify-combobox-input {"]] as const;
 
 describe("touch text-entry controls", () => {
   it.each(pillControls)(
     "%s sizes %s from the control font, defaulting to the base text step",
     (file, selector) => {
       expect(ruleBody(read(file), selector)).toMatch(
-        /font-size: var\(--uiify-control-font, var\(--text-base\)\);/,
+        /font-size: var\(--uiify-control-font, 1rem\);/,
       );
     },
   );
+
+  it("keeps the Select recipe at the base text step by default", () => {
+    expect(read("uiify/native-select.ts")).toMatch(/block-10 .*text-base/);
+  });
 
   it.each(textEntryControls)("%s sizes %s from the control text token", (file, selector) => {
     expect(ruleBody(read(file), selector)).toMatch(/font-size: var\(--uiify-control-text\);/);
   });
 
+  it("keeps NumberField input text on the touch-aware control text token", () => {
+    expect(ruleBody(read("uiify/effects.css"), ".uiify-number-field-input {")).toContain(
+      "font-size: var(--uiify-control-text);",
+    );
+  });
+
   it("defaults the control text token to the small text step", () => {
-    expect(ruleBody(read("base.css"), ":root")).toContain("--uiify-control-text: var(--text-sm);");
+    expect(ruleBody(read("base.css"), ":root")).toContain("--uiify-control-text: 0.875rem;");
   });
 
   it("raises the control text token to the base step on coarse pointers", () => {
     const base = read("base.css");
     const media = base.match(/@media \(pointer: coarse\) \{(?<body>[\s\S]*?)\n {2}\}\n/);
 
-    expect(media?.groups?.body).toContain("--uiify-control-text: var(--text-base);");
+    expect(media?.groups?.body).toContain("--uiify-control-text: 1rem;");
   });
 
   it("keeps the base text step at 1rem, the iOS zoom threshold at the default root size", () => {
-    expect(read("tokens/theme.css")).toContain("--text-base: 1rem;");
+    expect(read("tailwind.css")).toContain("--text-base: 1rem;");
   });
 });

@@ -18,7 +18,7 @@ Do not turn the header into a second page body or hide all navigation behind a m
 
 ## Responsive
 
-Keep the logo and one useful action visible on narrow screens. Move secondary navigation behind a clearly named button that opens a `Modal`; leave the full navigation visible on wide screens.
+Keep the logo and one useful action visible on narrow screens. Move secondary navigation behind a clearly named button that opens a `Dialog`; leave the full navigation visible on wide screens.
 
 ## States
 

@@ -1,11 +1,20 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { normalizeCss } from "./test-css.js";
 
 const stylesDirectory = import.meta.dirname;
 const i18nCss = readFileSync(resolve(stylesDirectory, "i18n.css"), "utf8");
 const normalizedI18nCss = i18nCss.replace(/\s+/g, " ");
 const indexCss = readFileSync(resolve(stylesDirectory, "index.css"), "utf8");
+const lineChartCss = readFileSync(
+  resolve(stylesDirectory, "../../dist/styles/uiify/line-chart.css"),
+  "utf8",
+);
+const candleChartCss = readFileSync(
+  resolve(stylesDirectory, "../../dist/styles/uiify/candle-chart.css"),
+  "utf8",
+);
 
 describe("script-aware typography", () => {
   it("sets Japanese and Chinese text behavior and Japanese font stack", () => {
@@ -30,8 +39,11 @@ describe("script-aware typography", () => {
   });
 
   it("turns off uppercase chart captions for CJK and Arabic locales", () => {
-    expect(normalizedI18nCss).toContain(
-      ":lang(ja) [data-uiify-line-chart] > figcaption, :lang(zh) [data-uiify-line-chart] > figcaption, :lang(ar) [data-uiify-line-chart] > figcaption, :lang(ja) [data-uiify-candle-chart] > figcaption, :lang(zh) [data-uiify-candle-chart] > figcaption, :lang(ar) [data-uiify-candle-chart] > figcaption { text-transform: none;",
+    expect(normalizeCss(lineChartCss)).toContain(
+      normalizeCss(".uiify-line-chart-caption:lang(ja)"),
+    );
+    expect(normalizeCss(candleChartCss)).toContain(
+      normalizeCss(".uiify-candle-chart-caption:lang(ja)"),
     );
   });
 

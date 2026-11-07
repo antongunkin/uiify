@@ -34,7 +34,9 @@ describe("SegmentedControl", () => {
 
     expect(screen.getByTestId("day-item")).toBeTruthy();
     expect(screen.getByTestId("day-input")).toBeTruthy();
-    expect(screen.getByText("Day").closest("label")?.className).toBe("day-trigger");
+    expect(screen.getByText("Day").closest("label")?.className).toBe(
+      "uiify-button uiify-segmented-control-label day-trigger",
+    );
   });
 
   it("renders a labeled radiogroup and disables every segment", () => {

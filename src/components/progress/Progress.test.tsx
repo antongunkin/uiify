@@ -9,7 +9,8 @@ describe("Progress", () => {
     expect(progress.tagName).toBe("PROGRESS");
     expect(progress.getAttribute("value")).toBe("3");
     expect(progress.getAttribute("max")).toBe("5");
-    expect(progress.getAttribute("data-uiify-progress")).toBe("");
+    expect(progress.classList.contains("uiify-progress")).toBe(true);
+    expect(progress.hasAttribute("data-uiify-progress")).toBe(false);
   });
 
   it("preserves native indeterminate semantics when value is omitted", () => {
@@ -19,9 +20,12 @@ describe("Progress", () => {
     expect(progress.getAttribute("aria-label")).toBe("Loading project");
   });
 
-  it("keeps the identity marker immutable", () => {
-    render(<Progress data-uiify-progress="changed" data-testid="progress" />);
-    expect(screen.getByTestId("progress").getAttribute("data-uiify-progress")).toBe("");
+  it("forwards consumer data attributes and classes", () => {
+    render(<Progress className="consumer" data-uiify-progress="changed" data-testid="progress" />);
+    const progress = screen.getByTestId("progress");
+    expect(progress.getAttribute("data-uiify-progress")).toBe("changed");
+    expect(progress.classList.contains("uiify-progress")).toBe(true);
+    expect(progress.classList.contains("consumer")).toBe(true);
   });
 
   it("forwards the native progress ref", () => {

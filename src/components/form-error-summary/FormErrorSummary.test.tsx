@@ -16,7 +16,8 @@ describe("FormErrorSummary", () => {
 
     const summary = screen.getByText("There is a problem").parentElement;
     expect(summary?.tagName).toBe("SECTION");
-    expect(summary?.getAttribute("data-uiify-form-error-summary")).toBe("");
+    expect(summary?.classList.contains("uiify-form-error-summary")).toBe(true);
+    expect(summary?.getAttribute("data-uiify-form-error-summary")).toBeNull();
     expect(summary?.getAttribute("role")).toBeNull();
     expect(
       screen.getByRole("link", { name: "Enter a valid email address" }).getAttribute("href"),
@@ -57,8 +58,20 @@ describe("FormErrorSummary", () => {
     );
 
     expect(screen.getByTestId("summary-title").classList.contains("summary-title")).toBe(true);
+    expect(
+      screen.getByTestId("summary-title").classList.contains("uiify-form-error-summary-title"),
+    ).toBe(true);
     expect(screen.getByTestId("error-list").tagName).toBe("UL");
+    expect(
+      screen.getByTestId("error-list").classList.contains("uiify-form-error-summary-list"),
+    ).toBe(true);
     expect(screen.getByTestId("email-item").tagName).toBe("LI");
+    expect(
+      screen.getByTestId("email-item").classList.contains("uiify-form-error-summary-item"),
+    ).toBe(true);
+    expect(
+      screen.getByTestId("email-link").classList.contains("uiify-form-error-summary-link"),
+    ).toBe(true);
     expect(screen.getByTestId("email-link").getAttribute("href")).toBe("#email");
     expect(screen.getByTestId("email-link").getAttribute("title")).toBe("Fix email");
     expect(
@@ -78,7 +91,7 @@ describe("FormErrorSummary", () => {
       />,
     );
     const summary = screen.getByText("There is a problem").parentElement;
-    expect(summary?.className).toBe("consumer-summary");
+    expect(summary?.className).toBe("uiify-form-error-summary consumer-summary");
     expect(summary?.getAttribute("data-context")).toBe("signup");
     expect(summary?.getAttribute("data-uiify-form-error-summary")).toBe("changed");
     expect(summary?.style.marginBlock).toBe("1rem");

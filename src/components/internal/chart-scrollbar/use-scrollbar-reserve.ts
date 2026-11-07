@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties, type RefObject } from "react";
+import { useIsomorphicLayoutEffect } from "../../../hooks/use-isomorphic-layout-effect.js";
 
 /**
  * Publishes the horizontal scrollbar thickness of a chart's
- * `[data-part="scroll-viewport"]` as `variable` on the chart element, so the
+ * scroll viewport as `variable` on the chart element, so the
  * plot grid can reserve that height below the time axis. A classic scrollbar
  * otherwise takes its height from the scroll viewport, and the flexible
  * candle row absorbs it, misaligning the value axis. Overlay scrollbars
@@ -13,13 +14,16 @@ import { useEffect, useRef, type CSSProperties, type RefObject } from "react";
 export function useScrollbarReserve(
   chartRef: RefObject<HTMLElement | null>,
   variable: `--${string}`,
-  consumerStyle?: CSSProperties | undefined,
+  consumerStyle: CSSProperties | undefined,
+  viewportSelector: string,
 ): void {
   const consumerStyleRef = useRef(consumerStyle);
-  consumerStyleRef.current = consumerStyle;
+  useIsomorphicLayoutEffect(() => {
+    consumerStyleRef.current = consumerStyle;
+  });
   useEffect(() => {
     const chart = chartRef.current;
-    const scroller = chart?.querySelector<HTMLElement>('[data-part="scroll-viewport"]');
+    const scroller = chart?.querySelector<HTMLElement>(viewportSelector);
     if (!chart || !scroller || typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(([entry]) => {
       const border = entry?.borderBoxSize[0]?.blockSize;
@@ -36,5 +40,5 @@ export function useScrollbarReserve(
     });
     observer.observe(scroller);
     return () => observer.disconnect();
-  }, [chartRef, variable]);
+  }, [chartRef, variable, viewportSelector]);
 }

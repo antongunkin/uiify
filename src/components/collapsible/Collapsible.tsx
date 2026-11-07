@@ -1,5 +1,10 @@
 import type { ReactElement } from "react";
-import { DetailsContent, DetailsRoot, DetailsSummary } from "../../elements/details/index.js";
+import { cn } from "../../core/class-names.js";
+import {
+  NativeDetailsContent,
+  NativeDetailsRoot,
+  NativeDetailsSummary,
+} from "../../elements/native-details/index.js";
 import type { CollapsibleProps } from "./types.js";
 
 /** Native disclosure defaults remain replaceable through root and generated-part props. */
@@ -13,20 +18,27 @@ export function Collapsible({
   ...rootProps
 }: CollapsibleProps): ReactElement {
   return (
-    <DetailsRoot
-      data-uiify-collapsible=""
+    <NativeDetailsRoot
       defaultOpen={defaultOpen}
       disabled={disabled}
       id={id}
       {...rootProps}
+      className={cn("uiify-collapsible", rootProps.className)}
     >
-      <DetailsSummary disabled={disabled} part="trigger" {...slotProps?.trigger}>
+      <NativeDetailsSummary
+        disabled={disabled}
+        {...slotProps?.trigger}
+        className={cn("uiify-collapsible-trigger", slotProps?.trigger?.className)}
+      >
         {label}
-      </DetailsSummary>
-      <DetailsContent part="panel" {...slotProps?.panel}>
+      </NativeDetailsSummary>
+      <NativeDetailsContent
+        {...slotProps?.panel}
+        className={cn("uiify-collapsible-panel", slotProps?.panel?.className)}
+      >
         {content}
-      </DetailsContent>
-    </DetailsRoot>
+      </NativeDetailsContent>
+    </NativeDetailsRoot>
   );
 }
 Collapsible.displayName = "Collapsible";

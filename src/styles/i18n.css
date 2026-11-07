@@ -45,15 +45,3 @@
     word-break: auto-phrase;
   }
 }
-
-/* These captions live in the later components layer, so their locale overrides do too. */
-@layer components {
-  :lang(ja) [data-uiify-line-chart] > figcaption,
-  :lang(zh) [data-uiify-line-chart] > figcaption,
-  :lang(ar) [data-uiify-line-chart] > figcaption,
-  :lang(ja) [data-uiify-candle-chart] > figcaption,
-  :lang(zh) [data-uiify-candle-chart] > figcaption,
-  :lang(ar) [data-uiify-candle-chart] > figcaption {
-    text-transform: none;
-  }
-}

@@ -1,8 +1,18 @@
-import type { ElementType } from "react";
+import type { ComponentPropsWithRef, ElementType } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
-export type ButtonVariant = "secondary" | "outline" | "ghost" | "destructive" | "link";
-export type ButtonSize = "sm" | "md" | "lg" | "icon-sm" | "icon" | "icon-lg";
+/** `default` is the filled foreground action, the same as leaving `variant` unset. */
+export type ButtonVariant = "default" | "secondary" | "outline" | "ghost" | "destructive" | "link";
+/** `default` is the standard height, the same as leaving `size` unset. */
+export type ButtonSize =
+  | "xs"
+  | "sm"
+  | "default"
+  | "lg"
+  | "icon-xs"
+  | "icon-sm"
+  | "icon"
+  | "icon-lg";
 
 export interface ButtonOwnProps {
   /** Prevents activation and exposes the disabled state to assistive technology. */
@@ -22,9 +32,25 @@ export interface ButtonState {
   readonly selected: boolean;
 }
 
-export type ButtonProps<TAs extends ElementType = "button"> = RenderableProps<
+/**
+ * Link branch: `href` without `as` renders an `<a>` with the Button skin, equivalent to
+ * `as="a"`. Button-only props (`type`, `form*`) are not offered here.
+ */
+export type ButtonLinkProps = ButtonOwnProps & {
+  /** A link has no native button action. */
+  readonly type?: never;
+  /** Renders a link styled as a button. Without `as`, `href` selects the `a` element. */
+  readonly href: string;
+} & Omit<ComponentPropsWithRef<"a">, keyof ButtonOwnProps | "href" | "as" | "render">;
+
+/** Props of the polymorphic branch: a native button, `as`, or a render callback. */
+export type ButtonElementProps<TAs extends ElementType = "button"> = RenderableProps<
   TAs,
   ButtonOwnProps,
   ButtonState,
   HTMLElement
 >;
+
+export type ButtonProps<TAs extends ElementType = "button"> =
+  | (ButtonElementProps<TAs> & (TAs extends "button" ? { readonly href?: never } : unknown))
+  | ButtonLinkProps;

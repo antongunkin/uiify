@@ -1,18 +1,44 @@
 import type { ReactElement } from "react";
 import { cn } from "../../../core/class-names.js";
 import { resolveRepeatedSlotProps } from "../../../core/slot-props.js";
-import {
-  ChoiceGroup as ElementChoiceGroup,
-  ChoiceItem as ElementChoiceItem,
-} from "../../../elements/choice/index.js";
+import { NativeChoiceGroup, NativeChoiceItem } from "../../../elements/native-choice/index.js";
 import { getChoiceGroupName } from "./ids.js";
 import type { ChoiceGroupProps, ChoiceItem } from "./types.js";
 
-/**
- * Built on `@gunkin/uiify/elements/choice`: this component
- * stays the ergonomic, items-array API six components share, now implemented as a thin map
- * from `items` onto `Choice.Item` with canonical `data-part` anatomy.
- */
+const choiceClasses: Readonly<
+  Partial<
+    Record<
+      string,
+      {
+        root: string;
+        item: string;
+        control: string;
+        label: string;
+      }
+    >
+  >
+> = {
+  "toggle-group": {
+    root: "uiify-toggle-group",
+    item: "uiify-toggle-group-item",
+    control: "uiify-toggle-group-control",
+    label: "uiify-toggle-group-label",
+  },
+  "segmented-control": {
+    root: "uiify-segmented-control",
+    item: "uiify-segmented-control-item",
+    control: "peer/segmented-control uiify-segmented-control-input",
+    label: "uiify-segmented-control-label",
+  },
+  rating: {
+    root: "uiify-rating",
+    item: "uiify-rating-item",
+    control: "uiify-rating-input",
+    label: "uiify-rating-label",
+  },
+};
+
+/** Renders the shared items-array API as native Choice elements. */
 export function ChoiceGroup<TItem extends ChoiceItem>(
   props: ChoiceGroupProps<TItem>,
 ): ReactElement {
@@ -27,69 +53,60 @@ export function ChoiceGroup<TItem extends ChoiceItem>(
     orientation,
     className,
     rootProps,
-    itemPart = "item",
-    labelPart = false,
     rootAttributes,
     labelAttributes,
-    itemInputClassName,
     slotProps,
     onItemChange,
-    renderPanel,
     renderLabel,
-    append,
-    appendProps,
   } = props;
   const groupName = name ?? getChoiceGroupName(id, kind);
+  const classes = Object.hasOwn(choiceClasses, namespace) ? choiceClasses[namespace] : undefined;
 
   return (
-    <ElementChoiceGroup
-      {...{ [`data-uiify-${namespace}`]: "" }}
+    <NativeChoiceGroup
       {...rootAttributes}
       {...rootProps}
-      className={className}
+      className={cn(classes?.root, className)}
       id={id}
       kind={kind}
       orientation={orientation}
     >
       {items.map((item) => {
+        const itemProps = resolveRepeatedSlotProps(slotProps?.item, item.value);
         const inputSlotProps = resolveRepeatedSlotProps(slotProps?.input, item.value);
+        const labelSlotProps = resolveRepeatedSlotProps(slotProps?.label, item.value);
         return (
-          <ElementChoiceItem
-            {...resolveRepeatedSlotProps(slotProps?.item, item.value)}
-            {...(renderPanel ? { panel: renderPanel(item) } : {})}
+          <NativeChoiceItem
+            {...itemProps}
+            className={cn(classes?.item, itemProps.className)}
             {...(isControlled ? { checked: isChecked(item) } : { defaultChecked: isChecked(item) })}
             disabled={item.disabled ?? false}
             groupId={id}
             key={item.value}
             kind={kind}
             label={renderLabel ? renderLabel(item) : item.label}
-            labelPart={labelPart ? "trigger" : "label"}
             slotProps={{
               input: {
-                "data-part": "control",
-                ...(kind === "single" ? { "data-uiify-radio": "" } : {}),
                 ...inputSlotProps,
-                className: cn(inputSlotProps.className, itemInputClassName?.(item)),
+                className: cn(classes?.control, inputSlotProps.className),
               },
               label: {
                 ...labelAttributes,
-                ...resolveRepeatedSlotProps(slotProps?.label, item.value),
+                ...labelSlotProps,
+                className: cn(
+                  labelAttributes?.["className"],
+                  classes?.label,
+                  labelSlotProps.className,
+                ),
               },
-              panel: resolveRepeatedSlotProps(slotProps?.panel, item.value),
             }}
             name={groupName}
             {...(onItemChange ? { onValueChange: () => onItemChange(item) } : {})}
-            part={itemPart}
             value={item.value}
           />
         );
       })}
-      {append ? (
-        <div data-part="append" {...appendProps}>
-          {append}
-        </div>
-      ) : null}
-    </ElementChoiceGroup>
+    </NativeChoiceGroup>
   );
 }
 ChoiceGroup.displayName = "ChoiceGroup";

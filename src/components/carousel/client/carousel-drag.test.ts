@@ -14,19 +14,19 @@ function pointer(type: string, init: PointerEventInit): PointerEvent {
 
 function createFixture(options: FixtureOptions = {}) {
   document.body.innerHTML = `
-    <section data-uiify-carousel>
-      <div data-part="viewport">
-        <article data-part="slide">
+    <section class="uiify-carousel">
+      <div class="uiify-carousel-viewport">
+        <article class="uiify-carousel-slide">
           <span data-drag-target>Drag target</span>
           <button type="button">Action</button>
-          <section data-uiify-carousel>
-            <div data-part="viewport"><span data-nested-target>Nested</span></div>
+          <section class="uiify-carousel">
+            <div class="uiify-carousel-viewport"><span data-nested-target>Nested</span></div>
           </section>
         </article>
       </div>
     </section>`;
   const root = document.querySelector<HTMLElement>("section")!;
-  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]')!;
+  const viewport = root.querySelector<HTMLElement>(":scope > .uiify-carousel-viewport")!;
   const target = viewport.querySelector<HTMLElement>("[data-drag-target]")!;
   const setPointerCapture = vi.fn();
   const releasePointerCapture = vi.fn();

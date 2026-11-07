@@ -16,7 +16,7 @@ export interface UseLiveChartWindowOptions {
   readonly itemWidth: number;
   /** Measured content height of the chart `<figure>`, once known. */
   readonly figureHeight: number | undefined;
-  /** Custom property that receives the scroll offset, e.g. `--candle-scroll-x`. */
+  /** Custom property that receives the scroll offset, e.g. `--uiify-candle-scroll-x`. */
   readonly scrollVariable: `--${string}`;
   /** Native root styles override the computed scroll custom property, including removal. */
   readonly consumerStyle?: CSSProperties | undefined;

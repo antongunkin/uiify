@@ -8,12 +8,12 @@
 @layer base {
   :root {
     /* Text-entry controls below 16px make iOS Safari zoom the page on focus. */
-    --uiify-control-text: var(--text-sm);
+    --uiify-control-text: 0.875rem;
   }
 
   @media (pointer: coarse) {
     :root {
-      --uiify-control-text: var(--text-base);
+      --uiify-control-text: 1rem;
     }
   }
 
@@ -21,7 +21,7 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
-    font-size: var(--text-base);
+    font-size: 1rem;
     line-height: var(--leading-normal);
   }
 
@@ -38,20 +38,19 @@
    * the design-system gap for native surfaces.
    */
   [data-positioning="native"] {
-    --uiify-anchor-offset: var(--space-sm);
+    --uiify-anchor-offset: calc(var(--spacing) * 2);
   }
 
   /* Shared focus-visible ring for public interactive parts. A flush,
      translucent glow reads as a soft halo instead of a hard ring. */
   :where(
-    [data-uiify-button],
-    [data-uiify-input],
-    [data-uiify-textarea],
-    [data-uiify-select],
-    [data-uiify-checkbox],
-    [data-uiify-radio],
-    [data-uiify-switch],
-    [data-uiify-toggle]
+    .uiify-button,
+    .uiify-input,
+    .uiify-textarea,
+    .uiify-checkbox-control,
+    .uiify-switch,
+    .uiify-radio-group-control,
+    .uiify-toggle
   ):focus-visible {
     outline: none;
     box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);

@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "../../core/class-names.js";
 import type { CSSProperties, ReactElement } from "react";
 import type { VirtualScrollRowShellProps } from "./types.js";
 
@@ -51,13 +52,13 @@ export function VirtualScrollRowShell({
 
   return (
     <div
-      data-part="row"
       data-dynamic-row={dynamicLayout ? "" : undefined}
       data-row-index={index}
       role={listRole === "list" ? "listitem" : "row"}
       aria-setsize={itemCount}
       aria-posinset={index + 1}
       {...consumerProps}
+      className={cn("uiify-virtual-scroll-row", consumerProps.className)}
       style={{ ...generatedStyle, ...consumerStyle }}
     >
       {children}

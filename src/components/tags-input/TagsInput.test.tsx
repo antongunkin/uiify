@@ -175,8 +175,10 @@ describe("TagsInput", () => {
         <TagsInput.List>
           <TagsInput.Input
             placeholder="Add tag"
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer input role override.
             role="textbox"
             aria-controls="bogus"
+            // oxlint-disable-next-line jsx-a11y/role-supports-aria-props -- This tests the consumer expanded-state override.
             aria-expanded="true"
             value="bogus"
           />
@@ -261,6 +263,7 @@ describe("TagsInput", () => {
           <TagsInput.Tag
             index={0}
             value="react"
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer tag role override.
             role="button"
             data-value="bogus"
             data-testid="tag-react"

@@ -45,7 +45,7 @@
 
 ## Other types
 
-- `ColorPickerFieldSlotProps`: `Omit<SlotProps<"div">, "id">` — The field id is the required Field.Root wiring input; use ColorPicker.id.
+- `ColorPickerFieldSlotProps`: `SlotProps<"div">`
 - `ColorPickerLabelSlotProps`: `SlotProps<"label">`
 - `ColorPickerSurfaceSlotProps`: `SlotProps<"div">`
 - `ColorPickerControlSlotProps`: `SlotProps<"input">`

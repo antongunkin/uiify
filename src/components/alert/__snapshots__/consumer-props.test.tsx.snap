@@ -2,9 +2,9 @@
 
 exports[`preserves default alert DOM 1`] = `
 [
-  "div data-uiify-alert="" data-variant="warning"",
-  "span aria-hidden="true" data-part="symbol"",
-  "div data-part="title" data-uiify-alert-title=""",
-  "div data-part="description" data-uiify-alert-description=""",
+  "div class="uiify-alert" data-variant="warning"",
+  "span aria-hidden="true" class="uiify-alert-symbol"",
+  "div class="uiify-alert-title"",
+  "div class="uiify-alert-description"",
 ]
 `;

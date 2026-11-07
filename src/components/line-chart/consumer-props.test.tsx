@@ -43,7 +43,7 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
         plot: { "data-part": "custom-plot", "aria-hidden": false, "data-testid": "plot" },
         points: {
           "aria-label": undefined,
-          style: { "--line-count": "7" } as CSSProperties,
+          style: { "--uiify-line-count": "7" } as CSSProperties,
           "data-testid": "points",
         },
         readout: { "aria-live": "assertive", "data-testid": "readout" },
@@ -54,7 +54,7 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
               "data-time": "custom",
               "data-trend": "custom",
               "aria-hidden": true,
-              style: { "--line-x": "7%" } as CSSProperties,
+              style: { "--uiify-line-x": "7%" } as CSSProperties,
               "data-testid": "point",
             },
           },
@@ -72,22 +72,22 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
         },
         crosshair: {
           "aria-hidden": false,
-          style: { "--line-crosshair-x": "7%" } as CSSProperties,
+          style: { "--uiify-line-crosshair-x": "7%" } as CSSProperties,
           "data-testid": "crosshair",
         },
         timeAxis: { "data-axis": "custom-time", "aria-label": undefined, "data-testid": "time" },
         valueAxis: { "data-axis": "custom-value", "data-testid": "value" },
         timeAxisLabel: {
           byItemIndex: {
-            0: { style: { "--line-axis-x": "7%" } as CSSProperties, "data-testid": "tick" },
+            0: { style: { "--uiify-line-axis-x": "7%" } as CSSProperties, "data-testid": "tick" },
           },
         },
         crosshairTime: {
-          style: { "--line-crosshair-x": "7%" } as CSSProperties,
+          style: { "--uiify-line-crosshair-x": "7%" } as CSSProperties,
           "data-testid": "crosshair-time",
         },
         crosshairValue: {
-          style: { "--line-cursor-y": "7px" } as CSSProperties,
+          style: { "--uiify-line-cursor-y": "7px" } as CSSProperties,
           "data-testid": "crosshair-value",
         },
         dataTable: { "aria-label": undefined, "data-part": "custom-table", "data-testid": "table" },
@@ -101,27 +101,29 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
   expect(screen.getByTestId("plot").getAttribute("data-part")).toBe("custom-plot");
   expect(screen.getByTestId("plot").getAttribute("aria-hidden")).toBe("false");
   expect(screen.getByTestId("points").hasAttribute("aria-label")).toBe(false);
-  expect(screen.getByTestId("points").style.getPropertyValue("--line-count")).toBe("7");
+  expect(screen.getByTestId("points").style.getPropertyValue("--uiify-line-count")).toBe("7");
   expect(screen.getByTestId("readout").getAttribute("aria-live")).toBe("assertive");
   expect(screen.getByTestId("point").getAttribute("data-time")).toBe("custom");
   expect(screen.getByTestId("point").getAttribute("data-trend")).toBe("custom");
-  expect(screen.getByTestId("point").style.getPropertyValue("--line-x")).toBe("7%");
+  expect(screen.getByTestId("point").style.getPropertyValue("--uiify-line-x")).toBe("7%");
   expect(screen.getByTestId("hit").getAttribute("type")).toBe("submit");
   expect(screen.getByTestId("hit").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("hit").hasAttribute("aria-pressed")).toBe(false);
   expect(screen.getByTestId("hit").getAttribute("data-part")).toBe("custom-hit");
   expect(screen.getByTestId("crosshair").getAttribute("aria-hidden")).toBe("false");
-  expect(screen.getByTestId("crosshair").style.getPropertyValue("--line-crosshair-x")).toBe("7%");
+  expect(screen.getByTestId("crosshair").style.getPropertyValue("--uiify-line-crosshair-x")).toBe(
+    "7%",
+  );
   expect(screen.getByTestId("time").getAttribute("data-axis")).toBe("custom-time");
   expect(screen.getByTestId("time").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("value").getAttribute("data-axis")).toBe("custom-value");
-  expect(screen.getByTestId("tick").style.getPropertyValue("--line-axis-x")).toBe("7%");
-  expect(screen.getByTestId("crosshair-time").style.getPropertyValue("--line-crosshair-x")).toBe(
-    "7%",
-  );
-  expect(screen.getByTestId("crosshair-value").style.getPropertyValue("--line-cursor-y")).toBe(
-    "7px",
-  );
+  expect(screen.getByTestId("tick").style.getPropertyValue("--uiify-line-axis-x")).toBe("7%");
+  expect(
+    screen.getByTestId("crosshair-time").style.getPropertyValue("--uiify-line-crosshair-x"),
+  ).toBe("7%");
+  expect(
+    screen.getByTestId("crosshair-value").style.getPropertyValue("--uiify-line-cursor-y"),
+  ).toBe("7px");
   expect(screen.getByTestId("table").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("header").getAttribute("scope")).toBe("row");
   expect(screen.getByTestId("cell").hasAttribute("scope")).toBe(false);
@@ -201,10 +203,10 @@ it("merges point ref cleanup and client root refs while preserving live native p
       ref={rootRef}
       style={
         {
-          "--line-scale": "7",
-          "--line-content-size": "7px",
-          "--line-plot-height": "7px",
-          "--line-run": "7",
+          "--uiify-line-scale": "7",
+          "--uiify-line-content-size": "7px",
+          "--uiify-line-plot-height": "7px",
+          "--uiify-line-run": "7",
         } as CSSProperties
       }
       slotProps={{
@@ -222,10 +224,10 @@ it("merges point ref cleanup and client root refs while preserving live native p
       }}
     />,
   );
-  expect(rootRef.current?.style.getPropertyValue("--line-scale")).toBe("7");
-  expect(rootRef.current?.style.getPropertyValue("--line-content-size")).toBe("7px");
-  expect(rootRef.current?.style.getPropertyValue("--line-plot-height")).toBe("7px");
-  expect(rootRef.current?.style.getPropertyValue("--line-run")).toBe("7");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-scale")).toBe("7");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-content-size")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-plot-height")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-run")).toBe("7");
   expect(screen.getByTestId("scrollport").getAttribute("role")).toBe("note");
   expect(screen.getByTestId("scrollport").getAttribute("data-uiify-virtual-scroll")).toBe("custom");
   expect(screen.getByTestId("row").hasAttribute("aria-posinset")).toBe(false);
@@ -270,27 +272,27 @@ it("keeps consumer live scroll styles on mount and scroll, including undefined r
       data={liveData}
       visibleCount={10}
       ref={rootRef}
-      style={{ "--line-scroll-x": "7px" } as CSSProperties}
+      style={{ "--uiify-line-scroll-x": "7px" } as CSSProperties}
       slotProps={{ liveScrollport: { ref: scrollportRef } }}
     />,
   );
-  expect(rootRef.current?.style.getPropertyValue("--line-scroll-x")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-scroll-x")).toBe("7px");
   const element = scrollportRef.current!;
   element.scrollLeft = 60;
   fireEvent.scroll(element);
-  expect(rootRef.current?.style.getPropertyValue("--line-scroll-x")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-scroll-x")).toBe("7px");
   rerender(
     <LineChartClient
       data={liveData}
       visibleCount={10}
       ref={rootRef}
-      style={{ "--line-scroll-x": undefined } as CSSProperties}
+      style={{ "--uiify-line-scroll-x": undefined } as CSSProperties}
       slotProps={{ liveScrollport: { ref: scrollportRef } }}
     />,
   );
   element.scrollLeft = 120;
   fireEvent.scroll(element);
-  expect(rootRef.current?.style.getPropertyValue("--line-scroll-x")).toBe("");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-line-scroll-x")).toBe("");
   unmount();
   vi.unstubAllGlobals();
 });

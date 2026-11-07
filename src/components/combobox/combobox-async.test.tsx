@@ -61,11 +61,16 @@ describe("Combobox async status protocol", () => {
     expect(status.getAttribute("role")).toBe("status");
     expect(status.getAttribute("aria-live")).toBe("polite");
     expect(status.getAttribute("aria-atomic")).toBe("true");
-    expect(status.getAttribute("data-part")).toBe("status");
+    expect(status.classList.contains("uiify-combobox-status")).toBe(true);
 
     rerender(
       <Combobox.Root items={items}>
-        <Combobox.Status role="region" aria-live="assertive" aria-atomic={false}>
+        <Combobox.Status
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer live-region role override.
+          role="region"
+          aria-live="assertive"
+          aria-atomic={false}
+        >
           Loading people
         </Combobox.Status>
         <Combobox.Content>{() => null}</Combobox.Content>

@@ -2,18 +2,18 @@
 
 exports[`preserves default breadcrumb DOM 1`] = `
 [
-  "nav aria-label="Breadcrumb" data-uiify-breadcrumb=""",
-  "ol data-part="list"",
-  "li data-part="item"",
-  "a data-part="link" href="/a"",
-  "span aria-hidden="true" data-part="separator"",
-  "li data-part="item"",
-  "details data-part="ellipsis" data-uiify-breadcrumb="" data-uiify-details=""",
+  "nav aria-label="Breadcrumb" class="uiify-breadcrumb"",
+  "ol class="uiify-breadcrumb-list"",
+  "li class="uiify-breadcrumb-item"",
+  "a class="uiify-breadcrumb-link" href="/a"",
+  "span aria-hidden="true" class="uiify-breadcrumb-separator"",
+  "li class="uiify-breadcrumb-item"",
+  "details class="uiify-native-details uiify-breadcrumb-ellipsis"",
   "summary aria-label="Show collapsed breadcrumbs"",
-  "ol",
-  "a data-part="link" href="/b"",
-  "span aria-hidden="true" data-part="separator"",
-  "li data-part="item"",
-  "a aria-current="page" data-current="" data-part="link"",
+  "ol class="uiify-breadcrumb-ellipsis-content"",
+  "a class="uiify-breadcrumb-link" href="/b"",
+  "span aria-hidden="true" class="uiify-breadcrumb-separator"",
+  "li class="uiify-breadcrumb-item"",
+  "a aria-current="page" class="uiify-breadcrumb-link" data-current=""",
 ]
 `;

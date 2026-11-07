@@ -1,5 +1,5 @@
 import type { ElementType, FormHTMLAttributes, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type { FormOwnProps, FormProps } from "./types.js";
 
 export function Form<TAs extends ElementType = "form">(props: FormProps<TAs>): ReactElement | null {
@@ -22,7 +22,7 @@ export function Form<TAs extends ElementType = "form">(props: FormProps<TAs>): R
       ...consumerProps,
       noValidate: validationBehavior === "aria" ? true : noValidate,
       "data-validation-behavior": validationBehavior,
-      "data-uiify-form": "",
+      className: cn("uiify-form", consumerProps.className),
     },
     render,
     state: { validationBehavior },

@@ -141,7 +141,7 @@ describe("Table client", () => {
       ["row-select-input", "row-select-input"],
       ["row-select-label", "row-select-label"],
     ] as const) {
-      expect(screen.getByTestId(testId).className).toBe(className);
+      expect(screen.getByTestId(testId).className).toContain(className);
     }
     expect(sortButtonRef.current).toBe(screen.getByTestId("sort-button"));
 
@@ -166,6 +166,53 @@ describe("Table client", () => {
     expect(screen.getByRole("checkbox", { name: "Select row" }).getAttribute("data-state")).toBe(
       "checked",
     );
+  });
+
+  it("keeps the select-all header in sync with none, some and all", () => {
+    render(
+      <Table.Root aria-label="Data" selectionMode="multiple">
+        <Table.Header>
+          <tr>
+            <Table.ColumnHeader id="select">
+              <Table.SelectAll />
+            </Table.ColumnHeader>
+          </tr>
+        </Table.Header>
+        <Table.Body>
+          <Table.Row id="r1">
+            <Table.Cell>
+              <Table.RowSelect rowId="r1" />
+              Row 1
+            </Table.Cell>
+          </Table.Row>
+          <Table.Row id="r2">
+            <Table.Cell>
+              <Table.RowSelect rowId="r2" />
+              Row 2
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table.Root>,
+    );
+
+    const selectAll = () =>
+      screen.getByRole("checkbox", { name: "Select all rows" }) as HTMLInputElement;
+    expect(selectAll().indeterminate).toBe(false);
+    expect(selectAll().getAttribute("data-state")).toBe("unchecked");
+
+    fireEvent.click(screen.getAllByRole("checkbox", { name: "Select row" })[0]!);
+    expect(selectAll().indeterminate).toBe(true);
+    expect(selectAll().getAttribute("aria-checked")).toBe("mixed");
+    expect(selectAll().getAttribute("data-state")).toBe("indeterminate");
+
+    fireEvent.click(selectAll());
+    expect(selectAll().indeterminate).toBe(false);
+    expect(selectAll().hasAttribute("aria-checked")).toBe(false);
+    expect(selectAll().getAttribute("data-state")).toBe("checked");
+
+    fireEvent.click(selectAll());
+    expect(selectAll().indeterminate).toBe(false);
+    expect(selectAll().getAttribute("data-state")).toBe("unchecked");
   });
 
   it("selects all mounted rows through the component API", () => {

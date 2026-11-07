@@ -53,22 +53,25 @@ export function CarouselMarkup({
   return (
     <section
       aria-roledescription="carousel"
-      data-uiify-carousel=""
       data-axis={base.axis}
       {...(presentation ? { "data-mode": presentation.mode } : {})}
       {...(enhanced ? { "data-enhanced": "" } : {})}
       {...rootProps}
+      className={cn("uiify-carousel", rootProps.className)}
       ref={rootRef}
     >
       {presentation && hasControls && presentation.autoplay ? (
         <button
           type="button"
-          data-part="controls"
           data-carousel-action="rotation"
-          data-uiify-button=""
           data-variant="outline"
           hidden={!enhanced}
           {...resolveRepeatedSlotProps(slotProps?.rotationControl, "rotation")}
+          className={cn(
+            "uiify-carousel-control",
+            "uiify-button",
+            resolveRepeatedSlotProps(slotProps?.rotationControl, "rotation").className,
+          )}
         >
           {presentation.autoplay.requested ? labels.stop : labels.start}
         </button>
@@ -76,11 +79,13 @@ export function CarouselMarkup({
 
       <div
         id={`${base.id}--viewport`}
+        // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Tab focus enables native keyboard scrolling through slides.
         tabIndex={0}
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The named viewport groups the carousel slides.
         role="group"
         aria-label={base["aria-label"]}
-        data-part="viewport"
         {...slotProps?.viewport}
+        className={cn("uiify-carousel-viewport", slotProps?.viewport?.className)}
       >
         {items.map((item, index) => {
           const slideId = carouselSlideId(base.id, item.id);
@@ -90,6 +95,7 @@ export function CarouselMarkup({
             <div
               key={item.id}
               id={slideId}
+              // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The carousel pattern exposes each slide as a named group.
               role="group"
               aria-roledescription="slide"
               aria-label={formatLabel(
@@ -101,16 +107,18 @@ export function CarouselMarkup({
                 },
                 base.locale,
               )}
-              data-part="slide"
               data-carousel-index={index}
               {...(enhanced
                 ? { "data-state": index === presentedIndex ? "active" : "inactive" }
                 : {})}
               {...(fade && index !== presentedIndex ? { inert: true, "aria-hidden": true } : {})}
               {...slideProps}
-              className={cn(item.className, slideProps.className)}
+              className={cn("uiify-carousel-slide", item.className, slideProps.className)}
             >
-              <div data-part="slide-content" {...slideContentProps}>
+              <div
+                {...slideContentProps}
+                className={cn("uiify-carousel-slide-content", slideContentProps.className)}
+              >
                 {item.children}
               </div>
             </div>
@@ -122,21 +130,28 @@ export function CarouselMarkup({
         <button
           type="button"
           aria-label={labels.previous}
-          data-part="controls"
           data-carousel-action="previous"
           data-size="icon"
-          data-uiify-button=""
           data-variant="outline"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atStart : undefined}
           {...resolveRepeatedSlotProps(slotProps?.previousControl, "previous")}
+          className={cn(
+            "uiify-carousel-control",
+            "uiify-button",
+            resolveRepeatedSlotProps(slotProps?.previousControl, "previous").className,
+          )}
         >
           {base.icons?.previous}
         </button>
       ) : null}
 
       {base.pagination && hasControls ? (
-        <nav aria-label={labels.navigation} data-part="dots" {...slotProps?.dots}>
+        <nav
+          aria-label={labels.navigation}
+          {...slotProps?.dots}
+          className={cn("uiify-carousel-dots", slotProps?.dots?.className)}
+        >
           {dotIndices.map((itemIndex) => {
             const item = items[itemIndex];
             if (!item) return null;
@@ -146,9 +161,12 @@ export function CarouselMarkup({
                 href={carouselFragment(carouselSlideId(base.id, item.id))}
                 aria-label={formatLabel(labels.goToSlide, { label: item.label }, base.locale)}
                 aria-current={showActiveDot && itemIndex === activeIndex ? "true" : undefined}
-                data-part="dot"
                 data-carousel-index={itemIndex}
                 {...resolveRepeatedSlotProps(slotProps?.dot, item.id)}
+                className={cn(
+                  "uiify-carousel-dot",
+                  resolveRepeatedSlotProps(slotProps?.dot, item.id).className,
+                )}
               >
                 {itemIndex + 1}
               </a>
@@ -161,14 +179,17 @@ export function CarouselMarkup({
         <button
           type="button"
           aria-label={labels.next}
-          data-part="controls"
           data-carousel-action="next"
           data-size="icon"
-          data-uiify-button=""
           data-variant="outline"
           hidden={!enhanced}
           disabled={enhanced ? presentation.snapshot.atEnd : undefined}
           {...resolveRepeatedSlotProps(slotProps?.nextControl, "next")}
+          className={cn(
+            "uiify-carousel-control",
+            "uiify-button",
+            resolveRepeatedSlotProps(slotProps?.nextControl, "next").className,
+          )}
         >
           {base.icons?.next}
         </button>
@@ -178,8 +199,8 @@ export function CarouselMarkup({
         <div
           aria-live={presentation.autoplay?.playing ? "off" : "polite"}
           aria-atomic="true"
-          data-part="status"
           {...slotProps?.status}
+          className={cn("uiify-carousel-status", slotProps?.status?.className)}
         >
           {enhanced && announcedIndex !== undefined
             ? formatLabel(

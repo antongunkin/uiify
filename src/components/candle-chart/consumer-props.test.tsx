@@ -43,7 +43,7 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
         plot: { "data-part": "custom-plot", "aria-hidden": false, "data-testid": "plot" },
         candles: {
           "aria-label": undefined,
-          style: { "--candle-count": "7" } as CSSProperties,
+          style: { "--uiify-candle-count": "7" } as CSSProperties,
           "data-testid": "candles",
         },
         readout: { "aria-live": "assertive", "data-testid": "readout" },
@@ -54,7 +54,7 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
               "data-time": "custom",
               "data-direction": "custom",
               "aria-hidden": true,
-              style: { "--candle-x": "7%" } as CSSProperties,
+              style: { "--uiify-candle-x": "7%" } as CSSProperties,
               "data-testid": "candle",
             },
           },
@@ -72,22 +72,22 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
         },
         crosshair: {
           "aria-hidden": false,
-          style: { "--candle-crosshair-x": "7%" } as CSSProperties,
+          style: { "--uiify-candle-crosshair-x": "7%" } as CSSProperties,
           "data-testid": "crosshair",
         },
         timeAxis: { "data-axis": "custom-time", "aria-label": undefined, "data-testid": "time" },
         priceAxis: { "data-axis": "custom-value", "data-testid": "value" },
         timeAxisLabel: {
           byItemIndex: {
-            0: { style: { "--candle-axis-x": "7%" } as CSSProperties, "data-testid": "tick" },
+            0: { style: { "--uiify-candle-axis-x": "7%" } as CSSProperties, "data-testid": "tick" },
           },
         },
         crosshairTime: {
-          style: { "--candle-crosshair-x": "7%" } as CSSProperties,
+          style: { "--uiify-candle-crosshair-x": "7%" } as CSSProperties,
           "data-testid": "crosshair-time",
         },
         crosshairPrice: {
-          style: { "--candle-cursor-y": "7px" } as CSSProperties,
+          style: { "--uiify-candle-cursor-y": "7px" } as CSSProperties,
           "data-testid": "crosshair-value",
         },
         dataTable: { "aria-label": undefined, "data-part": "custom-table", "data-testid": "table" },
@@ -101,27 +101,29 @@ it("forwards native chart defaults, explicit undefined and indexed geometry over
   expect(screen.getByTestId("plot").getAttribute("data-part")).toBe("custom-plot");
   expect(screen.getByTestId("plot").getAttribute("aria-hidden")).toBe("false");
   expect(screen.getByTestId("candles").hasAttribute("aria-label")).toBe(false);
-  expect(screen.getByTestId("candles").style.getPropertyValue("--candle-count")).toBe("7");
+  expect(screen.getByTestId("candles").style.getPropertyValue("--uiify-candle-count")).toBe("7");
   expect(screen.getByTestId("readout").getAttribute("aria-live")).toBe("assertive");
   expect(screen.getByTestId("candle").getAttribute("data-time")).toBe("custom");
   expect(screen.getByTestId("candle").getAttribute("data-direction")).toBe("custom");
-  expect(screen.getByTestId("candle").style.getPropertyValue("--candle-x")).toBe("7%");
+  expect(screen.getByTestId("candle").style.getPropertyValue("--uiify-candle-x")).toBe("7%");
   expect(screen.getByTestId("hit").getAttribute("type")).toBe("submit");
   expect(screen.getByTestId("hit").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("hit").hasAttribute("aria-pressed")).toBe(false);
   expect(screen.getByTestId("hit").getAttribute("data-part")).toBe("custom-hit");
   expect(screen.getByTestId("crosshair").getAttribute("aria-hidden")).toBe("false");
-  expect(screen.getByTestId("crosshair").style.getPropertyValue("--candle-crosshair-x")).toBe("7%");
+  expect(screen.getByTestId("crosshair").style.getPropertyValue("--uiify-candle-crosshair-x")).toBe(
+    "7%",
+  );
   expect(screen.getByTestId("time").getAttribute("data-axis")).toBe("custom-time");
   expect(screen.getByTestId("time").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("value").getAttribute("data-axis")).toBe("custom-value");
-  expect(screen.getByTestId("tick").style.getPropertyValue("--candle-axis-x")).toBe("7%");
-  expect(screen.getByTestId("crosshair-time").style.getPropertyValue("--candle-crosshair-x")).toBe(
-    "7%",
-  );
-  expect(screen.getByTestId("crosshair-value").style.getPropertyValue("--candle-cursor-y")).toBe(
-    "7px",
-  );
+  expect(screen.getByTestId("tick").style.getPropertyValue("--uiify-candle-axis-x")).toBe("7%");
+  expect(
+    screen.getByTestId("crosshair-time").style.getPropertyValue("--uiify-candle-crosshair-x"),
+  ).toBe("7%");
+  expect(
+    screen.getByTestId("crosshair-value").style.getPropertyValue("--uiify-candle-cursor-y"),
+  ).toBe("7px");
   expect(screen.getByTestId("table").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("header").getAttribute("scope")).toBe("row");
   expect(screen.getByTestId("cell").hasAttribute("scope")).toBe(false);
@@ -201,9 +203,9 @@ it("merges candle ref cleanup and client root refs while preserving live native 
       ref={rootRef}
       style={
         {
-          "--candle-scale": "7",
-          "--candle-content-size": "7px",
-          "--candle-plot-height": "7px",
+          "--uiify-candle-scale": "7",
+          "--uiify-candle-content-size": "7px",
+          "--uiify-candle-plot-height": "7px",
         } as CSSProperties
       }
       slotProps={{
@@ -224,9 +226,9 @@ it("merges candle ref cleanup and client root refs while preserving live native 
       }}
     />,
   );
-  expect(rootRef.current?.style.getPropertyValue("--candle-scale")).toBe("7");
-  expect(rootRef.current?.style.getPropertyValue("--candle-content-size")).toBe("7px");
-  expect(rootRef.current?.style.getPropertyValue("--candle-plot-height")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-candle-scale")).toBe("7");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-candle-content-size")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-candle-plot-height")).toBe("7px");
   expect(screen.getByTestId("scrollport").getAttribute("role")).toBe("note");
   expect(screen.getByTestId("scrollport").getAttribute("data-uiify-virtual-scroll")).toBe("custom");
   expect(screen.getByTestId("row").hasAttribute("aria-posinset")).toBe(false);
@@ -271,27 +273,27 @@ it("keeps consumer live scroll styles on mount and scroll, including undefined r
       data={liveData}
       visibleCount={10}
       ref={rootRef}
-      style={{ "--candle-scroll-x": "7px" } as CSSProperties}
+      style={{ "--uiify-candle-scroll-x": "7px" } as CSSProperties}
       slotProps={{ liveScrollport: { ref: scrollportRef } }}
     />,
   );
-  expect(rootRef.current?.style.getPropertyValue("--candle-scroll-x")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-candle-scroll-x")).toBe("7px");
   const element = scrollportRef.current!;
   element.scrollLeft = 60;
   fireEvent.scroll(element);
-  expect(rootRef.current?.style.getPropertyValue("--candle-scroll-x")).toBe("7px");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-candle-scroll-x")).toBe("7px");
   rerender(
     <CandleChartClient
       data={liveData}
       visibleCount={10}
       ref={rootRef}
-      style={{ "--candle-scroll-x": undefined } as CSSProperties}
+      style={{ "--uiify-candle-scroll-x": undefined } as CSSProperties}
       slotProps={{ liveScrollport: { ref: scrollportRef } }}
     />,
   );
   element.scrollLeft = 120;
   fireEvent.scroll(element);
-  expect(rootRef.current?.style.getPropertyValue("--candle-scroll-x")).toBe("");
+  expect(rootRef.current?.style.getPropertyValue("--uiify-candle-scroll-x")).toBe("");
   unmount();
   vi.unstubAllGlobals();
 });

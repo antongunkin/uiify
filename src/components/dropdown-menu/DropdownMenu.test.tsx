@@ -44,7 +44,7 @@ describe("DropdownMenu", () => {
     );
 
     const root = screen.getByTestId("menu-root");
-    expect(root.className).toBe("menu-root");
+    expect(root.className).toBe("uiify-dropdown-menu menu-root");
     expect(root.style.color).toBe("red");
     expect(root.getAttribute("data-uiify-menu")).toBe("consumer");
     expect(root.querySelector("b")).toBeNull();
@@ -86,7 +86,7 @@ describe("DropdownMenu", () => {
     );
 
     const bar = screen.getByTestId("menu-bar");
-    expect(bar.className).toBe("bar");
+    expect(bar.className).toBe("uiify-dropdown-menu-bar bar");
     expect(bar.getAttribute("role")).toBe("menubar");
     expect(bar.tabIndex).toBe(-1);
     expect(bar.querySelector("b")).toBeNull();
@@ -347,7 +347,12 @@ describe("DropdownMenu", () => {
       <DropdownMenu.Root defaultOpen>
         <DropdownMenu.Trigger>Menu</DropdownMenu.Trigger>
         <DropdownMenu.Content>
-          <DropdownMenu.Item role="button">Cut</DropdownMenu.Item>
+          <DropdownMenu.Item
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer role override.
+            role="button"
+          >
+            Cut
+          </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>,
     );
@@ -417,10 +422,10 @@ describe("DropdownMenu", () => {
         </DropdownMenu.Content>
       </DropdownMenu.Root>,
     );
-    expect(document.querySelector('[data-part="item-icon"]')).toBeTruthy();
-    expect(document.querySelector('[data-part="item-text"]')).toBeTruthy();
-    expect(document.querySelector('[data-part="item-description"]')).toBeTruthy();
-    expect(document.querySelector('[data-part="shortcut"]')).toBeTruthy();
+    expect(document.querySelector(".uiify-menu-item-icon")).toBeTruthy();
+    expect(document.querySelector(".uiify-menu-item-text")).toBeTruthy();
+    expect(document.querySelector(".uiify-menu-item-description")).toBeTruthy();
+    expect(document.querySelector(".uiify-menu-shortcut")).toBeTruthy();
   });
 
   it("toggles an indeterminate checkbox without closing by default", () => {
@@ -482,9 +487,9 @@ describe("DropdownMenu", () => {
         </DropdownMenu.Content>
       </DropdownMenu.Root>,
     );
-    expect(markup).toContain('data-part="sub-trigger"');
+    expect(markup).toContain("uiify-menu-sub-trigger");
     expect(markup).toContain('command="toggle-popover"');
-    expect(markup).toContain('data-part="sub-content"');
+    expect(markup).toContain("uiify-menu-sub-content");
   });
 
   it.each([
@@ -694,7 +699,7 @@ describe("DropdownMenu", () => {
         <DropdownMenu.Content
           render={(contentProps) => (
             <div {...(contentProps as object)}>
-              <div role="menuitemcheckbox" tabIndex={-1}>
+              <div role="menuitemcheckbox" aria-checked={false} tabIndex={-1}>
                 Show hidden files
               </div>
             </div>
@@ -822,7 +827,7 @@ describe("DropdownMenu", () => {
   });
 
   describe("rtl submenus", () => {
-    const subContent = () => document.querySelector<HTMLElement>('[data-part="sub-content"]');
+    const subContent = () => document.querySelector<HTMLElement>(".uiify-menu-sub-content");
 
     it("opens with ArrowLeft, not ArrowRight, and defaults the side to left", async () => {
       render(<RtlSubmenu />);
@@ -878,7 +883,7 @@ describe("DropdownMenu", () => {
       </DropdownMenu.Root>,
     );
     const trigger = screen.getByRole("menuitem", { name: "More" });
-    const content = document.querySelector<HTMLElement>('[data-part="sub-content"]');
+    const content = document.querySelector<HTMLElement>(".uiify-menu-sub-content");
     expect(triggerRef.current).toBe(trigger);
     expect(contentRef.current).toBe(content);
     fireEvent.pointerLeave(trigger);
@@ -906,8 +911,16 @@ describe("DropdownMenu", () => {
             <DropdownMenu.Label role="note" data-part="custom-label">
               Label
             </DropdownMenu.Label>
-            <DropdownMenu.Group role="region">
-              <DropdownMenu.Item tabIndex={3} aria-disabled="true" data-disabled="custom">
+            <DropdownMenu.Group
+              // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer role override.
+              role="region"
+            >
+              <DropdownMenu.Item
+                // oxlint-disable-next-line jsx-a11y/tabindex-no-positive -- This tests the consumer tab order override.
+                tabIndex={3}
+                aria-disabled="true"
+                data-disabled="custom"
+              >
                 Item
               </DropdownMenu.Item>
             </DropdownMenu.Group>
@@ -928,7 +941,7 @@ describe("DropdownMenu", () => {
     expect(screen.getByRole("menuitem", { name: "Item" }).getAttribute("aria-disabled")).toBe(
       "true",
     );
-    expect(document.querySelector('[data-part="item-indicator"]')?.getAttribute("data-state")).toBe(
+    expect(document.querySelector(".uiify-menu-item-indicator")?.getAttribute("data-state")).toBe(
       "custom",
     );
   });

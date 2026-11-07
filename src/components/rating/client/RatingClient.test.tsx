@@ -38,7 +38,7 @@ describe("RatingClient", () => {
       />,
     );
 
-    expect(screen.getByTestId("rating-client-root").hasAttribute("data-uiify-rating")).toBe(true);
+    expect(screen.getByTestId("rating-client-root").classList.contains("uiify-rating")).toBe(true);
     expect(screen.getByTestId("rating-client-input").getAttribute("type")).toBe("radio");
   });
 });

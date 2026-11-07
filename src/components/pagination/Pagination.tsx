@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { cn } from "../../core/class-names.js";
 import type {
   ComponentPropsWithRef,
   ElementType,
@@ -89,10 +90,13 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     defaultTag: "nav",
     props: {
       "aria-label": mergedLabels.root,
-      "data-uiify-pagination": "",
       ...consumerProps,
+      className: cn("uiify-pagination", consumerProps.className),
       children: children ?? (
-        <ol {...slotProps?.list}>
+        <ol
+          {...slotProps?.list}
+          className={cn("uiify-pagination-list", slotProps?.list?.className)}
+        >
           <PaginationListItems />
         </ol>
       ),
@@ -142,7 +146,12 @@ function PaginationItemRenderer({
     case "ellipsis": {
       const ellipsisProps = resolveRepeatedSlotProps(slotProps?.ellipsis, itemKey);
       content = (
-        <span aria-hidden="true" data-type="ellipsis" {...ellipsisProps}>
+        <span
+          aria-hidden="true"
+          data-type="ellipsis"
+          {...ellipsisProps}
+          className={cn("uiify-pagination-ellipsis", ellipsisProps.className)}
+        >
           …
         </span>
       );
@@ -257,11 +266,15 @@ export function PaginationLink<TAs extends ElementType = "button">(
       "data-selected": selected ? "" : undefined,
       "data-size": "icon",
       "data-type": "page",
-      "data-uiify-button": "",
       "data-variant": "ghost",
       disabled: disabled || undefined,
       type: "button",
       ...consumerProps,
+      className: cn(
+        "uiify-pagination-link",
+        "uiify-button",
+        (consumerProps as { className?: string }).className,
+      ),
       onClick: composeEventHandlers(onClick, () => setPage(page)),
       children: formatPageNumber(page, activeLocale),
     },
@@ -293,11 +306,11 @@ function PaginationControlButton({
     <button
       aria-label={label}
       data-type={actionType}
-      data-uiify-button=""
       data-variant="ghost"
       disabled={disabled}
       type="button"
       {...consumerProps}
+      className={cn("uiify-pagination-control", "uiify-button", consumerProps.className)}
       onClick={composeEventHandlers(onClick, onAction)}
     >
       {labelText}

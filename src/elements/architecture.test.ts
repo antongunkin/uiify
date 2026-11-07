@@ -12,9 +12,8 @@
  *   (e) Every element-manifest.json key has a matching src/elements/<name>/
  *       directory, and vice versa.
  *   (f) No @gunkin/uiify/components module shares a name with a @gunkin/uiify/elements
- *       module — the public subpaths must remain unambiguous.
- *       dialog/popover/alert-dialog components were renamed to
- *       modal/popup/alert-modal in T0).
+ *       module — the public subpaths must remain unambiguous. Elements carry the
+ *       `native-` prefix so components keep their shadcn names.
  *
  * Fixture- and docs-registry cross-checks (every element has a fixture slug
  * and a docs page, and vice versa) land in T7/T9 once those registries exist;

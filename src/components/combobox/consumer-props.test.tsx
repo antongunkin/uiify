@@ -108,24 +108,22 @@ it("merges library styling classes with consumer parts, render callbacks and gen
       <Combobox.Empty className="consumer">Empty</Combobox.Empty>
     </Combobox.Root>,
   );
-  expect(container.firstElementChild?.classList.contains("ui-cb")).toBe(true);
+  expect(container.firstElementChild?.classList.contains("uiify-combobox")).toBe(true);
   expect(container.firstElementChild?.classList.contains("consumer")).toBe(true);
-  for (const [part, suffix] of [
-    ["control", "control"],
-    ["tags", "tags"],
-    ["tag", "tag"],
-    ["tag-remove", "remove"],
-    ["input", "input"],
-    ["trigger", "trigger"],
-    ["content", "content"],
-    ["item", "item"],
-    ["group", "group"],
-    ["group-label", "label"],
-    ["empty", "empty"],
+  for (const part of [
+    "control",
+    "tags",
+    "tag",
+    "tag-remove",
+    "input",
+    "trigger",
+    "content",
+    "item",
+    "group",
+    "group-label",
+    "empty",
   ]) {
-    const element = container.querySelector(`[data-part="${part}"]`);
-    expect(element?.classList.contains(`ui-cb-${suffix}`), part).toBe(true);
-    expect(element?.classList.contains("consumer"), part).toBe(true);
+    expect(container.querySelector(`.uiify-combobox-${part}.consumer`), part).not.toBeNull();
   }
 });
 
@@ -206,7 +204,12 @@ it("lets consumers override rich option labels and group semantics", () => {
       <Combobox.Input aria-label="Fruit" />
       <Combobox.Content>
         {(filtered) => (
-          <Combobox.Group role="region" data-part="custom-group" data-testid="group">
+          <Combobox.Group
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer group role override.
+            role="region"
+            data-part="custom-group"
+            data-testid="group"
+          >
             <Combobox.GroupLabel id="custom-label">Category</Combobox.GroupLabel>
             {filtered.map((item) => (
               <Combobox.Item

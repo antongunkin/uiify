@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type { InputGroupAddonProps, InputGroupRootProps } from "./types.js";
 
 export function InputGroup<TAs extends ElementType = "div">(
@@ -10,11 +10,13 @@ export function InputGroup<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
+      ...(size !== undefined ? { "data-size": size } : {}),
       ...consumerProps,
       children,
-      "data-part": "root",
-      ...(size !== undefined ? { "data-size": size } : {}),
-      "data-uiify-input-group": "",
+      className: cn(
+        "uiify-input-group",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
     },
     render,
     state: {},
@@ -29,11 +31,13 @@ export function InputGroupAddon<TAs extends ElementType = "span">(
     as,
     defaultTag: "span",
     props: {
+      "data-align": align,
       ...consumerProps,
       children,
-      "data-align": align,
-      "data-part": "addon",
-      "data-uiify-input-group": "",
+      className: cn(
+        "uiify-input-group-addon",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
     },
     render,
     state: {},

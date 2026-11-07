@@ -43,6 +43,31 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Plain" }).hasAttribute("data-size")).toBe(false);
   });
 
+  it("variant default renders like no variant", () => {
+    expect(renderToStaticMarkup(<Button variant="default">Save</Button>)).toBe(
+      renderToStaticMarkup(<Button>Save</Button>),
+    );
+  });
+
+  it("size default renders like no size", () => {
+    expect(renderToStaticMarkup(<Button size="default">Save</Button>)).toBe(
+      renderToStaticMarkup(<Button>Save</Button>),
+    );
+  });
+
+  it("size xs sets data-size=xs", () => {
+    expect(renderToStaticMarkup(<Button size="xs">Save</Button>)).toContain('data-size="xs"');
+  });
+
+  it("size icon-xs sets data-size=icon-xs", () => {
+    const markup = renderToStaticMarkup(
+      <Button size="icon-xs" aria-label="Close">
+        <svg aria-hidden="true" />
+      </Button>,
+    );
+    expect(markup).toContain('data-size="icon-xs"');
+  });
+
   it("serializes icon sizes independently of variant", () => {
     const markup = renderToStaticMarkup(
       <Button size="icon-sm" variant="ghost" aria-label="Settings">
@@ -113,6 +138,50 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  it("href renders an anchor equal to as=a", () => {
+    const viaHref = renderToStaticMarkup(
+      <Button href="/auth/google" variant="outline">
+        Continue
+      </Button>,
+    );
+    const viaAs = renderToStaticMarkup(
+      <Button as="a" href="/auth/google" variant="outline">
+        Continue
+      </Button>,
+    );
+    expect(viaHref).toBe(viaAs);
+    expect(viaHref.startsWith("<a ")).toBe(true);
+    expect(viaHref).toContain('href="/auth/google"');
+    expect(viaHref).not.toContain("type=");
+  });
+
+  it("href + disabled renders aria-disabled and tabIndex -1 and blocks navigation", () => {
+    const onClick = vi.fn();
+    render(
+      <Button href="/docs" disabled onClick={onClick}>
+        Docs
+      </Button>,
+    );
+    const link = screen.getByRole("link", { name: "Docs" });
+    expect(link.getAttribute("aria-disabled")).toBe("true");
+    expect(link.getAttribute("tabindex")).toBe("-1");
+    expect(link.hasAttribute("disabled")).toBe(false);
+    expect(fireEvent.click(link)).toBe(false);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("does not offer button-only props on the link branch", () => {
+    // @ts-expect-error `type` is a button attribute, not offered with `href`
+    const markup = renderToStaticMarkup(<Button href="/x" type="submit" />);
+    expect(markup.startsWith("<a ")).toBe(true);
+  });
+
+  it("without href markup is unchanged", () => {
+    expect(renderToStaticMarkup(<Button variant="outline">Save</Button>)).toBe(
+      '<button class="uiify-button" data-variant="outline" type="button">Save</button>',
+    );
+  });
+
   it("runs consumer onClick before internal handlers and respects preventDefault", () => {
     const order: string[] = [];
     render(
@@ -150,7 +219,14 @@ describe("Button", () => {
 
   it("owns aria-disabled and tabIndex on a disabled non-native button; consumer cannot override them", () => {
     render(
-      <Button as="a" href="/docs" disabled aria-disabled={false} tabIndex={3}>
+      <Button
+        as="a"
+        href="/docs"
+        disabled
+        aria-disabled={false}
+        // oxlint-disable-next-line jsx-a11y/tabindex-no-positive -- The disabled button must reject this consumer tab stop.
+        tabIndex={3}
+      >
         Docs
       </Button>,
     );
@@ -168,21 +244,25 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Save" }).getAttribute("data-disabled")).toBe("");
   });
 
-  it("forwards consumer styling props and owns its identity marker", () => {
+  it("forwards consumer styling props", () => {
     render(
-      <Button
-        className="consumer-button"
-        data-layout="compact"
-        data-uiify-button="consumer-value"
-        style={{ marginBlock: "1rem" }}
-      >
+      <Button className="consumer-button" data-layout="compact" style={{ marginBlock: "1rem" }}>
         Save
       </Button>,
     );
     const button = screen.getByRole("button", { name: "Save" });
-    expect(button.getAttribute("class")).toBe("consumer-button");
     expect(button.getAttribute("data-layout")).toBe("compact");
-    expect(button.getAttribute("data-uiify-button")).toBe("");
     expect(button.style.marginBlock).toBe("1rem");
+  });
+
+  it("renders uiify-button class joined with consumer className", () => {
+    const markup = renderToStaticMarkup(<Button className="custom">Save</Button>);
+    expect(markup).toContain('class="uiify-button custom"');
+  });
+
+  it("does not render data-uiify-button", () => {
+    const markup = renderToStaticMarkup(<Button>Save</Button>);
+    expect(markup).toContain('class="uiify-button"');
+    expect(markup).not.toContain("data-uiify-button");
   });
 });

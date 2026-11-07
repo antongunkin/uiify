@@ -9,6 +9,8 @@ describe("Form", () => {
     const form = screen.getByTestId("form") as HTMLFormElement;
     expect(form.noValidate).toBe(false);
     expect(form.getAttribute("data-validation-behavior")).toBe("native");
+    expect(form.classList.contains("uiify-form")).toBe(true);
+    expect(form.hasAttribute("data-uiify-form")).toBe(false);
   });
 
   it("sets noValidate when validationBehavior is aria", () => {

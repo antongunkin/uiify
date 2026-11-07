@@ -46,6 +46,7 @@
 | `min` | `number` | no |  |
 | `max` | `number` | no |  |
 | `step` | `number \| null` | no |  |
+| `minStepsBetweenValues` | `number` | no | Minimum difference between the two range values; closer values are clamped apart. |
 | `disabled` | `boolean` | no |  |
 | `orientation` | `"horizontal" \| "vertical"` | no |  |
 | `marks` | `readonly SliderMark[]` | no |  |

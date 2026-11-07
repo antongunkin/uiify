@@ -18,6 +18,15 @@ If `$ARGUMENTS` is not substituted, use the explicit conversation request. Inspe
 
 Reuse existing design decisions, tokens and conventions, including `DESIGN.md` when present. Do not create `DESIGN.md` or managed state merely for this skill. Setup, dependencies and planning files follow project rules and the request. Preserve unrelated files, routes and content.
 
+## Project setup and upgrades
+
+At the start of every run, run `node .agents/skills/uiify/scripts/sync-agents.mjs --check` from the project root (adjust the path to this skill's directory). It keeps the catalog in `AGENTS.md` (and `CLAUDE.md`) in step with the installed package.
+
+- `missing` or `outdated`: run `--write`; tell the user in one line what changed.
+- `edited`: show the file and ask before `--write --force`.
+
+For skill install, `skill:` states and upgrades, read `references/guides/setup.md`.
+
 ## Choose an approach before composition
 
 Choose internally: reproduce a supplied reference; extend the existing UI for scoped work; create/redesign for a new direction; audit for findings only. For a reference, read its guide before composition and compare again after rendering.
@@ -91,7 +100,7 @@ One line per element: `element|aliases|uiify component or gap|reference path`. A
 
 ```text
 accordion|faq-accordion,disclosure|accordion|references/elements/accordion.md
-alert-modal|confirmation-dialog,alert-dialog|alert-modal|references/elements/alert-modal.md
+alert-dialog|confirmation-dialog,alert-modal|alert-dialog|references/elements/alert-dialog.md
 aspect-ratio|media-frame,responsive-embed|aspect-ratio|references/elements/aspect-ratio.md
 avatar|profile-picture|avatar|references/elements/avatar.md
 badge|chip,tag|badge|references/elements/badge.md
@@ -111,13 +120,12 @@ context-menu|right-click-menu|context-menu|references/elements/context-menu.md
 cookie-banner|cookie-consent|gap|references/elements/cookie-banner.md
 date-picker|native-date-field,calendar-picker|date-picker|references/elements/date-picker.md
 description-list|definition-list,key-value-list|description-list|references/elements/description-list.md
-divider|separator|gap|references/elements/divider.md
+dialog|modal|dialog|references/elements/dialog.md
 drawer|sheet,off-canvas-menu|drawer|references/elements/drawer.md
 dropdown-menu|menu|dropdown-menu|references/elements/dropdown-menu.md
 empty-state|empty-state|empty|references/elements/empty-state.md
 feature-grid|feature-cards,feature-list|gap|references/elements/feature-grid.md
-field|form-field|field|references/elements/field.md
-fieldset|fieldset-legend|fieldset|references/elements/fieldset.md
+field|form-field,fieldset,fieldset-legend|field|references/elements/field.md
 file-upload|file-input,dropzone|file-upload|references/elements/file-upload.md
 footer|site-footer|gap|references/elements/footer.md
 form||form|references/elements/form.md
@@ -129,23 +137,23 @@ image-gallery|gallery,lightbox|gap|references/elements/image-gallery.md
 inline-alert|banner-alert,callout|alert|references/elements/inline-alert.md
 input|text-input|input|references/elements/input.md
 input-group|input-prefix-suffix|input-group|references/elements/input-group.md
+input-otp|otp-input,pin-input,one-time-code|input-otp|references/elements/input-otp.md
 item|list-item|item|references/elements/item.md
 layout|layout-primitives,page-layout|layout|references/elements/layout.md
 line-chart|sparkline|line-chart|references/elements/line-chart.md
 logo-wall|logo-cloud,customer-logos|gap|references/elements/logo-wall.md
-modal|dialog|modal|references/elements/modal.md
+native-select|select|native-select|references/elements/native-select.md
 number-field|number-input|number-field|references/elements/number-field.md
-otp-input|pin-input|otp-input|references/elements/otp-input.md
 pagination||pagination|references/elements/pagination.md
 password-input|show-hide-password|gap|references/elements/password-input.md
-popup|popover|popup|references/elements/popup.md
+popover|popup|popover|references/elements/popover.md
 pricing-table|pricing,plan-cards,pricing-plans|gap|references/elements/pricing-table.md
 progress-bar|progress,linear-progress|progress|references/elements/progress-bar.md
 radio-group|radio|radio-group|references/elements/radio-group.md
 rating|star-rating|rating|references/elements/rating.md
 search-input|search-box|gap|references/elements/search-input.md
 segmented-control||segmented-control|references/elements/segmented-control.md
-select|native-select|select|references/elements/select.md
+separator|divider,rule|separator|references/elements/separator.md
 sidebar|sidebar-nav,side-nav|gap|references/elements/sidebar.md
 skeleton|skeleton-loader|skeleton|references/elements/skeleton.md
 slider|range-slider|slider|references/elements/slider.md
@@ -175,7 +183,7 @@ One line per accepted relationship: `name|element,element|reference path`.
 
 ```text
 card-rhythm|feature-grid,card|references/compositions/card-rhythm.md
-destructive-confirmation|alert-modal,button|references/compositions/destructive-confirmation.md
+destructive-confirmation|alert-dialog,button|references/compositions/destructive-confirmation.md
 form-grouping|form,field|references/compositions/form-grouping.md
 hero-actions|hero,button|references/compositions/hero-actions.md
 page-frame|header,footer|references/compositions/page-frame.md

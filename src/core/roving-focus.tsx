@@ -1,5 +1,12 @@
 "use client";
-import { createContext, useCallback, useContext, useRef, useSyncExternalStore } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { useId, useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import type {
   ElementType,
@@ -45,9 +52,8 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
     ...consumerProps
   } = props as RovingFocusRootProps<ElementType>;
   const direction = useDirectionOverride(localDirection);
-  const storeRef = useRef<RovingFocusStore | null>(null);
-  storeRef.current ??= createRovingFocusStore({ direction, loop, orientation });
-  storeRef.current.updateConfig({ direction, loop, orientation });
+  const [store] = useState(() => createRovingFocusStore({ direction, loop, orientation }));
+  store.updateConfig({ direction, loop, orientation });
   const element = useRenderElement({
     as,
     defaultTag: "div",
@@ -59,7 +65,7 @@ export function RovingFocusRoot<TAs extends ElementType = "div">(
     render,
     state: { orientation },
   });
-  return <RovingFocusContext value={storeRef.current}>{element}</RovingFocusContext>;
+  return <RovingFocusContext value={store}>{element}</RovingFocusContext>;
 }
 RovingFocusRoot.displayName = "RovingFocusRoot";
 export interface RovingFocusItemOwnProps {

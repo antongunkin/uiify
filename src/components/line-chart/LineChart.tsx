@@ -1,6 +1,6 @@
 import type { ElementType, KeyboardEvent, PointerEvent, ReactElement, Ref } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import { assignRef } from "../../hooks/utils/assign-ref.js";
 import {
@@ -24,6 +24,13 @@ function getIndexedPartProps<T extends object>(
 ): T {
   const { byItemIndex, ...common } = props ?? {};
   return mergeRepeatedSlotProps(common as T, byItemIndex?.[index]);
+}
+
+function styledPart<T extends { className?: string | undefined }>(
+  props: T | undefined,
+  className: string,
+): T {
+  return { ...props, className: cn(className, props?.className) } as T;
 }
 
 function withGeneratedStyle<T extends { readonly style?: object | undefined }>(
@@ -63,7 +70,7 @@ export function LineChartPoint({
 }: LineChartPointProps): ReactElement {
   const geometry = geometryFor(point, previousPoint, index, count, min, max);
   const pointSlotProps = getIndexedPartProps(slotProps?.point, index);
-  const { ref: pointRef, ...pointProps } = pointSlotProps;
+  const { ref: pointRef, className: pointClassName, ...pointProps } = pointSlotProps;
   const pointHitSlotProps = getIndexedPartProps(slotProps?.pointHit, index);
   const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -74,13 +81,13 @@ export function LineChartPoint({
   return (
     <Tag
       aria-hidden={interactive ? undefined : true}
-      data-part="point"
       data-first={previousPoint === undefined ? "" : undefined}
       data-crosshair-active={interactive && isActive ? "" : undefined}
       data-point-selected={interactive && isSelected ? "" : undefined}
       data-time={String(point.time)}
       data-trend={geometry.trend}
       {...pointProps}
+      className={cn("uiify-line-chart-point", pointClassName)}
       {...(pointRef ? { ref: forwardPointRef(pointRef) } : {})}
       style={{
         ...pointStyle(geometry, isActive ? cursorY : undefined),
@@ -89,11 +96,11 @@ export function LineChartPoint({
     >
       {interactive ? (
         <button
-          data-part="point-hit"
           type="button"
           aria-label={`Point ${String(point.time)}`}
           aria-pressed={isSelected}
           {...pointHitSlotProps}
+          className={cn("uiify-line-chart-point-hit", pointHitSlotProps.className)}
           onClick={composeEventHandlers(pointHitSlotProps.onClick, () => onPointClick?.(index))}
           onKeyDown={composeEventHandlers(pointHitSlotProps.onKeyDown, handleKeyDown)}
           onPointerLeave={composeEventHandlers(pointHitSlotProps.onPointerLeave, () =>
@@ -145,9 +152,8 @@ export function LineChart<TAs extends ElementType = "figure">(
   const crosshairPoint = activePointIndex === undefined ? undefined : data[activePointIndex];
   const points = pointLayer ?? (
     <ol
-      data-part="points"
       aria-label={`${label} points`}
-      {...slotProps?.points}
+      {...styledPart(slotProps?.points, "uiify-line-chart-points")}
       style={{ ...pointsStyle(data.length), ...slotProps?.points?.style }}
     >
       {data.map((point, index) => (
@@ -182,57 +188,88 @@ export function LineChart<TAs extends ElementType = "figure">(
     defaultTag: "figure",
     props: {
       "aria-label": label,
-      "data-uiify-line-chart": "",
+
       "data-interactive": interactive ? "" : undefined,
       ...consumerProps,
+      className: cn(
+        "uiify-line-chart",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
       children: (
         <>
-          <figcaption {...slotProps?.caption}>{label}</figcaption>
+          <figcaption {...styledPart(slotProps?.caption, "uiify-line-chart-caption")}>
+            {label}
+          </figcaption>
           {interactive && readoutPoint ? (
             <div
-              data-part="readout"
               aria-live={announceReadout ? "polite" : "off"}
               {...slotProps?.readout}
+              className={cn("uiify-line-chart-readout", slotProps?.readout?.className)}
             >
-              <span data-part="readout-time" {...slotProps?.readoutTime}>
+              <span
+                {...slotProps?.readoutTime}
+                className={cn("uiify-line-chart-readout-time", slotProps?.readoutTime?.className)}
+              >
                 {String(readoutPoint.time)}
               </span>
               <span {...slotProps?.readoutValue}>{readoutPoint.value}</span>
             </div>
           ) : null}
-          <div data-part="plot" aria-hidden={interactive ? undefined : true} {...slotProps?.plot}>
-            <div data-part="scroll-viewport" {...slotProps?.scrollViewport}>
-              <div data-part="canvas" {...slotProps?.canvas}>
-                <div data-part="viewport" {...slotProps?.viewport}>
+          <div
+            aria-hidden={interactive ? undefined : true}
+            {...slotProps?.plot}
+            className={cn("uiify-line-chart-plot", slotProps?.plot?.className)}
+          >
+            <div
+              {...slotProps?.scrollViewport}
+              className={cn(
+                "uiify-line-chart-scroll-viewport",
+                slotProps?.scrollViewport?.className,
+              )}
+            >
+              <div
+                {...slotProps?.canvas}
+                className={cn("uiify-line-chart-canvas", slotProps?.canvas?.className)}
+              >
+                <div
+                  {...slotProps?.viewport}
+                  className={cn("uiify-line-chart-viewport", slotProps?.viewport?.className)}
+                >
                   {points}
                   {interactive && crosshairPoint && activePointIndex !== undefined ? (
                     <div
-                      data-part="crosshair"
                       aria-hidden="true"
-                      {...slotProps?.crosshair}
+                      {...styledPart(slotProps?.crosshair, "uiify-line-chart-crosshair")}
                       style={{
                         ...crosshairFor(activePointIndex, cursorY),
                         ...slotProps?.crosshair?.style,
                       }}
                     >
-                      <span data-part="crosshair-marker" {...slotProps?.crosshairMarker}>
+                      <span
+                        {...styledPart(
+                          slotProps?.crosshairMarker,
+                          "uiify-line-chart-crosshair-marker",
+                        )}
+                      >
                         +
                       </span>
                     </div>
                   ) : null}
                 </div>
-                <div data-part="time-viewport" {...slotProps?.timeViewport}>
+                <div {...styledPart(slotProps?.timeViewport, "uiify-line-chart-time-viewport")}>
                   <ol
-                    data-part="time-axis"
                     data-axis="time"
                     aria-label={`${label} dates`}
-                    {...slotProps?.timeAxis}
+                    {...styledPart(slotProps?.timeAxis, "uiify-line-chart-time-axis")}
                   >
                     {timeLabels.map((axisLabel, index) => (
                       <li
                         key={`${axisLabel.position}-${index}`}
                         {...withGeneratedStyle(
-                          getIndexedPartProps(slotProps?.timeAxisLabel, index),
+                          styledPart(
+                            getIndexedPartProps(slotProps?.timeAxisLabel, index),
+                            "uiify-line-chart-time-axis-label",
+                          ),
                           axisStyle("x", axisLabel.position),
                         )}
                       >
@@ -241,8 +278,7 @@ export function LineChart<TAs extends ElementType = "figure">(
                     ))}
                     {interactive && crosshairPoint && activePointIndex !== undefined ? (
                       <li
-                        data-part="crosshair-time"
-                        {...slotProps?.crosshairTime}
+                        {...styledPart(slotProps?.crosshairTime, "uiify-line-chart-crosshair-time")}
                         style={{
                           ...crosshairFor(activePointIndex, undefined),
                           ...slotProps?.crosshairTime?.style,
@@ -256,16 +292,18 @@ export function LineChart<TAs extends ElementType = "figure">(
               </div>
             </div>
             <ol
-              data-part="value-axis"
               data-axis="value"
               aria-label={`${label} values`}
-              {...slotProps?.valueAxis}
+              {...styledPart(slotProps?.valueAxis, "uiify-line-chart-value-axis")}
             >
               {valueLabels.map((axisLabel, index) => (
                 <li
                   key={`${axisLabel.position}-${index}`}
                   {...withGeneratedStyle(
-                    getIndexedPartProps(slotProps?.valueAxisLabel, index),
+                    styledPart(
+                      getIndexedPartProps(slotProps?.valueAxisLabel, index),
+                      "uiify-line-chart-value-axis-label",
+                    ),
                     axisStyle("y", axisLabel.position),
                   )}
                 >
@@ -274,8 +312,7 @@ export function LineChart<TAs extends ElementType = "figure">(
               ))}
               {interactive && crosshairPoint && activePointIndex !== undefined ? (
                 <li
-                  data-part="crosshair-value"
-                  {...slotProps?.crosshairValue}
+                  {...styledPart(slotProps?.crosshairValue, "uiify-line-chart-crosshair-value")}
                   style={{ ...cursorStyle(cursorY), ...slotProps?.crosshairValue?.style }}
                 >
                   {crosshairPoint.value}
@@ -283,7 +320,10 @@ export function LineChart<TAs extends ElementType = "figure">(
               ) : null}
             </ol>
           </div>
-          <table data-part="data" aria-label={`${label} data`} {...slotProps?.dataTable}>
+          <table
+            aria-label={`${label} data`}
+            {...styledPart(slotProps?.dataTable, "uiify-line-chart-data")}
+          >
             <thead {...slotProps?.dataTableHead}>
               <tr {...slotProps?.dataTableHeaderRow}>
                 <th scope="col" {...slotProps?.dataTableTimeHeader}>

@@ -11,6 +11,13 @@ describe("Spinner", () => {
     expect(status.getAttribute("aria-label")).toBe("Fetching data");
   });
 
+  it("renders the uiify identity class without a data marker", () => {
+    render(<Spinner />);
+    const spinner = screen.getByRole("status");
+    expect(spinner.classList.contains("uiify-spinner")).toBe(true);
+    expect(spinner.hasAttribute("data-uiify-spinner")).toBe(false);
+  });
+
   it("is visible immediately when delay is 0", () => {
     render(<Spinner delay={0} />);
     const status = screen.getByRole("status");
@@ -40,7 +47,9 @@ describe("Spinner", () => {
 
   it("forwards className to the root element", () => {
     render(<Spinner className="docs-spinner docs-spinner--small" />);
-    expect(screen.getByRole("status").className).toBe("docs-spinner docs-spinner--small");
+    expect(screen.getByRole("status").className).toBe(
+      "uiify-spinner docs-spinner docs-spinner--small",
+    );
   });
 
   it("renders a static progressbar when value is set", () => {
@@ -55,8 +64,8 @@ describe("Spinner", () => {
     render(<Spinner label="Loading content" showLabel />);
     const status = screen.getByRole("status", { name: "Loading content" });
 
-    const visibleLabel = status.querySelector('[data-part="label"]');
-    expect(visibleLabel?.getAttribute("data-part")).toBe("label");
+    const visibleLabel = status.querySelector(".uiify-spinner-label");
+    expect(visibleLabel?.hasAttribute("data-part")).toBe(false);
     expect(visibleLabel?.textContent).toBe("Loading content");
   });
 
@@ -68,8 +77,9 @@ describe("Spinner", () => {
       />,
     );
     const label = screen.getByTestId("spinner-label");
-    expect(label.className).toBe("spinner-label");
-    expect(label.getAttribute("data-part")).toBe("label");
+    expect(label.className).toBe("uiify-spinner-label spinner-label");
+    expect(label.classList.contains("uiify-spinner-label")).toBe(true);
+    expect(label.hasAttribute("data-part")).toBe(false);
   });
 
   it("exposes the reference loader sizes and alignment without SVG markup", () => {

@@ -5,8 +5,8 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `details`
 - Without JavaScript: full
 - Types file: `dist/components/collapsible.d.ts`
-- Related native Element (manifest): [details](../elements/details.md)
-- Note: Native details/summary disclosure. Built on @gunkin/uiify/elements/details.
+- Related native Element (manifest): [native-details](../elements/native-details.md)
+- Note: Native details/summary disclosure. Built on @gunkin/uiify/elements/native-details.
 
 ## Related knowledge
 

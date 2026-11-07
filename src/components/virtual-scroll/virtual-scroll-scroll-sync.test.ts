@@ -7,7 +7,7 @@ describe("applyVirtualScrollRangeToDom", () => {
   it("writes --uiify-range-start on the spacer for fixed-height lists", () => {
     const scrollport = document.createElement("div");
     const spacer = document.createElement("div");
-    spacer.dataset.part = "spacer";
+    spacer.className = "uiify-virtual-scroll-spacer";
     scrollport.append(spacer);
 
     applyVirtualScrollRangeToDom(
@@ -32,9 +32,9 @@ describe("applyVirtualScrollRangeToDom", () => {
   it("writes per-row offsets for dynamic lists", () => {
     const scrollport = document.createElement("div");
     const spacer = document.createElement("div");
-    spacer.dataset.part = "spacer";
+    spacer.className = "uiify-virtual-scroll-spacer";
     const row = document.createElement("div");
-    row.dataset.part = "row";
+    row.className = "uiify-virtual-scroll-row";
     spacer.append(row);
     scrollport.append(spacer);
 
@@ -74,7 +74,7 @@ describe("applyVirtualScrollRangeToDom range math", () => {
 it("keeps routed consumer dynamic row styles when syncing offsets", () => {
   const scrollport = document.createElement("div");
   scrollport.innerHTML =
-    '<div data-part="spacer"><div data-part="row"></div><div data-part="row"></div></div>';
+    '<div class="uiify-virtual-scroll-spacer"><div class="uiify-virtual-scroll-row"></div><div class="uiify-virtual-scroll-row"></div></div>';
   const styles: Readonly<Record<number, React.CSSProperties>> = {
     10: { "--uiify-row-offset": "7px" } as React.CSSProperties,
     11: { "--uiify-row-offset": undefined } as React.CSSProperties,
@@ -89,7 +89,7 @@ it("keeps routed consumer dynamic row styles when syncing offsets", () => {
       getRowStyle: (index) => styles[index],
     },
   );
-  const rows = scrollport.querySelectorAll<HTMLElement>('[data-part="row"]');
+  const rows = scrollport.querySelectorAll<HTMLElement>(".uiify-virtual-scroll-row");
   expect(rows[0]?.style.getPropertyValue("--uiify-row-offset")).toBe("7px");
   expect(rows[1]?.style.getPropertyValue("--uiify-row-offset")).toBe("");
 });

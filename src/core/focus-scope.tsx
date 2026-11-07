@@ -108,9 +108,7 @@ export function FocusScope<TAs extends ElementType = "div">(
 
   function handleKeyDown(event: ReactKeyboardEvent<HTMLElement>) {
     if (!loop || event.key !== "Tab") return;
-    const element = elementRef.current;
-    if (!element) return;
-    const candidates = getTabbableCandidates(element);
+    const candidates = getTabbableCandidates(event.currentTarget);
     const first = candidates[0];
     const last = candidates.at(-1);
     if (event.shiftKey && event.target === first) {

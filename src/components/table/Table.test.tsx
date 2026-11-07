@@ -57,7 +57,12 @@ describe("Table", () => {
 
   it("Root owns role=grid when interactive; consumer cannot override it", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="single" role="table">
+      <Table.Root
+        aria-label="Data"
+        selectionMode="single"
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The interactive table owns its grid role.
+        role="table"
+      >
         <Table.Body />
       </Table.Root>,
     );

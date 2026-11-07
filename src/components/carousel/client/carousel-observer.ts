@@ -2,7 +2,7 @@ import type { CarouselObserver } from "../types.js";
 
 /** Each measurement owns its observer, so old deliveries cannot mix with fresh geometry. */
 export function observeCarousel(root: HTMLElement): CarouselObserver {
-  const viewport = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
+  const viewport = root.querySelector<HTMLElement>(":scope > .uiify-carousel-viewport");
   let current: IntersectionObserver | undefined;
   let live: IntersectionObserver | undefined;
   let receiveLive: ((index: number, visible: readonly number[]) => void) | undefined;
@@ -13,8 +13,8 @@ export function observeCarousel(root: HTMLElement): CarouselObserver {
     live?.disconnect();
     const liveToken = ++liveGeneration;
     if (!viewport || !receiveLive || destroyed) return;
-    const slides = Array.from(viewport.children).filter(
-      (node) => node.getAttribute("data-part") === "slide",
+    const slides = Array.from(viewport.children).filter((node) =>
+      node.classList.contains("uiify-carousel-slide"),
     );
     const ratios = new Map<Element, number>();
     live = new IntersectionObserver(
@@ -50,8 +50,8 @@ export function observeCarousel(root: HTMLElement): CarouselObserver {
       current?.disconnect();
       const token = ++generation;
       if (destroyed || !viewport) return;
-      const slides = Array.from(viewport.children).filter(
-        (node) => node.getAttribute("data-part") === "slide",
+      const slides = Array.from(viewport.children).filter((node) =>
+        node.classList.contains("uiify-carousel-slide"),
       );
       if (!slides.length) return;
       const entries = new Map<Element, IntersectionObserverEntry>();

@@ -17,14 +17,14 @@ const LONG_DATA = Array.from({ length: 100 }, (_, index) => ({
 describe("LineChartClient", () => {
   it("uses the CandleChart viewport for zoom and horizontal scrolling", () => {
     const { container } = render(<LineChartClient data={LONG_DATA} />);
-    const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
+    const chart = container.querySelector(".uiify-line-chart") as HTMLElement;
 
-    expect(chart.style.getPropertyValue("--line-scale")).toBe("3.2");
-    expect(chart.querySelector('[data-part="scroll-viewport"]')).not.toBeNull();
-    expect(chart.querySelector('[data-part="canvas"]')).not.toBeNull();
+    expect(chart.style.getPropertyValue("--uiify-line-scale")).toBe("3.2");
+    expect(chart.querySelector(".uiify-line-chart-scroll-viewport")).not.toBeNull();
+    expect(chart.querySelector(".uiify-line-chart-canvas")).not.toBeNull();
 
     fireEvent.wheel(chart, { deltaY: -100 });
-    expect(chart.style.getPropertyValue("--line-scale")).toBe("3.84");
+    expect(chart.style.getPropertyValue("--uiify-line-scale")).toBe("3.84");
   });
 
   it("updates the crosshair and React readout on pointer movement", () => {
@@ -32,8 +32,8 @@ describe("LineChartClient", () => {
     const { container } = render(
       <LineChartClient data={DATA} onPointPointerMove={onPointPointerMove} />,
     );
-    const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
-    const target = chart.querySelectorAll<HTMLLIElement>('[data-part="points"] > li')[1];
+    const chart = container.querySelector(".uiify-line-chart") as HTMLElement;
+    const target = chart.querySelectorAll<HTMLLIElement>(".uiify-line-chart-points > li")[1];
     const hit = target?.querySelector("button") as HTMLButtonElement;
     const pointerMove = createEvent.pointerMove(hit);
     Object.defineProperty(pointerMove, "offsetY", { value: 24 });
@@ -41,8 +41,8 @@ describe("LineChartClient", () => {
     fireEvent(hit, pointerMove);
 
     expect(target?.getAttribute("data-crosshair-active")).toBe("");
-    expect(target?.getAttribute("style")).toContain("--line-cursor-y: 24px");
-    expect(chart.querySelector('[data-part="crosshair"]')).not.toBeNull();
+    expect(target?.getAttribute("style")).toContain("--uiify-line-cursor-y: 24px");
+    expect(chart.querySelector(".uiify-line-chart-crosshair")).not.toBeNull();
     expect(onPointPointerMove).toHaveBeenCalledWith({ index: 1, offsetY: 24 });
   });
 
@@ -50,7 +50,7 @@ describe("LineChartClient", () => {
     const onPointClick = vi.fn();
     const { container } = render(<LineChartClient data={DATA} onPointClick={onPointClick} />);
     const hit = container.querySelectorAll<HTMLButtonElement>(
-      '[data-part="points"] button',
+      ".uiify-line-chart-points button",
     )[2] as HTMLButtonElement;
 
     fireEvent.click(hit);
@@ -63,13 +63,13 @@ describe("LineChartClient", () => {
 
   it("clears the active point when the pointer leaves", () => {
     const { container } = render(<LineChartClient data={DATA} />);
-    const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
-    const hit = chart.querySelector('[data-part="points"] button') as HTMLButtonElement;
+    const chart = container.querySelector(".uiify-line-chart") as HTMLElement;
+    const hit = chart.querySelector(".uiify-line-chart-points button") as HTMLButtonElement;
 
     fireEvent.pointerMove(hit);
-    expect(chart.querySelector('[data-part="crosshair"]')).not.toBeNull();
+    expect(chart.querySelector(".uiify-line-chart-crosshair")).not.toBeNull();
     fireEvent.pointerLeave(hit);
-    expect(chart.querySelector('[data-part="crosshair"]')).toBeNull();
+    expect(chart.querySelector(".uiify-line-chart-crosshair")).toBeNull();
   });
 
   describe("visibleCount live mode", () => {
@@ -101,7 +101,7 @@ describe("LineChartClient", () => {
 
     function scrollport(container: HTMLElement): HTMLElement {
       return container.querySelector(
-        '[data-part="viewport"] > [data-uiify-virtual-scroll]',
+        ".uiify-line-chart-viewport > .uiify-virtual-scroll",
       ) as HTMLElement;
     }
 
@@ -109,17 +109,19 @@ describe("LineChartClient", () => {
 
     it("virtualizes every point and fits the chrome to the visible points", () => {
       const { container } = render(<LineChartClient data={LONG_DATA} visibleCount={20} />);
-      const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
+      const chart = container.querySelector(".uiify-line-chart") as HTMLElement;
 
       expect(scrollport(container).dataset.orientation).toBe("horizontal");
-      expect(chart.querySelector('[data-part="points"]')).toBeNull();
+      expect(chart.querySelector(".uiify-line-chart-points")).toBeNull();
       expect(chart.querySelectorAll("tbody tr")).toHaveLength(20);
       expect(chart.querySelector("tbody th")?.textContent).toBe(LONG_DATA[80]?.time);
-      expect(chart.querySelector('[data-part="readout"]')?.getAttribute("aria-live")).toBe("off");
-      expect(chart.querySelector('[data-part="readout"]')?.textContent).toContain("199");
+      expect(chart.querySelector(".uiify-line-chart-readout")?.getAttribute("aria-live")).toBe(
+        "off",
+      );
+      expect(chart.querySelector(".uiify-line-chart-readout")?.textContent).toContain("199");
 
       fireEvent.wheel(chart, { deltaY: -100 });
-      expect(chart.style.getPropertyValue("--line-scale")).toBe("1");
+      expect(chart.style.getPropertyValue("--uiify-line-scale")).toBe("1");
     });
 
     it("forwards slots to live scrollport, row shells, points, and absolute table rows", () => {
@@ -142,7 +144,7 @@ describe("LineChartClient", () => {
         />,
       );
       const element = scrollport(container);
-      const visiblePoint = container.querySelector('[data-part="point"]');
+      const visiblePoint = container.querySelector(".uiify-line-chart-point");
       const pointIndex = LONG_DATA.findIndex(
         (point) => String(point.time) === visiblePoint?.getAttribute("data-time"),
       );
@@ -184,8 +186,8 @@ describe("LineChartClient", () => {
       expect(container.querySelector('[data-testid="live-spacer"]')?.className).toContain(
         "live-spacer",
       );
-      expect(container.querySelector('[data-part="row"]')?.className).toContain("live-row");
-      expect(container.querySelector('[data-part="point"]')?.className).toContain("live-point");
+      expect(container.querySelector(".uiify-virtual-scroll-row")?.className).toContain("live-row");
+      expect(container.querySelector(".uiify-line-chart-point")?.className).toContain("live-point");
       expect(container.querySelector('[data-testid="row-index"]')?.className).toContain(
         "indexed-row",
       );
@@ -202,7 +204,7 @@ describe("LineChartClient", () => {
       const { container } = render(
         <LineChartClient data={LONG_DATA.slice(0, 10)} visibleCount={20} />,
       );
-      const points = scrollport(container).querySelectorAll('[data-part="point"]');
+      const points = scrollport(container).querySelectorAll(".uiify-line-chart-point");
 
       expect(points[0]?.hasAttribute("data-first")).toBe(true);
       expect(points[1]?.hasAttribute("data-first")).toBe(false);
@@ -213,12 +215,12 @@ describe("LineChartClient", () => {
       const { container, rerender } = render(
         <LineChartClient data={LONG_DATA.slice(0, 80)} visibleCount={20} />,
       );
-      const chart = container.querySelector("[data-uiify-line-chart]") as HTMLElement;
+      const chart = container.querySelector(".uiify-line-chart") as HTMLElement;
       const element = scrollport(container);
 
-      expect(chart.style.getPropertyValue("--line-content-size")).toBe(`${80 * 30}px`);
+      expect(chart.style.getPropertyValue("--uiify-line-content-size")).toBe(`${80 * 30}px`);
       // The plot reserves the measured horizontal scrollbar below the time axis.
-      expect(chart.style.getPropertyValue("--line-scrollbar-size")).toBe("15px");
+      expect(chart.style.getPropertyValue("--uiify-line-scrollbar-size")).toBe("15px");
       expect(element.scrollLeft).toBe(80 * 30 - 600);
 
       act(() => {
@@ -227,7 +229,7 @@ describe("LineChartClient", () => {
       });
       rerender(<LineChartClient data={LONG_DATA.slice(0, 81)} visibleCount={20} />);
       expect(element.scrollLeft).toBe(300);
-      expect(chart.style.getPropertyValue("--line-scroll-x")).toBe("300px");
+      expect(chart.style.getPropertyValue("--uiify-line-scroll-x")).toBe("300px");
       expect(chart.querySelector("tbody th")?.textContent).toBe(LONG_DATA[10]?.time);
 
       act(() => {

@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { useEventCallback } from "./use-event-callback.js";
 
 /** Invokes `fn` once when the component unmounts. Always uses the latest `fn`. */
 export function useUnmount(fn: () => void): void {
-  const ref = useRef(fn);
-  ref.current = fn;
-  useEffect(
-    () => () => {
-      ref.current();
-    },
-    [],
-  );
+  const callback = useEventCallback(fn);
+  useEffect(() => callback, [callback]);
 }

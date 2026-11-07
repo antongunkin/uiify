@@ -11,26 +11,25 @@ describe("Alert", () => {
     expect(alert.tagName).toBe("DIV");
     expect(alert.getAttribute("role")).toBeNull();
     expect(alert.getAttribute("data-variant")).toBe("warning");
-    expect(alert.getAttribute("data-uiify-alert")).toBe("");
+    expect(alert.classList.contains("uiify-alert")).toBe(true);
+    expect(alert.hasAttribute("data-uiify-alert")).toBe(false);
   });
 
-  it("preserves consumer-selected role and marker", () => {
+  it("composes consumer classes and preserves the selected role", () => {
     render(
       <Alert
         role="alert"
         symbol={false}
         className="callout"
         style={{ color: "red" }}
-        data-uiify-alert="changed"
         data-record="kept"
-        data-testid="alert"
       >
         Saved
       </Alert>,
     );
     const alert = screen.getByRole("alert");
-    expect(alert.getAttribute("data-uiify-alert")).toBe("changed");
-    expect(alert.className).toBe("callout");
+    expect(alert.className).toBe("uiify-alert callout");
+    expect(alert.querySelector(".uiify-alert-symbol")).toBeNull();
     expect(alert.style.color).toBe("red");
     expect(alert.getAttribute("data-record")).toBe("kept");
     expect(alert.textContent).toBe("Saved");
@@ -43,8 +42,8 @@ describe("Alert", () => {
       </Alert>,
     );
     const symbol = screen.getByTestId("alert-symbol");
-    expect(symbol.className).toBe("alert-symbol");
-    expect(symbol.getAttribute("data-part")).toBe("symbol");
+    expect(symbol.className).toBe("uiify-alert-symbol alert-symbol");
+    expect(symbol.hasAttribute("data-part")).toBe(false);
     expect(symbol.getAttribute("aria-hidden")).toBe("true");
   });
 
@@ -61,8 +60,8 @@ describe("Alert", () => {
   ] as const)("server-renders a decorative symbol for %s", (variant, symbol) => {
     const html = renderToStaticMarkup(<Alert variant={variant}>Message</Alert>);
     const document = new DOMParser().parseFromString(html, "text/html");
-    const root = document.querySelector("[data-uiify-alert]")!;
-    const glyph = root.querySelector('[data-part="symbol"]')!;
+    const root = document.querySelector(".uiify-alert")!;
+    const glyph = root.querySelector(".uiify-alert-symbol")!;
     expect(glyph.textContent).toBe(symbol);
     expect(glyph.getAttribute("aria-hidden")).toBe("true");
     expect(root.hasAttribute("role")).toBe(false);
@@ -77,29 +76,34 @@ describe("Alert", () => {
     );
     const link = screen.getByRole("link", { name: "the details" });
     const root = link.parentElement!;
-    expect(root.hasAttribute("data-uiify-alert")).toBe(true);
-    expect(root.querySelector('[data-part="symbol"]')?.textContent).toBe("!");
+    expect(root.classList.contains("uiify-alert")).toBe(true);
+    expect(root.querySelector(".uiify-alert-symbol")?.textContent).toBe("!");
     expect(root.textContent).toBe("!Read the details.");
   });
 
-  it("forwards native props, refs, events and styling and consumer part markers", () => {
+  it("forwards native props, refs, events and styling through as and render", () => {
     const rootRef = createRef<HTMLElement>();
     const titleRef = createRef<HTMLHeadingElement>();
     const onClick = vi.fn();
     render(
-      <Alert as="section" ref={rootRef} role="status" title="Native tooltip" onClick={onClick}>
+      <Alert
+        as="section"
+        ref={rootRef}
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer role on a polymorphic section.
+        role="status"
+        title="Native tooltip"
+        onClick={onClick}
+      >
         <AlertTitle
           as="h3"
           ref={titleRef}
           className="heading"
           style={{ color: "red" }}
-          data-uiify-alert-title="changed"
-          data-part="changed"
           data-record="kept"
         >
           Settings updated
         </AlertTitle>
-        <AlertDescription render={(props) => createElement("p", props)} data-part="changed">
+        <AlertDescription render={(props) => createElement("p", props)}>
           Your preferences are saved.
         </AlertDescription>
       </Alert>,
@@ -111,13 +115,15 @@ describe("Alert", () => {
     expect(root.title).toBe("Native tooltip");
     expect(rootRef.current).toBe(root);
     expect(titleRef.current).toBe(title);
-    expect(title.className).toBe("heading");
+    expect(title.className).toBe("uiify-alert-title heading");
     expect(title.style.color).toBe("red");
-    expect(title.getAttribute("data-uiify-alert-title")).toBe("changed");
-    expect(title.getAttribute("data-part")).toBe("changed");
+    expect(title.hasAttribute("data-uiify-alert-title")).toBe(false);
+    expect(title.hasAttribute("data-part")).toBe(false);
     expect(title.getAttribute("data-record")).toBe("kept");
     expect(description.tagName).toBe("P");
-    expect(description.getAttribute("data-part")).toBe("changed");
+    expect(description.className).toBe("uiify-alert-description");
+    expect(description.hasAttribute("data-uiify-alert-description")).toBe(false);
+    expect(description.hasAttribute("data-part")).toBe(false);
     fireEvent.click(root);
     expect(onClick).toHaveBeenCalledOnce();
   });

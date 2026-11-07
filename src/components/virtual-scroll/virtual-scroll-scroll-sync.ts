@@ -13,7 +13,7 @@ export function applyVirtualScrollRangeToDom(
     readonly getRowStyle?: (index: number) => CSSProperties | undefined;
   },
 ): void {
-  const spacer = scrollport.querySelector('[data-part="spacer"]');
+  const spacer = scrollport.querySelector(".uiify-virtual-scroll-spacer");
   if (!(spacer instanceof HTMLElement)) return;
 
   if (!options.dynamicLayout) {
@@ -24,7 +24,7 @@ export function applyVirtualScrollRangeToDom(
     return;
   }
 
-  const rows = spacer.querySelectorAll('[data-part="row"]');
+  const rows = spacer.querySelectorAll(".uiify-virtual-scroll-row");
   for (let slotIndex = 0; slotIndex < options.slotCount; slotIndex++) {
     const row = rows[slotIndex];
     if (!(row instanceof HTMLElement)) continue;

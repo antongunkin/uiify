@@ -1,4 +1,5 @@
 import type { ElementType, ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { buildPaginationItems } from "./pagination-engine.js";
@@ -60,7 +61,7 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
   );
 
   const content = children ?? (
-    <ol>
+    <ol className="uiify-pagination-list">
       {items.map((item, index) => (
         <PaginationItemRenderer
           item={item}
@@ -79,8 +80,8 @@ export function PaginationRoot<TAs extends ElementType = "nav">(
     defaultTag: "nav",
     props: {
       "aria-label": mergedLabels.root,
-      "data-uiify-pagination": "",
       ...consumerProps,
+      className: cn("uiify-pagination", consumerProps.className),
       children: content,
     },
     render,
@@ -180,7 +181,7 @@ export function PaginationList<TAs extends ElementType = "ol">(
   return useRenderElement({
     as,
     defaultTag: "ol",
-    props: consumerProps,
+    props: { ...consumerProps, className: cn("uiify-pagination-list", consumerProps.className) },
     render,
     state: {},
   });
@@ -194,7 +195,11 @@ export function PaginationItemPart<TAs extends ElementType = "li">(
   return useRenderElement({
     as,
     defaultTag: "li",
-    props: { ...consumerProps, children },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-pagination-item", consumerProps.className),
+      children,
+    },
     render,
     state: {},
   });
@@ -229,10 +234,14 @@ export function PaginationLink<TAs extends ElementType = "a">(
       "data-selected": selected ? "" : undefined,
       "data-size": "icon",
       "data-type": "page",
-      "data-uiify-button": "",
       "data-variant": "ghost",
       href,
       ...consumerProps,
+      className: cn(
+        "uiify-pagination-link",
+        "uiify-button",
+        (consumerProps as { className?: string }).className,
+      ),
       children: formatPageNumber(page, locale),
     },
     render,
@@ -261,8 +270,8 @@ function PaginationNavControl({
       {href ? (
         <a
           aria-label={label}
+          className="uiify-pagination-control uiify-button"
           data-type={type}
-          data-uiify-button=""
           data-variant="ghost"
           href={href}
         >
@@ -273,8 +282,8 @@ function PaginationNavControl({
           aria-disabled={disabled ? true : undefined}
           aria-label={label}
           data-disabled={disabled ? "" : undefined}
+          className="uiify-pagination-control uiify-button"
           data-type={type}
-          data-uiify-button=""
           data-variant="ghost"
         >
           {labelText}
@@ -304,6 +313,7 @@ export function PaginationEllipsis<TAs extends ElementType = "span">(
       "aria-hidden": true,
       "data-type": "ellipsis",
       ...consumerProps,
+      className: cn("uiify-pagination-ellipsis", consumerProps.className),
       children: "…",
     },
     render,

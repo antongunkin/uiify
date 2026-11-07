@@ -13,48 +13,11 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 - `hidden` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
-## Popup.Close
-
-Place inside `Popup.Root`.
+## PopoverClose
 
 Optional `children`: nodes or strings.
 
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Popup.Content
-
-Place inside `Popup.Root`.
-
-Optional `children`: nodes or strings.
-
-- `align` (optional): `"start" | "center" | "end"`; allowed: "start", "center", "end"
-- `side` (optional): `"top" | "right" | "bottom" | "left"`; allowed: "top", "right", "bottom", "left"
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Popup.Root
-
-A small, optional piece of contextual content belongs beside its trigger and can be opened without blocking the page
-Use when: The described popup interaction is present; keep it focused on the user's current task.
-Avoid when: The task does not need popup; do not add it for coverage.
-
-Optional `children`: nodes or strings.
-
-- `id` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. Stable id for the popover surface and invoker commands. Required.
-- `mode` (optional): `"auto" | "manual" | "hint"`; allowed: "auto", "manual", "hint"
-
-## Popup.Trigger
-
-Place inside `Popup.Root`.
-
-Optional `children`: nodes or strings.
-
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## PopupClose
-
-Optional `children`: nodes or strings.
-
-- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `PopupContent` this button hides.
+- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `PopoverContent` this button hides.
 - `command` (optional): `string`
 - `commandfor` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
@@ -63,7 +26,7 @@ Optional `children`: nodes or strings.
 - `disabled` (optional): `boolean`
 - `formAction` (optional): `` `/${string}` | `./${string}` | `../${string}` | `#${string}` | `?${string}` | `http://${string}` | `https://${string}` | `mailto:${string}` ``; an allowed URL; use a relative path or an http:, https: or mailto: URL, with no leading space or control character and no tab or line break
 
-## PopupContent
+## PopoverContent
 
 Optional `children`: nodes or strings.
 
@@ -72,11 +35,11 @@ Optional `children`: nodes or strings.
 - `mode` (optional): `"auto" | "manual"`; allowed: "auto", "manual"
 - `side` (optional): `"top" | "right" | "bottom" | "left"`; allowed: "top", "right", "bottom", "left"
 
-## PopupTrigger
+## PopoverTrigger
 
 Optional `children`: nodes or strings.
 
-- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `PopupContent` this button toggles.
+- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `PopoverContent` this button toggles.
 - `command` (optional): `string`
 - `commandfor` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .

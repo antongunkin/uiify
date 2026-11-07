@@ -57,7 +57,21 @@ describe("ToggleGroup", () => {
       />,
     );
     expect(screen.getAllByRole("radio", { hidden: true })).toHaveLength(2);
-    expect(screen.getByLabelText("Left")).toBeTruthy();
+    const root = screen.getByRole("radiogroup");
+    expect(root.classList.contains("uiify-toggle-group")).toBe(true);
+    expect(root.hasAttribute("data-uiify-toggle-group")).toBe(false);
+    expect(screen.getByLabelText("Left").classList.contains("uiify-toggle-group-control")).toBe(
+      true,
+    );
+    expect(
+      screen.getByText("Left").closest("label")?.classList.contains("uiify-toggle-group-label"),
+    ).toBe(true);
+    expect(
+      screen
+        .getByLabelText("Left")
+        .closest(".uiify-toggle-group-item")
+        ?.classList.contains("uiify-toggle-group-item"),
+    ).toBe(true);
   });
 
   it("forwards slot props to each repeated item part", () => {

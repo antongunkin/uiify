@@ -2,16 +2,16 @@
 
 exports[`preserves default table DOM 1`] = `
 [
-  "table data-uiify-table="" role="grid"",
-  "thead data-part="header"",
+  "table class="uiify-table" role="grid"",
+  "thead class="uiify-table-header"",
   "tr",
-  "th data-part="column-header" id="select" scope="col"",
-  "label data-uiify-checkbox="" id="_R_0_-select-all-label"",
-  "input aria-labelledby="_R_0_-select-all-label" data-part="control" data-state="unchecked" id="_R_0_-select-all" type="checkbox"",
-  "tbody data-orientation="both" data-part="body"",
-  "tr aria-selected="false" data-part="row" id="row" tabindex="-1"",
-  "td data-part="cell"",
-  "label data-uiify-checkbox="" id="_R_0_-row-row-label"",
-  "input aria-labelledby="_R_0_-row-row-label" data-part="control" data-state="unchecked" id="_R_0_-row-row" type="checkbox"",
+  "th class="uiify-table-column-header" id="select" scope="col"",
+  "label class="uiify-checkbox" id="_R_0_-select-all-label"",
+  "input aria-labelledby="_R_0_-select-all-label" class="uiify-checkbox-control" data-state="unchecked" id="_R_0_-select-all" type="checkbox"",
+  "tbody class="uiify-table-body" data-orientation="both"",
+  "tr aria-selected="false" class="uiify-table-row" id="row" tabindex="-1"",
+  "td class="uiify-table-cell"",
+  "label class="uiify-checkbox" id="_R_0_-row-row-label"",
+  "input aria-labelledby="_R_0_-row-row-label" class="uiify-checkbox-control" data-state="unchecked" id="_R_0_-row-row" type="checkbox"",
 ]
 `;

@@ -6,11 +6,11 @@ Expose a clear action with its native interaction semantics.
 
 ## Use when
 
-The person triggers an action on this page: submit a form, save, confirm, open a dialog or start a flow. `as="a"` gives a link the Button skin; the element stays a link.
+The person triggers an action on this page: submit a form, save, confirm, open a dialog or start a flow. `href` renders a link with the Button skin (same as `as="a"`); the element stays a link.
 
 ## Avoid when
 
-The control moves to another page: use a link (`<a href>` or `Button as="a"`). For a persistent or mutually exclusive choice, use `segmented-control` or `toggle-group` when its interaction model fits. `selected` can also mark a button as the chosen item in a set.
+The control moves to another page: use a link (`<a href>` or `<Button href>`). For a persistent or mutually exclusive choice, use `segmented-control` or `toggle-group` when its interaction model fits. `selected` can also mark a button as the chosen item in a set.
 
 ## Structure
 
@@ -23,6 +23,12 @@ One visible label names the result with a verb: "Save changes", "Invite member".
 
 `Button` renders a native `<button>` with `type="button"` unless `type` is given; pass `type="submit"` inside a form.
 
+### Styling
+
+`uiify-button` composes consumer classes; `data-variant`/`data-size` select the recipe in
+`styles/uiify/button.ts`; `default` sets neither. Wash/rim use `effects.css`.
+Consumer utilities win. Native Element invokers need the class explicitly.
+
 ## Responsive
 
 Labels fit at 320 CSS px without truncation; shorten the copy rather than the target. In a narrow action row keep the primary action first in reading order and let the buttons wrap or stack instead of hiding one.
@@ -33,7 +39,7 @@ Disabled: say nearby why the action is unavailable, or keep it enabled and valid
 
 ## Verify
 
-Enabled native buttons follow Tab order and activate with Enter or Space. A disabled button cannot activate; `as="a"` keeps link keyboard behavior. Every control has a visible focus indicator and a non-empty accessible name. A single solid action can clarify emphasis in a decision area; treat that as a contextual heuristic.
+Enabled native buttons follow Tab order and activate with Enter or Space. A disabled button cannot activate; a `href` link keeps link keyboard behavior. Every control has a visible focus indicator and a non-empty accessible name.
 
 ## Common mistake
 

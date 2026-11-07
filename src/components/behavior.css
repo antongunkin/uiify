@@ -1,24 +1,26 @@
 /* Behavioral rules for @gunkin/uiify/components — zero visual opinion.
- * Import is required: @import "@gunkin/uiify/components/behavior.css";
- * Cascade order: consumer app layer wins without specificity fights. */
+ * Required. `@gunkin/uiify/tailwind.css` imports it into `components`, below the recipes and every
+ * utility; without Tailwind, import it first: @import "@gunkin/uiify/components/behavior.css";
+ * Cascade order: consumer styles win without specificity fights. The only exception is the
+ * closed-state rules marked `!important` below. */
 @layer ui.reset, ui.behavior, ui.tokens, ui.theme, app;
 
 @layer ui.behavior {
-  [data-uiify-aspect-ratio] {
+  .uiify-aspect-ratio {
     display: block;
     position: relative;
     min-inline-size: 0;
     aspect-ratio: var(--uiify-aspect-ratio, 1);
   }
 
-  [data-uiify-aspect-ratio] > [data-part="content"] {
+  .uiify-aspect-ratio > .uiify-aspect-ratio-content {
     position: absolute;
     inset-block: 0;
     inset-inline: 0;
     min-inline-size: 0;
   }
 
-  [data-uiify-file-upload] > [data-part="input"] {
+  .uiify-file-upload > .uiify-file-upload-input {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -26,12 +28,12 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  [data-uiify-header][data-placement="sticky"] {
+  .uiify-header[data-placement="sticky"] {
     position: sticky;
     inset-block-start: 0;
   }
 
-  [data-uiify-header][data-placement="sticky"][data-state="hidden"]:not(
+  .uiify-header[data-placement="sticky"][data-state="hidden"]:not(
       :focus-within,
       :has(dialog[open], details[open], :popover-open)
     ) {
@@ -39,13 +41,16 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-header][data-placement="sticky"][data-state] {
+    .uiify-header[data-placement="sticky"][data-state] {
       transition: translate 200ms ease-out;
     }
   }
 
+  /* Closed popovers and dialogs stay hidden even when a recipe or `className` sets display (the
+     same exception Tailwind's preflight makes for [hidden]). `!important` in this low layer beats
+     every later layer's normal and important declarations; open-state display stays the author's. */
   [popover]:not(:popover-open) {
-    display: none;
+    display: none !important;
   }
 
   /* Native modal dialogs: wheel/touch scrolling inside the dialog must not chain to the page behind it. */
@@ -61,9 +66,8 @@
     scrollbar-gutter: stable;
   }
 
-  /* Closed dialogs stay hidden even when author CSS sets display. */
   dialog:not([open]) {
-    display: none;
+    display: none !important;
   }
 
   [data-anchor]:not([data-positioning]) {
@@ -153,63 +157,112 @@
    * style with the selector or with the variable; neither is a second source of truth.
    *
    * Compound roots and their public trigger parts share one component identity plus
-   * `data-part`, so native state stays readable without a second scope convention.
+   * classes so native state stays readable without a second scope convention.
    */
-  [data-uiify-modal][data-part="root"]:has(> [data-uiify-modal][data-part="content"][open])
-    > [data-uiify-modal][data-part="trigger"],
-  [data-uiify-alert-modal][data-part="root"]:has(
-      > [data-uiify-alert-modal][data-part="content"][open]
-    )
-    > [data-uiify-alert-modal][data-part="trigger"],
-  [data-uiify-popup][data-part="root"]:has(> [data-uiify-popup][data-part="content"]:popover-open)
-    > [data-uiify-popup][data-part="trigger"] {
+  .uiify-dialog-root:has(> .uiify-dialog-content[open]) > .uiify-dialog-trigger,
+  .uiify-alert-dialog:has(> .uiify-alert-dialog-content[open]) > .uiify-alert-dialog-trigger,
+  .uiify-popover:has(> .uiify-popover-content:popover-open) > .uiify-popover-trigger {
     --uiify-trigger-open: 1;
   }
 
-  [data-uiify-accordion] > [data-part="item"][data-disabled] > summary,
-  [data-uiify-collapsible][data-disabled] > summary {
+  .uiify-accordion-trigger[aria-disabled="true"],
+  .uiify-collapsible[data-disabled] > summary {
     cursor: not-allowed;
     pointer-events: none;
   }
 
-  /* Customizable select: opts the control and its picker into the browser's
-     base styles so the picker becomes a styleable, top-layer popover with
-     implicit anchor positioning. Behavior only — no visual opinion. Engines
-     without support ignore this and keep the classic OS picker, which stays
-     fully functional. */
-  [data-uiify-select],
-  [data-uiify-select]::picker(select) {
-    appearance: base-select;
-  }
-
-  [data-uiify-tabs] > [data-part="item"] > [data-part="control"] {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    /* stylelint-disable-next-line property-no-deprecated -- kept for older browser support alongside clip-path */
-    clip: rect(0, 0, 0, 0);
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  [data-uiify-tabs] > [data-part="item"] > [data-part="panel"] {
+  /*
+   * Tabs pair by position, not by value (Tier 0 has no context): the i-th checked trigger in the
+   * direct TabsList shows the i-th direct TabsContent, up to 12 tabs. Child combinators keep a
+   * nested Tabs independent. With no trigger checked, the first content shows.
+   */
+  .uiify-tabs > .uiify-tabs-content {
     display: none;
   }
 
-  [data-uiify-tabs] > [data-part="item"] > [data-part="control"]:checked ~ [data-part="panel"] {
+  .uiify-tabs:not(:has(> .uiify-tabs-list > .uiify-tabs-item > .uiify-tabs-control:checked))
+    > .uiify-tabs-content:nth-child(1 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(1 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(1 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(2 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(2 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(3 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(3 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(4 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(4 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(5 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(5 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(6 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(6 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(7 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(7 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(8 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(8 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(9 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(9 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(10 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(10 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(11 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(11 of .uiify-tabs-content),
+  .uiify-tabs:has(
+      > .uiify-tabs-list
+        > .uiify-tabs-item:nth-child(12 of .uiify-tabs-item)
+        > .uiify-tabs-control:checked
+    )
+    > .uiify-tabs-content:nth-child(12 of .uiify-tabs-content) {
     display: block;
   }
 
-  [data-uiify-tabs] [data-part="trigger"][data-disabled] {
+  .uiify-tabs .uiify-tabs-trigger[data-disabled] {
     cursor: not-allowed;
     pointer-events: none;
   }
 
-  [data-uiify-spinner][data-state="delayed"] {
+  .uiify-spinner[data-state="delayed"] {
     animation-name: uiify-spinner-show;
     animation-duration: 0s;
     animation-delay: attr(data-delay type(<time>), 0s);
@@ -223,13 +276,7 @@
     }
   }
 
-  [data-uiify-breadcrumb] [data-part="ellipsis"] > ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  [data-uiify-carousel] > [data-part="viewport"] {
+  .uiify-carousel > .uiify-carousel-viewport {
     display: grid;
     min-inline-size: 0;
     min-block-size: 0;
@@ -237,7 +284,7 @@
     scroll-behavior: auto;
   }
 
-  [data-uiify-carousel][data-axis="inline"] > [data-part="viewport"] {
+  .uiify-carousel[data-axis="inline"] > .uiify-carousel-viewport {
     grid-auto-flow: column;
     grid-auto-columns: var(--uiify-carousel-slide-size, 100%);
     overflow-inline: auto;
@@ -245,7 +292,7 @@
     scroll-snap-type: inline mandatory;
   }
 
-  [data-uiify-carousel][data-axis="block"] > [data-part="viewport"] {
+  .uiify-carousel[data-axis="block"] > .uiify-carousel-viewport {
     grid-auto-flow: row;
     grid-auto-rows: var(--uiify-carousel-slide-size, 100%);
     overflow-block: auto;
@@ -253,31 +300,31 @@
     scroll-snap-type: block mandatory;
   }
 
-  [data-uiify-carousel] > [data-part="viewport"] > [data-part="slide"] {
+  .uiify-carousel > .uiify-carousel-viewport > .uiify-carousel-slide {
     min-inline-size: 0;
     min-block-size: 0;
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
 
-  [data-uiify-carousel] > [data-part="viewport"]:focus-visible,
-  [data-uiify-carousel] > button[data-part="controls"]:focus-visible,
-  [data-uiify-carousel] > [data-part="dots"] > a:focus-visible {
+  .uiify-carousel > .uiify-carousel-viewport:focus-visible,
+  .uiify-carousel > button.uiify-carousel-control:focus-visible,
+  .uiify-carousel > .uiify-carousel-dots > a:focus-visible {
     outline: auto;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-carousel] > [data-part="viewport"] {
+    .uiify-carousel > .uiify-carousel-viewport {
       scroll-behavior: smooth;
     }
   }
 
-  [data-uiify-carousel] > [data-part="viewport"][data-dragging] {
+  .uiify-carousel > .uiify-carousel-viewport[data-dragging] {
     scroll-behavior: auto;
     scroll-snap-type: none;
   }
 
-  [data-uiify-carousel][data-mode="fade"][data-enhanced] > [data-part="viewport"] {
+  .uiify-carousel[data-mode="fade"][data-enhanced] > .uiify-carousel-viewport {
     grid-auto-flow: row;
     grid-template-columns: 100%;
     grid-auto-columns: auto;
@@ -286,36 +333,36 @@
     touch-action: pan-y pinch-zoom;
   }
 
-  [data-uiify-carousel][data-mode="fade"][data-enhanced]
-    > [data-part="viewport"]
-    > [data-part="slide"] {
+  .uiify-carousel[data-mode="fade"][data-enhanced]
+    > .uiify-carousel-viewport
+    > .uiify-carousel-slide {
     grid-area: 1 / 1;
     opacity: 0;
     pointer-events: none;
   }
 
-  [data-uiify-carousel][data-mode="fade"][data-enhanced]
-    > [data-part="viewport"]
-    > [data-part="slide"][data-state="active"] {
+  .uiify-carousel[data-mode="fade"][data-enhanced]
+    > .uiify-carousel-viewport
+    > .uiify-carousel-slide[data-state="active"] {
     opacity: 1;
     pointer-events: auto;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-uiify-carousel][data-mode="fade"][data-enhanced]
-      > [data-part="viewport"]
-      > [data-part="slide"] {
+    .uiify-carousel[data-mode="fade"][data-enhanced]
+      > .uiify-carousel-viewport
+      > .uiify-carousel-slide {
       transition: opacity var(--uiify-carousel-fade-duration, 300ms) ease;
     }
   }
 
-  [data-uiify-virtual-scroll] {
+  .uiify-virtual-scroll {
     --uiify-virtual-scroll-row-height: 64px;
 
     overflow-block: auto;
   }
 
-  [data-uiify-virtual-scroll] > [data-part="spacer"] {
+  .uiify-virtual-scroll > .uiify-virtual-scroll-spacer {
     position: relative;
     block-size: var(
       --uiify-virtual-scroll-total-size,
@@ -323,7 +370,7 @@
     );
   }
 
-  [data-uiify-virtual-scroll] [data-part="row"] {
+  .uiify-virtual-scroll .uiify-virtual-scroll-row {
     --uiify-row-position: var(
       --uiify-row-offset,
       calc(
@@ -341,11 +388,11 @@
   /* Horizontal: the row size runs along the inline axis. Rows sit at a logical
      inline offset so RTL needs no direction selector; child combinators keep a
      vertical list nested inside a horizontal row on the vertical rules. */
-  [data-uiify-virtual-scroll][data-orientation="horizontal"] {
+  .uiify-virtual-scroll[data-orientation="horizontal"] {
     overflow: auto hidden;
   }
 
-  [data-uiify-virtual-scroll][data-orientation="horizontal"] > [data-part="spacer"] {
+  .uiify-virtual-scroll[data-orientation="horizontal"] > .uiify-virtual-scroll-spacer {
     block-size: 100%;
     inline-size: var(
       --uiify-virtual-scroll-total-size,
@@ -353,9 +400,9 @@
     );
   }
 
-  [data-uiify-virtual-scroll][data-orientation="horizontal"]
-    > [data-part="spacer"]
-    > [data-part="row"] {
+  .uiify-virtual-scroll[data-orientation="horizontal"]
+    > .uiify-virtual-scroll-spacer
+    > .uiify-virtual-scroll-row {
     inset-block: 0;
     inset-inline: var(--uiify-row-position) auto;
     block-size: auto;
@@ -376,6 +423,22 @@
     pointer-events: none;
   }
 
+  /* View-transition snapshots are root pseudo-elements and cannot be scoped to a card. */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-group(.uiify-toast) {
+      animation-duration: var(--duration-fast);
+      animation-timing-function: var(--ease-out);
+    }
+
+    ::view-transition-new(.uiify-toast):only-child {
+      animation: uiify-toast-enter var(--duration-fast) var(--ease-out) both;
+    }
+
+    ::view-transition-old(.uiify-toast):only-child {
+      animation: uiify-toast-exit var(--duration-fast) var(--ease-out) both;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     ::view-transition-group(.uiify-toast),
     ::view-transition-old(.uiify-toast),
@@ -383,4 +446,131 @@
       animation: none;
     }
   }
+}
+
+@layer ui.behavior {
+  /* A swipe handle must reserve the gesture before pointerdown; a DialogBody scrolls natively. */
+  .uiify-dialog-grabber {
+    touch-action: none;
+  }
+
+  @media (width < 40rem) {
+    .uiify-dialog:not([data-size="full"]):has(> .uiify-dialog-body) {
+      touch-action: none;
+    }
+    .uiify-dialog:not([data-size="full"]) > .uiify-dialog-header {
+      touch-action: none;
+    }
+    .uiify-dialog-body {
+      touch-action: pan-y;
+    }
+  }
+}
+
+/* LineChart registers numeric geometry and captures gestures only in interactive mode. */
+@property --uiify-line-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --uiify-line-prev-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --uiify-line-count {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --uiify-line-scale {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@layer ui.behavior {
+  .uiify-line-chart[data-interactive] {
+    touch-action: none;
+  }
+}
+
+@layer ui.behavior {
+  .uiify-line-chart[data-interactive] .uiify-line-chart-scroll-viewport {
+    overscroll-behavior-inline: none;
+  }
+
+  /* Native Details disclosure interpolation for the Accordion recipe. */
+  .uiify-accordion {
+    interpolate-size: allow-keywords;
+  }
+
+  .uiify-accordion > .uiify-accordion-item::details-content {
+    block-size: 0;
+    overflow: clip;
+  }
+
+  .uiify-accordion > .uiify-accordion-item[open]::details-content {
+    block-size: auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .uiify-accordion > .uiify-accordion-item::details-content {
+      opacity: 0;
+      transition:
+        opacity var(--duration-fast) var(--ease-out),
+        block-size var(--duration-fast) var(--ease-out),
+        content-visibility var(--duration-fast) allow-discrete;
+    }
+
+    .uiify-accordion > .uiify-accordion-item[open]::details-content {
+      opacity: 1;
+    }
+  }
+}
+
+/* The chart registers its existing interpolated geometry properties. */
+@property --uiify-candle-body-height {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --uiify-candle-body-top {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --uiify-candle-slot {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
+@property --uiify-candle-wick-height {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --uiify-candle-wick-top {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --uiify-candle-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --uiify-candle-scale {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
 }

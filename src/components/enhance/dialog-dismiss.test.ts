@@ -60,7 +60,7 @@ afterEach(() => {
 });
 
 function mount(closedby = "any"): HTMLDialogElement {
-  document.body.innerHTML = `<dialog open closedby="${closedby}" data-uiify-modal data-part="content" id="d"><p id="inside">Body</p></dialog>`;
+  document.body.innerHTML = `<dialog open closedby="${closedby}" class="uiify-dialog-content" id="d"><p id="inside">Body</p></dialog>`;
   const dialog = document.getElementById("d") as HTMLDialogElement;
   dialog.getBoundingClientRect = () =>
     ({
@@ -148,8 +148,7 @@ describe("attachBackdropClose", () => {
 
   it("also closes drawers when both presses land on their backdrop", () => {
     const dialog = mount();
-    dialog.removeAttribute("data-uiify-modal");
-    dialog.setAttribute("data-uiify-drawer", "");
+    dialog.classList.replace("uiify-dialog-content", "uiify-drawer-content");
     detach = attachBackdropClose();
     dialog.dispatchEvent(
       new MouseEvent("pointerdown", { bubbles: true, clientX: 900, clientY: 900 }),

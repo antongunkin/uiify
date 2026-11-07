@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { cn } from "../../core/class-names.js";
 import type { PointerEvent, ReactElement, SyntheticEvent } from "react";
 import {
   useId,
@@ -14,7 +15,6 @@ import { useRenderElement } from "@gunkin/uiify/core/render";
 import { useDialog } from "@gunkin/uiify/core/dialog";
 import { createDrawerStore } from "./drawer-store.js";
 import type {
-  DrawerStore,
   DrawerContextValue,
   DrawerRootProps,
   DrawerTriggerProps,
@@ -53,17 +53,17 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
   const [descriptionId, setDescriptionId] = useState<string | undefined>();
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const wasOpenRef = useRef(dialog.open);
-  const storeRef = useRef<DrawerStore | null>(null);
-  storeRef.current ??= createDrawerStore({
-    side: effectiveSide,
-    dismissible,
-    onDismiss: () => dialog.close(),
-    ...(snapPoints ? { snapPoints } : {}),
-    ...(activeSnapPoint !== undefined ? { activeSnapPoint } : {}),
-    ...(defaultActiveSnapPoint !== undefined ? { defaultActiveSnapPoint } : {}),
-    ...(onSnapChange ? { onSnapChange } : {}),
-  });
-  const store = storeRef.current;
+  const [store] = useState(() =>
+    createDrawerStore({
+      side: effectiveSide,
+      dismissible,
+      onDismiss: () => dialog.close(),
+      ...(snapPoints ? { snapPoints } : {}),
+      ...(activeSnapPoint !== undefined ? { activeSnapPoint } : {}),
+      ...(defaultActiveSnapPoint !== undefined ? { defaultActiveSnapPoint } : {}),
+      ...(onSnapChange ? { onSnapChange } : {}),
+    }),
+  );
   useIsomorphicLayoutEffect(() => {
     if (activeSnapPoint !== undefined) store.syncActiveSnapPoint(activeSnapPoint);
   }, [activeSnapPoint, store]);
@@ -123,13 +123,10 @@ export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
     defaultTag: "button",
     props: {
       type: "button",
-      "data-uiify-button": "",
-      "data-part": "trigger",
-      "data-uiify-drawer": "",
       "aria-controls": contentId,
       "aria-expanded": open,
       "aria-haspopup": "dialog",
-      ...(className ? { className } : {}),
+      className: cn("uiify-button", "uiify-drawer-trigger", className),
       ...consumerProps,
       ref: mergedRef,
       onClick: composeEventHandlers(consumerProps.onClick, openDialog),
@@ -198,14 +195,12 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
       "data-size": drawerSize,
       "data-backdrop": backdrop,
       closedby: dismiss ?? (dismissible ? (closeOnOverlayClick ? "any" : "closerequest") : "none"),
-      "data-part": "content",
       "data-side": side,
       "data-state": open ? "open" : "closed",
-      "data-uiify-drawer": "",
       "data-snap-enabled": snapEnabled ? "" : undefined,
-      ...(className ? { className } : {}),
       ...(consumerStyle || styleVars ? { style: { ...styleVars, ...consumerStyle } } : {}),
       ...consumerProps,
+      className: cn("uiify-drawer", "uiify-drawer-content", className),
       ref: mergedRef,
       onCancel: composeEventHandlers(
         consumerProps.onCancel,
@@ -237,10 +232,8 @@ export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
     defaultTag: "h2",
     props: {
       id,
-      "data-part": "title",
-      "data-uiify-drawer": "",
-      ...(className ? { className } : {}),
       ...consumerProps,
+      className: cn("uiify-drawer-title", className),
       children,
     },
     state: {},
@@ -258,10 +251,8 @@ export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElemen
     defaultTag: "p",
     props: {
       id,
-      "data-part": "description",
-      "data-uiify-drawer": "",
-      ...(className ? { className } : {}),
       ...consumerProps,
+      className: cn("uiify-drawer-description", className),
       children,
     },
     state: {},
@@ -274,11 +265,8 @@ export function DrawerClose(props: DrawerCloseProps): ReactElement | null {
     defaultTag: "button",
     props: {
       type: "button",
-      "data-uiify-button": "",
-      "data-part": "close",
-      "data-uiify-drawer": "",
       "data-variant": "ghost",
-      ...(className ? { className } : {}),
+      className: cn("uiify-button", "uiify-drawer-close", className),
       ...consumerProps,
       onClick: composeEventHandlers(consumerProps.onClick, () => {
         close();
@@ -309,11 +297,9 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
     props: snapEnabled
       ? {
           "aria-hidden": true,
-          "data-part": "handle",
-          "data-uiify-drawer": "",
           "data-dragging": dragging ? "" : undefined,
           "data-side": side,
-          ...(className ? { className } : {}),
+          className: cn("uiify-drawer-handle", className),
           ...consumerProps,
           onPointerDown: composeEventHandlers(
             onPointerDown,
@@ -347,9 +333,7 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
         }
       : {
           "aria-hidden": true,
-          "data-part": "handle",
-          "data-uiify-drawer": "",
-          ...(className ? { className } : {}),
+          className: cn("uiify-drawer-handle", className),
           ...consumerProps,
           onPointerDown,
           onPointerMove,

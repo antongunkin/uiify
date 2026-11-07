@@ -1,6 +1,7 @@
 import type { ElementType, ReactElement } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
-import type { ButtonProps } from "./types.js";
+import { cn } from "../../core/class-names.js";
+import type { ButtonElementProps, ButtonProps } from "./types.js";
 
 function isNativeButton(as: ElementType | undefined): boolean {
   return as === undefined || as === "button";
@@ -10,7 +11,7 @@ export function Button<TAs extends ElementType = "button">(
   props: ButtonProps<TAs>,
 ): ReactElement | null {
   const {
-    as,
+    as: explicitAs,
     render,
     disabled = false,
     selected,
@@ -18,8 +19,13 @@ export function Button<TAs extends ElementType = "button">(
     type,
     variant,
     ...consumerProps
-  } = props as ButtonProps<"button">;
+  } = props as ButtonElementProps<"button"> & { href?: string };
 
+  // `href` without `as` is a link styled as a button, the same path as `as="a"`.
+  const as =
+    explicitAs === undefined && render === undefined && consumerProps.href !== undefined
+      ? ("a" as const)
+      : explicitAs;
   const nativeButton = isNativeButton(as);
   // A toggle button reports its state through aria-pressed; anything that already names the
   // relation itself (current page, selected tab) keeps its own attribute.
@@ -33,9 +39,10 @@ export function Button<TAs extends ElementType = "button">(
     defaultTag: "button",
     props: {
       ...consumerProps,
-      "data-uiify-button": "",
-      ...(size !== undefined ? { "data-size": size } : {}),
-      ...(variant !== undefined ? { "data-variant": variant } : {}),
+      className: cn("uiify-button", (consumerProps as { className?: string }).className),
+      // `default` is the unset look: no attribute, so the markup equals an omitted prop.
+      ...(size !== undefined && size !== "default" ? { "data-size": size } : {}),
+      ...(variant !== undefined && variant !== "default" ? { "data-variant": variant } : {}),
       ...(selected ? { "data-selected": "" } : {}),
       ...(selected !== undefined && nativeButton && !ownsAria ? { "aria-pressed": selected } : {}),
       ...(nativeButton

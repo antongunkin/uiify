@@ -65,10 +65,10 @@ describe("Tooltip", () => {
 
     const trigger = screen.getByTestId("tooltip-trigger");
     const content = screen.getByTestId("tooltip-content");
-    expect(trigger.className).toBe("custom-trigger");
+    expect(trigger.className).toContain("uiify-button custom-trigger");
     expect(trigger.style.color).toBe("red");
     expect(triggerRef.current).toBe(trigger);
-    expect(content.className).toBe("custom-content");
+    expect(content.className).toContain("custom-content");
     expect(content.style.color).toBe("blue");
     expect(contentRef.current).toBe(content);
   });

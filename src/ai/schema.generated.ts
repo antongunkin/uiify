@@ -4,7 +4,7 @@
 /**
  * JSON Schema (draft 2020-12) of a UI document; compile with Ajv's `discriminator` option.
  * It checks parts, props and values only: the size limits (depth, node count, string length)
- * and the rules (parts inside their root, `fieldId` wiring, unique ids, nesting) are not in it.
+ * and the rules (parts inside their root, label and aria-describedby targets, unique ids, nesting) are not in it.
  * To check a document, use `validateDocument`.
  */
 export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
@@ -23,14 +23,18 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       discriminator: { propertyName: "type" },
       required: ["type"],
       oneOf: [
+        { $ref: "#/$defs/Accordion" },
+        { $ref: "#/$defs/AccordionContent" },
+        { $ref: "#/$defs/AccordionItem" },
+        { $ref: "#/$defs/AccordionTrigger" },
         { $ref: "#/$defs/Alert" },
         { $ref: "#/$defs/AlertDescription" },
         { $ref: "#/$defs/AlertTitle" },
-        { $ref: "#/$defs/AlertModal" },
-        { $ref: "#/$defs/AlertModalAction" },
-        { $ref: "#/$defs/AlertModalCancel" },
-        { $ref: "#/$defs/AlertModalContent" },
-        { $ref: "#/$defs/AlertModalTrigger" },
+        { $ref: "#/$defs/AlertDialog" },
+        { $ref: "#/$defs/AlertDialogAction" },
+        { $ref: "#/$defs/AlertDialogCancel" },
+        { $ref: "#/$defs/AlertDialogContent" },
+        { $ref: "#/$defs/AlertDialogTrigger" },
         { $ref: "#/$defs/AspectRatio" },
         { $ref: "#/$defs/Avatar" },
         { $ref: "#/$defs/Badge" },
@@ -41,12 +45,28 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/Breadcrumb.Separator" },
         { $ref: "#/$defs/Button" },
         { $ref: "#/$defs/Card" },
+        { $ref: "#/$defs/CardAction" },
+        { $ref: "#/$defs/CardContent" },
+        { $ref: "#/$defs/CardDescription" },
+        { $ref: "#/$defs/CardFooter" },
+        { $ref: "#/$defs/CardHeader" },
+        { $ref: "#/$defs/CardTitle" },
         { $ref: "#/$defs/Checkbox" },
         { $ref: "#/$defs/ColorPicker" },
         { $ref: "#/$defs/DatePicker" },
         { $ref: "#/$defs/DescriptionDetails" },
         { $ref: "#/$defs/DescriptionList" },
         { $ref: "#/$defs/DescriptionTerm" },
+        { $ref: "#/$defs/Dialog" },
+        { $ref: "#/$defs/DialogBody" },
+        { $ref: "#/$defs/DialogClose" },
+        { $ref: "#/$defs/DialogContent" },
+        { $ref: "#/$defs/DialogDescription" },
+        { $ref: "#/$defs/DialogFooter" },
+        { $ref: "#/$defs/DialogGrabber" },
+        { $ref: "#/$defs/DialogHeader" },
+        { $ref: "#/$defs/DialogTitle" },
+        { $ref: "#/$defs/DialogTrigger" },
         { $ref: "#/$defs/Drawer.Close" },
         { $ref: "#/$defs/Drawer.Content" },
         { $ref: "#/$defs/Drawer.Description" },
@@ -62,13 +82,12 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/EmptyContent" },
         { $ref: "#/$defs/EmptyDescription" },
         { $ref: "#/$defs/EmptyTitle" },
-        { $ref: "#/$defs/Field.Root" },
-        { $ref: "#/$defs/Field.Label" },
-        { $ref: "#/$defs/Field.Control" },
-        { $ref: "#/$defs/Field.Description" },
-        { $ref: "#/$defs/Field.Error" },
-        { $ref: "#/$defs/Fieldset" },
-        { $ref: "#/$defs/FieldsetLegend" },
+        { $ref: "#/$defs/Field" },
+        { $ref: "#/$defs/FieldDescription" },
+        { $ref: "#/$defs/FieldError" },
+        { $ref: "#/$defs/FieldLabel" },
+        { $ref: "#/$defs/FieldLegend" },
+        { $ref: "#/$defs/FieldSet" },
         { $ref: "#/$defs/FileUpload.Dropzone" },
         { $ref: "#/$defs/FileUpload.HiddenInput" },
         { $ref: "#/$defs/FileUpload.Item" },
@@ -86,16 +105,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/ItemContent" },
         { $ref: "#/$defs/ItemMedia" },
         { $ref: "#/$defs/ItemMetadata" },
-        { $ref: "#/$defs/Modal" },
-        { $ref: "#/$defs/ModalBody" },
-        { $ref: "#/$defs/ModalClose" },
-        { $ref: "#/$defs/ModalContent" },
-        { $ref: "#/$defs/ModalDescription" },
-        { $ref: "#/$defs/ModalFooter" },
-        { $ref: "#/$defs/ModalGrabber" },
-        { $ref: "#/$defs/ModalHeader" },
-        { $ref: "#/$defs/ModalTitle" },
-        { $ref: "#/$defs/ModalTrigger" },
+        { $ref: "#/$defs/NativeSelectContent" },
+        { $ref: "#/$defs/NativeSelectOptGroup" },
+        { $ref: "#/$defs/NativeSelectOption" },
+        { $ref: "#/$defs/NativeSelect" },
+        { $ref: "#/$defs/NativeSelectSeparator" },
         { $ref: "#/$defs/NumberField.Root" },
         { $ref: "#/$defs/NumberField.Group" },
         { $ref: "#/$defs/NumberField.Input" },
@@ -106,20 +120,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/Pagination.Link" },
         { $ref: "#/$defs/Pagination.List" },
         { $ref: "#/$defs/Pagination.Root" },
-        { $ref: "#/$defs/Popup.Close" },
-        { $ref: "#/$defs/Popup.Content" },
-        { $ref: "#/$defs/Popup.Root" },
-        { $ref: "#/$defs/Popup.Trigger" },
-        { $ref: "#/$defs/PopupClose" },
-        { $ref: "#/$defs/PopupContent" },
-        { $ref: "#/$defs/PopupTrigger" },
+        { $ref: "#/$defs/PopoverClose" },
+        { $ref: "#/$defs/PopoverContent" },
+        { $ref: "#/$defs/PopoverTrigger" },
         { $ref: "#/$defs/Progress" },
+        { $ref: "#/$defs/RadioGroup" },
+        { $ref: "#/$defs/RadioGroupItem" },
         { $ref: "#/$defs/Rating" },
-        { $ref: "#/$defs/Select.Content" },
-        { $ref: "#/$defs/Select.Group" },
-        { $ref: "#/$defs/Select.Item" },
-        { $ref: "#/$defs/Select.Root" },
-        { $ref: "#/$defs/Select.Separator" },
         { $ref: "#/$defs/Skeleton" },
         { $ref: "#/$defs/Slider" },
         { $ref: "#/$defs/Spinner" },
@@ -133,6 +140,10 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/Table.Header" },
         { $ref: "#/$defs/Table.Root" },
         { $ref: "#/$defs/Table.Row" },
+        { $ref: "#/$defs/Tabs" },
+        { $ref: "#/$defs/TabsContent" },
+        { $ref: "#/$defs/TabsList" },
+        { $ref: "#/$defs/TabsTrigger" },
         { $ref: "#/$defs/Textarea" },
         { $ref: "#/$defs/Toggle" },
         { $ref: "#/$defs/Tooltip.Content" },
@@ -174,6 +185,60 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/label" },
       ],
     },
+    Accordion: {
+      description:
+        "Reveal optional sections without hiding content most visitors need.\nUse when: The demonstrated disclosure relationship is present.\nAvoid when: Most visitors need the content; show it in the page.\nAvoid when: The sections are sequential steps; use stepper.",
+      type: "object",
+      properties: {
+        type: { const: "Accordion" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    AccordionContent: {
+      type: "object",
+      properties: {
+        type: { const: "AccordionContent" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    AccordionItem: {
+      type: "object",
+      properties: {
+        type: { const: "AccordionItem" },
+        props: { $ref: "#/$defs/AccordionItem.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    AccordionTrigger: {
+      type: "object",
+      properties: {
+        type: { const: "AccordionTrigger" },
+        props: { $ref: "#/$defs/AccordionTrigger.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
     Alert: {
       description:
         "Give a short persistent message context beside the content it affects.\nUse when: A persistent message explains an issue, result, or status beside the content it affects.\nAvoid when: The task does not need this pattern; do not add it for catalog coverage.\nAvoid when: A routine initial message does not need an assertive announcement or transient toast behavior.",
@@ -193,7 +258,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "AlertDescription" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -206,7 +271,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "AlertTitle" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -215,13 +280,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    AlertModal: {
+    AlertDialog: {
       description:
         "A short, important message requires an immediate response, especially confirmation before a consequential action\nUse when: The demonstrated destructive-confirmation relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
       type: "object",
       properties: {
-        type: { const: "AlertModal" },
-        props: { $ref: "#/$defs/AlertModal.props" },
+        type: { const: "AlertDialog" },
+        props: { $ref: "#/$defs/AlertDialog.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -230,11 +295,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    AlertModalAction: {
+    AlertDialogAction: {
       type: "object",
       properties: {
-        type: { const: "AlertModalAction" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
+        type: { const: "AlertDialogAction" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -243,11 +308,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    AlertModalCancel: {
+    AlertDialogCancel: {
       type: "object",
       properties: {
-        type: { const: "AlertModalCancel" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
+        type: { const: "AlertDialogCancel" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -256,11 +321,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    AlertModalContent: {
+    AlertDialogContent: {
       type: "object",
       properties: {
-        type: { const: "AlertModalContent" },
-        props: { $ref: "#/$defs/AlertModalContent.props" },
+        type: { const: "AlertDialogContent" },
+        props: { $ref: "#/$defs/AlertDialogContent.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -269,11 +334,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    AlertModalTrigger: {
+    AlertDialogTrigger: {
       type: "object",
       properties: {
-        type: { const: "AlertModalTrigger" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
+        type: { const: "AlertDialogTrigger" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -368,7 +433,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Breadcrumb.Root" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -382,7 +447,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Breadcrumb.Separator" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -412,7 +477,85 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Card" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Card.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    CardAction: {
+      type: "object",
+      properties: {
+        type: { const: "CardAction" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    CardContent: {
+      type: "object",
+      properties: {
+        type: { const: "CardContent" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    CardDescription: {
+      type: "object",
+      properties: {
+        type: { const: "CardDescription" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    CardFooter: {
+      type: "object",
+      properties: {
+        type: { const: "CardFooter" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    CardHeader: {
+      type: "object",
+      properties: {
+        type: { const: "CardHeader" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    CardTitle: {
+      type: "object",
+      properties: {
+        type: { const: "CardTitle" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -449,7 +592,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "DescriptionDetails" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -464,7 +607,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "DescriptionList" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -477,7 +620,132 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "DescriptionTerm" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    Dialog: {
+      description:
+        "Hold attention on a task that must be completed before returning to the page.\nUse when: The demonstrated blocking-modal relationship is present.\nAvoid when: The task can be completed while comparing the page; use inline content.\nAvoid when: The message is brief feedback; use toast.\nAvoid when: The user must confirm an irreversible action; use alert-dialog.",
+      type: "object",
+      properties: {
+        type: { const: "Dialog" },
+        props: { $ref: "#/$defs/Dialog.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogBody: {
+      type: "object",
+      properties: {
+        type: { const: "DialogBody" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogClose: {
+      type: "object",
+      properties: {
+        type: { const: "DialogClose" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogContent: {
+      type: "object",
+      properties: {
+        type: { const: "DialogContent" },
+        props: { $ref: "#/$defs/DialogContent.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogDescription: {
+      type: "object",
+      properties: {
+        type: { const: "DialogDescription" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogFooter: {
+      type: "object",
+      properties: {
+        type: { const: "DialogFooter" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogGrabber: {
+      type: "object",
+      properties: { type: { const: "DialogGrabber" }, props: { $ref: "#/$defs/Accordion.props" } },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogHeader: {
+      type: "object",
+      properties: {
+        type: { const: "DialogHeader" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogTitle: {
+      type: "object",
+      properties: {
+        type: { const: "DialogTitle" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DialogTrigger: {
+      type: "object",
+      properties: {
+        type: { const: "DialogTrigger" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -519,7 +787,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Drawer.Description" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -533,7 +801,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Drawer.Handle" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -562,7 +830,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Drawer.Title" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -602,7 +870,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "DrawerNativeTrigger" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -615,7 +883,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "DrawerNativeClose" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -643,7 +911,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Empty" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -656,7 +924,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "EmptyContent" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -669,7 +937,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "EmptyDescription" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -682,7 +950,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "EmptyTitle" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -691,13 +959,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Field.Root": {
+    Field: {
       description:
         "Keep a label and its form control together.\nUse when: The demonstrated form-grouping relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
       type: "object",
       properties: {
-        type: { const: "Field.Root" },
-        props: { $ref: "#/$defs/Field.Root.props" },
+        type: { const: "Field" },
+        props: { $ref: "#/$defs/Field.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -706,12 +974,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Field.Label": {
-      description: "Place inside `Field.Root`.",
+    FieldDescription: {
       type: "object",
       properties: {
-        type: { const: "Field.Label" },
-        props: { $ref: "#/$defs/Field.Label.props" },
+        type: { const: "FieldDescription" },
+        props: { $ref: "#/$defs/AccordionTrigger.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -720,12 +987,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Field.Control": {
-      description: "Place inside `Field.Root`.",
+    FieldError: {
       type: "object",
       properties: {
-        type: { const: "Field.Control" },
-        props: { $ref: "#/$defs/Field.Control.props" },
+        type: { const: "FieldError" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -734,12 +1000,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Field.Description": {
-      description: "Place inside `Field.Root`.",
+    FieldLabel: {
       type: "object",
       properties: {
-        type: { const: "Field.Description" },
-        props: { $ref: "#/$defs/Field.Description.props" },
+        type: { const: "FieldLabel" },
+        props: { $ref: "#/$defs/FieldLabel.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -748,12 +1013,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Field.Error": {
-      description: "Place inside `Field.Root`.",
+    FieldLegend: {
       type: "object",
       properties: {
-        type: { const: "Field.Error" },
-        props: { $ref: "#/$defs/Field.Error.props" },
+        type: { const: "FieldLegend" },
+        props: { $ref: "#/$defs/FieldLegend.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -762,26 +1026,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    Fieldset: {
-      description:
-        "Give related form controls a native group name with a legend.\nUse when: Related controls need a shared group name, such as a set of preferences.\nAvoid when: There is only one unrelated field or a generic wrapper would imply a false group.",
+    FieldSet: {
       type: "object",
       properties: {
-        type: { const: "Fieldset" },
-        props: { $ref: "#/$defs/Fieldset.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    FieldsetLegend: {
-      type: "object",
-      properties: {
-        type: { const: "FieldsetLegend" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        type: { const: "FieldSet" },
+        props: { $ref: "#/$defs/FieldSet.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -795,7 +1044,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "FileUpload.Dropzone" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -847,7 +1096,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "FileUpload.List" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -876,7 +1125,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "FileUpload.Trigger" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -970,7 +1219,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "ItemActions" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -983,7 +1232,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "ItemContent" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -996,7 +1245,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "ItemMedia" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1009,7 +1258,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "ItemMetadata" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1018,13 +1267,55 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    Modal: {
+    NativeSelectContent: {
+      description: "Place inside `NativeSelect`.",
+      type: "object",
+      properties: {
+        type: { const: "NativeSelectContent" },
+        props: { $ref: "#/$defs/NativeSelectContent.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    NativeSelectOptGroup: {
+      description: "Place inside `NativeSelect`.",
+      type: "object",
+      properties: {
+        type: { const: "NativeSelectOptGroup" },
+        props: { $ref: "#/$defs/NativeSelectOptGroup.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    NativeSelectOption: {
+      description: "Place inside `NativeSelect`.",
+      type: "object",
+      properties: {
+        type: { const: "NativeSelectOption" },
+        props: { $ref: "#/$defs/NativeSelectOption.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    NativeSelect: {
       description:
-        "Hold attention on a task that must be completed before returning to the page.\nUse when: The demonstrated blocking-modal relationship is present.\nAvoid when: The task can be completed while comparing the page; use inline content.\nAvoid when: The message is brief feedback; use toast.\nAvoid when: The user must confirm an irreversible action; use alert-modal.",
+        "Choose one or several values from a fixed list.\nUse when: The demonstrated form-grouping relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
       type: "object",
       properties: {
-        type: { const: "Modal" },
-        props: { $ref: "#/$defs/Modal.props" },
+        type: { const: "NativeSelect" },
+        props: { $ref: "#/$defs/NativeSelect.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1033,115 +1324,12 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    ModalBody: {
+    NativeSelectSeparator: {
+      description: "Place inside `NativeSelect`.",
       type: "object",
       properties: {
-        type: { const: "ModalBody" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalClose: {
-      type: "object",
-      properties: {
-        type: { const: "ModalClose" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalContent: {
-      type: "object",
-      properties: {
-        type: { const: "ModalContent" },
-        props: { $ref: "#/$defs/ModalContent.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalDescription: {
-      type: "object",
-      properties: {
-        type: { const: "ModalDescription" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalFooter: {
-      type: "object",
-      properties: {
-        type: { const: "ModalFooter" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalGrabber: {
-      type: "object",
-      properties: {
-        type: { const: "ModalGrabber" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalHeader: {
-      type: "object",
-      properties: {
-        type: { const: "ModalHeader" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalTitle: {
-      type: "object",
-      properties: {
-        type: { const: "ModalTitle" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    ModalTrigger: {
-      type: "object",
-      properties: {
-        type: { const: "ModalTrigger" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
+        type: { const: "NativeSelectSeparator" },
+        props: { $ref: "#/$defs/Accordion.props" },
       },
       required: ["type", "props"],
       additionalProperties: false,
@@ -1166,7 +1354,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "NumberField.Group" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1218,7 +1406,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Pagination.Ellipsis" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1260,7 +1448,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Pagination.List" },
-        props: { $ref: "#/$defs/Pagination.List.props" },
+        props: { $ref: "#/$defs/NativeSelectContent.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1284,12 +1472,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Popup.Close": {
-      description: "Place inside `Popup.Root`.",
+    PopoverClose: {
       type: "object",
       properties: {
-        type: { const: "Popup.Close" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        type: { const: "PopoverClose" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1298,12 +1485,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Popup.Content": {
-      description: "Place inside `Popup.Root`.",
+    PopoverContent: {
       type: "object",
       properties: {
-        type: { const: "Popup.Content" },
-        props: { $ref: "#/$defs/Popup.Content.props" },
+        type: { const: "PopoverContent" },
+        props: { $ref: "#/$defs/PopoverContent.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1312,66 +1498,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Popup.Root": {
-      description:
-        "A small, optional piece of contextual content belongs beside its trigger and can be opened without blocking the page\nUse when: The described popup interaction is present; keep it focused on the user's current task.\nAvoid when: The task does not need popup; do not add it for coverage.",
+    PopoverTrigger: {
       type: "object",
       properties: {
-        type: { const: "Popup.Root" },
-        props: { $ref: "#/$defs/Popup.Root.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Popup.Trigger": {
-      description: "Place inside `Popup.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Popup.Trigger" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    PopupClose: {
-      type: "object",
-      properties: {
-        type: { const: "PopupClose" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    PopupContent: {
-      type: "object",
-      properties: {
-        type: { const: "PopupContent" },
-        props: { $ref: "#/$defs/PopupContent.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    PopupTrigger: {
-      type: "object",
-      properties: {
-        type: { const: "PopupTrigger" },
-        props: { $ref: "#/$defs/AlertModalAction.props" },
+        type: { const: "PopoverTrigger" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1386,11 +1517,35 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Progress" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
         },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    RadioGroup: {
+      description:
+        "Choose exactly one option from a related set.\nUse when: Choose exactly one option from a related set.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
+      type: "object",
+      properties: {
+        type: { const: "RadioGroup" },
+        props: { $ref: "#/$defs/RadioGroup.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    RadioGroupItem: {
+      type: "object",
+      properties: {
+        type: { const: "RadioGroupItem" },
+        props: { $ref: "#/$defs/RadioGroupItem.props" },
       },
       required: ["type", "props"],
       additionalProperties: false,
@@ -1400,73 +1555,6 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         "Collect a numeric rating on a short ordered scale.\nUse when: Collect a numeric rating on a short ordered scale.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
       type: "object",
       properties: { type: { const: "Rating" }, props: { $ref: "#/$defs/Rating.props" } },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Select.Content": {
-      description: "Place inside `Select.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Select.Content" },
-        props: { $ref: "#/$defs/Pagination.List.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Select.Group": {
-      description: "Place inside `Select.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Select.Group" },
-        props: { $ref: "#/$defs/Select.Group.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Select.Item": {
-      description: "Place inside `Select.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Select.Item" },
-        props: { $ref: "#/$defs/Select.Item.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Select.Root": {
-      description:
-        "Choose one or several values from a fixed list.\nUse when: The demonstrated form-grouping relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
-      type: "object",
-      properties: {
-        type: { const: "Select.Root" },
-        props: { $ref: "#/$defs/Select.Root.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Select.Separator": {
-      description: "Place inside `Select.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Select.Separator" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
-      },
       required: ["type", "props"],
       additionalProperties: false,
     },
@@ -1549,7 +1637,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Table.Body" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1563,7 +1651,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Table.Caption" },
-        props: { $ref: "#/$defs/AlertDescription.props" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1643,6 +1731,60 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
+    Tabs: {
+      description:
+        "Switch between alternate views of the same object.\nUse when: The person needs one of several equivalent views of the same object.\nAvoid when: There are more than 12 views; use a select or separate pages.\nAvoid when: The choices are sequential steps; use stepper.\nAvoid when: The choices navigate to different pages; use links.\nAvoid when: People need to compare all views at once; show them together.",
+      type: "object",
+      properties: {
+        type: { const: "Tabs" },
+        props: { $ref: "#/$defs/RadioGroup.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TabsContent: {
+      type: "object",
+      properties: {
+        type: { const: "TabsContent" },
+        props: { $ref: "#/$defs/TabsContent.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TabsList: {
+      type: "object",
+      properties: {
+        type: { const: "TabsList" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TabsTrigger: {
+      type: "object",
+      properties: {
+        type: { const: "TabsTrigger" },
+        props: { $ref: "#/$defs/TabsTrigger.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
     Textarea: {
       description:
         "Accept a longer free-text value.\nUse when: Accept a longer free-text value.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
@@ -1671,7 +1813,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Tooltip.Content" },
-        props: { $ref: "#/$defs/Popup.Content.props" },
+        props: { $ref: "#/$defs/Tooltip.Content.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1695,7 +1837,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     },
     "Tooltip.Root": {
       description:
-        "Add a brief supplemental label to a control without replacing its name.\nUse when: The demonstrated supplemental-label relationship is present.\nAvoid when: The information is essential or interactive; use visible text, popup, or hover-card.\nAvoid when: The tooltip would be the only label for a form field.\nPlace inside `Tooltip.Provider`.",
+        "Add a brief supplemental label to a control without replacing its name.\nUse when: The demonstrated supplemental-label relationship is present.\nAvoid when: The information is essential or interactive; use visible text, popover, or hover-card.\nAvoid when: The tooltip would be the only label for a form field.\nPlace inside `Tooltip.Provider`.",
       type: "object",
       properties: {
         type: { const: "Tooltip.Root" },
@@ -2151,6 +2293,50 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
+    "Accordion.props": {
+      type: "object",
+      properties: {
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      additionalProperties: false,
+    },
+    "AccordionItem.props": {
+      type: "object",
+      properties: {
+        value: { $ref: "#/$defs/attribute.value" },
+        name: { $ref: "#/$defs/attribute.name" },
+        defaultOpen: { type: "boolean" },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      required: ["value"],
+      additionalProperties: false,
+    },
+    "AccordionTrigger.props": {
+      type: "object",
+      properties: {
+        disabled: { $ref: "#/$defs/attribute.disabled" },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      additionalProperties: false,
+    },
     "Alert.props": {
       type: "object",
       properties: {
@@ -2165,20 +2351,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "AlertDescription.props": {
-      type: "object",
-      properties: {
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      additionalProperties: false,
-    },
-    "AlertModal.props": {
+    "AlertDialog.props": {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
@@ -2196,7 +2369,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["id", "trigger", "title"],
       additionalProperties: false,
     },
-    "AlertModalAction.props": {
+    "AlertDialogAction.props": {
       type: "object",
       properties: {
         target: { $ref: "#/$defs/attribute.layout.Box.id" },
@@ -2217,7 +2390,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["target"],
       additionalProperties: false,
     },
-    "AlertModalContent.props": {
+    "AlertDialogContent.props": {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
@@ -2267,7 +2440,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         size: { enum: ["sm", "md", "lg"] },
-        variant: { enum: ["secondary", "success", "warning", "destructive"] },
+        variant: { enum: ["default", "secondary", "outline", "success", "warning", "destructive"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2330,8 +2503,8 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         disabled: { $ref: "#/$defs/attribute.disabled" },
         selected: { type: "boolean" },
         type: { enum: ["button", "submit", "reset"] },
-        size: { enum: ["sm", "md", "lg", "icon-sm", "icon", "icon-lg"] },
-        variant: { enum: ["secondary", "outline", "ghost", "destructive", "link"] },
+        size: { enum: ["xs", "sm", "default", "lg", "icon-xs", "icon-sm", "icon", "icon-lg"] },
+        variant: { enum: ["default", "secondary", "outline", "ghost", "destructive", "link"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2342,6 +2515,20 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
         formAction: { $ref: "#/$defs/attribute.formAction" },
+      },
+      additionalProperties: false,
+    },
+    "Card.props": {
+      type: "object",
+      properties: {
+        size: { enum: ["sm", "default"] },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
       },
       additionalProperties: false,
     },
@@ -2417,6 +2604,45 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         dir: { $ref: "#/$defs/attribute.dir" },
         src: { $ref: "#/$defs/attribute.src" },
       },
+      additionalProperties: false,
+    },
+    "Dialog.props": {
+      type: "object",
+      properties: {
+        id: { $ref: "#/$defs/attribute.id" },
+        trigger: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        title: { $ref: "#/$defs/attribute.title" },
+        description: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        closeLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
+        size: { enum: ["sm", "md", "lg", "full"] },
+        align: { enum: ["center", "start"] },
+        dismiss: { enum: ["any", "closerequest", "none"] },
+        backdrop: { enum: ["opaque", "blur", "none"] },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      required: ["id", "trigger", "title"],
+      additionalProperties: false,
+    },
+    "DialogContent.props": {
+      type: "object",
+      properties: {
+        id: { $ref: "#/$defs/attribute.id" },
+        size: { enum: ["sm", "md", "lg", "full"] },
+        align: { enum: ["center", "start"] },
+        dismiss: { enum: ["any", "closerequest", "none"] },
+        backdrop: { enum: ["opaque", "blur", "none"] },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      required: ["id"],
       additionalProperties: false,
     },
     "Drawer.Close.props": {
@@ -2503,14 +2729,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["id"],
       additionalProperties: false,
     },
-    "Field.Root.props": {
+    "Field.props": {
       type: "object",
       properties: {
-        id: { $ref: "#/$defs/attribute.id" },
+        orientation: { enum: ["horizontal", "vertical", "responsive"] },
         invalid: { type: "boolean" },
-        required: { $ref: "#/$defs/attribute.required" },
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        name: { $ref: "#/$defs/attribute.name" },
+        variant: { enum: ["card"] },
+        id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
         "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
@@ -2518,33 +2743,28 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["id"],
       additionalProperties: false,
     },
-    "Field.Label.props": {
+    "FieldLabel.props": {
       type: "object",
       properties: {
         disabled: { $ref: "#/$defs/attribute.disabled" },
         required: { $ref: "#/$defs/attribute.required" },
-        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
         "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
         "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        htmlFor: { $ref: "#/$defs/attribute.htmlFor" },
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["fieldId"],
       additionalProperties: false,
     },
-    "Field.Control.props": {
+    "FieldLegend.props": {
       type: "object",
       properties: {
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        invalid: { type: "boolean" },
-        required: { $ref: "#/$defs/attribute.required" },
-        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
+        variant: { enum: ["label", "legend"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2553,42 +2773,9 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["fieldId"],
       additionalProperties: false,
     },
-    "Field.Description.props": {
-      type: "object",
-      properties: {
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      required: ["fieldId"],
-      additionalProperties: false,
-    },
-    "Field.Error.props": {
-      type: "object",
-      properties: {
-        invalid: { type: "boolean" },
-        fieldId: { $ref: "#/$defs/attribute.layout.Box.id" },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      required: ["fieldId"],
-      additionalProperties: false,
-    },
-    "Fieldset.props": {
+    "FieldSet.props": {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
@@ -2775,35 +2962,29 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["align"],
       additionalProperties: false,
     },
-    "Modal.props": {
+    "NativeSelectContent.props": { type: "object", properties: {}, additionalProperties: false },
+    "NativeSelectOptGroup.props": {
       type: "object",
       properties: {
+        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         id: { $ref: "#/$defs/attribute.id" },
-        trigger: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         title: { $ref: "#/$defs/attribute.title" },
-        description: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
-        closeLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
-        size: { enum: ["sm", "md", "lg", "full"] },
-        align: { enum: ["center", "start"] },
-        dismiss: { enum: ["any", "closerequest", "none"] },
-        backdrop: { enum: ["opaque", "blur", "none"] },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
         "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
         "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
         hidden: { $ref: "#/$defs/attribute.hidden" },
+        disabled: { $ref: "#/$defs/attribute.disabled" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["id", "trigger", "title"],
+      required: ["label"],
       additionalProperties: false,
     },
-    "ModalContent.props": {
+    "NativeSelectOption.props": {
       type: "object",
       properties: {
+        disabled: { $ref: "#/$defs/attribute.disabled" },
+        value: { $ref: "#/$defs/attribute.value" },
         id: { $ref: "#/$defs/attribute.id" },
-        size: { enum: ["sm", "md", "lg", "full"] },
-        align: { enum: ["center", "start"] },
-        dismiss: { enum: ["any", "closerequest", "none"] },
-        backdrop: { enum: ["opaque", "blur", "none"] },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
         "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
@@ -2811,7 +2992,27 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["id"],
+      required: ["value"],
+      additionalProperties: false,
+    },
+    "NativeSelect.props": {
+      type: "object",
+      properties: {
+        defaultValue: { type: ["string", "array"], items: { type: "string" } },
+        multiple: { $ref: "#/$defs/attribute.multiple" },
+        disabled: { $ref: "#/$defs/attribute.disabled" },
+        name: { $ref: "#/$defs/attribute.name" },
+        size: { enum: ["sm", "md", "lg"] },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        autoComplete: { $ref: "#/$defs/attribute.autoComplete" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        required: { $ref: "#/$defs/attribute.required" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
       additionalProperties: false,
     },
     "NumberField.Root.props": {
@@ -2888,7 +3089,6 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["page"],
       additionalProperties: false,
     },
-    "Pagination.List.props": { type: "object", properties: {}, additionalProperties: false },
     "Pagination.Root.props": {
       type: "object",
       properties: {
@@ -2910,37 +3110,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["count"],
       additionalProperties: false,
     },
-    "Popup.Content.props": {
-      type: "object",
-      properties: {
-        align: { enum: ["start", "center", "end"] },
-        side: { enum: ["top", "right", "bottom", "left"] },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      additionalProperties: false,
-    },
-    "Popup.Root.props": {
-      type: "object",
-      properties: {
-        id: { $ref: "#/$defs/attribute.id" },
-        mode: { enum: ["auto", "manual", "hint"] },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      required: ["id"],
-      additionalProperties: false,
-    },
-    "PopupContent.props": {
+    "PopoverContent.props": {
       type: "object",
       properties: {
         align: { enum: ["start", "center", "end"] },
@@ -2955,6 +3125,50 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         dir: { $ref: "#/$defs/attribute.dir" },
       },
       required: ["id"],
+      additionalProperties: false,
+    },
+    "RadioGroup.props": {
+      type: "object",
+      properties: {
+        orientation: { enum: ["horizontal", "vertical"] },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      additionalProperties: false,
+    },
+    "RadioGroupItem.props": {
+      type: "object",
+      properties: {
+        name: { $ref: "#/$defs/attribute.name" },
+        value: { $ref: "#/$defs/attribute.value" },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        placeholder: { $ref: "#/$defs/attribute.placeholder" },
+        autoComplete: { $ref: "#/$defs/attribute.autoComplete" },
+        pattern: { $ref: "#/$defs/attribute.pattern" },
+        accept: { $ref: "#/$defs/attribute.accept" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        required: { $ref: "#/$defs/attribute.required" },
+        disabled: { $ref: "#/$defs/attribute.disabled" },
+        readOnly: { $ref: "#/$defs/attribute.readOnly" },
+        multiple: { $ref: "#/$defs/attribute.multiple" },
+        minLength: { $ref: "#/$defs/attribute.minLength" },
+        maxLength: { $ref: "#/$defs/attribute.maxLength" },
+        min: { $ref: "#/$defs/attribute.min" },
+        max: { $ref: "#/$defs/attribute.max" },
+        step: { $ref: "#/$defs/attribute.step" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+        src: { $ref: "#/$defs/attribute.src" },
+      },
+      required: ["name", "value"],
       additionalProperties: false,
     },
     "Rating.props": {
@@ -2973,57 +3187,6 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         dir: { $ref: "#/$defs/attribute.dir" },
       },
       required: ["id"],
-      additionalProperties: false,
-    },
-    "Select.Group.props": {
-      type: "object",
-      properties: {
-        label: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      required: ["label"],
-      additionalProperties: false,
-    },
-    "Select.Item.props": {
-      type: "object",
-      properties: {
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        value: { $ref: "#/$defs/attribute.value" },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      required: ["value"],
-      additionalProperties: false,
-    },
-    "Select.Root.props": {
-      type: "object",
-      properties: {
-        multiple: { $ref: "#/$defs/attribute.multiple" },
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        name: { $ref: "#/$defs/attribute.name" },
-        size: { enum: ["sm", "md", "lg"] },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        autoComplete: { $ref: "#/$defs/attribute.autoComplete" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        required: { $ref: "#/$defs/attribute.required" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
       additionalProperties: false,
     },
     "Skeleton.props": {
@@ -3200,6 +3363,39 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["id"],
       additionalProperties: false,
     },
+    "TabsContent.props": {
+      type: "object",
+      properties: {
+        value: { $ref: "#/$defs/attribute.value" },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      required: ["value"],
+      additionalProperties: false,
+    },
+    "TabsTrigger.props": {
+      type: "object",
+      properties: {
+        name: { $ref: "#/$defs/attribute.name" },
+        value: { $ref: "#/$defs/attribute.value" },
+        id: { $ref: "#/$defs/attribute.id" },
+        defaultChecked: { type: "boolean" },
+        disabled: { $ref: "#/$defs/attribute.disabled" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      required: ["name", "value"],
+      additionalProperties: false,
+    },
     "Textarea.props": {
       type: "object",
       properties: {
@@ -3239,6 +3435,21 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         dir: { $ref: "#/$defs/attribute.dir" },
       },
       required: ["id", "label"],
+      additionalProperties: false,
+    },
+    "Tooltip.Content.props": {
+      type: "object",
+      properties: {
+        align: { enum: ["start", "center", "end"] },
+        side: { enum: ["top", "right", "bottom", "left"] },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
       additionalProperties: false,
     },
     "Tooltip.Provider.props": {

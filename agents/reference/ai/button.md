@@ -14,9 +14,9 @@ Optional `children`: nodes or strings.
 
 - `disabled` (optional): `boolean`. Prevents activation and exposes the disabled state to assistive technology.
 - `selected` (optional): `boolean`. Marks the button as the chosen one of a set, or a toggle that is on.
-- `type` (optional): `"button" | "submit" | "reset"`; allowed: "button", "submit", "reset". Sets the native button action; defaults to `button`. Set `submit` or `reset` explicitly when needed.
-- `size` (optional): `"sm" | "md" | "lg" | "icon-sm" | "icon" | "icon-lg"`; allowed: "sm", "md", "lg", "icon-sm", "icon", "icon-lg". Sets the control's height and, for icon sizes, its width.
-- `variant` (optional): `"secondary" | "outline" | "ghost" | "destructive" | "link"`; allowed: "secondary", "outline", "ghost", "destructive", "link". Sets the visual treatment without changing the control's semantics.
+- `type` (optional): `"button" | "submit" | "reset"`; allowed: "button", "submit", "reset". Sets the native button action; defaults to `button`. Set `submit` or `reset` explicitly when needed. A link has no native button action.
+- `size` (optional): `"xs" | "sm" | "default" | "lg" | "icon-xs" | "icon-sm" | "icon" | "icon-lg"`; allowed: "xs", "sm", "default", "lg", "icon-xs", "icon-sm", "icon", "icon-lg". Sets the control's height and, for icon sizes, its width.
+- `variant` (optional): `"default" | "secondary" | "outline" | "ghost" | "destructive" | "link"`; allowed: "default", "secondary", "outline", "ghost", "destructive", "link". Sets the visual treatment without changing the control's semantics.
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 - `aria-label` (optional): `string`

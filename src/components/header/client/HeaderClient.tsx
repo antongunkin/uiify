@@ -94,6 +94,6 @@ export function HeaderClient({
     };
   }, [hideOnScroll, scrollTarget, placement]);
 
-  return <HeaderRoot {...props} placement={placement} ref={mergedRef} data-state={state} />;
+  return <HeaderRoot data-state={state} {...props} placement={placement} ref={mergedRef} />;
 }
 HeaderClient.displayName = "HeaderClient";

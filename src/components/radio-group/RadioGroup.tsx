@@ -1,39 +1,23 @@
+// API informed by shadcn/ui public documentation (names and props only).
 import type { ReactElement } from "react";
-import { ChoiceGroup } from "../internal/choice-family/ChoiceGroup.js";
-import type { RadioGroupItem, RadioGroupProps } from "./types.js";
+import { cn } from "../../core/class-names.js";
+import type { RadioGroupProps } from "./types.js";
 
 export function RadioGroup({
-  id,
-  items,
-  defaultValue,
-  name,
-  disabled = false,
   orientation = "vertical",
   className,
-  slotProps,
-  "aria-label": ariaLabel,
-  ...rootProps
+  children,
+  ...consumerProps
 }: RadioGroupProps): ReactElement {
-  const resolvedItems = items.map((item) => ({
-    ...item,
-    disabled: disabled || item.disabled === true,
-  }));
-
   return (
-    <ChoiceGroup<RadioGroupItem>
-      {...(className !== undefined ? { className } : {})}
-      {...(name !== undefined ? { name } : {})}
-      rootProps={rootProps}
-      id={id}
-      items={resolvedItems}
-      isChecked={(item) => item.value === defaultValue}
-      itemInputClassName={(item) => item.className}
-      kind="single"
-      namespace="radio-group"
-      orientation={orientation}
-      {...(slotProps !== undefined ? { slotProps } : {})}
-      rootAttributes={{ "aria-label": ariaLabel, "data-disabled": disabled ? "" : undefined }}
-    />
+    <div
+      role="radiogroup"
+      data-orientation={orientation}
+      {...consumerProps}
+      className={cn("uiify-radio-group", className)}
+    >
+      {children}
+    </div>
   );
 }
 RadioGroup.displayName = "RadioGroup";

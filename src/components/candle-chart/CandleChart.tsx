@@ -8,7 +8,7 @@ import type {
   Ref,
 } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
 import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import { assignRef } from "../../hooks/utils/assign-ref.js";
@@ -60,27 +60,27 @@ const DEFAULT_CANDLE_CHART_LABELS = {
 } as const;
 
 interface CandleStyle extends CSSProperties {
-  "--candle-body-height": string;
-  "--candle-body-top": string;
-  "--candle-slot": string;
-  "--candle-wick-height": string;
-  "--candle-wick-top": string;
-  "--candle-x": string;
-  "--candle-cursor-y"?: string;
+  "--uiify-candle-body-height": string;
+  "--uiify-candle-body-top": string;
+  "--uiify-candle-slot": string;
+  "--uiify-candle-wick-height": string;
+  "--uiify-candle-wick-top": string;
+  "--uiify-candle-x": string;
+  "--uiify-candle-cursor-y"?: string;
 }
 
 interface CrosshairStyle extends CSSProperties {
-  "--candle-crosshair-x": string;
-  "--candle-cursor-y"?: string;
+  "--uiify-candle-crosshair-x": string;
+  "--uiify-candle-cursor-y"?: string;
 }
 
 interface CursorStyle extends CSSProperties {
-  "--candle-cursor-y"?: string;
+  "--uiify-candle-cursor-y"?: string;
 }
 
 interface AxisStyle extends CSSProperties {
-  "--candle-axis-x"?: string;
-  "--candle-axis-y"?: string;
+  "--uiify-candle-axis-x"?: string;
+  "--uiify-candle-axis-y"?: string;
 }
 
 type CandleDirection = "down" | "flat" | "up";
@@ -202,25 +202,25 @@ function geometryFor(
 
 function candleStyle(geometry: CandleGeometry, cursorY: number | undefined): CandleStyle {
   return {
-    "--candle-body-height": geometry.bodyHeight,
-    "--candle-body-top": geometry.bodyTop,
-    "--candle-slot": geometry.slot,
-    "--candle-wick-height": geometry.wickHeight,
-    "--candle-wick-top": geometry.wickTop,
-    "--candle-x": geometry.x,
-    ...(cursorY === undefined ? {} : { "--candle-cursor-y": `${Math.max(0, cursorY)}px` }),
+    "--uiify-candle-body-height": geometry.bodyHeight,
+    "--uiify-candle-body-top": geometry.bodyTop,
+    "--uiify-candle-slot": geometry.slot,
+    "--uiify-candle-wick-height": geometry.wickHeight,
+    "--uiify-candle-wick-top": geometry.wickTop,
+    "--uiify-candle-x": geometry.x,
+    ...(cursorY === undefined ? {} : { "--uiify-candle-cursor-y": `${Math.max(0, cursorY)}px` }),
   };
 }
 
 function crosshairStyle(index: number, count: number, cursorY: number | undefined): CrosshairStyle {
   return {
-    "--candle-crosshair-x": percent(((index + 0.5) / Math.max(count, 1)) * 100),
-    ...(cursorY === undefined ? {} : { "--candle-cursor-y": `${Math.max(0, cursorY)}px` }),
+    "--uiify-candle-crosshair-x": percent(((index + 0.5) / Math.max(count, 1)) * 100),
+    ...(cursorY === undefined ? {} : { "--uiify-candle-cursor-y": `${Math.max(0, cursorY)}px` }),
   };
 }
 
 function cursorStyle(cursorY: number | undefined): CursorStyle {
-  return cursorY === undefined ? {} : { "--candle-cursor-y": `${Math.max(0, cursorY)}px` };
+  return cursorY === undefined ? {} : { "--uiify-candle-cursor-y": `${Math.max(0, cursorY)}px` };
 }
 
 function clampAxisPosition(position: number): number {
@@ -229,8 +229,8 @@ function clampAxisPosition(position: number): number {
 
 function axisStyle(axis: "x" | "y", position: number): AxisStyle {
   const value = percent(clampAxisPosition(position));
-  if (axis === "x") return { "--candle-axis-x": value };
-  return { "--candle-axis-y": value };
+  if (axis === "x") return { "--uiify-candle-axis-x": value };
+  return { "--uiify-candle-axis-y": value };
 }
 
 function axisLabelsFor(
@@ -272,11 +272,11 @@ export function CandleChartCandle({
   return (
     <Tag
       aria-hidden={interactive ? undefined : true}
-      data-part="candle"
       data-direction={geometry.direction}
       data-crosshair-active={interactive && isActive ? "" : undefined}
       data-time={String(candle.time)}
       {...candleProps}
+      className={cn("uiify-candle-chart-candle", candleProps.className)}
       {...(candleRef ? { ref: forwardCandleRef(candleRef) } : {})}
       style={{
         ...candleStyle(geometry, isActive ? cursorY : undefined),
@@ -285,11 +285,11 @@ export function CandleChartCandle({
     >
       {interactive ? (
         <button
-          data-part="candle-hit"
           type="button"
           aria-label={hitLabel}
           aria-pressed={isSelected}
           {...candleHitSlotProps}
+          className={cn("uiify-candle-chart-candle-hit", candleHitSlotProps.className)}
           onClick={composeEventHandlers(candleHitSlotProps.onClick, () => onCandleClick?.(index))}
           onKeyDown={composeEventHandlers(candleHitSlotProps.onKeyDown, handleKeyDown)}
           onPointerLeave={composeEventHandlers(candleHitSlotProps.onPointerLeave, () =>
@@ -343,9 +343,9 @@ export function CandleChart<TAs extends ElementType = "figure">(
   const crosshairCandle = activeCandleIndex === undefined ? undefined : data[activeCandleIndex];
   const candles = candleLayer ?? (
     <ol
-      data-part="candles"
       aria-label={`${label} ${accessibleLabels.candles}`}
       {...slotProps?.candles}
+      className={cn("uiify-candle-chart-candles", slotProps?.candles?.className)}
     >
       {data.map((candle, index) => (
         <CandleChartCandle
@@ -376,19 +376,27 @@ export function CandleChart<TAs extends ElementType = "figure">(
     defaultTag: "figure",
     props: {
       "aria-label": label,
-      "data-uiify-candle-chart": "",
       "data-interactive": interactive ? "" : undefined,
       ...consumerProps,
+      className: cn("uiify-candle-chart", consumerProps.className),
       children: (
         <>
-          <figcaption {...slotProps?.caption}>{label}</figcaption>
+          <figcaption
+            {...slotProps?.caption}
+            className={cn("uiify-candle-chart-caption", slotProps?.caption?.className)}
+          >
+            {label}
+          </figcaption>
           {interactive && readoutCandle ? (
             <div
-              data-part="readout"
               aria-live={announceReadout ? "polite" : "off"}
               {...slotProps?.readout}
+              className={cn("uiify-candle-chart-readout", slotProps?.readout?.className)}
             >
-              <span data-part="readout-time" {...slotProps?.readoutTime}>
+              <span
+                {...slotProps?.readoutTime}
+                className={cn("uiify-candle-chart-readout-time", slotProps?.readoutTime?.className)}
+              >
                 {String(readoutCandle.time)}
               </span>
               <span {...slotProps?.readoutOpen}>{`O ${readoutCandle.open}`}</span>
@@ -397,33 +405,64 @@ export function CandleChart<TAs extends ElementType = "figure">(
               <span {...slotProps?.readoutClose}>{`C ${readoutCandle.close}`}</span>
             </div>
           ) : null}
-          <div data-part="plot" aria-hidden={interactive ? undefined : true} {...slotProps?.plot}>
-            <div data-part="scroll-viewport" {...slotProps?.scrollViewport}>
-              <div data-part="canvas" {...slotProps?.canvas}>
-                <div data-part="viewport" {...slotProps?.viewport}>
+          <div
+            aria-hidden={interactive ? undefined : true}
+            {...slotProps?.plot}
+            className={cn("uiify-candle-chart-plot", slotProps?.plot?.className)}
+          >
+            <div
+              {...slotProps?.scrollViewport}
+              className={cn(
+                "uiify-candle-chart-scroll-viewport",
+                slotProps?.scrollViewport?.className,
+              )}
+            >
+              <div
+                {...slotProps?.canvas}
+                className={cn("uiify-candle-chart-canvas", slotProps?.canvas?.className)}
+              >
+                <div
+                  {...slotProps?.viewport}
+                  className={cn("uiify-candle-chart-viewport", slotProps?.viewport?.className)}
+                >
                   {candles}
                   {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                     <div
-                      data-part="crosshair"
                       aria-hidden="true"
                       {...slotProps?.crosshair}
+                      className={cn(
+                        "uiify-candle-chart-crosshair",
+                        slotProps?.crosshair?.className,
+                      )}
                       style={{
                         ...crosshairStyle(slotOffset + activeCandleIndex, slotCount, cursorY),
                         ...slotProps?.crosshair?.style,
                       }}
                     >
-                      <span data-part="crosshair-marker" {...slotProps?.crosshairMarker}>
+                      <span
+                        {...slotProps?.crosshairMarker}
+                        className={cn(
+                          "uiify-candle-chart-crosshair-marker",
+                          slotProps?.crosshairMarker?.className,
+                        )}
+                      >
                         +
                       </span>
                     </div>
                   ) : null}
                 </div>
-                <div data-part="time-viewport" {...slotProps?.timeViewport}>
+                <div
+                  {...slotProps?.timeViewport}
+                  className={cn(
+                    "uiify-candle-chart-time-viewport",
+                    slotProps?.timeViewport?.className,
+                  )}
+                >
                   <ol
-                    data-part="time-axis"
                     data-axis="time"
                     aria-label={`${label} ${accessibleLabels.months}`}
                     {...slotProps?.timeAxis}
+                    className={cn("uiify-candle-chart-time-axis", slotProps?.timeAxis?.className)}
                   >
                     {monthLabels.map((axisLabel, index) => (
                       <li
@@ -438,8 +477,11 @@ export function CandleChart<TAs extends ElementType = "figure">(
                     ))}
                     {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                       <li
-                        data-part="crosshair-time"
                         {...slotProps?.crosshairTime}
+                        className={cn(
+                          "uiify-candle-chart-crosshair-time",
+                          slotProps?.crosshairTime?.className,
+                        )}
                         style={{
                           ...crosshairStyle(slotOffset + activeCandleIndex, slotCount, undefined),
                           ...slotProps?.crosshairTime?.style,
@@ -453,10 +495,10 @@ export function CandleChart<TAs extends ElementType = "figure">(
               </div>
             </div>
             <ol
-              data-part="price-axis"
               data-axis="price"
               aria-label={`${label} ${accessibleLabels.prices}`}
               {...slotProps?.priceAxis}
+              className={cn("uiify-candle-chart-price-axis", slotProps?.priceAxis?.className)}
             >
               {priceLabels.map((axisLabel, index) => (
                 <li
@@ -471,8 +513,11 @@ export function CandleChart<TAs extends ElementType = "figure">(
               ))}
               {interactive && crosshairCandle && activeCandleIndex !== undefined ? (
                 <li
-                  data-part="crosshair-price"
                   {...slotProps?.crosshairPrice}
+                  className={cn(
+                    "uiify-candle-chart-crosshair-price",
+                    slotProps?.crosshairPrice?.className,
+                  )}
                   style={{ ...cursorStyle(cursorY), ...slotProps?.crosshairPrice?.style }}
                 >
                   {crosshairCandle.close}
@@ -481,9 +526,9 @@ export function CandleChart<TAs extends ElementType = "figure">(
             </ol>
           </div>
           <table
-            data-part="data"
             aria-label={`${label} ${accessibleLabels.data}`}
             {...slotProps?.dataTable}
+            className={cn("uiify-candle-chart-data", slotProps?.dataTable?.className)}
           >
             <thead {...slotProps?.dataTableHead}>
               <tr {...slotProps?.dataTableHeaderRow}>

@@ -66,15 +66,13 @@ const HTML_TAGS: Readonly<Partial<Record<UiType, string>>> = {
 
 const BUTTONS: ReadonlySet<UiType> = new Set([
   "Button",
-  "AlertModalTrigger",
-  "AlertModalAction",
-  "AlertModalCancel",
-  "ModalTrigger",
-  "ModalClose",
-  "PopupTrigger",
-  "PopupClose",
-  "Popup.Trigger",
-  "Popup.Close",
+  "AlertDialogTrigger",
+  "AlertDialogAction",
+  "AlertDialogCancel",
+  "DialogTrigger",
+  "DialogClose",
+  "PopoverTrigger",
+  "PopoverClose",
   "Drawer.Trigger",
   "Drawer.Close",
   "DrawerNativeTrigger",
@@ -88,7 +86,7 @@ const BUTTONS: ReadonlySet<UiType> = new Set([
 
 /** These parts return their children/context providers without a DOM element. */
 const TRANSPARENT: ReadonlySet<UiType> = new Set([
-  "Select.Content",
+  "NativeSelectContent",
   "Tooltip.Provider",
   "Tooltip.Root",
   "Drawer.Root",
@@ -177,16 +175,27 @@ function crumbsOf(parent: Ancestry | undefined, node: UiNode, suffix = ""): stri
   return types.join(" › ");
 }
 
+/** An id reference to check once every id of the document is known. */
+interface Reference {
+  readonly code: "field.label-target" | "field.describedby-target";
+  readonly prop: string;
+  readonly ids: readonly string[];
+  readonly path: string;
+  readonly breadcrumb: string;
+}
+
 /**
  * Rules JSON Schema cannot express, over a document that already passed the schema:
- * a part sits inside its root, a `fieldId` names the enclosing root, ids are unique, and
- * nesting the HTML parser would rewrite (block content in phrasing elements, a form in a form,
- * a link or label in a link, anything but items in a list) is rejected.
+ * a part sits inside its root, a `FieldLabel` `htmlFor` and every id in an `aria-describedby`
+ * name an id in the document, ids are unique, and nesting the HTML parser would rewrite (block
+ * content in phrasing elements, a form in a form, a link or label in a link, anything but items
+ * in a list) is rejected.
  * `basePath` is the pointer of `root` inside the value the caller validated.
  */
 export function checkRules(root: UiNode, basePath = ""): UiValidationIssue[] {
   const issues: UiValidationIssue[] = [];
   const firstPathOfId = new Map<string, string>();
+  const references: Reference[] = [];
   const stack: Visit[] = [{ node: root, path: basePath, parent: undefined }];
 
   while (stack.length > 0) {
@@ -199,28 +208,34 @@ export function checkRules(root: UiNode, basePath = ""): UiValidationIssue[] {
       issues.push({ code: "nesting", path, breadcrumb: crumbsOf(parent, node), message: nesting });
     }
 
-    if (rootType !== undefined) {
-      const enclosing = nearest(parent, rootType);
-      if (enclosing === undefined) {
-        issues.push({
-          code: "root.missing",
-          path,
-          breadcrumb: crumbsOf(parent, node),
-          message: `${node.type} must be inside a ${rootType}`,
-          allowed: [rootType],
-        });
-      } else if (typeof props.fieldId === "string") {
-        const id = propsOf(enclosing).id;
-        if (props.fieldId !== id) {
-          issues.push({
-            code: "fieldId.mismatch",
-            path: `${path}/props/fieldId`,
-            breadcrumb: crumbsOf(parent, node, ".props.fieldId"),
-            message: `fieldId ${JSON.stringify(props.fieldId)} does not match the id ${JSON.stringify(id)} of the enclosing ${rootType}`,
-            allowed: [id],
-          });
-        }
-      }
+    if (rootType !== undefined && nearest(parent, rootType) === undefined) {
+      issues.push({
+        code: "root.missing",
+        path,
+        breadcrumb: crumbsOf(parent, node),
+        message: `${node.type} must be inside a ${rootType}`,
+        allowed: [rootType],
+      });
+    }
+
+    if (node.type === "FieldLabel" && typeof props.htmlFor === "string") {
+      references.push({
+        code: "field.label-target",
+        prop: "htmlFor",
+        ids: [props.htmlFor],
+        path: `${path}/props/htmlFor`,
+        breadcrumb: crumbsOf(parent, node, ".props.htmlFor"),
+      });
+    }
+    const describedBy = props["aria-describedby"];
+    if (typeof describedBy === "string") {
+      references.push({
+        code: "field.describedby-target",
+        prop: "aria-describedby",
+        ids: describedBy.split(/\s+/).filter(Boolean),
+        path: `${path}/props/aria-describedby`,
+        breadcrumb: crumbsOf(parent, node, ".props.aria-describedby"),
+      });
     }
 
     if (typeof props.id === "string") {
@@ -258,6 +273,19 @@ export function checkRules(root: UiNode, basePath = ""): UiValidationIssue[] {
         }
       }
     }
+  }
+
+  const ids = [...firstPathOfId.keys()];
+  for (const { code, prop, ids: named, path, breadcrumb } of references) {
+    const missing = named.filter((id) => !firstPathOfId.has(id));
+    if (missing.length === 0) continue;
+    issues.push({
+      code,
+      path,
+      breadcrumb,
+      message: `${prop} names ${missing.map((id) => JSON.stringify(id)).join(", ")}, but no element in the document has that id`,
+      allowed: ids,
+    });
   }
   return issues;
 }

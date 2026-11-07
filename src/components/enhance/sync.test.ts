@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
-import { Tabs } from "../tabs/index.js";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../tabs/index.js";
 import { syncPopoverTriggers, syncTabs } from "./sync.js";
 
 afterEach(() => {
@@ -48,39 +48,46 @@ describe("syncPopoverTriggers", () => {
   });
 });
 
+/** Rendered from the real parts so selectors stay aligned with their markup. */
+function tabs(name: string, values: readonly string[], checked: string, inner?: unknown) {
+  return createElement(
+    Tabs,
+    { id: name },
+    createElement(
+      TabsList,
+      null,
+      ...values.map((value) =>
+        createElement(
+          TabsTrigger,
+          { key: value, name, value, defaultChecked: value === checked },
+          `${name} ${value}`,
+        ),
+      ),
+    ),
+    ...values.map((value, index) =>
+      createElement(
+        TabsContent,
+        { key: value, value },
+        index === 0 && inner ? (inner as never) : `${name} ${value} panel`,
+      ),
+    ),
+  );
+}
+
 describe("syncTabs", () => {
-  /**
-   * Rendered from the real component. The previous fixture was hand-written and
-   * invented `data-uiify-tabs-root`, `data-value` and `data-uiify-tabs-pair` —
-   * none of which Tabs emits — so it kept passing while syncTabs was broken
-   * against real markup.
-   */
-  function renderTabs(checkedValue: string): void {
-    document.body.innerHTML = renderToStaticMarkup(
-      createElement(Tabs, {
-        id: "t1",
-        defaultValue: "a",
-        items: [
-          { value: "a", label: "Overview", panel: null },
-          { value: "b", label: "Settings", panel: null },
-        ],
-      }),
-    );
-    const input = document.querySelector<HTMLInputElement>(`input[value="${checkedValue}"]`)!;
-    input.checked = true;
-  }
+  it("moves aria-selected, data-state and tabindex to the checked position", () => {
+    document.body.innerHTML = renderToStaticMarkup(tabs("t1", ["a", "b"], "a"));
+    document.querySelector<HTMLInputElement>('input[value="b"]')!.checked = true;
 
-  it("moves aria-selected, data-state and tabindex to the checked value", () => {
-    renderTabs("b");
-
-    syncTabs("t1");
+    syncTabs(document.getElementById("t1")!);
 
     const [triggerA, triggerB] = [
-      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="trigger"]'),
+      ...document.querySelectorAll<HTMLElement>(".uiify-tabs-trigger"),
     ] as [HTMLElement, HTMLElement];
-    const [panelA, panelB] = [
-      ...document.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="panel"]'),
-    ] as [HTMLElement, HTMLElement];
+    const [panelA, panelB] = [...document.querySelectorAll<HTMLElement>(".uiify-tabs-content")] as [
+      HTMLElement,
+      HTMLElement,
+    ];
 
     expect(triggerA.getAttribute("aria-selected")).toBe("false");
     expect(triggerA.dataset["state"]).toBe("inactive");
@@ -92,7 +99,31 @@ describe("syncTabs", () => {
     expect(panelB.tabIndex).toBe(0);
   });
 
-  it("is a no-op when the root id is not in the document", () => {
-    expect(() => syncTabs("missing")).not.toThrow();
+  it("marks the first position active when nothing is checked, as the CSS shows it", () => {
+    document.body.innerHTML = renderToStaticMarkup(tabs("t1", ["a", "b"], ""));
+
+    syncTabs(document.getElementById("t1")!);
+
+    const [panelA, panelB] = [...document.querySelectorAll<HTMLElement>(".uiify-tabs-content")];
+    expect(panelA!.dataset["state"]).toBe("active");
+    expect(panelB!.dataset["state"]).toBe("inactive");
+  });
+
+  it("keeps nested Tabs state isolated from the parent", () => {
+    document.body.innerHTML = renderToStaticMarkup(
+      tabs("outer", ["a", "b"], "a", tabs("inner", ["a", "b"], "b")),
+    );
+    document.querySelector<HTMLInputElement>("#outer-b")!.checked = true;
+
+    syncTabs(document.getElementById("outer")!);
+
+    const nestedTrigger = document.querySelector<HTMLElement>("#inner .uiify-tabs-trigger");
+    const nestedPanel = document.querySelector<HTMLElement>("#inner .uiify-tabs-content");
+    const parentTrigger = document.querySelector<HTMLElement>('label[for="outer-b"]');
+    expect(nestedTrigger).not.toBeNull();
+    expect(nestedPanel).not.toBeNull();
+    expect(nestedTrigger?.hasAttribute("aria-selected")).toBe(false);
+    expect(nestedPanel?.hasAttribute("data-state")).toBe(false);
+    expect(parentTrigger?.getAttribute("aria-selected")).toBe("true");
   });
 });

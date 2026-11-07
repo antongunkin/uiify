@@ -86,7 +86,7 @@ test.skipIf(!existsSync(fixturePath))(
     const componentDirectory = resolve(sourceDirectory, "components");
     const fixtureSource = readFileSync(fixturePath, "utf8");
     const fixtures = new Set(
-      [...fixtureSource.matchAll(/\{\s*name:\s*["']([^"']+)["']/g)].map((match) => match[1]),
+      [...fixtureSource.matchAll(/harnessPath\(\s*["']([^"']+)["']/g)].map((match) => match[1]),
     );
     const arrowHandlers = Object.keys(componentTiers.components).filter((name) => {
       const sourcePath = resolve(componentDirectory, name);
@@ -113,12 +113,15 @@ test("script-sensitive typography is scoped or explicitly allow-listed", () => {
     { file: "reset.css", selector: "button" },
     { file: "reset.css", selector: "textarea" },
     { file: "reset.css", selector: "select" },
-    { file: "line-chart.css", selector: "data-uiify-line-chart] > figcaption" },
-    { file: "candle-chart.css", selector: "data-uiify-candle-chart] > figcaption" },
-    { file: "carousel.css", selector: '[data-part="story-topline"]' },
-    { file: "carousel.css", selector: '[data-part="story-footer"]' },
-    { file: "carousel.css", selector: '[data-part="story-eyebrow"]' },
-    { file: "carousel.css", selector: '[data-part="story-body"] > h3' },
+    { file: "generated/uiify.css", selector: ".uiify-line-chart-caption" },
+    { file: "generated/uiify.css", selector: ".uiify-candle-chart-caption" },
+    { file: "uiify/effects.css", selector: ".uiify-candle-chart-caption" },
+    { file: "generated/uiify.css", selector: ".uiify-carousel-story-topline" },
+    { file: "uiify/effects.css", selector: ".uiify-carousel-story-topline" },
+    { file: "generated/uiify.css", selector: ".uiify-carousel-story-eyebrow" },
+    { file: "uiify/effects.css", selector: ".uiify-carousel-story-eyebrow" },
+    { file: "generated/uiify.css", selector: ".uiify-carousel-story-heading" },
+    { file: "uiify/effects.css", selector: ".uiify-carousel-story-heading" },
   ];
   const violations = styles.flatMap((path) => {
     const source = readFileSync(path, "utf8");

@@ -34,12 +34,12 @@ function coordinate(event: PointerEvent, geometry: CarouselGeometry): number {
 }
 
 function ownsEvent(root: HTMLElement, target: EventTarget | null): target is Element {
-  return target instanceof Element && target.closest("[data-uiify-carousel]") === root;
+  return target instanceof Element && target.closest(".uiify-carousel") === root;
 }
 
 /** Adds optional mouse dragging without intercepting touch, pen, wheel, or pre-intent selection. */
 export function attachCarouselDrag(root: HTMLElement, controller: CarouselController): () => void {
-  const candidate = root.querySelector<HTMLElement>(':scope > [data-part="viewport"]');
+  const candidate = root.querySelector<HTMLElement>(":scope > .uiify-carousel-viewport");
   if (!candidate) return () => {};
   const viewport = candidate;
 

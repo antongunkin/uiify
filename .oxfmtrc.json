@@ -9,5 +9,10 @@
   "semicolons": "always",
   "trailingCommas": "all",
   "bracketSpacing": true,
-  "ignorePatterns": ["**/dist/**", "**/node_modules/**", "**/.changeset/**"]
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/.changeset/**",
+    "src/styles/generated/**"
+  ]
 }

@@ -1,61 +1,71 @@
+// API informed by shadcn/ui public documentation (names and props only).
 import type { ReactElement } from "react";
-import { DetailsContent, DetailsRoot, DetailsSummary } from "../../elements/details/index.js";
-import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
-import type { AccordionProps, AccordionType } from "./types.js";
-
-function isDefaultOpen(
-  type: AccordionType,
-  defaultValue: string | readonly string[] | undefined,
-  itemValue: string,
-): boolean {
-  if (type === "single") return defaultValue === itemValue;
-  return Array.isArray(defaultValue) && defaultValue.includes(itemValue);
-}
+import { cn } from "../../core/class-names.js";
+import {
+  NativeDetailsContent,
+  NativeDetailsRoot,
+  NativeDetailsSummary,
+} from "../../elements/native-details/index.js";
+import type {
+  AccordionContentProps,
+  AccordionItemProps,
+  AccordionProps,
+  AccordionTriggerProps,
+} from "./types.js";
 
 /**
- * Built on `@gunkin/uiify/elements/details`: `Details.Root` already owns `data-disabled` (from its own
- * `disabled` prop) and `data-uiify-details`; `Details.Summary`'s `disabled` prop already owns
- * `aria-disabled`/`tabIndex`. This component adds its own identity/anatomy markers and the
- * `name`/`defaultOpen` wiring that makes single-select exclusive.
+ * Built on `@gunkin/uiify/elements/native-details`: native `<details>` owns open state, and the same
+ * `name` on every AccordionItem makes the browser keep one item open. No context, no JS.
  */
-export function Accordion({
-  id,
-  items,
-  type = "single",
-  defaultValue,
-  slotProps,
-  ...rootProps
-}: AccordionProps): ReactElement {
+export function Accordion({ className, children, ...consumerProps }: AccordionProps): ReactElement {
   return (
-    <div id={id} data-kind={type} data-uiify-accordion="" {...rootProps}>
-      {items.map((item) => {
-        const disabled = item.disabled ?? false;
-        return (
-          <DetailsRoot
-            data-part="item"
-            defaultOpen={isDefaultOpen(type, defaultValue, item.value)}
-            disabled={disabled}
-            key={item.value}
-            {...(type === "single" ? { name: id } : {})}
-            {...resolveRepeatedSlotProps(slotProps?.item, item.value)}
-          >
-            <DetailsSummary
-              {...resolveRepeatedSlotProps(slotProps?.trigger, item.value)}
-              disabled={disabled}
-              part="trigger"
-            >
-              {item.label}
-            </DetailsSummary>
-            <DetailsContent
-              {...resolveRepeatedSlotProps(slotProps?.panel, item.value)}
-              part="panel"
-            >
-              {item.panel}
-            </DetailsContent>
-          </DetailsRoot>
-        );
-      })}
+    <div {...consumerProps} className={cn("uiify-accordion", className)}>
+      {children}
     </div>
   );
 }
 Accordion.displayName = "Accordion";
+
+export function AccordionItem({
+  value,
+  className,
+  children,
+  ...consumerProps
+}: AccordionItemProps): ReactElement {
+  return (
+    <NativeDetailsRoot
+      data-value={value}
+      {...consumerProps}
+      className={cn("uiify-accordion-item", className)}
+    >
+      {children}
+    </NativeDetailsRoot>
+  );
+}
+AccordionItem.displayName = "AccordionItem";
+
+export function AccordionTrigger({
+  className,
+  children,
+  ...consumerProps
+}: AccordionTriggerProps): ReactElement {
+  return (
+    <NativeDetailsSummary {...consumerProps} className={cn("uiify-accordion-trigger", className)}>
+      {children}
+    </NativeDetailsSummary>
+  );
+}
+AccordionTrigger.displayName = "AccordionTrigger";
+
+export function AccordionContent({
+  className,
+  children,
+  ...consumerProps
+}: AccordionContentProps): ReactElement {
+  return (
+    <NativeDetailsContent {...consumerProps} className={cn("uiify-accordion-content", className)}>
+      {children}
+    </NativeDetailsContent>
+  );
+}
+AccordionContent.displayName = "AccordionContent";

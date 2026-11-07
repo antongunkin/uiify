@@ -1,11 +1,12 @@
 "use client";
 
 import { useId, useRef, useState, type CSSProperties, type ReactElement } from "react";
-import { useMergedRefs } from "@gunkin/uiify/hooks";
+import { useEventCallback, useMergedRefs } from "@gunkin/uiify/hooks";
+import { cn } from "../../core/class-names.js";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import type { SlotProps } from "../../core/slot-props.js";
-import { Field } from "../field/index.js";
+import { Field, FieldLabel } from "../field/index.js";
 import type { ColorPickerProps } from "./types.js";
 
 export function ColorPicker(props: ColorPickerProps): ReactElement {
@@ -29,7 +30,7 @@ export function ColorPicker(props: ColorPickerProps): ReactElement {
   const ariaInvalid = props["aria-invalid"];
   const generatedId = useId();
   const inputId = id ?? generatedId;
-  const fieldId = `${inputId}-field`;
+  const labelId = `${inputId}-label`;
   const nativeInputRef = useRef<HTMLInputElement>(null);
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
   const selectedValue = value ?? uncontrolledValue;
@@ -41,7 +42,7 @@ export function ColorPicker(props: ColorPickerProps): ReactElement {
     else nativeInputProps[name] = propValue;
   }
 
-  const fieldProps = mergeRepeatedSlotProps<Omit<SlotProps<"div">, "id">>(
+  const fieldProps = mergeRepeatedSlotProps<SlotProps<"div">>(
     { ...rootDataProps, className, style },
     slotProps?.field,
   );
@@ -63,52 +64,55 @@ export function ColorPicker(props: ColorPickerProps): ReactElement {
     rootDataProps["data-invalid"] === "" ||
     rootDataProps["data-invalid"] === "true";
   const required = Boolean(nativeInputProps.required);
+  const openNativePicker = useEventCallback((event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    nativeInputRef.current?.click();
+  });
 
   return (
-    <Field.Root
-      data-uiify-color-picker=""
-      disabled={disabled}
-      id={fieldId}
+    <Field
+      data-disabled={disabled ? "" : undefined}
+      data-required={required ? "" : undefined}
       invalid={invalid}
-      required={required}
       {...fieldProps}
+      className={cn("uiify-color-picker", fieldProps.className)}
     >
-      <Field.Label
+      <FieldLabel
         disabled={disabled}
-        fieldId={fieldId}
+        htmlFor={inputId}
+        id={labelId}
         required={required}
         {...labelProps}
-        onClick={composeEventHandlers(labelProps?.onClick, (event) => {
-          event.preventDefault();
-          nativeInputRef.current?.click();
-        })}
+        className={cn("uiify-color-picker-label", labelProps?.className)}
+        onClick={composeEventHandlers(labelProps?.onClick, openNativePicker)}
       >
         {label}
-      </Field.Label>
+      </FieldLabel>
       <div
-        data-part="surface"
         data-value={selectedValue}
         {...surfaceProps}
+        className={cn("uiify-color-picker-surface", surfaceProps?.className)}
         style={{ ...controlStyle, ...surfaceProps?.style }}
       >
-        <Field.Control
+        <input
           aria-hidden="true"
-          as="input"
-          disabled={disabled}
-          fieldId={fieldId}
-          invalid={invalid}
+          aria-invalid={invalid || undefined}
+          data-disabled={disabled ? "" : undefined}
+          data-invalid={invalid ? "" : undefined}
+          data-required={required ? "" : undefined}
+          disabled={disabled || undefined}
           readOnly
-          required={required}
+          required={required || undefined}
           tabIndex={-1}
           type="text"
           value={selectedValue}
           {...controlProps}
+          className={cn("uiify-input uiify-color-picker-control", controlProps?.className)}
         />
         <input
           aria-invalid={invalid || undefined}
           aria-label={ariaLabel}
-          aria-labelledby={ariaLabel ? undefined : `${fieldId}-label`}
-          data-part="native-input"
+          aria-labelledby={ariaLabel ? undefined : labelId}
           disabled={disabled}
           id={inputId}
           type="color"
@@ -117,6 +121,7 @@ export function ColorPicker(props: ColorPickerProps): ReactElement {
           {...(alpha ? { alpha: "" } : {})}
           {...(colorSpace ? { colorspace: colorSpace } : {})}
           {...inputProps}
+          className={cn("uiify-color-picker-native-input", inputProps.className)}
           ref={mergedInputRef}
           onChange={composeEventHandlers(inputProps.onChange, (event) => {
             const nextValue = event.currentTarget.value;
@@ -125,7 +130,7 @@ export function ColorPicker(props: ColorPickerProps): ReactElement {
           })}
         />
       </div>
-    </Field.Root>
+    </Field>
   );
 }
 ColorPicker.displayName = "ColorPicker";

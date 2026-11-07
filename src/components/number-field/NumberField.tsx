@@ -17,7 +17,7 @@ import { useControllableState, useId, useMergedRefs } from "@gunkin/uiify/hooks"
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { useRenderElement, type PolymorphicProps } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement, type PolymorphicProps } from "@gunkin/uiify/core/render";
 import {
   clampNumber,
   createFormatter,
@@ -176,8 +176,8 @@ export function NumberFieldRoot<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       "data-disabled": disabled ? "" : undefined,
-      "data-uiify-number-field": "",
       ...consumerProps,
+      className: cn("uiify-number-field", consumerProps.className),
     },
     render,
     state: { disabled, readOnly, required },
@@ -198,8 +198,8 @@ export function NumberFieldGroup<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       "data-disabled": disabled ? "" : undefined,
-      "data-part": "group",
       ...consumerProps,
+      className: cn("uiify-number-field-group", consumerProps.className),
     },
     render,
     state: { disabled },
@@ -269,7 +269,6 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
     props: {
       id: inputId,
       role: "spinbutton",
-      "data-part": "input",
       inputMode: "decimal",
       "aria-valuenow": numericValue,
       "aria-valuemin": min,
@@ -282,6 +281,7 @@ export function NumberFieldInput<TAs extends ElementType = "input">(
       required: required || undefined,
       value: displayValue,
       ...consumerProps,
+      className: cn("uiify-number-field-input", consumerProps.className),
       ref: mergedRef,
       onFocus: composeEventHandlers(consumerProps.onFocus, () => setEditing(true)),
       onBlur: composeEventHandlers(consumerProps.onBlur, (event: FocusEvent<HTMLInputElement>) => {
@@ -319,10 +319,10 @@ export function NumberFieldIncrement<TAs extends ElementType = "button">(
     props: {
       type: "button",
       tabIndex: -1,
-      "data-part": "increment",
       "data-disabled": inactive ? "" : undefined,
       disabled: inactive || undefined,
       ...consumerProps,
+      className: cn("uiify-number-field-increment", consumerProps.className),
       onClick: composeEventHandlers(
         consumerProps.onClick,
         (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -362,10 +362,10 @@ export function NumberFieldDecrement<TAs extends ElementType = "button">(
     props: {
       type: "button",
       tabIndex: -1,
-      "data-part": "decrement",
       "data-disabled": inactive ? "" : undefined,
       disabled: inactive || undefined,
       ...consumerProps,
+      className: cn("uiify-number-field-decrement", consumerProps.className),
       onClick: composeEventHandlers(
         consumerProps.onClick,
         (event: ReactMouseEvent<HTMLButtonElement>) => {

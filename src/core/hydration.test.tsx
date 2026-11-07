@@ -10,7 +10,7 @@ function Fixture() {
   return (
     <>
       <button {...popover.triggerProps}>Toggle</button>
-      <div {...popover.popupProps}>Popup</div>
+      <div {...popover.popupProps}>Panel</div>
       <RovingFocusRoot>
         <RovingFocusItem>One</RovingFocusItem>
         <RovingFocusItem>Two</RovingFocusItem>

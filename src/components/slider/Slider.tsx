@@ -1,6 +1,7 @@
 import type { CSSProperties, ElementType, ReactElement, SyntheticEvent } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn } from "../../core/class-names.js";
 import type { SliderProps } from "./types.js";
 
 function getProgressPercentage(value: number, min: number, max: number): number {
@@ -21,6 +22,7 @@ export function Slider<TAs extends ElementType = "input">(
     max = 100,
     step = 1,
     disabled = false,
+    className,
     ...consumerProps
   } = props as SliderProps<"input">;
 
@@ -56,7 +58,6 @@ export function Slider<TAs extends ElementType = "input">(
     defaultTag: "input",
     props: {
       type: "range",
-      "data-uiify-slider": "",
       min,
       max,
       step,
@@ -65,6 +66,7 @@ export function Slider<TAs extends ElementType = "input">(
       "data-state": isControlled ? String(value) : undefined,
       ...(isControlled ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
       ...consumerProps,
+      className: cn("uiify-slider", className),
       style,
       onChange: composeEventHandlers(consumerOnChange, handleChange),
     },

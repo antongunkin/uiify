@@ -1,0 +1,148 @@
+# @gunkin/uiify screen catalog
+
+Import every name from "@gunkin/uiify". `Name.Part` is also exported flat as `NamePart`.
+Every part also takes the native attributes of its element (`id`, `name`, `href`, `action`, `method`,
+`required`, `aria-*`, ...). `as` changes the element (`<Stack as="form">`). No `className`/`style`.
+Responsive values: `{ base, sm, md, lg }` objects, e.g. `columns={{ base: 1, md: 2 }}`.
+
+## Layout and text
+Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|lg|xl; paddingInline?: none|xs|sm|md|lg|xl; paddingBlock?: none|xs|sm|md|lg|xl; width?: auto|full|fit|sm|md|lg; height?: auto|full|screen; minWidth?: zero|full; maxWidth?: none|sm|md|lg|prose; grow?: 0|1; shrink?: 0|1; overflow?: visible|hidden|auto; container?: true|false; responsive?: container|viewport
+- Box
+- Section
+- Stack: direction?: block|inline; gap?: none|xs|sm|md|lg|xl; align?: start|center|end|stretch|baseline; justify?: start|center|end|between|around|evenly; wrap?: true|false
+- Grid: columns?: 1..12|sidebar|sidebar-end|2:1|1:2|3:2|2:3; gap?: none|xs|sm|md|lg|xl; rowGap?: none|xs|sm|md|lg|xl; align?: start|center|end|stretch|baseline; justify?: start|center|end|between|around|evenly
+- GridItem: columnSpan?: 1..12|full; rowSpan?: 1..12; columnStart?: 1..12|auto; alignSelf?: auto|start|center|end|stretch|baseline
+- Text: size?: xs|sm|base|lg|xl|2xl; weight?: normal|medium|semibold; tone?: default|muted|primary|danger; leading?: normal|tight; align?: start|center|end; measure?: none|prose; wrap?: wrap|balance|pretty; responsive?: container|viewport
+- Heading: Text props; level?: 1..6
+
+## Components
+- Accordion
+- AccordionContent
+- AccordionItem: value: string; name?: string; defaultOpen?: boolean
+- AccordionTrigger: disabled?: boolean
+- Alert: variant?: secondary|success|warning|destructive; symbol?: string | false
+- AlertDescription
+- AlertTitle
+- AlertDialog: id: string; trigger: node; title: node; description?: node; actionLabel?: node; cancelLabel?: node
+- AlertDialogAction: target: string
+- AlertDialogCancel: target: string
+- AlertDialogContent: id: string
+- AlertDialogTrigger: target: string
+- AspectRatio: ratio?: number
+- Avatar: name: string; fallback: string; src?: string; size?: sm|md|lg
+- Badge: size?: sm|md|lg; variant?: default|secondary|outline|success|warning|destructive
+- BreadcrumbEllipsis
+- BreadcrumbItem
+- BreadcrumbLink: current?: boolean; href?: string
+- BreadcrumbList: items?: { key: string; current?: boolean; href?: string; label: node }[]; itemsAfterCollapse?: number; itemsBeforeCollapse?: number; maxItems?: number; separator?: node
+- BreadcrumbRoot
+- BreadcrumbSeparator
+- Button: disabled?: boolean; selected?: boolean; type?: button|submit|reset; size?: xs|sm|default|lg|icon-xs|icon-sm|icon|icon-lg; variant?: default|secondary|outline|ghost|destructive|link; href?: string
+- Card: size?: sm|default
+- CardAction
+- CardContent
+- CardDescription
+- CardFooter
+- CardHeader
+- CardTitle
+- Checkbox: id: string; label?: node; checked?: boolean; defaultChecked?: boolean; disabled?: boolean; name?: string; value?: string; aria-label?: string
+- CheckboxGroup: id: string; label?: node; items: { value: string; label: node; disabled?: boolean }[]; defaultValue?: readonly string[]; name?: string; disabled?: boolean; required?: boolean; invalid?: boolean; orientation?: horizontal|vertical
+- Collapsible: id: string; label: node; content: node; defaultOpen?: boolean; disabled?: boolean
+- DatePicker: invalid?: boolean; size?: sm|md|lg
+- DescriptionDetails
+- DescriptionList
+- DescriptionTerm
+- Dialog: id: string; trigger: node; title: node; description?: node; closeLabel?: string; footer?: node; size?: sm|md|lg|full; align?: center|start; dismiss?: any|closerequest|none; backdrop?: opaque|blur|none
+- DialogBody
+- DialogClose: target: string
+- DialogContent: id: string; size?: sm|md|lg|full; align?: center|start; dismiss?: any|closerequest|none; backdrop?: opaque|blur|none
+- DialogDescription
+- DialogFooter
+- DialogGrabber
+- DialogHeader
+- DialogTitle
+- DialogTrigger: target: string
+- DrawerPanel: id: string; trigger: node; title: node; description?: node; closeLabel?: string; footer?: node; side?: top|right|bottom|left; size?: sm|md|lg|full; dismiss?: any|closerequest|none; backdrop?: opaque|transparent
+- DrawerNativeTrigger: target: string
+- DrawerNativeClose: target: string
+- DrawerNativeContent: id: string; side?: top|right|bottom|left; size?: sm|md|lg|full; dismiss?: any|closerequest|none; backdrop?: opaque|transparent
+- Empty
+- EmptyContent
+- EmptyDescription
+- EmptyTitle
+- Field: orientation?: horizontal|vertical|responsive; invalid?: boolean; variant?: card
+- FieldContent
+- FieldDescription: disabled?: boolean
+- FieldError
+- FieldGroup
+- FieldLabel: disabled?: boolean; required?: boolean
+- FieldSeparator
+- FieldTitle
+- FieldLegend: variant?: label|legend
+- FieldSet
+- Form: validationBehavior?: native|aria
+- FormErrorSummary: title: node; errors: { href: string; message: node }[]
+- HeaderRoot: placement?: static|sticky
+- Input: value?: string; defaultValue?: string; disabled?: boolean; readOnly?: boolean; invalid?: boolean; size?: sm|md|lg
+- InputGroup: size?: sm|md|lg
+- InputGroupAddon: align: start|end
+- Item
+- ItemActions
+- ItemContent
+- ItemMedia
+- ItemMetadata
+- NativeSelectContent
+- NativeSelectOptGroup: label: string
+- NativeSelectOption: disabled?: boolean; value: string
+- NativeSelect: defaultValue?: string | readonly string[]; multiple?: boolean; value?: string | readonly string[]; disabled?: boolean; name?: string; size?: sm|md|lg
+- NativeSelectSeparator
+- PopoverClose: target: string
+- PopoverContent: align?: start|center|end; id: string; mode?: auto|manual; side?: top|right|bottom|left
+- PopoverTrigger: target: string
+- Progress
+- RadioGroup: orientation?: horizontal|vertical
+- RadioGroupItem: name: string; value: string
+- SegmentedControl: id: string; items: { value: string; label: node; disabled?: boolean }[]; defaultValue?: string; disabled?: boolean; orientation?: horizontal|vertical; fullWidth?: boolean; size?: sm|md|lg
+- Separator: orientation?: horizontal|vertical
+- Skeleton: circle?: boolean; height?: string | number; loading?: boolean; variant?: pulse|shimmer|none; width?: string | number
+- Slider: value?: number; defaultValue?: number; min?: number; max?: number; step?: number; disabled?: boolean
+- Spinner: align?: center|fixed|absolute; delay?: number; label?: string; showLabel?: boolean; size?: sm|md|lg; value?: number
+- Switch: checked?: boolean; defaultChecked?: boolean; disabled?: boolean
+- TableFooter: sticky?: boolean
+- TableRowHeader: align?: start|center|end; sticky?: start|end
+- TableBody
+- TableCaption
+- TableCell: align?: start|center|end; sticky?: start|end
+- TableColumnHeader: allowsSorting?: boolean; id: string; sortDirection?: ascending|descending; align?: start|center|end; sticky?: start|end
+- TableHeader: sticky?: boolean
+- TableRoot: aria-label?: string; aria-labelledby?: string; layout?: auto|fixed; size?: sm|md|lg; variant?: solid|outline|ghost
+- TableRow: disabled?: boolean; id: string; selected?: boolean; sticky?: boolean
+- Tabs: orientation?: horizontal|vertical
+- TabsContent: value: string
+- TabsList
+- TabsTrigger: name: string; value: string; id?: string; defaultChecked?: boolean; disabled?: boolean
+- Textarea: value?: string; defaultValue?: string; autoSize?: boolean; disabled?: boolean; readOnly?: boolean; invalid?: boolean
+- ToastAction
+- ToastClose
+- ToastDescription
+- ToastProvider: limit?: number
+- ToastRoot: toast: ToastRecord
+- ToastTitle
+- ToastViewport
+- Toggle: id: string; label: node; pressed?: boolean; defaultPressed?: boolean; disabled?: boolean
+- ToggleGroup: id: string; type?: single|multiple; items: { value: string; label: node; disabled?: boolean }[]; defaultValue?: string | readonly string[]; disabled?: boolean; orientation?: horizontal|vertical; size?: sm|md|lg
+- TooltipContent: align?: start|center|end; side?: top|right|bottom|left
+- TooltipProvider: delayDuration?: number; skipDelayDuration?: number
+- TooltipRoot: defaultOpen?: boolean; id?: string; open?: boolean
+- TooltipTrigger
+
+## Patterns
+- Field with description: `<Field><FieldLabel htmlFor="email">Email</FieldLabel><Input id="email" type="email" name="email" aria-describedby="email-hint" /><FieldDescription id="email-hint">We never share it.</FieldDescription></Field>`
+- Invalid field: `<Field invalid><FieldLabel htmlFor="code">Code</FieldLabel><Input id="code" name="code" invalid aria-describedby="code-error" /><FieldError id="code-error">Enter the 6-digit code.</FieldError></Field>`
+- Checkbox with label: `<Checkbox id="terms" name="terms" label="I agree" />`
+- Single choice: `<RadioGroup aria-label="Plan"><Field orientation="horizontal"><RadioGroupItem name="plan" value="a" id="a" defaultChecked /><FieldLabel htmlFor="a">Plan A</FieldLabel></Field><Field orientation="horizontal"><RadioGroupItem name="plan" value="b" id="b" /><FieldLabel htmlFor="b">Plan B</FieldLabel></Field></RadioGroup>`
+- Choice cards: `<RadioGroup aria-label="Plan"><Field orientation="horizontal" variant="card"><RadioGroupItem name="plan" value="pro" id="pro" aria-describedby="pro-hint" /><FieldContent><FieldLabel htmlFor="pro">Pro</FieldLabel><FieldDescription id="pro-hint">$12 a month.</FieldDescription></FieldContent></Field></RadioGroup>`
+- Card with header and footer: `<Card><CardHeader><CardTitle as="h2">Team plan</CardTitle><CardDescription>Billed yearly.</CardDescription><CardAction><Badge variant="outline">Popular</Badge></CardAction></CardHeader><CardContent>$12 per seat.</CardContent><CardFooter><Button>Choose plan</Button></CardFooter></Card>`
+- Link that looks like a button: `<Button href="/auth/google" variant="outline">Continue with Google</Button>`
+- Divider with text: `<FieldSeparator>or</FieldSeparator>`
+- Form in layout: `<Stack as="form" action="/subscribe" method="post" gap="md"><Field><FieldLabel htmlFor="email">Email</FieldLabel><Input id="email" type="email" name="email" /></Field><Button type="submit">Subscribe</Button></Stack>`

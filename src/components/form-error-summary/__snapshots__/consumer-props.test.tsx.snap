@@ -2,12 +2,12 @@
 
 exports[`preserves default form-error-summary DOM 1`] = `
 [
-  "section data-uiify-form-error-summary=""",
-  "h2 data-part="title"",
-  "ul data-part="list"",
-  "li data-part="item"",
-  "a data-part="link" href="#email"",
-  "li data-part="item"",
-  "a data-part="link" href="#name"",
+  "section class="uiify-form-error-summary"",
+  "h2 class="uiify-form-error-summary-title"",
+  "ul class="uiify-form-error-summary-list"",
+  "li class="uiify-form-error-summary-item"",
+  "a class="uiify-form-error-summary-link" href="#email"",
+  "li class="uiify-form-error-summary-item"",
+  "a class="uiify-form-error-summary-link" href="#name"",
 ]
 `;

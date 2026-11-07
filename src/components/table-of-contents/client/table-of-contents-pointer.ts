@@ -2,24 +2,24 @@ import type { TableOfContentsPointerOptions } from "../types.js";
 
 export function attachTableOfContentsPointer({ root }: TableOfContentsPointerOptions): () => void {
   const view = root.ownerDocument.defaultView!;
-  const rail = root.querySelector<HTMLElement>('[data-part="rail"]');
+  const rail = root.querySelector<HTMLElement>(".uiify-table-of-contents-rail");
   if (!rail) return () => {};
   let nodes: HTMLElement[] = [],
     centers = new Map<Element, number>(),
     frame = 0,
     y: number | null = null;
   const select = (id: string | null) => {
-    for (const node of root.querySelectorAll("[data-uiify-toc-value]"))
-      if (node.closest("[data-uiify-table-of-contents]") === root)
+    for (const node of root.querySelectorAll("[data-toc-value]"))
+      if (node.closest(".uiify-table-of-contents") === root)
         node.toggleAttribute(
           "data-highlighted",
-          id !== null && node.getAttribute("data-uiify-toc-value") === id,
+          id !== null && node.getAttribute("data-toc-value") === id,
         );
   };
   const measure = () => {
     observer.disconnect();
     centers.clear();
-    nodes = [...rail.querySelectorAll<HTMLElement>('[data-part="indicator"]')];
+    nodes = [...rail.querySelectorAll<HTMLElement>(".uiify-table-of-contents-indicator")];
     nodes.forEach((node, index) => {
       node.style.setProperty("--uiify-toc-index", String(index));
       observer.observe(node);
@@ -54,15 +54,16 @@ export function attachTableOfContentsPointer({ root }: TableOfContentsPointerOpt
       }
       rail.style.setProperty("--uiify-toc-pointer", String(index));
       const nearest = nodes[Math.max(0, Math.min(nodes.length - 1, Math.round(index)))];
-      select(nearest?.getAttribute("data-uiify-toc-value") ?? null);
+      select(nearest?.getAttribute("data-toc-value") ?? null);
     });
   };
   const highlight = (event: Event) => {
     const target = event.type.endsWith("out") ? (event as FocusEvent).relatedTarget : event.target;
-    const link = target instanceof view.Element ? target.closest('[data-part="link"]') : null;
+    const link =
+      target instanceof view.Element ? target.closest(".uiify-table-of-contents-link") : null;
     const id =
-      link?.closest("[data-uiify-table-of-contents]") === root
-        ? link.getAttribute("data-uiify-toc-value")
+      link?.closest(".uiify-table-of-contents") === root
+        ? link.getAttribute("data-toc-value")
         : null;
     select(id);
   };

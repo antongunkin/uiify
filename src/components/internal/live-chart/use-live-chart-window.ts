@@ -40,6 +40,11 @@ export function liveTimeAxis(
   return labels;
 }
 
+/** Pins the newest item before paint. */
+function pinScrollOffset(element: HTMLElement, offset: number): void {
+  element.scrollLeft = offset; // banned-read-ok: a write, not a layout read.
+}
+
 function writeScrollVariable(
   chart: HTMLElement,
   scrollVariable: `--${string}`,
@@ -80,7 +85,10 @@ export function useLiveChartWindow(options: UseLiveChartWindowOptions): UseLiveC
   const contentSize = count * itemWidth;
   const viewportWidth = itemWidth * visibleCount;
   const layoutRef = useRef({ contentSize, itemWidth, viewportWidth, consumerStyle });
-  layoutRef.current = { contentSize, itemWidth, viewportWidth, consumerStyle };
+  // Declared before the effects below, so they read this commit's layout.
+  useIsomorphicLayoutEffect(() => {
+    layoutRef.current = { contentSize, itemWidth, viewportWidth, consumerStyle };
+  });
 
   // Publish the scroll offset (a CSS variable, so scrolling re-renders nothing)
   // and track whether the reader is at the end.
@@ -110,7 +118,7 @@ export function useLiveChartWindow(options: UseLiveChartWindowOptions): UseLiveC
     const chart = chartRef.current;
     if (!element || !chart) return;
     const end = Math.max(0, contentSize - viewportWidth);
-    element.scrollLeft = end; // banned-read-ok: pin the newest item before paint.
+    pinScrollOffset(element, end);
     writeScrollVariable(chart, scrollVariable, end, layoutRef.current.consumerStyle);
   }, [live, following, contentSize, viewportWidth, scrollVariable]);
 

@@ -30,8 +30,11 @@ for (const { entry, out } of entries) {
 }
 
 // Tailwind's @theme syntax is consumer input and must remain raw.
-await copyFile(resolve(root, "src/styles/tailwind.css"), resolve(root, "dist/styles/tailwind.css"));
+await copyFile(
+  resolve(root, "src/styles/tailwind-legacy.css"),
+  resolve(root, "dist/styles/tailwind-legacy.css"),
+);
 
 console.log(
-  "@gunkin/uiify/styles built (lightningcss → dist/styles/{index,tokens,reset}.css; raw → dist/styles/tailwind.css)",
+  "@gunkin/uiify/styles built (lightningcss → dist/styles/{index,tokens,reset}.css; raw → dist/styles/tailwind-legacy.css)",
 );

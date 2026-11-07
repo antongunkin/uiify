@@ -40,7 +40,7 @@ export function TableOfContentsClientLink<TAs extends ElementType = "a">(
   const id = resolveTableOfContentsId(props.href, context?.documentUrl ?? "https://uiify.invalid/");
   return NativeLink({
     ...props,
-    "data-uiify-toc-value": id ?? undefined,
+    "data-toc-value": id ?? undefined,
     ...(context ? { selected: id !== null && context.value === id } : {}),
   } as TableOfContentsLinkProps<TAs>);
 }
@@ -50,7 +50,7 @@ export function TableOfContentsClientIndicator<TAs extends ElementType = "span">
   const context = useContext(TableOfContentsContext);
   return NativeIndicator({
     ...props,
-    "data-uiify-toc-value": props.value,
+    "data-toc-value": props.value,
     ...(context ? { selected: context.value === props.value } : {}),
   } as TableOfContentsIndicatorProps<"span">);
 }

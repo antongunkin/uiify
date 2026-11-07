@@ -1,7 +1,14 @@
 import type { ElementType, ReactNode } from "react";
 import type { RenderableProps } from "@gunkin/uiify/core/render";
 
-export type BadgeVariant = "secondary" | "success" | "warning" | "destructive";
+/** `default` is the unset look; `outline` drops the fill for a bordered rim. */
+export type BadgeVariant =
+  | "default"
+  | "secondary"
+  | "outline"
+  | "success"
+  | "warning"
+  | "destructive";
 export type BadgeSize = "sm" | "md" | "lg";
 
 export interface BadgeOwnProps {

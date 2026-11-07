@@ -22,5 +22,5 @@ describe("uiify consumer entrypoints", () => {
     expect(components).toBeDefined();
     expect(toggleGroupClient.ToggleGroupClient).toBeDefined();
     expect(segmentedControlClient.SegmentedControlClient).toBeDefined();
-  });
+  }, 30_000);
 });

@@ -82,7 +82,7 @@ describe("Input", () => {
     expect(input.hasAttribute("data-invalid")).toBe(true);
   });
 
-  it("owns aria-invalid, data-disabled, data-readonly and data-invalid; consumer cannot override them", () => {
+  it("allows consumer overrides of aria-invalid, data-disabled, data-readonly and data-invalid", () => {
     render(
       <Input
         disabled
@@ -96,26 +96,25 @@ describe("Input", () => {
       />,
     );
     const input = screen.getByRole("textbox", { name: "Field" });
-    expect(input.getAttribute("aria-invalid")).toBe("true");
-    expect(input.getAttribute("data-disabled")).toBe("");
-    expect(input.getAttribute("data-readonly")).toBe("");
-    expect(input.getAttribute("data-invalid")).toBe("");
+    expect(input.getAttribute("aria-invalid")).toBe("false");
+    expect(input.getAttribute("data-disabled")).toBe("no");
+    expect(input.getAttribute("data-readonly")).toBe("no");
+    expect(input.getAttribute("data-invalid")).toBe("no");
   });
 
-  it("forwards consumer styling props and owns its identity marker", () => {
+  it("joins its identity class with consumer styling props", () => {
     render(
       <Input
         aria-label="Field"
         className="consumer-input"
         data-layout="compact"
-        data-uiify-input="consumer-value"
         style={{ marginBlock: "1rem" }}
       />,
     );
     const input = screen.getByRole("textbox", { name: "Field" });
-    expect(input.getAttribute("class")).toBe("consumer-input");
+    expect(input.getAttribute("class")).toBe("uiify-input consumer-input");
     expect(input.getAttribute("data-layout")).toBe("compact");
-    expect(input.getAttribute("data-uiify-input")).toBe("");
+    expect(input.hasAttribute("data-uiify-input")).toBe(false);
     expect(input.style.marginBlock).toBe("1rem");
   });
 

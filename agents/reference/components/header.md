@@ -5,7 +5,7 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `header`
 - Without JavaScript: full
 - Types file: `dist/components/header.d.ts`
-- Note: Semantic header root; compose native navigation with Modal. Full functionality without JavaScript; optional header/client adds scroll hide/reveal.
+- Note: Semantic header root; compose native navigation with Dialog. Full functionality without JavaScript; optional header/client adds scroll hide/reveal.
 
 ## Related knowledge
 

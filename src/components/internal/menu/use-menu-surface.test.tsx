@@ -5,25 +5,35 @@ import { describe, expect, it } from "vitest";
 import { useMenuSurface } from "./use-menu-surface.js";
 
 function TestMenu(): ReactElement {
-  const surface = useMenuSurface({ mode: "auto" });
+  const {
+    anchorProps,
+    close,
+    contentRef,
+    focusTrigger,
+    openToItem,
+    popupProps,
+    positionerProps,
+    setTriggerElement,
+    triggerProps,
+  } = useMenuSurface({ mode: "auto" });
   const externalTrigger = createRef<HTMLButtonElement>();
 
   return (
     <div>
       <button
-        {...surface.triggerProps}
-        {...surface.anchorProps}
+        {...triggerProps}
+        {...anchorProps}
         ref={(element) => {
-          surface.setTriggerElement(element);
+          setTriggerElement(element);
         }}
-        onClick={() => surface.openToItem()}
+        onClick={() => openToItem()}
       >
         Open
       </button>
-      <button ref={externalTrigger} onClick={() => surface.focusTrigger()} type="button">
+      <button ref={externalTrigger} onClick={() => focusTrigger()} type="button">
         Refocus trigger
       </button>
-      <div {...surface.popupProps} {...surface.positionerProps} ref={surface.contentRef}>
+      <div {...popupProps} {...positionerProps} ref={contentRef}>
         <button role="menuitem" id="first">
           First
         </button>
@@ -31,7 +41,7 @@ function TestMenu(): ReactElement {
           Second
         </button>
       </div>
-      <button type="button" onClick={() => surface.close()}>
+      <button type="button" onClick={() => close()}>
         Close
       </button>
     </div>

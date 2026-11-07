@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type {
   EmptyContentProps,
   EmptyDescriptionProps,
@@ -14,7 +14,10 @@ export function Empty<TAs extends ElementType = "section">(
   return useRenderElement({
     as,
     defaultTag: "section",
-    props: { ...consumerProps, "data-uiify-empty": "" },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-empty", (consumerProps as { className?: string }).className),
+    },
     render,
     state: {},
   });
@@ -27,7 +30,10 @@ export function EmptyTitle<TAs extends ElementType = "h2">(
   return useRenderElement({
     as,
     defaultTag: "h2",
-    props: { ...consumerProps, "data-uiify-empty-title": "", "data-part": "title" },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-empty-title", (consumerProps as { className?: string }).className),
+    },
     render,
     state: {},
   });
@@ -42,8 +48,7 @@ export function EmptyDescription<TAs extends ElementType = "p">(
     defaultTag: "p",
     props: {
       ...consumerProps,
-      "data-uiify-empty-description": "",
-      "data-part": "description",
+      className: cn("uiify-empty-description", (consumerProps as { className?: string }).className),
     },
     render,
     state: {},
@@ -57,7 +62,10 @@ export function EmptyContent<TAs extends ElementType = "div">(
   return useRenderElement({
     as,
     defaultTag: "div",
-    props: { ...consumerProps, "data-uiify-empty-content": "", "data-part": "content" },
+    props: {
+      ...consumerProps,
+      className: cn("uiify-empty-content", (consumerProps as { className?: string }).className),
+    },
     render,
     state: {},
   });

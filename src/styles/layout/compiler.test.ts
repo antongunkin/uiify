@@ -12,17 +12,17 @@ describe("one layout declaration compiler", () => {
       padding: { base: "md", md: "lg" },
       paddingInline: "xs",
     });
-    expect(result.base["padding-inline-start"]).toBe("var(--space-xs)");
-    expect(result.base["padding-block-start"]).toBe("var(--space-md)");
-    expect(result.md["padding-inline-start"]).toBe("var(--space-lg)");
-    expect(result.md["padding-block-end"]).toBe("var(--space-lg)");
+    expect(result.base["padding-inline-start"]).toBe("var(--spacing)");
+    expect(result.base["padding-block-start"]).toBe("calc(var(--spacing) * 3)");
+    expect(result.md["padding-inline-start"]).toBe("calc(var(--spacing) * 4)");
+    expect(result.md["padding-block-end"]).toBe("calc(var(--spacing) * 4)");
   });
   it("resets capped widths and preserves explicit per-condition maxWidth precedence", () => {
     const result = resolveLayoutDeclarations("Section", {
       width: { base: "sm", md: "full" },
       maxWidth: "lg",
     });
-    expect(result.base["max-inline-size"]).toBe("calc(var(--space-xl) * 48)");
+    expect(result.base["max-inline-size"]).toBe("calc(var(--spacing) * 288)");
     expect(result.md).toMatchObject({
       "inline-size": "100%",
       "max-inline-size": "none",
@@ -55,8 +55,8 @@ describe("one layout declaration compiler", () => {
     const props = { width: { base: "sm", md: "full" }, padding: "lg", paddingInline: "xs" };
     const classes = layoutTailwindClasses("Box", props).split(" ");
     expect(classes).toContain("@min-[48rem]:[max-inline-size:none]");
-    expect(classes).toContain("[padding-inline-start:var(--space-xs)]");
-    expect(classes).not.toContain("[padding-inline-start:var(--space-lg)]");
+    expect(classes).toContain("[padding-inline-start:var(--spacing)]");
+    expect(classes).not.toContain("[padding-inline-start:calc(var(--spacing)_*_4)]");
     expect(layoutTailwindClasses("Box", { ...props, responsive: "viewport" })).toContain(
       "min-[48rem]:[inline-size:100%]",
     );
@@ -71,7 +71,7 @@ describe("one layout declaration compiler", () => {
   });
   it("keeps approved type defaults and semantic-independent responsive appearance in both outputs", () => {
     expect(layoutDefaultDeclarations.Text).toMatchObject({
-      "font-size": "var(--text-base)",
+      "font-size": "1rem",
       "font-weight": "var(--weight-normal)",
       color: "var(--foreground)",
       "line-height": "var(--leading-normal)",
@@ -79,7 +79,7 @@ describe("one layout declaration compiler", () => {
       "margin-block-end": "0",
     });
     expect(layoutDefaultDeclarations.Heading).toMatchObject({
-      "font-size": "var(--text-xl)",
+      "font-size": "1.5rem",
       "font-weight": "var(--weight-semibold)",
       "line-height": "var(--leading-tight)",
     });
@@ -92,17 +92,17 @@ describe("one layout declaration compiler", () => {
       wrap: "balance",
     });
     expect(result.base).toMatchObject({
-      "font-size": "var(--text-sm)",
+      "font-size": "0.875rem",
       "font-weight": "var(--weight-medium)",
       color: "var(--destructive)",
       "max-inline-size": "65ch",
       "text-wrap": "balance",
     });
-    expect(result.lg["font-size"]).toBe("var(--text-2xl)");
+    expect(result.lg["font-size"]).toBe("2rem");
     expect(result.base).not.toHaveProperty("font-family");
     expect(result.base).not.toHaveProperty("letter-spacing");
     expect(layoutTailwindClasses("Heading", { size: { lg: "2xl" } })).toContain(
-      "@min-[72rem]:[font-size:var(--text-2xl)]",
+      "@min-[72rem]:[font-size:2rem]",
     );
   });
 });

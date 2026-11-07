@@ -5,7 +5,7 @@ import { useControllableState } from "../../../hooks/use-controllable-state.js";
 import { useEventCallback } from "../../../hooks/use-event-callback.js";
 import { useMergedRefs } from "../../../hooks/use-merged-refs.js";
 import { useIsomorphicLayoutEffect } from "../../../hooks/use-isomorphic-layout-effect.js";
-import { useRenderElement } from "../../../core/render.js";
+import { cn, useRenderElement } from "../../../core/render.js";
 import {
   TableOfContentsRail as NativeRail,
   TableOfContentsList as NativeList,
@@ -65,7 +65,7 @@ export function TableOfContentsClientRoot<TAs extends ElementType = "nav">(
   const controlled = controlledOpen !== undefined;
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current,
-      panel = root?.querySelector<HTMLElement>('[data-part="content"]');
+      panel = root?.querySelector<HTMLElement>(".uiify-table-of-contents-content");
     if (!root) return;
     setDocumentUrl(root.ownerDocument.URL);
     if (!panel) return;
@@ -115,11 +115,11 @@ export function TableOfContentsClientRoot<TAs extends ElementType = "nav">(
     render,
     defaultTag: "nav",
     props: {
+      "data-state": ready && open ? "open" : "closed",
       ...rest,
       children,
       ref: mergedRef,
-      "data-uiify-table-of-contents": "",
-      "data-state": ready && open ? "open" : "closed",
+      className: cn("uiify-table-of-contents", rest.className),
       onClick(event: ReactMouseEvent<HTMLElement>) {
         onClick?.(event);
         interactions.current?.click(event.nativeEvent);

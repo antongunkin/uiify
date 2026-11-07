@@ -88,11 +88,11 @@ describe("HeaderClient", () => {
     );
     expect(html).toContain('data-state="top"');
     expect(html).toContain('data-placement="sticky"');
-    expect(html).toContain('data-uiify-header=""');
+    expect(html).toContain('class="uiify-header"');
     expect(html).toContain('href="/docs"');
   });
 
-  it("owns identity, placement and state while forwarding native props and object ref", () => {
+  it("composes its identity class and forwards native props and object ref", () => {
     const ref = createRef<HTMLElement>();
     const click = vi.fn();
     render(
@@ -112,12 +112,12 @@ describe("HeaderClient", () => {
     const root = screen.getByRole("banner", { name: "Site" });
     expect(ref.current).toBe(root);
     expect(root.id).toBe("header");
-    expect(root.className).toBe("custom");
+    expect(root.className).toBe("uiify-header custom");
     expect(root.style.color).toBe("red");
     expect(root.getAttribute("data-consumer")).toBe("value");
-    expect(root.getAttribute("data-uiify-header")).toBe("");
-    expect(root.getAttribute("data-placement")).toBe("sticky");
-    expect(state()).toBe("top");
+    expect(root.getAttribute("data-uiify-header")).toBe("fake");
+    expect(root.getAttribute("data-placement")).toBe("fake");
+    expect(state()).toBe("hidden");
     fireEvent.click(root);
     expect(click).toHaveBeenCalledOnce();
   });

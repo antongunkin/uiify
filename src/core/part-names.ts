@@ -1,20 +1,20 @@
-/**
- * Every `data-part` value the library renders or styles. `naming.test.ts` fails when a TSX or
- * CSS file uses a name that is not listed here. Import the type with `import type` only, so the
- * array never reaches a bundle. Consumers may still pass any `data-part` of their own.
- */
+/** Suffixes accepted by the library's component identity class contract. */
 export const PART_NAMES = [
   "action",
   "actions",
   "addon",
   "append",
+  "bar",
   "body",
+  "cancel",
   "candle",
   "candle-hit",
   "candles",
   "canvas",
+  "caption",
   "cell",
   "checkbox-item",
+  "client",
   "close",
   "column-header",
   "content",
@@ -33,12 +33,14 @@ export const PART_NAMES = [
   "dots",
   "dropzone",
   "ellipsis",
+  "ellipsis-content",
   "empty",
   "error",
   "expand-trigger",
   "expanded-row",
   "fallback",
   "file-info",
+  "file-size",
   "footer",
   "form-control",
   "grabber",
@@ -84,7 +86,12 @@ export const PART_NAMES = [
   "row",
   "row-header",
   "scroll-viewport",
+  "select-all", // Aggregate checkbox rendered by CheckboxGroupClient.
   "separator",
+  "separator-content", // FieldSeparator text between its lines.
+  "separator-line", // FieldSeparator line.
+  "set", // FieldSet.
+  "set-legend", // FieldLegend.
   "shortcut",
   "slide",
   "slide-content",
@@ -107,11 +114,13 @@ export const PART_NAMES = [
   "term",
   "thumb",
   "time-axis",
+  "time-axis-label",
   "time-viewport",
   "title",
   "track",
   "trigger",
   "value-axis",
+  "value-axis-label",
   "viewport",
   "visual-thumb",
 ] as const;

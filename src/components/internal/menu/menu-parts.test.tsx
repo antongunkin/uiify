@@ -4,14 +4,14 @@ import { MenuGroup, MenuLabel, MenuSeparator } from "./menu-parts.js";
 
 it("renders semantic menu group and label parts", () => {
   expect(renderToStaticMarkup(<MenuGroup>Items</MenuGroup>)).toContain(
-    'role="group" data-part="group"',
+    'role="group" class="uiify-menu-group"',
   );
-  expect(renderToStaticMarkup(<MenuLabel>Label</MenuLabel>)).toContain('data-part="label"');
+  expect(renderToStaticMarkup(<MenuLabel>Label</MenuLabel>)).toContain('class="uiify-menu-label"');
 });
 
 it("renders a separator with its owned semantics", () => {
   expect(renderToStaticMarkup(<MenuSeparator />)).toContain(
-    'role="separator" data-part="separator"',
+    'role="separator" class="uiify-menu-separator"',
   );
 });
 
@@ -22,10 +22,10 @@ it("keeps polymorphic and render props available", () => {
         Items
       </MenuGroup>,
     ),
-  ).toContain('<section class="items" role="group" data-part="group">Items</section>');
+  ).toContain('<section role="group" class="uiify-menu-group items">Items</section>');
   expect(
     renderToStaticMarkup(
       <MenuLabel render={(props) => <strong {...props}>Label</strong>}>Label</MenuLabel>,
     ),
-  ).toContain('<strong role="presentation" data-part="label">Label</strong>');
+  ).toContain('<strong role="presentation" class="uiify-menu-label">Label</strong>');
 });

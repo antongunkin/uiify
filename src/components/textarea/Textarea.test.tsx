@@ -32,7 +32,7 @@ describe("Textarea", () => {
     expect(getCommitCount()).toBe(1);
   });
 
-  it("owns aria-invalid, data-autosize, data-disabled, data-readonly and data-invalid; consumer cannot override them", () => {
+  it("allows consumer overrides of aria-invalid, data-autosize, data-disabled, data-readonly and data-invalid", () => {
     render(
       <Textarea
         autoSize
@@ -48,27 +48,26 @@ describe("Textarea", () => {
       />,
     );
     const textarea = screen.getByRole("textbox", { name: "Notes" });
-    expect(textarea.getAttribute("aria-invalid")).toBe("true");
-    expect(textarea.getAttribute("data-autosize")).toBe("");
-    expect(textarea.getAttribute("data-disabled")).toBe("");
-    expect(textarea.getAttribute("data-readonly")).toBe("");
-    expect(textarea.getAttribute("data-invalid")).toBe("");
+    expect(textarea.getAttribute("aria-invalid")).toBe("false");
+    expect(textarea.getAttribute("data-autosize")).toBe("no");
+    expect(textarea.getAttribute("data-disabled")).toBe("no");
+    expect(textarea.getAttribute("data-readonly")).toBe("no");
+    expect(textarea.getAttribute("data-invalid")).toBe("no");
   });
 
-  it("forwards consumer styling props and owns its identity marker", () => {
+  it("joins its identity class with consumer styling props", () => {
     render(
       <Textarea
         aria-label="Notes"
         className="consumer-textarea"
         data-layout="compact"
-        data-uiify-textarea="consumer-value"
         style={{ marginBlock: "1rem" }}
       />,
     );
     const textarea = screen.getByRole("textbox", { name: "Notes" });
-    expect(textarea.getAttribute("class")).toBe("consumer-textarea");
+    expect(textarea.getAttribute("class")).toBe("uiify-textarea consumer-textarea");
     expect(textarea.getAttribute("data-layout")).toBe("compact");
-    expect(textarea.getAttribute("data-uiify-textarea")).toBe("");
+    expect(textarea.hasAttribute("data-uiify-textarea")).toBe(false);
     expect(textarea.style.marginBlock).toBe("1rem");
   });
 

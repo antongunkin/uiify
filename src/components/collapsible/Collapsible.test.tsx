@@ -35,9 +35,11 @@ describe("Collapsible", () => {
       />,
     );
 
-    expect(document.querySelector("details")?.getAttribute("class")).toBe("root");
-    expect(screen.getByTestId("trigger-slot").getAttribute("class")).toBe("trigger");
-    expect(screen.getByTestId("panel-slot").getAttribute("class")).toBe("panel");
+    expect(document.querySelector("details")?.getAttribute("class")).toBe(
+      "uiify-native-details uiify-collapsible root",
+    );
+    expect(screen.getByTestId("trigger-slot").getAttribute("class")).toContain("trigger");
+    expect(screen.getByTestId("panel-slot").getAttribute("class")).toContain("panel");
   });
 
   it("renders open state and panel wiring in SSR markup", () => {

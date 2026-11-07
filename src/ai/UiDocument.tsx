@@ -30,9 +30,8 @@ function renderNode(
 ): ReactElement {
   const type = uiParts[node.type].kind === "native" ? node.type : components.get(node.type);
   if (type === undefined) throw new Error(`UI part type ${node.type} was not loaded`);
-  const children = childrenOf(node).map(
-    (child: UiChild, index: number): ReactNode =>
-      typeof child === "string" ? child : renderNode(child, components, index),
+  const children = childrenOf(node).map((child: UiChild, index: number): ReactNode =>
+    typeof child === "string" ? child : renderNode(child, components, index),
   );
   return createElement(type, key === undefined ? node.props : { ...node.props, key }, ...children);
 }

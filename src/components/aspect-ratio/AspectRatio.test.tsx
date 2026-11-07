@@ -13,11 +13,13 @@ describe("AspectRatio", () => {
       </AspectRatio>,
     );
     const root = container.firstElementChild;
-    expect(root?.getAttribute("data-uiify-aspect-ratio")).toBe("");
+    expect(root?.classList.contains("uiify-aspect-ratio")).toBe(true);
+    expect(root?.hasAttribute("data-uiify-aspect-ratio")).toBe(false);
     expect(root?.children).toHaveLength(1);
     const content = root?.firstElementChild;
     expect(content?.tagName).toBe("DIV");
-    expect(content?.getAttribute("data-part")).toBe("content");
+    expect(content?.classList.contains("uiify-aspect-ratio-content")).toBe(true);
+    expect(content?.hasAttribute("data-part")).toBe(false);
     expect(content?.children).toHaveLength(1);
     expect(content?.firstElementChild).toBe(screen.getByRole("img"));
   });
@@ -89,7 +91,7 @@ describe("AspectRatio", () => {
     );
     const root = screen.getByTitle("Mountain frame");
     expect(ref.current).toBe(root);
-    expect(root.className).toBe("media-frame");
+    expect(root.className).toBe("uiify-aspect-ratio media-frame");
     expect(root.id).toBe("mountain-frame");
     expect(root.getAttribute("data-consumer")).toBe("retained");
     fireEvent.click(root);
@@ -104,8 +106,10 @@ describe("AspectRatio", () => {
         Photo
       </AspectRatio>,
     );
-    expect(screen.getByTestId("content").className).toBe("frame-content");
-    expect(screen.getByTestId("content").getAttribute("data-part")).toBe("content");
+    expect(screen.getByTestId("content").className).toBe(
+      "uiify-aspect-ratio-content frame-content",
+    );
+    expect(screen.getByTestId("content").hasAttribute("data-part")).toBe(false);
   });
 
   it("lets a consumer replace its identity marker", () => {
@@ -123,7 +127,7 @@ describe("AspectRatio", () => {
     const root = screen.getByRole("link", { name: "Mountains" });
     expect(root.getAttribute("href")).toBe("/mountains");
     expect(ref.current).toBe(root);
-    expect(root.firstElementChild?.getAttribute("data-part")).toBe("content");
+    expect(root.firstElementChild?.classList.contains("uiify-aspect-ratio-content")).toBe(true);
   });
 
   it("passes its complete root props and content to a custom renderer", () => {
@@ -134,15 +138,15 @@ describe("AspectRatio", () => {
     );
     const root = screen.getByText("Custom frame").parentElement?.parentElement;
     expect(root?.tagName).toBe("SECTION");
-    expect(root?.getAttribute("data-uiify-aspect-ratio")).toBe("");
+    expect(root?.classList.contains("uiify-aspect-ratio")).toBe(true);
     expect(root?.style.getPropertyValue("--uiify-aspect-ratio")).toBe("2");
-    expect(root?.firstElementChild?.getAttribute("data-part")).toBe("content");
+    expect(root?.firstElementChild?.classList.contains("uiify-aspect-ratio-content")).toBe(true);
   });
 
   it("renders on the server without client behavior", () => {
     const html = assertSSRRenderable(<AspectRatio ratio={1}>Square content</AspectRatio>);
-    expect(html).toContain('data-uiify-aspect-ratio=""');
-    expect(html).toContain('<div data-part="content">Square content</div>');
+    expect(html).toContain('class="uiify-aspect-ratio"');
+    expect(html).toContain('<div class="uiify-aspect-ratio-content">Square content</div>');
     expect(html).toContain("--uiify-aspect-ratio:1");
   });
 });

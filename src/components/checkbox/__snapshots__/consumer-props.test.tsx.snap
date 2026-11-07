@@ -2,10 +2,10 @@
 
 exports[`preserves default checkbox DOM 1`] = `
 [
-  "label data-uiify-checkbox="" id="plain-label"",
-  "input aria-labelledby="plain-label" data-part="control" id="plain" type="checkbox"",
-  "label data-uiify-checkbox="" id="checked-label"",
-  "input aria-labelledby="checked-label" checked="" data-disabled="" data-part="control" disabled="" id="checked" type="checkbox"",
-  "input aria-checked="mixed" aria-label="Mixed" data-state="indeterminate" data-uiify-checkbox="" id="mixed" type="checkbox"",
+  "label class="uiify-checkbox" id="plain-label"",
+  "input aria-labelledby="plain-label" class="uiify-checkbox-control" id="plain" type="checkbox"",
+  "label class="uiify-checkbox" id="checked-label"",
+  "input aria-labelledby="checked-label" checked="" class="uiify-checkbox-control" data-disabled="" disabled="" id="checked" type="checkbox"",
+  "input aria-label="Controlled" checked="" class="uiify-checkbox-control" data-state="checked" id="controlled" type="checkbox"",
 ]
 `;

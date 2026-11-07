@@ -111,14 +111,14 @@ export function useChartViewport(options: UseChartViewportOptions): UseChartView
       // not an out-of-range raw value.
       setScale((current) => clamp(clamp(current, min, max) * factor, min, max));
     },
-    [enabled, max, min],
+    [enabled, max, min, setScale],
   );
 
   useEventListener("wheel", onWheel, enabled ? ref : null, { passive: false });
 
   const reset = useCallback(() => {
     setScale(initial);
-  }, [initial]);
+  }, [initial, setScale]);
 
   const itemWidth =
     measuredWidth > 0 && options.itemCount > 0

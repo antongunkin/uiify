@@ -13,12 +13,12 @@
 ## Exports
 
 - Runtime: `Button`
-- Types: `ButtonOwnProps`, `ButtonProps`, `ButtonSize`, `ButtonState`, `ButtonVariant`
+- Types: `ButtonElementProps`, `ButtonLinkProps`, `ButtonOwnProps`, `ButtonProps`, `ButtonSize`, `ButtonState`, `ButtonVariant`
 
 ## Values
 
-- `ButtonVariant`: `"secondary" | "outline" | "ghost" | "destructive" | "link"`
-- `ButtonSize`: `"sm" | "md" | "lg" | "icon-sm" | "icon" | "icon-lg"`
+- `ButtonVariant`: `"default" | "secondary" | "outline" | "ghost" | "destructive" | "link"` — `default` is the filled foreground action, the same as leaving `variant` unset.
+- `ButtonSize`: `"xs" | "sm" | "default" | "lg" | "icon-xs" | "icon-sm" | "icon" | "icon-lg"` — `default` is the standard height, the same as leaving `size` unset.
 
 ## Props and shapes
 
@@ -41,4 +41,6 @@
 
 ## Other types
 
-- `ButtonProps<TAs>`: `RenderableProps<TAs, ButtonOwnProps, ButtonState, HTMLElement>`
+- `ButtonLinkProps`: `` ButtonOwnProps & { /** A link has no native button action. */ readonly type?: never; /** Renders a link styled as a button. Without `as`, `href` selects the `a` element. */ readonly href: string; } & Omit<ComponentPropsWithRef<"a">, keyof ButtonOwnProps | "href" | "as" | "render"> `` — Link branch: `href` without `as` renders an `<a>` with the Button skin, equivalent to `as="a"`. Button-only props (`type`, `form*`) are not offered here.
+- `ButtonElementProps<TAs>`: `RenderableProps<TAs, ButtonOwnProps, ButtonState, HTMLElement>` — Props of the polymorphic branch: a native button, `as`, or a render callback.
+- `ButtonProps<TAs>`: `(ButtonElementProps<TAs> & (TAs extends "button" ? { readonly href?: never } : unknown)) | ButtonLinkProps`

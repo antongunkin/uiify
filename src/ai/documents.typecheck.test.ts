@@ -9,8 +9,9 @@ import { expect, it } from "vitest";
 import type { UiNodeInput } from "./index.js";
 
 // Raw JSX children are in documents.typecheck.test.tsx (they need a .tsx file).
-// Rules that only exist at runtime (part outside its root, a `fieldId` naming another root,
-// duplicate ids, depth, node and string limits, shared nodes) are covered by validate.test.ts.
+// Rules that only exist at runtime (part outside its root, a FieldLabel htmlFor or
+// aria-describedby id with no target, duplicate ids, depth, node and string limits, shared
+// nodes) are covered by validate.test.ts.
 
 export const unknownType = {
   type: "form",
@@ -48,26 +49,25 @@ export const valueOutsideSet = {
 } satisfies UiNodeInput;
 
 export const missingRequiredProp = {
-  type: "Field.Root",
-  props: { id: "name" },
+  type: "form",
+  props: {},
   children: [
     {
-      type: "Field.Label",
-      // @ts-expect-error Field.Label requires "fieldId"
+      type: "Checkbox",
+      // @ts-expect-error Checkbox requires "id"
       props: {},
-      children: ["Name"],
     },
   ],
 } satisfies UiNodeInput;
 
 export const childrenOnLeaf = {
-  type: "Select.Root",
+  type: "NativeSelect",
   props: {},
   children: [
     {
-      type: "Select.Separator",
+      type: "NativeSelectSeparator",
       props: {},
-      // @ts-expect-error Select.Separator takes no children
+      // @ts-expect-error NativeSelectSeparator takes no children
       children: ["x"],
     },
   ],
@@ -119,9 +119,11 @@ const rows = [
 export const mappedChildren = {
   type: "ul",
   props: {},
-  children: rows.map(
-    (row): UiNodeInput => ({ type: "li", props: {}, children: [row.name, row.price] }),
-  ),
+  children: rows.map((row): UiNodeInput => ({
+    type: "li",
+    props: {},
+    children: [row.name, row.price],
+  })),
 } satisfies UiNodeInput;
 
 it("keeps the negative cases importable so the compiler checks them", () => {

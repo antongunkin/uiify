@@ -30,8 +30,11 @@ it("lets native props override spinner ARIA, state and generated label defaults"
       value={30}
       showLabel
       data-testid="root"
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer role override.
       role="status"
+      // oxlint-disable-next-line jsx-a11y/role-supports-aria-props -- This tests the consumer value override.
       aria-valuenow={12}
+      // oxlint-disable-next-line jsx-a11y/role-supports-aria-props -- This tests removal of the generated minimum.
       aria-valuemin={undefined}
       aria-label={undefined}
       data-state="custom"

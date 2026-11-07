@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import type { FormErrorSummaryProps } from "./types.js";
 
@@ -13,29 +13,39 @@ export function FormErrorSummary<TAs extends ElementType = "section">(
     as,
     defaultTag: "section",
     props: {
-      "data-uiify-form-error-summary": "",
       ...consumerProps,
+      className: cn("uiify-form-error-summary", consumerProps.className),
       children: (
         <>
-          <h2 data-part="title" {...slotProps?.title}>
+          <h2
+            {...slotProps?.title}
+            className={cn("uiify-form-error-summary-title", slotProps?.title?.className)}
+          >
             {title}
           </h2>
-          <ul data-part="list" {...slotProps?.list}>
-            {errors.map((error, index) => (
-              <li
-                data-part="item"
-                {...resolveRepeatedSlotProps(slotProps?.item, error.href)}
-                key={`${error.href}-${index}`}
-              >
-                <a
-                  data-part="link"
-                  href={error.href}
-                  {...resolveRepeatedSlotProps(slotProps?.link, error.href)}
+          <ul
+            {...slotProps?.list}
+            className={cn("uiify-form-error-summary-list", slotProps?.list?.className)}
+          >
+            {errors.map((error, index) => {
+              const itemProps = resolveRepeatedSlotProps(slotProps?.item, error.href);
+              const linkProps = resolveRepeatedSlotProps(slotProps?.link, error.href);
+              return (
+                <li
+                  {...itemProps}
+                  className={cn("uiify-form-error-summary-item", itemProps.className)}
+                  key={`${error.href}-${index}`}
                 >
-                  {error.message}
-                </a>
-              </li>
-            ))}
+                  <a
+                    href={error.href}
+                    {...linkProps}
+                    className={cn("uiify-form-error-summary-link", linkProps.className)}
+                  >
+                    {error.message}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </>
       ),

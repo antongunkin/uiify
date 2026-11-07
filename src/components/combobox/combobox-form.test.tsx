@@ -107,7 +107,7 @@ describe("Combobox FormControl", () => {
       </>,
     );
     expect(ref.current).toBe(proxy(container));
-    expect(ref.current?.className).toBe("consumer");
+    expect(ref.current?.className).toBe("uiify-combobox-form-control consumer");
     expect(ref.current?.style.opacity).toBe("0.5");
     expect(ref.current?.dataset.custom).toBe("yes");
     expect(screen.getByRole("combobox").getAttribute("name")).toBe("query");

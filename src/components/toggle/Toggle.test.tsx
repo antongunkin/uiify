@@ -76,9 +76,12 @@ describe("Toggle", () => {
     expect(rootRef.current).toBe(screen.getByTestId("toggle-root"));
     expect(controlRef.current).toBe(screen.getByTestId("toggle-control"));
     expect(labelRef.current).toBe(screen.getByTestId("toggle-label"));
-    expect(screen.getByTestId("toggle-root").className).toBe("toggle-root");
-    expect(screen.getByTestId("toggle-control").className).toBe("toggle-control");
-    expect(screen.getByTestId("toggle-label").className).toBe("toggle-label");
+    expect(screen.getByTestId("toggle-root").className).toBe("uiify-toggle toggle-root");
+    expect(screen.getByTestId("toggle-root").hasAttribute("data-uiify-toggle")).toBe(false);
+    expect(screen.getByTestId("toggle-control").className).toBe(
+      "uiify-toggle-control toggle-control",
+    );
+    expect(screen.getByTestId("toggle-label").className).toBe("uiify-button toggle-label");
   });
 
   it("renders consistent SSR markup", () => {

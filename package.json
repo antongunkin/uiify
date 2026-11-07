@@ -1,6 +1,6 @@
 {
   "name": "@gunkin/uiify",
-  "version": "0.0.30-alpha",
+  "version": "0.0.1-alpha",
   "description": "Native-first, accessible React 19 components that work before hydration.",
   "keywords": [
     "accessibility",
@@ -8,7 +8,8 @@
     "headless-ui",
     "native-html",
     "react",
-    "server-components"
+    "server-components",
+    "tanstack-intent"
   ],
   "homepage": "https://uiify.gunkin.dev/",
   "bugs": {
@@ -88,6 +89,24 @@
       "import": "./dist/elements/*.js"
     },
     "./elements/behavior.css": "./dist/components/behavior.css",
+    "./behavior.css": "./dist/components/behavior.css",
+    "./tailwind.css": "./dist/styles/tailwind.css",
+    "./themes/*.css": "./dist/styles/themes/*.css",
+    "./styles/define": {
+      "types": "./dist/styles/define.d.ts",
+      "import": "./dist/styles/define.js"
+    },
+    "./internal/styles/build/snippet": {
+      "types": "./dist/styles/build/snippet.d.ts",
+      "import": "./dist/styles/build/snippet.js"
+    },
+    "./internal/styles/uiify": {
+      "types": "./dist/styles/uiify/index.d.ts",
+      "import": "./dist/styles/uiify/index.js"
+    },
+    "./styles/uiify.css": "./dist/styles/uiify.css",
+    "./styles/uiify.scoped.css": "./dist/styles/uiify.scoped.css",
+    "./styles/uiify/*.css": "./dist/styles/uiify/*.css",
     "./ai": {
       "types": "./dist/ai/index.d.ts",
       "import": "./dist/ai/index.js"
@@ -97,8 +116,8 @@
     "./styles.css": "./dist/styles/index.css",
     "./styles/tokens": "./dist/styles/tokens.css",
     "./styles/tokens.css": "./dist/styles/tokens.css",
-    "./styles/tailwind": "./dist/styles/tailwind.css",
-    "./styles/tailwind.css": "./dist/styles/tailwind.css",
+    "./styles/tailwind": "./dist/styles/tailwind-legacy.css",
+    "./styles/tailwind.css": "./dist/styles/tailwind-legacy.css",
     "./styles/layout": "./dist/styles/layout.css",
     "./styles/layout.css": "./dist/styles/layout.css",
     "./styles/controls": "./dist/styles/controls.css",
@@ -131,7 +150,7 @@
     "lint": "oxlint --config .oxlintrc.json src scripts",
     "stylelint": "stylelint \"src/**/*.css\"",
     "check:layout-reads": "node scripts/check-banned-layout-reads.mjs",
-    "check:package": "publint . && attw --pack . --profile esm-only --exclude-entrypoints ./components/behavior.css ./elements/behavior.css ./styles ./styles/index.css ./styles.css ./styles/tokens ./styles/tokens.css ./styles/tailwind ./styles/tailwind.css ./styles/layout ./styles/layout.css ./styles/controls ./styles/controls.css ./styles/reset ./styles/reset.css",
+    "check:package": "publint . && attw --pack . --profile esm-only --exclude-entrypoints ./components/behavior.css ./behavior.css ./tailwind.css ./themes/*.css ./styles/uiify.css ./styles/uiify.scoped.css ./styles/uiify/*.css ./elements/behavior.css ./styles ./styles/index.css ./styles.css ./styles/tokens ./styles/tokens.css ./styles/tailwind ./styles/tailwind.css ./styles/layout ./styles/layout.css ./styles/controls ./styles/controls.css ./styles/reset ./styles/reset.css",
     "verify:tarball": "node scripts/verify-tarball.mjs",
     "check": "npm run format:check && npm run lint && npm run stylelint && npm run typecheck && npm run build && npm test && npm run check:layout-reads && npm run check:package && npm run size",
     "release:check": "npm run check && npm run verify:tarball",
@@ -139,35 +158,39 @@
     "prepublishOnly": "npm run release:check"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.3",
+    "@arethetypeswrong/cli": "^0.18.5",
     "@ladle/react": "^5.1.1",
     "@size-limit/preset-small-lib": "^12.1.0",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/node": "^25.9.3",
+    "@tailwindcss/node": "^4.3.5",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^25.9.9",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "axe-core": "^4.12.1",
-    "browserslist": "^4.28.9",
-    "html-validate": "^11.16.3",
+    "axe-core": "^4.14.0",
+    "browserslist": "^4.29.5",
+    "html-validate": "^11.19.0",
     "jsdom": "^29.1.1",
-    "lightningcss": "^1.32.0",
-    "oxfmt": "^0.54.0",
-    "oxlint": "^1.69.0",
-    "publint": "^0.3.21",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "lightningcss": "^1.33.0",
+    "oxfmt": "^0.77.0",
+    "oxlint": "^1.92.0",
+    "postcss": "^8.5.32",
+    "publint": "^0.3.25",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "size-limit": "^12.1.0",
-    "stylelint": "^17.14.1",
+    "stylelint": "^17.16.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-plugin-logical-css": "^2.1.0",
-    "tsup": "^8.5.1",
+    "tailwindcss": "^4.3.5",
+    "tsup": "^9.0.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.12"
   },
   "peerDependencies": {
     "react": ">=19.3.0",
-    "react-dom": ">=19.3.0"
+    "react-dom": ">=19.3.0",
+    "tailwindcss": "^4.1.0"
   },
   "packageManager": "npm@11.7.0"
 }

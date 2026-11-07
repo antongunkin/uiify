@@ -1,0 +1,17 @@
+/*
+ * Build-time Tailwind entry for compiling recipe styles: Tailwind's default theme with its color
+ * palette removed, then the public adapter. The palette is removed here, not in the adapter, so a
+ * consumer importing the adapter keeps their own palette while recipes may use semantic colors only.
+ */
+/* stylelint-disable import-notation */
+@import "tailwindcss/theme.css" layer(theme);
+/* stylelint-enable import-notation */
+
+@theme {
+  /* stylelint-disable-next-line custom-property-pattern -- Tailwind namespace reset. */
+  --color-*: initial;
+}
+
+/* Tailwind inlines imports in place, so this import follows the reset on purpose. */
+/* stylelint-disable-next-line import-notation, no-invalid-position-at-import-rule */
+@import "../tailwind.css";

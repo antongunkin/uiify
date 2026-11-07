@@ -56,7 +56,9 @@ export function useLocalStorage<T>(
   defaultValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void] {
   const defaultValueRef = useRef(defaultValue);
-  defaultValueRef.current = defaultValue;
+  useIsomorphicLayoutEffect(() => {
+    defaultValueRef.current = defaultValue;
+  });
 
   const read = useCallback((): T => {
     if (typeof window === "undefined") return defaultValueRef.current;
@@ -70,7 +72,9 @@ export function useLocalStorage<T>(
 
   const [stored, setStored] = useState<T>(defaultValue);
   const storedRef = useRef(stored);
-  storedRef.current = stored;
+  useIsomorphicLayoutEffect(() => {
+    storedRef.current = stored;
+  });
 
   const updateStored = useCallback((next: T) => {
     storedRef.current = next;

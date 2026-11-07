@@ -5,8 +5,8 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `input[type=radio|checkbox]`
 - Without JavaScript: full
 - Types file: `dist/components/toggle-group.d.ts`
-- Related native Element (manifest): [choice](../elements/choice.md)
-- Note: Built on @gunkin/uiify/elements/choice.
+- Related native Element (manifest): [native-choice](../elements/native-choice.md)
+- Note: Built on @gunkin/uiify/elements/native-choice.
 
 ## Related knowledge
 

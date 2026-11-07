@@ -26,6 +26,8 @@ export interface SliderClientOwnProps {
   readonly min?: number;
   readonly max?: number;
   readonly step?: number | null;
+  /** Minimum difference between the two range values; closer values are clamped apart. */
+  readonly minStepsBetweenValues?: number;
   readonly disabled?: boolean;
   readonly orientation?: "horizontal" | "vertical";
   readonly marks?: readonly SliderMark[];

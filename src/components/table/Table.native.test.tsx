@@ -5,13 +5,7 @@ import { Table } from "./index.js";
 describe("native Table", () => {
   it("renders headers, footer, row headers and explicit logical sticky seams", () => {
     const { container } = render(
-      <Table.Root
-        aria-label="Invoices"
-        layout="fixed"
-        size="sm"
-        variant="outline"
-        data-uiify-table="override"
-      >
+      <Table.Root aria-label="Invoices" layout="fixed" size="sm" variant="outline">
         <Table.Header sticky>
           <Table.Row id="head">
             <Table.ColumnHeader id="name" sticky="start">
@@ -31,12 +25,12 @@ describe("native Table", () => {
         </Table.Footer>
       </Table.Root>,
     );
-    expect(screen.getByRole("table").getAttribute("data-uiify-table")).toBe("");
+    expect(screen.getByRole("table").classList.contains("uiify-table")).toBe(true);
     expect(screen.getByRole("table").getAttribute("data-layout")).toBe("fixed");
     expect(screen.getByRole("rowheader").getAttribute("scope")).toBe("row");
     expect(screen.getByRole("rowheader").getAttribute("data-sticky")).toBe("start");
     expect(container.querySelector("tfoot")?.getAttribute("data-sticky")).toBe("");
-    expect(container.querySelector("thead")?.getAttribute("data-part")).toBe("header");
+    expect(container.querySelector("thead")?.classList.contains("uiify-table-header")).toBe(true);
   });
 });
 

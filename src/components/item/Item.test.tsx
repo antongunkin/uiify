@@ -6,8 +6,8 @@ describe("Item", () => {
   it("renders a list item and keeps each content part separate", () => {
     render(
       <ul>
-        <Item data-testid="item" data-uiify-item="consumer">
-          <ItemMedia data-testid="media" data-part="consumer">
+        <Item data-testid="item" className="consumer">
+          <ItemMedia data-testid="media">
             <img src="/avatar.png" alt="" />
           </ItemMedia>
           <ItemContent data-testid="content">
@@ -23,18 +23,24 @@ describe("Item", () => {
 
     const item = screen.getByTestId("item");
     expect(item.tagName).toBe("LI");
-    expect(item.getAttribute("data-uiify-item")).toBe("");
+    expect(item.classList.contains("uiify-item")).toBe(true);
+    expect(item.classList.contains("consumer")).toBe(true);
+    expect(item.hasAttribute("data-uiify-item")).toBe(false);
     expect(within(item).getByRole("link", { name: "Mina Chen" }).getAttribute("href")).toBe(
       "#mina",
     );
-    expect(screen.getByTestId("media").getAttribute("data-uiify-item-media")).toBe("");
-    expect(screen.getByTestId("media").getAttribute("data-part")).toBe("media");
-    expect(screen.getByTestId("content").getAttribute("data-uiify-item-content")).toBe("");
-    expect(screen.getByTestId("content").getAttribute("data-part")).toBe("content");
-    expect(screen.getByTestId("metadata").getAttribute("data-uiify-item-metadata")).toBe("");
-    expect(screen.getByTestId("metadata").getAttribute("data-part")).toBe("metadata");
-    expect(screen.getByTestId("actions").getAttribute("data-uiify-item-actions")).toBe("");
-    expect(screen.getByTestId("actions").getAttribute("data-part")).toBe("actions");
+    expect(screen.getByTestId("media").classList.contains("uiify-item-media")).toBe(true);
+    expect(screen.getByTestId("media").hasAttribute("data-uiify-item-media")).toBe(false);
+    expect(screen.getByTestId("media").hasAttribute("data-part")).toBe(false);
+    expect(screen.getByTestId("content").classList.contains("uiify-item-content")).toBe(true);
+    expect(screen.getByTestId("content").hasAttribute("data-uiify-item-content")).toBe(false);
+    expect(screen.getByTestId("content").hasAttribute("data-part")).toBe(false);
+    expect(screen.getByTestId("metadata").classList.contains("uiify-item-metadata")).toBe(true);
+    expect(screen.getByTestId("metadata").hasAttribute("data-uiify-item-metadata")).toBe(false);
+    expect(screen.getByTestId("metadata").hasAttribute("data-part")).toBe(false);
+    expect(screen.getByTestId("actions").classList.contains("uiify-item-actions")).toBe(true);
+    expect(screen.getByTestId("actions").hasAttribute("data-uiify-item-actions")).toBe(false);
+    expect(screen.getByTestId("actions").hasAttribute("data-part")).toBe(false);
     expect(within(item).getByRole("button", { name: "More actions" })).toBeTruthy();
   });
 });

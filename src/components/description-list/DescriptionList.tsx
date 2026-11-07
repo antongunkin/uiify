@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type {
   DescriptionDetailsProps,
   DescriptionListProps,
@@ -13,7 +13,13 @@ export function DescriptionList<TAs extends ElementType = "dl">(
   return useRenderElement({
     as,
     defaultTag: "dl",
-    props: { ...consumerProps, "data-uiify-description-list": "" },
+    props: {
+      ...consumerProps,
+      className: cn(
+        "uiify-description-list",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
+    },
     render,
     state: {},
   });
@@ -28,8 +34,10 @@ export function DescriptionTerm<TAs extends ElementType = "dt">(
     defaultTag: "dt",
     props: {
       ...consumerProps,
-      "data-uiify-description-term": "",
-      "data-part": "term",
+      className: cn(
+        "uiify-description-list-term",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
     },
     render,
     state: {},
@@ -45,8 +53,10 @@ export function DescriptionDetails<TAs extends ElementType = "dd">(
     defaultTag: "dd",
     props: {
       ...consumerProps,
-      "data-uiify-description-details": "",
-      "data-part": "details",
+      className: cn(
+        "uiify-description-list-details",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
     },
     render,
     state: {},

@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default NativePopover DOM 1`] = `
+[
+  [
+    "button",
+    [
+      "class=uiify-native-popover-trigger",
+      "popovertarget=help",
+      "popovertargetaction=toggle",
+      "type=button",
+    ],
+    "Help",
+  ],
+  [
+    "div",
+    [
+      "class=uiify-native-popover-surface",
+      "data-align=center",
+      "data-positioning=native",
+      "data-side=bottom",
+      "id=help",
+      "popover=auto",
+    ],
+    null,
+  ],
+  [
+    "button",
+    [
+      "class=uiify-native-popover-close",
+      "popovertarget=help",
+      "popovertargetaction=hide",
+      "type=button",
+    ],
+    "Close",
+  ],
+]
+`;

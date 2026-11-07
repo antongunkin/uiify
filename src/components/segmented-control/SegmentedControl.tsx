@@ -30,7 +30,7 @@ export function SegmentedControl({
       isChecked={(item) => item.value === defaultValue}
       kind="single"
       namespace="segmented-control"
-      labelAttributes={{ "data-uiify-button": "", "data-variant": "ghost" }}
+      labelAttributes={{ className: "uiify-button", "data-variant": "ghost" }}
       orientation={orientation}
       {...(slotProps !== undefined ? { slotProps } : {})}
       rootAttributes={{

@@ -145,8 +145,8 @@ describe("Carousel server renderer", () => {
         items={[{ id: "only", label: "Only", children: "Only content" }]}
       />,
     );
-    expect(container.querySelector('[data-part="slide-nav"]')).toBeNull();
-    expect(container.querySelector('[data-part="dots"]')).toBeNull();
+    expect(container.querySelector(".uiify-carousel-control")).toBeNull();
+    expect(container.querySelector(".uiify-carousel-dots")).toBeNull();
     expect(screen.getByRole("group", { name: "Only, 1 of 1" })).toBeTruthy();
   });
 
@@ -231,7 +231,7 @@ describe("Carousel server renderer", () => {
     expect(document.getElementById("inner--slide-two")).toBeTruthy();
     expect(screen.getAllByRole("region")).toHaveLength(3);
     const outer = screen.getByRole("region", { name: "Outer gallery" });
-    expect(outer.querySelector(':scope > [data-part="viewport"]')?.children).toHaveLength(1);
+    expect(outer.querySelector(":scope > .uiify-carousel-viewport")?.children).toHaveLength(1);
   });
 
   it("forwards root and item classes and exposes public parts through data-part", () => {
@@ -268,20 +268,20 @@ describe("Carousel server renderer", () => {
     expect(root.classList.contains("root")).toBe(true);
     expect(root.getAttribute("dir")).toBe("rtl");
     expect((root as HTMLElement).style.getPropertyValue("--uiify-carousel-gap")).toBe("2rem");
-    expect(root.querySelector(':scope > [data-part="viewport"]')).toBeTruthy();
+    expect(root.querySelector(":scope > .uiify-carousel-viewport")).toBeTruthy();
     expect(
-      root.querySelector(':scope > [data-part="viewport"] > [data-part="slide"].item'),
+      root.querySelector(":scope > .uiify-carousel-viewport > .uiify-carousel-slide.item"),
     ).toBeTruthy();
-    expect(root.querySelector('[data-part="slide-content"]')).toBeTruthy();
+    expect(root.querySelector(".uiify-carousel-slide-content")).toBeTruthy();
     expect(
-      root.querySelector('[data-part="controls"][data-carousel-action="previous"]'),
+      root.querySelector('.uiify-carousel-control[data-carousel-action="previous"]'),
     ).toBeTruthy();
-    expect(root.querySelector('[data-part="controls"][data-carousel-action="next"]')).toBeTruthy();
-    expect(root.querySelector('[data-part="dot"]')).toBeTruthy();
+    expect(root.querySelector('.uiify-carousel-control[data-carousel-action="next"]')).toBeTruthy();
+    expect(root.querySelector(".uiify-carousel-dot")).toBeTruthy();
     expect(
-      root.querySelector('[data-part="controls"][data-carousel-action="rotation"]'),
+      root.querySelector('.uiify-carousel-control[data-carousel-action="rotation"]'),
     ).toBeTruthy();
-    expect(root.querySelector('[data-part="status"]')).toBeTruthy();
+    expect(root.querySelector(".uiify-carousel-status")).toBeTruthy();
     expect(root.querySelector("[aria-label='One, 1 из 2']")).toBeTruthy();
     expect(root.querySelector("[aria-label='Перейти к One']")).toBeTruthy();
   });

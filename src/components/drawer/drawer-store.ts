@@ -1,5 +1,4 @@
-import type { DrawerSide } from "./types.js";
-import type { DrawerStoreOptions, DrawerStore } from "./types.js";
+import type { DrawerSide, DrawerStoreOptions, DrawerStore } from "./types.js";
 
 function isVerticalSide(side: DrawerSide): boolean {
   return side === "top" || side === "bottom";

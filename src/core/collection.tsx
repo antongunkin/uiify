@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useRef, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useState, useSyncExternalStore } from "react";
 import type { PropsWithChildren, RefCallback } from "react";
 import { useIsomorphicLayoutEffect } from "@gunkin/uiify/hooks";
 import {
@@ -12,9 +12,8 @@ import {
 const CollectionContext = createContext<CollectionStore<unknown> | null>(null);
 
 export function CollectionProvider({ children }: PropsWithChildren) {
-  const storeRef = useRef<CollectionStore<unknown> | null>(null);
-  storeRef.current ??= createCollectionStore();
-  return <CollectionContext value={storeRef.current}>{children}</CollectionContext>;
+  const [store] = useState<CollectionStore<unknown>>(createCollectionStore);
+  return <CollectionContext value={store}>{children}</CollectionContext>;
 }
 CollectionProvider.displayName = "CollectionProvider";
 

@@ -123,7 +123,7 @@ function SingleToggleGroupClient({
       kind="single"
       namespace="toggle-group"
       labelAttributes={{
-        "data-uiify-button": "",
+        className: "uiify-button",
         "data-variant": "outline",
         ...(size !== undefined ? { "data-size": size } : {}),
       }}
@@ -178,7 +178,7 @@ function MultipleToggleGroupClient({
       kind="multiple"
       namespace="toggle-group"
       labelAttributes={{
-        "data-uiify-button": "",
+        className: "uiify-button",
         "data-variant": "outline",
         ...(size !== undefined ? { "data-size": size } : {}),
       }}

@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useId } from "react";
+import { useId, useState } from "react";
 import type { ElementType, ReactElement } from "react";
 import { useIsomorphicLayoutEffect, useControllableState } from "@gunkin/uiify/hooks";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import {
   TableCaption,
   TableCell,
@@ -18,7 +18,7 @@ import { TableRowSelect, TableSelectAll } from "./TableSelection.js";
 import { TableExpandedRow, TableExpandTrigger } from "./TableExpansion.js";
 import { TableProvider } from "./table-context.js";
 import { createTableStore } from "../table-store.js";
-import type { TableClientRootProps, TableStore } from "../types.js";
+import type { TableClientRootProps } from "../types.js";
 
 export type { SelectionMode, SortDescriptor } from "../types.js";
 export {
@@ -71,18 +71,18 @@ export function TableRoot<TAs extends ElementType = "table">(
     else keys.add(id);
     setExpandedKeys(keys);
   };
-  const storeRef = useRef<TableStore | null>(null);
-  storeRef.current ??= createTableStore({
-    selectionMode,
-    ...(defaultSelectedKeys !== undefined ? { defaultSelectedKeys } : {}),
-    ...(defaultSortDescriptor !== undefined ? { defaultSortDescriptor } : {}),
-    ...(onSelectionChange !== undefined ? { onSelectionChange } : {}),
-    ...(onSortChange !== undefined ? { onSortChange } : {}),
-    ...(selectedKeys !== undefined ? { selectedKeys } : {}),
-    ...(sortDescriptor !== undefined ? { sortDescriptor } : {}),
-    ...(selectionBehavior !== undefined ? { selectionBehavior } : {}),
-  });
-  const store = storeRef.current;
+  const [store] = useState(() =>
+    createTableStore({
+      selectionMode,
+      ...(defaultSelectedKeys !== undefined ? { defaultSelectedKeys } : {}),
+      ...(defaultSortDescriptor !== undefined ? { defaultSortDescriptor } : {}),
+      ...(onSelectionChange !== undefined ? { onSelectionChange } : {}),
+      ...(onSortChange !== undefined ? { onSortChange } : {}),
+      ...(selectedKeys !== undefined ? { selectedKeys } : {}),
+      ...(sortDescriptor !== undefined ? { sortDescriptor } : {}),
+      ...(selectionBehavior !== undefined ? { selectionBehavior } : {}),
+    }),
+  );
   store.updateOptions({
     ...(onSelectionChange !== undefined ? { onSelectionChange } : {}),
     ...(onSortChange !== undefined ? { onSortChange } : {}),
@@ -114,11 +114,11 @@ export function TableRoot<TAs extends ElementType = "table">(
       ...consumerProps,
       "aria-label": ariaLabel,
       "aria-labelledby": ariaLabelledBy,
-      "data-uiify-table": "",
       ...(layout ? { "data-layout": layout } : {}),
       ...(size ? { "data-size": size } : {}),
       ...(variant ? { "data-variant": variant } : {}),
       role: interactive ? "grid" : undefined,
+      className: cn("uiify-table", consumerProps.className),
     },
     render,
     state: {},

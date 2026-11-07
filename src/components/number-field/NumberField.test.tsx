@@ -20,14 +20,20 @@ describe("NumberField", () => {
     expect(input.getAttribute("aria-valuemin")).toBe("0");
     expect(input.getAttribute("aria-valuemax")).toBe("10");
     expect(input.value).toBe("5");
-    expect(screen.getByTestId("group").getAttribute("data-part")).toBe("group");
-    expect(input.getAttribute("data-part")).toBe("input");
-    expect(screen.getByRole("button", { name: "Decrease" }).getAttribute("data-part")).toBe(
-      "decrement",
-    );
-    expect(screen.getByRole("button", { name: "Increase" }).getAttribute("data-part")).toBe(
-      "increment",
-    );
+    expect(screen.getByTestId("group").classList.contains("uiify-number-field-group")).toBe(true);
+    expect(screen.getByTestId("group").classList.contains("uiify-number-field-group")).toBe(true);
+    expect(input.classList.contains("uiify-number-field-input")).toBe(true);
+    expect(input.classList.contains("uiify-number-field-input")).toBe(true);
+    expect(
+      screen
+        .getByRole("button", { name: "Decrease" })
+        .classList.contains("uiify-number-field-decrement"),
+    ).toBe(true);
+    expect(
+      screen
+        .getByRole("button", { name: "Increase" })
+        .classList.contains("uiify-number-field-increment"),
+    ).toBe(true);
   });
 
   it("formats with an explicit locale and defaults to en-US", () => {
@@ -62,18 +68,14 @@ describe("NumberField", () => {
 
   it("accepts root identity and state marker overrides", () => {
     const { container } = render(
-      <NumberField.Root
-        defaultValue={1}
-        disabled
-        data-disabled="nope"
-        data-uiify-number-field="nope"
-      >
+      <NumberField.Root defaultValue={1} disabled data-disabled="nope">
         <NumberField.Input aria-label="Amount" />
       </NumberField.Root>,
     );
     const root = container.firstElementChild as HTMLElement;
     expect(root.getAttribute("data-disabled")).toBe("nope");
-    expect(root.getAttribute("data-uiify-number-field")).toBe("nope");
+    expect(root.classList.contains("uiify-number-field")).toBe(true);
+    expect(root.hasAttribute("data-uiify-number-field")).toBe(false);
   });
 
   it("accepts group state marker overrides", () => {

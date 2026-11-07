@@ -98,8 +98,8 @@ export function observeTableOfContents({
       return;
     }
     const values = new Map<HTMLElement, string>();
-    for (const link of root.querySelectorAll('[data-part="link"][href]')) {
-      if (link.closest("[data-uiify-table-of-contents]") !== root) continue;
+    for (const link of root.querySelectorAll(".uiify-table-of-contents-link[href]")) {
+      if (link.closest(".uiify-table-of-contents") !== root) continue;
       const value = resolveTableOfContentsId(link.getAttribute("href")!, doc.URL);
       const node = value === null ? null : doc.getElementById(value);
       if (node && content.contains(node)) values.set(node, value!);

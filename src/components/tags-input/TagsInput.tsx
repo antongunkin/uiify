@@ -5,7 +5,6 @@ import {
   isValidElement,
   useCallback,
   useMemo,
-  useRef,
   useState,
   useSyncExternalStore,
 } from "react";
@@ -15,11 +14,10 @@ import { createPartContext } from "@gunkin/uiify/core";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { isComposingKeyEvent } from "@gunkin/uiify/core/ime";
 import { RovingFocusItem, RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import { mergeRepeatedSlotProps } from "../../core/slot-props.js";
 import { createTagsInputStore, splitTags } from "./tags-input-store.js";
 import type {
-  TagsInputStore,
   TagsInputContextValue,
   TagsInputRootProps,
   TagsInputInputProps,
@@ -67,13 +65,13 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
     ...(onValueChange ? { onChange: onValueChange } : {}),
   });
 
-  const storeRef = useRef<TagsInputStore | null>(null);
-  storeRef.current ??= createTagsInputStore(tags, {
-    allowDuplicates,
-    ...(maxTags !== undefined ? { maxTags } : {}),
-    ...(validate ? { validate } : {}),
-  });
-  const store = storeRef.current;
+  const [store] = useState(() =>
+    createTagsInputStore(tags, {
+      allowDuplicates,
+      ...(maxTags !== undefined ? { maxTags } : {}),
+      ...(validate ? { validate } : {}),
+    }),
+  );
 
   useIsomorphicLayoutEffect(() => {
     store.setTags(tags);
@@ -135,10 +133,9 @@ export function TagsInputRoot(props: TagsInputRootProps): ReactElement | null {
     <TagsInputProvider value={contextValue}>
       <div
         data-disabled={disabled ? "" : undefined}
-        data-uiify-tags-input=""
         {...consumerProps}
         {...(id !== undefined ? { id } : {})}
-        className={className}
+        className={cn("uiify-tags-input", className)}
       >
         {children}
       </div>
@@ -214,11 +211,10 @@ export function TagsInputInput<TAs extends ElementType = "input">(
       "aria-controls": listId,
       "aria-expanded": false,
       disabled: disabled || undefined,
-      "data-part": "input",
       value: inputValue,
       ...consumerProps,
       placeholder,
-      ...(className ? { className } : {}),
+      className: cn("uiify-tags-input-input", className),
       onChange: composeEventHandlers(consumerOnChange, handleChange),
       onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
       onPaste: composeEventHandlers(consumerOnPaste, handlePaste),
@@ -238,14 +234,19 @@ export function TagsInputList(props: TagsInputListOwnProps): ReactElement | null
       as="ul"
       orientation="horizontal"
       id={listId}
-      data-part="list"
       {...consumerProps}
-      {...(className ? { className } : {})}
+      className={cn("uiify-tags-input-list", className)}
     >
       {tags.map((tag, index) => {
         const tagProps = resolveIndexedSlotProps(slotProps?.tag, index);
         return (
-          <li data-index={index} data-value={tag} {...tagProps} key={`${tag}-${index}`}>
+          <li
+            data-index={index}
+            data-value={tag}
+            {...tagProps}
+            className={cn("uiify-tags-input-item", tagProps.className)}
+            key={`${tag}-${index}`}
+          >
             {tag}
           </li>
         );
@@ -254,21 +255,21 @@ export function TagsInputList(props: TagsInputListOwnProps): ReactElement | null
           needs one too — leaving it bare made the list malformed, a serious axe
           violation. TagsInputTag already renders its own <li>; wrapping it again
           would nest <li> inside <li>, an invalid, hydration-breaking tree. */}
-      {Children.map(children, (child) =>
-        isValidElement(child) && child.type === TagsInputTag ? (
-          child
-        ) : (
+      {Children.map(children, (child) => {
+        if (isValidElement(child) && child.type === TagsInputTag) return child;
+        const inputSlotProps = resolveIndexedSlotProps<TagsInputListSlotProps["input"] & object>(
+          slotProps?.input,
+          0,
+        );
+        return (
           <li
-            data-part="input-slot"
-            {...resolveIndexedSlotProps<TagsInputListSlotProps["input"] & object>(
-              slotProps?.input,
-              0,
-            )}
+            {...inputSlotProps}
+            className={cn("uiify-tags-input-input-slot", inputSlotProps.className)}
           >
             {child}
           </li>
-        ),
-      )}
+        );
+      })}
     </RovingFocusRoot>
   );
 }
@@ -293,10 +294,9 @@ export function TagsInputTag<TAs extends ElementType = "li">(
 
   const tagProps = {
     role: "listitem",
-    "data-part": "tag",
     "data-value": value,
     ...consumerProps,
-    ...(className ? { className } : {}),
+    className: cn("uiify-tags-input-tag", className),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     children,
   };
@@ -332,10 +332,9 @@ export function TagsInputTagRemove(props: TagsInputTagRemoveOwnProps): ReactElem
     props: {
       type: "button",
       "aria-label": "Remove tag",
-      "data-part": "tag-remove",
       disabled: disabled || undefined,
       ...consumerProps,
-      ...(className ? { className } : {}),
+      className: cn("uiify-tags-input-tag-remove", className),
       onClick: composeEventHandlers(consumerOnClick, () => removeAt(index)),
     },
     state: { disabled },

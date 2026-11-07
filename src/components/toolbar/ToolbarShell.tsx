@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { ToggleGroup } from "../toggle-group/ToggleGroup.js";
 import type {
   ToolbarRootProps,
@@ -20,13 +21,11 @@ export function ToolbarRoot(props: ToolbarRootProps): ReactElement | null {
 
   return (
     <div
-      {...consumerProps}
-      className={className}
       data-orientation={orientation}
-      data-part="root"
-      data-uiify-toolbar=""
-      dir={dir}
       role="toolbar"
+      {...consumerProps}
+      className={cn("uiify-toolbar", className)}
+      dir={dir}
     >
       {children}
     </div>
@@ -43,13 +42,10 @@ export function ToolbarButton(props: ToolbarButtonProps): ReactElement | null {
       {...(selected !== undefined ? { "aria-pressed": selected } : {})}
       {...consumerProps}
       aria-disabled={disabled || undefined}
-      data-part="item"
-      data-uiify-button=""
-      data-uiify-toolbar=""
+      className={cn("uiify-toolbar-item", "uiify-button", className)}
       {...(selected ? { "data-selected": "" } : {})}
       disabled={disabled}
       type="button"
-      {...(className ? { className } : {})}
     >
       {children}
     </button>
@@ -61,7 +57,7 @@ export function ToolbarLink(props: ToolbarLinkProps): ReactElement | null {
   const { children, className, href, ...consumerProps } = props;
 
   return (
-    <a {...consumerProps} className={className} data-part="item" data-uiify-toolbar="" href={href}>
+    <a {...consumerProps} className={cn("uiify-toolbar-item", className)} href={href}>
       {children}
     </a>
   );
@@ -72,11 +68,10 @@ export function ToolbarSeparator(props: ToolbarSeparatorProps): ReactElement | n
   const { className, orientation = "vertical", ...consumerProps } = props;
   return (
     <hr
-      {...consumerProps}
-      {...(className ? { className } : {})}
       aria-orientation={orientation}
-      data-part="separator"
       data-orientation={orientation}
+      {...consumerProps}
+      className={cn("uiify-toolbar-separator", className)}
     />
   );
 }

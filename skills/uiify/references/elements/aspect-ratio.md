@@ -23,23 +23,21 @@ import "@gunkin/uiify/components/behavior.css";
 </AspectRatio>
 ```
 
-Direct import: `@gunkin/uiify/components/aspect-ratio`. This reusable layout Component is Tier 0. It renders two wrappers: root `data-uiify-aspect-ratio`, then `data-part="content"` around children. Root forwards native props, events, `className`, `style`, `ref`, `as` and `render`; custom renderers must forward props/ref. Consumer props replace its default markers.
+Direct import: `@gunkin/uiify/components/aspect-ratio`. This reusable layout Component is Tier 0. It renders two wrappers: root `.uiify-aspect-ratio`, then `.uiify-aspect-ratio-content` around children. Root forwards native props, events, `className`, `style`, `ref`, `as` and `render`; custom renderers must forward props/ref. Consumer classes compose with these identities.
 
 `ratio?: number` accepts a positive finite number (width/height). Square default: `1`; invalid numbers fall back to `1`. Omission leaves the stylesheet default and permits a CSS `--uiify-aspect-ratio` override; an explicit ratio writes that property.
 
 ## Responsive
 
-Let the parent constrain width. Required behavior CSS uses native `aspect-ratio` and absolute content to isolate intrinsic child sizing. Media fit and visuals are optional consumer CSS:
+Let the parent constrain width. Required behavior CSS uses native `aspect-ratio` and absolute content to isolate intrinsic child sizing. The UIify visual recipe rounds and colors the frame; direct child images use cover by default:
 
 ```css
-.media-frame [data-part="content"] > img {
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
+.media-frame > .uiify-aspect-ratio-content > img {
+  object-fit: contain;
 }
 ```
 
-Use `contain` to retain the whole image. The component imposes no fitting or clipping on arbitrary children.
+Use `object-fit: contain` on a direct child image to retain the whole image. Non-image children receive no fitting styles.
 
 ## States
 

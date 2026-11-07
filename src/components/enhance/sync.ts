@@ -31,44 +31,32 @@ export function syncPopoverTriggers(popoverId: string, open: boolean): void {
 }
 
 /**
- * The value a tab trigger stands for.
+ * Point tab triggers and contents of one Tabs `root` at its checked radio.
  *
- * ChoiceGroup renders the trigger as `<label for="…">` pointing at its radio, so
- * the value lives on that input — there is no `data-value` on the label. Reading
- * `trigger.dataset.value` (as this module used to) always yielded `undefined`,
- * which marked every trigger unselected.
+ * Tabs pair by position, as `behavior.css` does: the i-th control in the direct TabsList
+ * selects the i-th direct TabsContent, and with no control checked the first one shows.
+ * Child combinators keep a nested Tabs untouched.
  */
-function tabTriggerValue(trigger: HTMLElement, root: HTMLElement): string | undefined {
-  const controlId = trigger instanceof HTMLLabelElement ? trigger.htmlFor : "";
-  if (!controlId) return undefined;
-  const control = root.querySelector<HTMLInputElement>(`[id="${escapeAttrValue(controlId)}"]`);
-  return control?.value;
-}
-
-/** Point tab triggers and panels at whichever radio in `tabsId` is checked. */
-export function syncTabs(tabsId: string): void {
-  const root = document.getElementById(tabsId);
-  if (!root) return;
-
-  const checked = root.querySelector<HTMLInputElement>(
-    `[data-uiify-tabs] > [data-part="item"] > [data-part="control"][name="${escapeAttrValue(tabsId)}"]:checked`,
+export function syncTabs(root: HTMLElement): void {
+  const controls = [
+    ...root.querySelectorAll<HTMLInputElement>(
+      ":scope > .uiify-tabs-list > .uiify-tabs-item > .uiify-tabs-control",
+    ),
+  ];
+  const selected = Math.max(
+    0,
+    controls.findIndex((control) => control.checked),
   );
-  const selectedValue = checked?.value;
 
-  for (const trigger of root.querySelectorAll<HTMLElement>(
-    '[data-uiify-tabs] [data-part="trigger"]',
-  )) {
-    const value = tabTriggerValue(trigger, root);
-    const selected = value !== undefined && value === selectedValue;
-    trigger.setAttribute("aria-selected", String(selected));
-    trigger.dataset["state"] = selected ? "active" : "inactive";
-  }
+  controls.forEach((control, index) => {
+    const trigger = control.nextElementSibling;
+    if (!(trigger instanceof HTMLElement) || !trigger.matches(".uiify-tabs-trigger")) return;
+    trigger.setAttribute("aria-selected", String(index === selected));
+    trigger.dataset["state"] = index === selected ? "active" : "inactive";
+  });
 
-  const panelPrefix = `${tabsId}-panel-`;
-  for (const panel of root.querySelectorAll<HTMLElement>('[data-uiify-tabs] [data-part="panel"]')) {
-    const selected =
-      panel.id.startsWith(panelPrefix) && panel.id.slice(panelPrefix.length) === selectedValue;
-    panel.dataset["state"] = selected ? "active" : "inactive";
-    panel.tabIndex = selected ? 0 : -1;
-  }
+  root.querySelectorAll<HTMLElement>(":scope > .uiify-tabs-content").forEach((content, index) => {
+    content.dataset["state"] = index === selected ? "active" : "inactive";
+    content.tabIndex = index === selected ? 0 : -1;
+  });
 }

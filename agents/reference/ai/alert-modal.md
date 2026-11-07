@@ -12,11 +12,7 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 - `hidden` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
-## AlertModal
-
-A short, important message requires an immediate response, especially confirmation before a consequential action
-Use when: The demonstrated destructive-confirmation relationship is present.
-Avoid when: The task does not need this element; do not add it for coverage.
+## AlertDialog
 
 Optional `children`: nodes or strings.
 
@@ -27,7 +23,7 @@ Optional `children`: nodes or strings.
 - `actionLabel` (optional): `string`
 - `cancelLabel` (optional): `string`
 
-## AlertModalAction
+## AlertDialogAction
 
 Optional `children`: nodes or strings.
 
@@ -41,7 +37,7 @@ Optional `children`: nodes or strings.
 - `disabled` (optional): `boolean`
 - `formAction` (optional): `` `/${string}` | `./${string}` | `../${string}` | `#${string}` | `?${string}` | `http://${string}` | `https://${string}` | `mailto:${string}` ``; an allowed URL; use a relative path or an http:, https: or mailto: URL, with no leading space or control character and no tab or line break
 
-## AlertModalCancel
+## AlertDialogCancel
 
 Optional `children`: nodes or strings.
 
@@ -55,18 +51,18 @@ Optional `children`: nodes or strings.
 - `disabled` (optional): `boolean`
 - `formAction` (optional): `` `/${string}` | `./${string}` | `../${string}` | `#${string}` | `?${string}` | `http://${string}` | `https://${string}` | `mailto:${string}` ``; an allowed URL; use a relative path or an http:, https: or mailto: URL, with no leading space or control character and no tab or line break
 
-## AlertModalContent
+## AlertDialogContent
 
 Optional `children`: nodes or strings.
 
 - `id` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## AlertModalTrigger
+## AlertDialogTrigger
 
 Optional `children`: nodes or strings.
 
-- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `AlertModalContent` this button opens.
+- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `AlertDialogContent` this button opens.
 - `command` (optional): `string`
 - `commandfor` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .

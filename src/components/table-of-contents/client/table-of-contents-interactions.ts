@@ -12,10 +12,14 @@ export function attachTableOfContentsInteractions({
 }: TableOfContentsInteractionOptions): TableOfContentsInteractions {
   const doc = root.ownerDocument,
     view = doc.defaultView!;
-  const part = (name: string) =>
-    [...root.querySelectorAll<HTMLElement>(`[data-part="${name}"]`)].find(
-      (node) => node.closest("[data-uiify-table-of-contents]") === root,
-    ) ?? null;
+  const selectors = {
+    content: ".uiify-table-of-contents-content",
+    trigger: ".uiify-table-of-contents-trigger",
+    rail: ".uiify-table-of-contents-rail",
+    indicator: ".uiify-table-of-contents-indicator",
+    link: ".uiify-table-of-contents-link",
+  } as const;
+  const part = (name: "content" | "trigger") => root.querySelector<HTMLElement>(selectors[name]);
   const panel = () => part("content");
   const trigger = () => part("trigger");
   const within = (node: EventTarget | null) =>
@@ -113,23 +117,21 @@ export function attachTableOfContentsInteractions({
       )
         return;
       const element = (event.target as Element).closest(
-        '[data-part="trigger"], [data-part="link"]',
+        ".uiify-table-of-contents-trigger, .uiify-table-of-contents-link",
       );
-      if (!element || element.closest("[data-uiify-table-of-contents]") !== root) return;
+      if (!element || element.closest(".uiify-table-of-contents") !== root) return;
       if (element === trigger()) {
         event.preventDefault();
         clear();
-        const rail = (event.target as Element).closest('[data-part="rail"]');
+        const rail = (event.target as Element).closest(".uiify-table-of-contents-rail");
         const indicator =
-          (event.target as Element).closest('[data-part="indicator"]') ??
-          rail?.querySelector('[data-part="indicator"][data-highlighted]');
-        const id = indicator?.getAttribute("data-uiify-toc-value");
+          (event.target as Element).closest(".uiify-table-of-contents-indicator") ??
+          rail?.querySelector(".uiify-table-of-contents-indicator[data-highlighted]");
+        const id = indicator?.getAttribute("data-toc-value");
         if (rail && id && event.detail > 0 && (event as PointerEvent).pointerType !== "touch") {
-          const link = [...root.querySelectorAll<HTMLAnchorElement>('[data-part="link"]')].find(
-            (node) =>
-              node.closest("[data-uiify-table-of-contents]") === root &&
-              node.getAttribute("data-uiify-toc-value") === id,
-          );
+          const link = [
+            ...root.querySelectorAll<HTMLAnchorElement>(".uiify-table-of-contents-link"),
+          ].find((node) => node.getAttribute("data-toc-value") === id);
           if (link) {
             link.click();
             return;

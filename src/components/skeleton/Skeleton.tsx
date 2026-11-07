@@ -1,5 +1,5 @@
 import type { CSSProperties, ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type { SkeletonProps } from "./types.js";
 
 function toCssSize(value: number | string | undefined): string | undefined {
@@ -27,7 +27,10 @@ export function Skeleton<TAs extends ElementType = "div">(
     props: {
       ...consumerProps,
       "aria-hidden": loading ? true : undefined,
-      "data-uiify-skeleton": "",
+      className: cn(
+        "uiify-skeleton",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
       "data-shape": circle ? "circle" : "rect",
       "data-state": loading ? "loading" : "loaded",
       ...(variant !== undefined ? { "data-variant": variant } : {}),

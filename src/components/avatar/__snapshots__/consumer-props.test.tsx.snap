@@ -3,9 +3,9 @@
 exports[`preserves default avatar DOM 1`] = `
 [
   "link as="image" href="/ada.png" rel="preload"",
-  "span aria-label="Ada" data-uiify-avatar="" role="img"",
-  "span aria-hidden="true" data-part="fallback"",
-  "span aria-label="Ada" data-size="lg" data-uiify-avatar="" role="img"",
-  "img alt="" data-part="image" src="/ada.png"",
+  "span aria-label="Ada" class="uiify-avatar" role="img"",
+  "span aria-hidden="true" class="uiify-avatar-fallback"",
+  "span aria-label="Ada" class="uiify-avatar" data-size="lg" role="img"",
+  "img alt="" class="uiify-avatar-image" src="/ada.png"",
 ]
 `;

@@ -41,7 +41,7 @@ beforeEach(() => {
     },
   );
   document.body.innerHTML =
-    '<section data-uiify-carousel><div data-part="viewport"><div id="a" data-part="slide"><button>Button</button></div><div id="b" data-part="slide"></div></div></section>';
+    '<section class="uiify-carousel"><div class="uiify-carousel-viewport"><div id="a" class="uiify-carousel-slide"><button>Button</button></div><div id="b" class="uiify-carousel-slide"></div></div></section>';
   root = document.querySelector("section")!;
   viewport = root.firstElementChild as HTMLElement;
   viewport.setPointerCapture = vi.fn();

@@ -14,11 +14,11 @@ Do not use a persistent alert for transient success or add an assertive live rol
 
 ## Structure
 
-Compose `Alert`, `AlertTitle`, and `AlertDescription` from `@gunkin/uiify/components/alert`. The static root owns `data-uiify-alert` and a `data-variant` (default `secondary`). It supplies a decorative text symbol: ⓘ, ✓, ⚠︎, or × for `secondary`, `success`, `warning`, or `destructive`. Pass `symbol="!"` to override it or `symbol={false}` to hide it. No SVG or demo layout is needed. Title/description expose `data-part="title|description"`; the built-in glyph is `data-part="symbol"`. The component adds no `role` by default.
+Compose `Alert`, `AlertTitle`, and `AlertDescription` from `@gunkin/uiify/components/alert`. The static root renders `.uiify-alert` and `data-variant` (default `secondary`). It supplies a decorative text symbol: ⓘ, ✓, ⚠︎, or × for `secondary`, `success`, `warning`, or `destructive`. Pass `symbol="!"` to override it or `symbol={false}` to hide it. No SVG or demo layout is needed. Use `.uiify-alert-title`, `.uiify-alert-description`, and `.uiify-alert-symbol` to style the parts. The component adds no `role` by default.
 
 ## Responsive
 
-Keep the message beside affected content. The optional package stylesheet handles wrapping, logical symbol placement and part typography. With Tailwind, style those same attributes/parts. Keep severity in the title or description; the glyph is hidden from assistive technology.
+Keep the message beside affected content. The optional package stylesheet handles wrapping, logical symbol placement and part typography. With Tailwind, apply consumer utilities via `className` on each part or via `slotProps.symbol` for the glyph. Keep severity in the title or description; the glyph is hidden from assistive technology.
 
 ## States
 

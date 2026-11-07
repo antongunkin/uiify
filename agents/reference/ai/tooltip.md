@@ -31,7 +31,7 @@ Optional `children`: nodes or strings.
 
 Add a brief supplemental label to a control without replacing its name.
 Use when: The demonstrated supplemental-label relationship is present.
-Avoid when: The information is essential or interactive; use visible text, popup, or hover-card.
+Avoid when: The information is essential or interactive; use visible text, popover, or hover-card.
 Avoid when: The tooltip would be the only label for a form field.
 
 Place inside `Tooltip.Provider`.

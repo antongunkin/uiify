@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactElement, Ref } from "react";
+import { cn } from "../../../core/class-names.js";
 import { RovingFocusRoot } from "@gunkin/uiify/core/roving-focus";
 import { TableBody as TableBodyElement } from "../TableShell.js";
 import { TableProvider, useTableContext } from "./table-context.js";
@@ -21,9 +22,9 @@ export function TableBody(
     return (
       <RovingFocusRoot
         {...consumerProps}
+        className={cn("uiify-table-body", consumerProps.className)}
         loop
         orientation="both"
-        data-part="body"
         render={(rootProps) =>
           render(
             { ...rootProps, children: rows } as Record<string, unknown> & {
@@ -36,7 +37,13 @@ export function TableBody(
     );
   }
   return (
-    <RovingFocusRoot {...consumerProps} as={as ?? "tbody"} loop orientation="both" data-part="body">
+    <RovingFocusRoot
+      {...consumerProps}
+      className={cn("uiify-table-body", consumerProps.className)}
+      as={as ?? "tbody"}
+      loop
+      orientation="both"
+    >
       {rows}
     </RovingFocusRoot>
   );

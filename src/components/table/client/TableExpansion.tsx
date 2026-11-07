@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactElement } from "react";
+import { cn } from "../../../core/class-names.js";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import type { TableExpandTriggerProps, TableExpandedRowProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
@@ -15,9 +16,8 @@ export function TableExpandTrigger({
     <button
       {...props}
       type="button"
-      data-uiify-button=""
+      className={cn("uiify-table-expand-trigger", "uiify-button", props.className)}
       data-variant="ghost"
-      data-part="expand-trigger"
       aria-expanded={expandedKeys.has(rowId)}
       aria-controls={`${instanceId}-expanded-${rowId}`}
       onClick={composeEventHandlers(onClick, () => toggleExpanded(rowId))}
@@ -32,7 +32,7 @@ export function TableExpandedRow({ rowId, ...props }: TableExpandedRowProps): Re
     <tr
       {...props}
       id={`${instanceId}-expanded-${rowId}`}
-      data-part="expanded-row"
+      className={cn("uiify-table-expanded-row", props.className)}
       hidden={!expandedKeys.has(rowId)}
     />
   );

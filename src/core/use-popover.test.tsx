@@ -4,16 +4,18 @@ import type { PopoverChangeHandler } from "./use-popover.js";
 import { usePopover } from "./use-popover.js";
 
 function PopoverFixture({ onOpenChange }: { readonly onOpenChange?: PopoverChangeHandler }) {
-  const popover = usePopover(onOpenChange ? { onOpenChange } : {});
+  const { isNative, popupProps, popupRef, triggerProps, triggerRef } = usePopover(
+    onOpenChange ? { onOpenChange } : {},
+  );
   return (
     <>
-      <button {...popover.triggerProps} ref={popover.triggerRef}>
+      <button {...triggerProps} ref={triggerRef}>
         Trigger
       </button>
-      <div {...popover.popupProps} ref={popover.popupRef}>
-        Popup
+      <div {...popupProps} ref={popupRef}>
+        Panel
       </div>
-      <output>{popover.isNative ? "native" : "fallback"}</output>
+      <output>{isNative ? "native" : "fallback"}</output>
     </>
   );
 }
@@ -41,18 +43,18 @@ describe("usePopover", () => {
     render(<PopoverFixture onOpenChange={onOpenChange} />);
     const trigger = screen.getByRole("button", { name: "Trigger" });
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(screen.getByText("Popup").hidden).toBe(true);
+    expect(screen.getByText("Panel").hidden).toBe(true);
     expect(screen.getByText("fallback")).toBeTruthy();
     fireEvent.click(trigger);
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    expect(screen.getByText("Popup").hidden).toBe(false);
+    expect(screen.getByText("Panel").hidden).toBe(false);
     expect(onOpenChange.mock.calls[0]?.[1].reason).toBe("trigger-press");
   });
 
   it("links the trigger and popup by id", () => {
     render(<PopoverFixture />);
     const trigger = screen.getByRole("button", { name: "Trigger" });
-    const popup = screen.getByText("Popup");
+    const popup = screen.getByText("Panel");
     expect(trigger.getAttribute("aria-controls")).toBe(popup.id);
   });
 
@@ -65,7 +67,7 @@ describe("usePopover", () => {
     const onOpenChange = vi.fn();
     render(<PopoverFixture onOpenChange={onOpenChange} />);
     const trigger = screen.getByRole("button", { name: "Trigger" });
-    const popup = screen.getByText("Popup");
+    const popup = screen.getByText("Panel");
 
     const notCanceled = fireEvent.click(trigger);
 

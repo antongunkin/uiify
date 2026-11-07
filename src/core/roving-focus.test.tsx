@@ -187,10 +187,18 @@ describe("RovingFocus", () => {
   it("lets the consumer override the RovingFocusItem tabIndex", () => {
     render(
       <RovingFocusRoot orientation="horizontal">
-        <RovingFocusItem as="button" tabIndex={5}>
+        <RovingFocusItem
+          as="button"
+          // oxlint-disable-next-line jsx-a11y/tabindex-no-positive -- This tests the consumer tab order override.
+          tabIndex={5}
+        >
           One
         </RovingFocusItem>
-        <RovingFocusItem as="button" tabIndex={5}>
+        <RovingFocusItem
+          as="button"
+          // oxlint-disable-next-line jsx-a11y/tabindex-no-positive -- This tests the consumer tab order override.
+          tabIndex={5}
+        >
           Two
         </RovingFocusItem>
       </RovingFocusRoot>,

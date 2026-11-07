@@ -24,7 +24,7 @@ exist here.
 | `isOpen`, `isDisabled`, `isChecked` | `open`, `disabled`, `checked` | No `is` prefix. |
 | `placement="bottom-start"` | `side="bottom" align="start"` | One vocabulary for popups. |
 | `data-open` | `data-state="open"` | Open state is `data-state`; there is no `data-open`. |
-| React context or child cloning to connect parts | The shared id you pass to each part: `fieldId`, `target` | Server-compatible parts are wired by ids, not context. |
+| React context or child cloning to connect parts | Native ids you pass to each part: `htmlFor`/`id`, `aria-describedby`, `target` | Server-compatible parts are wired by ids, not context. |
 
 ## Vocabulary
 
@@ -37,13 +37,14 @@ exist here.
 | Visual style | `variant` (omit for the default solid style) | `data-variant` |
 | Scale | `size` | `data-size` |
 | Direction | `orientation` | `data-orientation` |
-| Popup placement | `side`, `align` | `data-side`, `data-align` |
+| Popover placement | `side`, `align` | `data-side`, `data-align` |
 | Form flags | `disabled`, `required`, `readOnly`, `invalid` | `data-disabled`, `data-required`, `data-readonly`, `data-invalid` |
 
 Other state attributes: `data-highlighted`, `data-selected`, `data-positioning`, and
 `data-active` on the active slot of the OTP input. Every public root and standalone part carries an
-identity marker, for example `data-uiify-button`; compound parts carry a kebab-case `data-part`. The values of `variant` and
-`size` differ per component: read the component's reference file.
+components render the class `uiify-<component>` (for example, `uiify-button`); compound parts render
+`uiify-<component>-<part>`. Values of `variant` and `size` remain attributes, and differ per component:
+read the component's reference file.
 
 ## Examples
 
@@ -88,60 +89,66 @@ export function BillingLink() {
 }
 ```
 
-Native server parts do not share React context. Each part names its root with an id you choose:
+Native server parts do not share React context. Connect them with native ids you choose:
 
 ```tsx
-import { Field } from "@gunkin/uiify/components/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@gunkin/uiify/components/field";
+import { Input } from "@gunkin/uiify/components/input";
 
 export function EmailField({ invalid }: { readonly invalid: boolean }) {
   return (
-    <Field.Root id="email" invalid={invalid} required>
-      <Field.Label fieldId="email" required>
+    <Field invalid={invalid}>
+      <FieldLabel htmlFor="email" required>
         Email
-      </Field.Label>
-      <Field.Control as="input" fieldId="email" name="email" type="email" invalid={invalid} required />
-      <Field.Description fieldId="email">We only use it to send receipts.</Field.Description>
-      <Field.Error fieldId="email" invalid={invalid}>
-        Enter a valid email address
-      </Field.Error>
-    </Field.Root>
+      </FieldLabel>
+      <Input
+        id="email"
+        name="email"
+        type="email"
+        invalid={invalid}
+        required
+        aria-describedby={invalid ? "email-description email-error" : "email-description"}
+      />
+      <FieldDescription id="email-description">We only use it to send receipts.</FieldDescription>
+      {invalid ? <FieldError id="email-error">Enter a valid email address</FieldError> : null}
+    </Field>
   );
 }
 ```
 
-`Field.Label` connects to `Field.Control`, not a standalone Select. For a select, wrap the
-control in a native label (or match native `htmlFor` to an explicit unique select `id`):
+For a select, wrap the control in a native label (or match `FieldLabel`/native `htmlFor` to an
+explicit unique select `id`):
 
 ```tsx
-import { Select } from "@gunkin/uiify/components/select";
+import { NativeSelect, NativeSelectContent, NativeSelectOption } from "@gunkin/uiify/components/native-select";
 
 <label>
   Delivery frequency
-  <Select.Root name="frequency" defaultValue="weekly">
-    <Select.Content>
-      <Select.Item value="daily">Daily</Select.Item>
-      <Select.Item value="weekly">Weekly</Select.Item>
-    </Select.Content>
-  </Select.Root>
+  <NativeSelect name="frequency" defaultValue="weekly">
+    <NativeSelectContent>
+      <NativeSelectOption value="daily">Daily</NativeSelectOption>
+      <NativeSelectOption value="weekly">Weekly</NativeSelectOption>
+    </NativeSelectContent>
+  </NativeSelect>
 </label>;
 ```
 
 A trigger and its close button reference the dialog by `id` and `target`:
 
 ```tsx
-import { Modal, ModalClose } from "@gunkin/uiify/components/modal";
+import { Dialog, DialogClose } from "@gunkin/uiify/components/dialog";
 
 export function DeleteProject() {
   return (
-    <Modal
+    <Dialog
       id="delete-project"
       title="Delete project?"
       description="This cannot be undone."
       trigger="Delete project"
-      footer={<ModalClose target="delete-project">Cancel</ModalClose>}
+      footer={<DialogClose target="delete-project">Cancel</DialogClose>}
     >
       <p>All files in the project will be removed.</p>
-    </Modal>
+    </Dialog>
   );
 }
 ```
@@ -176,7 +183,7 @@ With that order in place, rules in the `app` layer win over the library:
 
 ```css
 @layer app {
-  [data-uiify-button][data-variant="destructive"] {
+  .uiify-button[data-variant="destructive"] {
     text-transform: uppercase;
   }
 }
@@ -201,7 +208,7 @@ Check a component's tier in `components.md` before importing it into a Server Co
 - Tier 2 is a client component. It renders native-first markup before hydration, but keyboard
   behavior and ARIA sync need hydration.
 
-Some components also have sub-entries such as `@gunkin/uiify/components/modal/client` for
+Some components also have sub-entries such as `@gunkin/uiify/components/dialog/client` for
 controlled state. They are listed under **Sub-entries** in the component's reference file.
 
 TableOfContents has a server-pure base entry for native popover buttons and fragment links.

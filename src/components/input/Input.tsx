@@ -1,3 +1,4 @@
+import { cn } from "../../core/class-names.js";
 import type { ElementType, ReactElement, SyntheticEvent } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
@@ -35,8 +36,6 @@ export function Input<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...consumerProps,
-      "data-uiify-input": "",
       ...(size !== undefined ? { "data-size": size } : {}),
       "aria-invalid": invalid || undefined,
       "data-disabled": disabled ? "" : undefined,
@@ -44,6 +43,8 @@ export function Input<TAs extends ElementType = "input">(
       "data-invalid": invalid ? "" : undefined,
       disabled: disabled || undefined,
       readOnly: readOnly || undefined,
+      ...consumerProps,
+      className: cn("uiify-input", (consumerProps as { className?: string }).className),
       onChange: onValueChange
         ? composeEventHandlers(consumerOnChange, handleChange)
         : consumerOnChange,

@@ -14,7 +14,7 @@ describe("ColorPicker", () => {
     const nativeInput = container.querySelector<HTMLInputElement>('input[type="color"]');
     expect(nativeInput).not.toBeNull();
     expect(nativeInput?.getAttribute("name")).toBe("brand");
-    expect(container.querySelector<HTMLInputElement>("[data-uiify-input]")?.value).toBe("#2563eb");
+    expect(container.querySelector<HTMLInputElement>(".uiify-input")?.value).toBe("#2563eb");
   });
 
   it("updates the Field value and callback when the native picker changes", () => {
@@ -33,7 +33,7 @@ describe("ColorPicker", () => {
       target: { value: "#dc2626" },
     });
 
-    expect(container.querySelector<HTMLInputElement>("[data-uiify-input]")?.value).toBe("#dc2626");
+    expect(container.querySelector<HTMLInputElement>(".uiify-input")?.value).toBe("#dc2626");
     expect(onValueChange).toHaveBeenCalledWith("#dc2626");
     expect(onChange.mock.results[0]?.value).toBe("#dc2626");
   });
@@ -56,7 +56,7 @@ describe("ColorPicker", () => {
     );
 
     const nativeInput = container.querySelector('input[type="color"]') as HTMLInputElement;
-    const root = nativeInput.closest("[data-uiify-color-picker]");
+    const root = nativeInput.closest(".uiify-color-picker");
     expect(nativeInput.disabled).toBe(true);
     expect(nativeInput.required).toBe(true);
     expect(nativeInput.name).toBe("brand");
@@ -119,15 +119,17 @@ describe("ColorPicker", () => {
       />,
     );
 
-    const field = container.querySelector("[data-uiify-color-picker]") as HTMLDivElement;
-    expect(field.className).toBe("picker-root picker-field-slot");
+    const field = container.querySelector(".uiify-color-picker") as HTMLDivElement;
+    expect(field.className).toBe("uiify-field uiify-color-picker picker-root picker-field-slot");
     expect(field.style.inlineSize).toBe("");
     expect(field.style.marginBlockStart).toBe("1rem");
     expect(fieldRef.current).toBe(field);
-    expect(container.querySelector("label")?.className).toBe("picker-label");
+    expect(container.querySelector("label")?.className).toBe(
+      "uiify-field-label uiify-color-picker-label picker-label",
+    );
     expect(container.querySelector("label")?.getAttribute("data-part")).toBe("override");
     expect(container.querySelector("[data-testid='picker-surface']")?.className).toBe(
-      "picker-surface",
+      "uiify-color-picker-surface picker-surface",
     );
     expect(
       container.querySelector("[data-testid='picker-surface']")?.getAttribute("style"),
@@ -139,7 +141,7 @@ describe("ColorPicker", () => {
       container.querySelector("[data-testid='picker-surface']")?.getAttribute("data-value"),
     ).toBe("#000000");
     expect(container.querySelector("[data-testid='picker-control']")?.className).toBe(
-      "picker-control",
+      "uiify-input uiify-color-picker-control picker-control",
     );
     expect(
       (container.querySelector("[data-testid='picker-control']") as HTMLInputElement).type,
@@ -151,7 +153,7 @@ describe("ColorPicker", () => {
       (container.querySelector("[data-testid='picker-control']") as HTMLInputElement).defaultValue,
     ).toBe("#2563eb");
     const input = container.querySelector("input[type='color']") as HTMLInputElement;
-    expect(input.className).toBe("picker-input");
+    expect(input.className).toBe("uiify-color-picker-native-input picker-input");
     expect(input.getAttribute("data-part")).toBe("override");
     expect(input.required).toBe(false);
     expect(labelRef.current).toBe(container.querySelector("label"));
@@ -217,6 +219,6 @@ describe("ColorPicker", () => {
     expect(markup).toContain('readOnly=""');
     expect(markup).toContain('data-value="#2563eb"');
     expect(markup).toContain('name="brand"');
-    expect(markup).toContain('data-uiify-color-picker=""');
+    expect(markup).toContain('class="uiify-field uiify-color-picker"');
   });
 });

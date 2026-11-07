@@ -64,10 +64,10 @@ afterEach(() => {
 });
 
 function mountSheet(attributes = ""): HTMLDialogElement {
-  document.body.innerHTML = `<dialog open closedby="any" data-uiify-modal data-part="content" id="d" ${attributes}>
-    <div data-uiify-modal data-part="grabber" id="grabber"></div>
-    <div data-uiify-modal data-part="header" id="header"><h2 id="title">Title</h2><button id="x" data-part="close">x</button></div>
-    <div data-uiify-modal data-part="body" id="body">Body <div data-part="header" id="card-header">Card</div></div>
+  document.body.innerHTML = `<dialog open closedby="any" class="uiify-dialog-content" id="d" ${attributes}>
+    <div class="uiify-dialog-grabber" id="grabber"></div>
+    <div class="uiify-dialog-header" id="header"><h2 id="title">Title</h2><button id="x" data-part="close">x</button></div>
+    <div class="uiify-dialog-body" id="body">Body <div data-part="header" id="card-header">Card</div></div>
   </dialog>`;
   const dialog = document.getElementById("d") as HTMLDialogElement;
   dialog.getBoundingClientRect = () =>
@@ -138,9 +138,8 @@ describe("attachSheetSwipe", () => {
 
   it("dismisses a drawer through the same handle gesture", () => {
     const dialog = mountSheet();
-    for (const el of [dialog, ...dialog.querySelectorAll("[data-uiify-modal]")]) {
-      el.removeAttribute("data-uiify-modal");
-      el.setAttribute("data-uiify-drawer", "");
+    for (const el of [dialog, ...dialog.querySelectorAll('[class^="uiify-dialog-"]')]) {
+      el.className = el.className.replace("uiify-dialog-", "uiify-drawer-");
     }
     detach = attachSheetSwipe();
     const handle = document.getElementById("grabber")!;
@@ -380,8 +379,8 @@ describe("attachSheetSwipe", () => {
     const outer = mountSheet();
     outer.insertAdjacentHTML(
       "beforeend",
-      `<dialog open closedby="any" data-uiify-modal data-part="content" id="inner">
-        <div data-uiify-modal data-part="header" id="inner-header"><h2 id="inner-title">Inner</h2></div>
+      `<dialog open closedby="any" class="uiify-dialog-content" id="inner">
+        <div class="uiify-dialog-header" id="inner-header"><h2 id="inner-title">Inner</h2></div>
       </dialog>`,
     );
     const inner = document.getElementById("inner") as HTMLDialogElement;

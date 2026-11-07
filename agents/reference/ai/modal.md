@@ -12,13 +12,7 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 - `hidden` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
-## Modal
-
-Hold attention on a task that must be completed before returning to the page.
-Use when: The demonstrated blocking-modal relationship is present.
-Avoid when: The task can be completed while comparing the page; use inline content.
-Avoid when: The message is brief feedback; use toast.
-Avoid when: The user must confirm an irreversible action; use alert-modal.
+## Dialog
 
 Optional `children`: nodes or strings.
 
@@ -32,18 +26,18 @@ Optional `children`: nodes or strings.
 - `dismiss` (optional): `"any" | "closerequest" | "none"`; allowed: "any", "closerequest", "none". Native `closedby`: `any` also closes on a backdrop tap, `closerequest` on Escape only, `none` only through your own controls. Default `any`. Engines without `closedby` (Safari) ignore it: Escape still closes the dialog there, and `UIEnhance` honours it only for its own backdrop tap (`any` only) and sheet swipe (off for `none`).
 - `backdrop` (optional): `"opaque" | "blur" | "none"`; allowed: "opaque", "blur", "none". Backdrop treatment. Default `opaque`.
 
-## ModalBody
+## DialogBody
 
 Optional `children`: nodes or strings.
 
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## ModalClose
+## DialogClose
 
 Optional `children`: nodes or strings.
 
-- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `ModalContent` this button closes.
+- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `DialogContent` this button closes.
 - `command` (optional): `string`
 - `commandfor` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
@@ -53,7 +47,7 @@ Optional `children`: nodes or strings.
 - `disabled` (optional): `boolean`
 - `formAction` (optional): `` `/${string}` | `./${string}` | `../${string}` | `#${string}` | `?${string}` | `http://${string}` | `https://${string}` | `mailto:${string}` ``; an allowed URL; use a relative path or an http:, https: or mailto: URL, with no leading space or control character and no tab or line break
 
-## ModalContent
+## DialogContent
 
 Optional `children`: nodes or strings.
 
@@ -64,46 +58,46 @@ Optional `children`: nodes or strings.
 - `backdrop` (optional): `"opaque" | "blur" | "none"`; allowed: "opaque", "blur", "none". Backdrop treatment. Default `opaque`.
 - `title` (optional): `string`
 
-## ModalDescription
+## DialogDescription
 
 Optional `children`: nodes or strings.
 
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## ModalFooter
+## DialogFooter
 
 Optional `children`: nodes or strings.
 
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## ModalGrabber
+## DialogGrabber
 
 No `children`.
 
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## ModalHeader
+## DialogHeader
 
 Optional `children`: nodes or strings.
 
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## ModalTitle
+## DialogTitle
 
 Optional `children`: nodes or strings.
 
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 
-## ModalTrigger
+## DialogTrigger
 
 Optional `children`: nodes or strings.
 
-- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `ModalContent` this button opens; the browser resolves it at click time.
+- `target` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. `id` of the `DialogContent` this button opens; the browser resolves it at click time.
 - `command` (optional): `string`
 - `commandfor` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .

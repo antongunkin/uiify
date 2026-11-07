@@ -1,8 +1,6 @@
 import { expect, it } from "vitest";
 import { Rating } from "../../rating/Rating.js";
-import { RadioGroup } from "../../radio-group/RadioGroup.js";
 import { SegmentedControl } from "../../segmented-control/SegmentedControl.js";
-import { Tabs } from "../../tabs/Tabs.js";
 import { ToggleGroup } from "../../toggle-group/ToggleGroup.js";
 import { renderToStaticMarkup } from "../../test-utils/ssr.js";
 
@@ -19,18 +17,12 @@ function outline(html: string): string[] {
 }
 
 const items = [
-  { value: "a", label: "A", panel: "Panel A" },
-  { value: "b", label: "B", panel: "Panel B", disabled: true },
+  { value: "a", label: "A" },
+  { value: "b", label: "B", disabled: true },
 ];
 
 it("keeps the default DOM of every Choice-based component", () => {
   const markup = {
-    tabs: renderToStaticMarkup(
-      <Tabs append={<span>more</span>} defaultValue="a" id="t" items={items} />,
-    ),
-    radio: renderToStaticMarkup(
-      <RadioGroup aria-label="Plan" defaultValue="a" id="r" items={items} />,
-    ),
     segmented: renderToStaticMarkup(
       <SegmentedControl aria-label="Range" defaultValue="a" id="s" items={items} />,
     ),

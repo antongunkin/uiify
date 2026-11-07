@@ -160,16 +160,64 @@ describe("ContextMenu", () => {
     const checkbox = screen.getByTestId("checkbox-item");
     const radio = screen.getByTestId("radio-item");
     const subContent = screen.getByTestId("sub-content");
-    expect(checkbox.className).toBe("checkbox-item");
-    expect(radio.className).toBe("radio-item");
-    expect(subTrigger.className).toBe("sub-trigger");
-    expect(subContent.className).toBe("sub-content");
+    expect(checkbox.className).toBe("uiify-menu-item checkbox-item");
+    expect(radio.className).toBe("uiify-menu-item radio-item");
+    expect(subTrigger.className).toBe("uiify-menu-item sub-trigger");
+    expect(subContent.className).toBe("uiify-menu-content uiify-menu-sub-content sub-content");
     expect(checkbox.querySelector("b")).toBeNull();
     expect(subContent.querySelector("b")).toBeNull();
     expect(checkboxRef.current).toBe(checkbox);
     expect(radioRef.current).toBe(radio);
     expect(subTriggerRef.current).toBe(subTrigger);
     expect(subContentRef.current).toBe(subContent);
+  });
+
+  it("anchors the submenu beside its trigger", () => {
+    render(
+      <ContextMenu.Root defaultOpen>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content>
+          <ContextMenu.Sub>
+            <ContextMenu.Sub.Trigger data-testid="sub-trigger">Share</ContextMenu.Sub.Trigger>
+            <ContextMenu.Sub.Content data-testid="sub-content">
+              <ContextMenu.Item>Copy link</ContextMenu.Item>
+            </ContextMenu.Sub.Content>
+          </ContextMenu.Sub>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+
+    const subTrigger = screen.getByTestId("sub-trigger");
+    fireEvent.focus(subTrigger);
+    const subContent = screen.getByTestId("sub-content");
+    const anchorName = subTrigger.getAttribute("data-anchor");
+    expect(anchorName).toMatch(/^--/);
+    expect(subContent.getAttribute("data-anchor")).toBe(anchorName);
+    expect(subContent.getAttribute("data-positioning")).toBe("native");
+    expect(subContent.getAttribute("data-side")).toBe("right");
+    expect(subContent.getAttribute("data-align")).toBe("start");
+  });
+
+  it("closes an open submenu when the menu closes", () => {
+    render(
+      <ContextMenu.Root defaultOpen>
+        <ContextMenu.Trigger>Area</ContextMenu.Trigger>
+        <ContextMenu.Content data-testid="menu">
+          <ContextMenu.Sub>
+            <ContextMenu.Sub.Trigger data-testid="sub-trigger">Share</ContextMenu.Sub.Trigger>
+            <ContextMenu.Sub.Content>
+              <ContextMenu.Item>Copy link</ContextMenu.Item>
+            </ContextMenu.Sub.Content>
+          </ContextMenu.Sub>
+        </ContextMenu.Content>
+      </ContextMenu.Root>,
+    );
+
+    const subTrigger = screen.getByTestId("sub-trigger");
+    fireEvent.focus(subTrigger);
+    expect(subTrigger.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.keyDown(screen.getByTestId("menu"), { key: "Escape" });
+    expect(subTrigger.getAttribute("aria-expanded")).toBe("false");
   });
 
   it("opens at pointer coordinates on contextmenu", () => {
@@ -289,8 +337,7 @@ describe("ContextMenu", () => {
 
     const content = screen.getByRole("alert");
     expect(content.getAttribute("data-state")).toBe("bogus");
-    expect(content.getAttribute("data-uiify-menu")).toBe("");
-    expect(content.getAttribute("data-part")).toBe("content");
+    expect(content.classList.contains("uiify-menu-content")).toBe(true);
     expect(content.id).toBe("my-id");
     expect(content.getAttribute("data-align")).toBe("end");
     expect(content.getAttribute("data-side")).toBe("top");
@@ -308,7 +355,9 @@ describe("ContextMenu", () => {
 
     fireEvent.keyDown(screen.getByRole("menu"), { key: "Escape" });
     expect(screen.getByRole("menuitem", { name: "Copy" })).toBeTruthy();
-    expect(screen.getByRole("menuitem", { name: "Copy" }).getAttribute("data-part")).toBe("item");
+    expect(
+      screen.getByRole("menuitem", { name: "Copy" }).classList.contains("uiify-menu-item"),
+    ).toBe(true);
   });
 
   it("lets consumer Item role override the default", () => {
@@ -316,7 +365,12 @@ describe("ContextMenu", () => {
       <ContextMenu.Root defaultOpen>
         <ContextMenu.Trigger>Area</ContextMenu.Trigger>
         <ContextMenu.Content>
-          <ContextMenu.Item role="button">Cut</ContextMenu.Item>
+          <ContextMenu.Item
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This tests the consumer role override.
+            role="button"
+          >
+            Cut
+          </ContextMenu.Item>
         </ContextMenu.Content>
       </ContextMenu.Root>,
     );

@@ -16,16 +16,16 @@ import type {
 
 const spaces = {
   none: "0",
-  xs: "var(--space-xs)",
-  sm: "var(--space-sm)",
-  md: "var(--space-md)",
-  lg: "var(--space-lg)",
-  xl: "var(--space-xl)",
+  xs: "var(--spacing)",
+  sm: "calc(var(--spacing) * 2)",
+  md: "calc(var(--spacing) * 3)",
+  lg: "calc(var(--spacing) * 4)",
+  xl: "calc(var(--spacing) * 6)",
 } as const;
 const caps = {
-  sm: "calc(var(--space-xl) * 20)",
-  md: "calc(var(--space-xl) * 32)",
-  lg: "calc(var(--space-xl) * 48)",
+  sm: "calc(var(--spacing) * 120)",
+  md: "calc(var(--spacing) * 192)",
+  lg: "calc(var(--spacing) * 288)",
 } as const;
 function propertyValues(
   property: string,
@@ -111,13 +111,13 @@ const columns: Record<string, CssDeclarations> = {
         "grid-template-columns":
           n === 1
             ? "minmax(0, 1fr)"
-            : `repeat(auto-fill, minmax(max(min(100%, calc(var(--space-xl) * 8)), (100% - (${n} - 1) * var(--uiify-layout-gap, 0%)) / ${n}), 1fr))`,
+            : `repeat(auto-fill, minmax(max(min(100%, calc(var(--spacing) * 48)), (100% - (${n} - 1) * var(--uiify-layout-gap, 0%)) / ${n}), 1fr))`,
       },
     ]),
   ),
-  sidebar: { "grid-template-columns": "minmax(0, calc(var(--space-xl) * 10)) minmax(0, 1fr)" },
+  sidebar: { "grid-template-columns": "minmax(0, calc(var(--spacing) * 60)) minmax(0, 1fr)" },
   "sidebar-end": {
-    "grid-template-columns": "minmax(0, 1fr) minmax(0, calc(var(--space-xl) * 10))",
+    "grid-template-columns": "minmax(0, 1fr) minmax(0, calc(var(--spacing) * 60))",
   },
   ...Object.fromEntries(
     ["2:1", "1:2", "3:2", "2:3"].map((ratio) => [
@@ -134,7 +134,19 @@ const columns: Record<string, CssDeclarations> = {
 const typography = {
   size: propertyValues(
     "font-size",
-    Object.fromEntries(textSizeValues.map((size) => [size, `var(--text-${size})`])),
+    Object.fromEntries(
+      textSizeValues.map((size) => [
+        size,
+        {
+          xs: "0.75rem",
+          sm: "0.875rem",
+          base: "1rem",
+          lg: "1.125rem",
+          xl: "1.5rem",
+          "2xl": "2rem",
+        }[size],
+      ]),
+    ),
   ),
   weight: propertyValues(
     "font-weight",
@@ -181,7 +193,7 @@ export const layoutDefaultDeclarations: LayoutDefaultDeclarations = {
     ...defaults,
     "margin-block-start": "0",
     "margin-block-end": "0",
-    "font-size": "var(--text-base)",
+    "font-size": "1rem",
     "font-weight": "var(--weight-normal)",
     color: "var(--foreground)",
     "line-height": "var(--leading-normal)",
@@ -190,7 +202,7 @@ export const layoutDefaultDeclarations: LayoutDefaultDeclarations = {
     ...defaults,
     "margin-block-start": "0",
     "margin-block-end": "0",
-    "font-size": "var(--text-xl)",
+    "font-size": "1.5rem",
     "font-weight": "var(--weight-semibold)",
     color: "var(--foreground)",
     "line-height": "var(--leading-tight)",
@@ -287,4 +299,4 @@ export function layoutDeclarationInputs(): Array<
 }
 
 export const layoutControlSelector =
-  ':is([data-uiify-input],[data-uiify-textarea],[data-uiify-field],[data-uiify-date-picker],[data-uiify-input-group][data-part="root"],[data-uiify-file-upload],[data-uiify-slider])';
+  ":is(.uiify-input,.uiify-textarea,.uiify-field,.uiify-date-picker,.uiify-input-group,.uiify-file-upload,.uiify-slider)";

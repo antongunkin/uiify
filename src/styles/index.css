@@ -8,8 +8,13 @@
  */
 @layer reset, tokens, base, demo, components, layout, utilities, theme;
 
-@import url("./tokens/theme.css");
+@import url("./themes/basic.css");
 @import url("./base.css");
 @import url("./components/index.css");
 @import url("./layout.css");
+
+/* Recipe styles compiled from src/styles/uiify (Tailwind recipes plan), with the theme values the
+   Tailwind adapter declares; families move here from components/ as they migrate. */
+@import url("./generated/tailwind-theme.css") layer(tokens);
+@import url("./generated/uiify.css");
 @import url("./i18n.css");

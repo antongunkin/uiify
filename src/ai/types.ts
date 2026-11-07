@@ -13,7 +13,7 @@ export interface UiValidationIssue {
   readonly code?: string;
   /** JSON Pointer into the validated value, e.g. `/root/children/0/props/variant`. */
   readonly path: string;
-  /** Readable location, e.g. `form › Field.Root › Button.props.variant`. */
+  /** Readable location, e.g. `form › Field › Button.props.variant`. */
   readonly breadcrumb: string;
   readonly message: string;
   /** The values that would have been accepted, when the problem is a closed set. */

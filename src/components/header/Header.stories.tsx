@@ -1,12 +1,12 @@
 import type { Story } from "@ladle/react";
 import {
-  ModalBody,
-  ModalClose,
-  ModalContent,
-  ModalHeader,
-  ModalTitle,
-  ModalTrigger,
-} from "@gunkin/uiify/components/modal";
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@gunkin/uiify/components/dialog";
 import { HeaderClient } from "@gunkin/uiify/components/header/client";
 import { Header } from "./Header.js";
 
@@ -18,7 +18,7 @@ const styles = `
     color: var(--foreground);
     background: var(--background);
   }
-  .header-story [data-uiify-header] {
+  .header-story .uiify-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,16 +39,16 @@ const styles = `
   .header-story-trigger {
     display: none;
   }
-  .header-story-modal [data-part="header"] {
+  .header-story-modal .uiify-dialog-header {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     padding-inline-end: 0;
   }
-  .header-story-modal [data-part="title"] {
+  .header-story-modal .uiify-dialog-title {
     grid-column: 2;
   }
-  .header-story-modal [data-part="header"] > [data-part="close"] {
+  .header-story-modal .uiify-dialog-header > .uiify-dialog-close {
     position: static;
     grid-column: 3;
     justify-self: end;
@@ -87,31 +87,31 @@ function HeaderStory({ enhanced = false }: { readonly enhanced?: boolean }) {
         <a href={`#${prefix}-docs`}>Docs</a>
         <a href={`#${prefix}-projects`}>New project</a>
       </nav>
-      <ModalTrigger className="header-story-trigger" target={`${prefix}-navigation`}>
+      <DialogTrigger className="header-story-trigger" target={`${prefix}-navigation`}>
         Navigation
-      </ModalTrigger>
-      <ModalContent
+      </DialogTrigger>
+      <DialogContent
         aria-labelledby={`${prefix}-navigation-title`}
         className="header-story-modal"
         id={`${prefix}-navigation`}
         size="full"
       >
-        <ModalHeader>
-          <ModalTitle aria-label="Orbit navigation" id={`${prefix}-navigation-title`}>
+        <DialogHeader>
+          <DialogTitle aria-label="Orbit navigation" id={`${prefix}-navigation-title`}>
             Orbit
-          </ModalTitle>
-          <ModalClose aria-label="Close navigation" target={`${prefix}-navigation`}>
+          </DialogTitle>
+          <DialogClose aria-label="Close navigation" target={`${prefix}-navigation`}>
             ×
-          </ModalClose>
-        </ModalHeader>
-        <ModalBody>
+          </DialogClose>
+        </DialogHeader>
+        <DialogBody>
           <nav aria-label="Main">
             <a href={`#${prefix}-home`}>Overview</a>
             <a href={`#${prefix}-docs`}>Docs</a>
             <a href={`#${prefix}-projects`}>New project</a>
           </nav>
-        </ModalBody>
-      </ModalContent>
+        </DialogBody>
+      </DialogContent>
     </>
   );
   return (

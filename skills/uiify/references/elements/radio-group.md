@@ -14,8 +14,9 @@ Use checkboxes for independent options and a select when the choice set is too l
 
 ## Structure
 
-Use RadioGroup with a stable id, a name, and items that each have a value and descriptive label. Give the group a visible legend or an accessible name that describes the question.
-Style generated item wrappers, radios, and labels with `slotProps.item`, `slotProps.input`, and `slotProps.label`. Use `byItemValue` when one option needs its own props or `data-testid`.
+`RadioGroup` (`div role="radiogroup"`) holds one `Field orientation="horizontal"` per option: `RadioGroupItem` (a native `input type="radio"`) with a literal `name` shared by every item, a `value` and an `id`, then `FieldLabel htmlFor` with that id. Select the initial option with `defaultChecked` on one item. Name the group with `aria-label`/`aria-labelledby`; inside `FieldSet` + `FieldLegend` leave `RadioGroup` unnamed, because the fieldset already names the group (one form per fieldset).
+Choice cards: `Field orientation="horizontal" variant="card"` with `RadioGroupItem` and `FieldContent` holding `FieldLabel` (title text only) and `FieldDescription id`, listed in the item's `aria-describedby`. The label covers the card, so a click anywhere on it selects the option. Never wrap a `Field`, `FieldContent`, `div` or `p` in `FieldLabel`: a label may hold only text (`screen-label-content`). Put no links or buttons inside a card: the label overlay covers them.
+The group has no `name`, `defaultValue`, `disabled` or `required`: a `div` has no native mechanism for them and Tier 0 has no context to pass them down. Use native props instead: `disabled` on an item (it dims its card), `required` on one item (it makes the whole name group required), or `<FieldSet disabled>` around the group. Also put `aria-disabled="true"` on a disabled card's `Field`: it marks the card as inactive, and inactive controls are exempt from WCAG 1.4.3 contrast; without it axe reports `color-contrast` on the dimmed description. Text inside a card cannot be selected: the label overlay covers it.
 
 ## Responsive
 
@@ -31,7 +32,7 @@ Test arrow-key movement, Tab entry/exit, label activation, disabled options, gro
 
 ## Common mistake
 
-Presenting visually grouped radios without a programmatic group name.
+Presenting visually grouped radios without a programmatic group name, or giving items of one group different or missing `name`s: the browser then does not group them (`screen-radio-name`).
 
 ## Sources
 

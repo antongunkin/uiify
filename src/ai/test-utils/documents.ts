@@ -11,11 +11,11 @@ export const filterDocument = {
       children: [
         { type: "label", props: { htmlFor: "status" }, children: ["Status"] },
         {
-          type: "Select.Root",
+          type: "NativeSelect",
           props: { id: "status", name: "status" },
           children: [
-            { type: "Select.Item", props: { value: "open" }, children: ["Open"] },
-            { type: "Select.Item", props: { value: "closed" }, children: ["Closed"] },
+            { type: "NativeSelectOption", props: { value: "open" }, children: ["Open"] },
+            { type: "NativeSelectOption", props: { value: "closed" }, children: ["Closed"] },
           ],
         },
         { type: "Button", props: { type: "submit" }, children: ["Apply"] },
@@ -35,10 +35,10 @@ export const settingsDocument = {
       children: [
         { type: "h1", props: { id: "settings-title" }, children: ["Settings"] },
         {
-          type: "Fieldset",
+          type: "FieldSet",
           props: { id: "profile" },
           children: [
-            { type: "FieldsetLegend", props: { id: "profile-legend" }, children: ["Profile"] },
+            { type: "FieldLegend", props: { id: "profile-legend" }, children: ["Profile"] },
             { type: "label", props: { htmlFor: "display-name" }, children: ["Display name"] },
             { type: "Input", props: { id: "display-name", name: "displayName", type: "text" } },
             {
@@ -70,9 +70,11 @@ function plan(
       {
         type: "ul",
         props: {},
-        children: features.map(
-          (feature): UiNodeInput => ({ type: "li", props: {}, children: [feature] }),
-        ),
+        children: features.map((feature): UiNodeInput => ({
+          type: "li",
+          props: {},
+          children: [feature],
+        })),
       },
       { type: "Button", props: { variant: "outline" }, children: [action] },
     ],

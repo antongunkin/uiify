@@ -4,8 +4,8 @@ import { DropdownMenuBar } from "./DropdownMenuBar.js";
 
 function Item({ label, disabled }: { readonly label: string; readonly disabled?: boolean }) {
   return (
-    <div data-uiify-menu="">
-      <button data-part="trigger" disabled={disabled} type="button">
+    <div className="uiify-dropdown-menu">
+      <button className="uiify-menu-trigger" disabled={disabled} type="button">
         {label}
       </button>
     </div>

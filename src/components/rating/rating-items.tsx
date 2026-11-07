@@ -2,9 +2,9 @@ import { VisuallyHidden } from "@gunkin/uiify/core/visually-hidden";
 import type { ChoiceItem } from "../internal/choice-family/types.js";
 
 /**
- * One item per star, highest value first. rating.css relies on DOM order
+ * One item per star, highest value first. Rating preview styles rely on DOM order
  * being descending (max..1): `flex-direction: row-reverse` restores normal
- * left-to-right reading order, and the `:has(...) ~ [data-part="item"]`
+ * left-to-right reading order, and the `:has(...) ~ .uiify-rating-item`
  * highlight rule only reaches *later* DOM siblings, which — because of the
  * reversal — are the more-preferred stars. Ascending order would highlight
  * the wrong direction (and desync each star's visual position from its

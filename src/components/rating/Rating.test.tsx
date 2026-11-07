@@ -33,10 +33,17 @@ describe("Rating", () => {
       />,
     );
 
-    expect(screen.getByTestId("rating-root").hasAttribute("data-uiify-rating")).toBe(true);
+    expect(screen.getByTestId("rating-root").classList.contains("uiify-rating")).toBe(true);
     expect(rootRef.current).toBe(screen.getByTestId("rating-root"));
+    expect(screen.getByTestId("rating-item-3").classList.contains("uiify-rating-item")).toBe(true);
     expect(screen.getByTestId("rating-item-3").classList.contains("third-item")).toBe(true);
+    expect(screen.getByTestId("rating-input-3").classList.contains("uiify-rating-input")).toBe(
+      true,
+    );
     expect(screen.getByTestId("rating-input-3").getAttribute("type")).toBe("radio");
+    expect(screen.getByTestId("rating-label-3").classList.contains("uiify-rating-label")).toBe(
+      true,
+    );
     expect(screen.getByTestId("rating-label-3").getAttribute("for")).toBe("movie-control-3");
   });
 
@@ -56,7 +63,7 @@ describe("Rating", () => {
     render(<Rating id="movie" readOnly />);
     const radios = screen.getAllByRole("radio", { hidden: true }) as HTMLInputElement[];
     expect(radios.every((radio) => radio.disabled)).toBe(true);
-    const root = document.querySelector("[data-uiify-rating]");
+    const root = document.querySelector(".uiify-rating");
     expect(root?.hasAttribute("data-readonly")).toBe(true);
     expect(root?.hasAttribute("data-disabled")).toBe(false);
   });

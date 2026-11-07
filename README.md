@@ -1,8 +1,35 @@
-# uiify
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="uiify logo" width="88" height="88">
+</p>
 
-Native-first, accessible React 19 components that work before hydration.
+<h1 align="center">uiify</h1>
+
+<p align="center"><strong>Interactive before hydration.</strong><br>Native-first, accessible React components. The platform first, JavaScript when needed.</p>
+
+<p align="center">
+  <a href="https://uiify.gunkin.dev/components"><strong>Components</strong></a> ·
+  <a href="https://uiify.gunkin.dev/docs">Docs</a> ·
+  <a href="#install">Get started</a> ·
+  <a href="#ai-coding-agents">AI agents</a>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@gunkin/uiify"><img src="https://img.shields.io/npm/v/@gunkin/uiify?label=npm&color=7f8bff&labelColor=101114" alt="npm version"></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/Built_for-React-7f8bff?labelColor=101114" alt="Built for React"></a>
+  <a href="https://uiify.gunkin.dev/components"><img src="https://img.shields.io/badge/Works_without-JavaScript-7f8bff?labelColor=101114" alt="Works without JavaScript"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-7f8bff?labelColor=101114" alt="MIT license"></a>
+</p>
+
+uiify is a React component library built on modern HTML, CSS, and DOM APIs. Components work
+before hydration and with JavaScript disabled; client JavaScript is added only where the
+accessibility tree needs it. It is tree-shakeable, works in Server Components, and ships rules and
+an `/uiify` skill that teach your coding agent to use it.
 
 > Alpha: APIs may change before the first stable release.
+
+<p align="center">
+  <a href="https://uiify.gunkin.dev/components"><img src="docs/assets/screenshot.png" alt="The uiify component catalog: 63 components with live previews, grouped by category" width="100%"></a>
+</p>
 
 ## Install
 
@@ -53,11 +80,11 @@ const filter = {
   children: [
     { type: "label", props: { htmlFor: "status" }, children: ["Status"] },
     {
-      type: "Select.Root",
+      type: "NativeSelect",
       props: { id: "status", name: "status" },
       children: [
-        { type: "Select.Item", props: { value: "open" }, children: ["Open"] },
-        { type: "Select.Item", props: { value: "closed" }, children: ["Closed"] },
+        { type: "NativeSelectOption", props: { value: "open" }, children: ["Open"] },
+        { type: "NativeSelectOption", props: { value: "closed" }, children: ["Closed"] },
       ],
     },
     { type: "Button", props: { type: "submit" }, children: ["Apply"] },
@@ -94,15 +121,41 @@ to give your own LLM.
 
 ## AI coding agents
 
-`@gunkin/uiify` ships rules, a component index and per-component references that match the
-installed version. Add one line to your project's `AGENTS.md`, or to `CLAUDE.md` for Claude Code
-(it does not read `AGENTS.md`):
+The package ships a closed component catalog for coding agents, the `/uiify` skill and a screen
+check, all matching the installed version. Link the skill into your project (Claude Code reads
+`.claude/skills`, the scripts and other agents `.agents/skills`), then write the catalog into your
+`AGENTS.md`:
+
+```bash
+mkdir -p .agents/skills .claude/skills
+ln -s ../../node_modules/@gunkin/uiify/skills/uiify .agents/skills/uiify
+ln -s ../../node_modules/@gunkin/uiify/skills/uiify .claude/skills/uiify
+node .agents/skills/uiify/scripts/sync-agents.mjs --write
+```
+
+`sync-agents.mjs` adds a section between `uiify:start` and `uiify:end` with a few fixed rules and
+every component, part and closed prop value under its shadcn name (`Dialog`, `PopoverContent`,
+`InputOTP`, `NativeSelect`, `CardHeader`, `RadioGroupItem`, `TabsTrigger`). It also updates
+`CLAUDE.md` when that file exists. Run it again after each upgrade; `--check` fails CI when the
+section is missing, outdated or edited.
+
+A screen arranges UIify parts and never sets `className` or `style`. Check what the agent wrote,
+together with `tsc`:
+
+```bash
+node .agents/skills/uiify/scripts/check-screens.mjs src/screens
+```
+
+Without links (Windows, or a skill kept in git), copy the directory to both places and rerun the
+copy on upgrade. Without the skill, point the agent at the version-matched rules and references
+with one line in `AGENTS.md` (or `CLAUDE.md`):
 
 ```text
 For @gunkin/uiify, read node_modules/@gunkin/uiify/agents/index.md
 ```
 
 In a monorepo with hoisted dependencies, point to the nearest `node_modules/@gunkin/uiify`.
+Full guide: https://uiify.gunkin.dev/docs/ai-agents
 
 ### `/uiify` page-building skill
 

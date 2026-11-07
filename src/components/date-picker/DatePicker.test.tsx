@@ -25,9 +25,9 @@ describe("DatePicker", () => {
     expect(input.value).toBe("2026-10-19");
     expect(input.min).toBe("2026-01-01");
     expect(input.required).toBe(true);
-    expect(input.className).toBe("consumer-date");
+    expect(input.className).toBe("uiify-date-picker consumer-date");
     expect(input.getAttribute("data-layout")).toBe("compact");
-    expect(input.getAttribute("data-uiify-date-picker")).toBe("");
+    expect(input.hasAttribute("data-uiify-date-picker")).toBe(false);
     expect(ref).toHaveBeenCalledWith(input);
   });
 
@@ -48,7 +48,7 @@ describe("DatePicker", () => {
     expect(input.getAttribute("aria-invalid")).toBe("true");
     expect(input.getAttribute("data-invalid")).toBe("");
     expect(input.getAttribute("data-disabled")).toBe("");
-    expect(input.getAttribute("data-uiify-date-picker")).toBe("");
+    expect(input.getAttribute("data-uiify-date-picker")).toBe("consumer");
   });
 
   it("preserves consumer aria-invalid when the component invalid prop is unset", () => {

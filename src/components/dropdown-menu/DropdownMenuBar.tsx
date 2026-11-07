@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { cn } from "../../core/class-names.js";
 import type { KeyboardEvent as ReactKeyboardEvent, ReactElement } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useDirectionOverride } from "@gunkin/uiify/core/direction";
-import { useMergedRefs } from "@gunkin/uiify/hooks";
+import { useEventCallback, useMergedRefs } from "@gunkin/uiify/hooks";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 import type { DropdownMenuBarProps } from "./types.js";
-const ITEM_SELECTOR = '[data-uiify-menu] [data-part="trigger"]';
+const ITEM_SELECTOR = ".uiify-dropdown-menu .uiify-menu-trigger";
 function getItems(root: HTMLElement): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>(ITEM_SELECTOR));
 }
@@ -51,7 +52,7 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const mergedRootRef = useMergedRefs(rootRef, consumerRef);
   const currentRef = useRef<HTMLElement | null>(null);
-  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = useEventCallback((event: ReactKeyboardEvent<HTMLDivElement>) => {
     const root = rootRef.current;
     if (!root || event.defaultPrevented) return;
     const target = event.target;
@@ -77,7 +78,7 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
     if (!nextItem) return;
     currentRef.current = syncTabStops(root, nextItem);
     nextItem.focus();
-  };
+  });
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -100,8 +101,7 @@ export function DropdownMenuBar(props: DropdownMenuBarProps): ReactElement {
   }, [dir, loop]);
   return (
     <div
-      {...(className ? { className } : {})}
-      data-uiify-menu-bar=""
+      className={cn("uiify-dropdown-menu-bar", className)}
       {...(dir ? { dir } : {})}
       role="menubar"
       tabIndex={-1}

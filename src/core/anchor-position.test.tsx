@@ -30,13 +30,13 @@ describe("useAnchorPosition", () => {
     const { getByRole } = render(
       <AnchorRoot align="end" id="demo" side="top">
         <Anchor>Trigger</Anchor>
-        <Positioner as="section" aria-label="Popup">
-          Popup
+        <Positioner as="section" aria-label="Panel">
+          Panel
         </Positioner>
       </AnchorRoot>,
     );
     expect(getByRole("button", { name: "Trigger" })).toBeTruthy();
-    expect(getByRole("region", { name: "Popup" }).dataset.side).toBe("top");
+    expect(getByRole("region", { name: "Panel" }).dataset.side).toBe("top");
   });
 
   it("owns Anchor's data-anchor and native type, not overridable by the consumer", () => {
@@ -58,17 +58,17 @@ describe("useAnchorPosition", () => {
         <Anchor>Trigger</Anchor>
         <Positioner
           as="section"
-          aria-label="Popup"
+          aria-label="Panel"
           data-align="start"
           data-anchor="consumer-anchor"
           data-positioning="fixed"
           data-side="left"
         >
-          Popup
+          Panel
         </Positioner>
       </AnchorRoot>,
     );
-    const positioner = getByRole("region", { name: "Popup" });
+    const positioner = getByRole("region", { name: "Panel" });
     expect(positioner.dataset.align).toBe("end");
     expect(positioner.dataset.anchor).toBe("--owned-positioner-anchor");
     expect(positioner.dataset.positioning).toBe("native");

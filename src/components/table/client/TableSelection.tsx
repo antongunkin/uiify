@@ -3,6 +3,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import type { ReactElement } from "react";
 import { NativeCheckControl } from "../../internal/native-check-control/NativeCheckControl.js";
+import { NativeCheckControlClient } from "../../internal/native-check-control/NativeCheckControlClient.js";
 import type { TableRowSelectOwnProps, TableSelectAllOwnProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
 
@@ -19,7 +20,7 @@ export function TableSelectAll({ slotProps }: TableSelectAllOwnProps = {}): Reac
   const handleChange = useCallback(() => store.toggleSelectAll(), [store]);
 
   return (
-    <NativeCheckControl
+    <NativeCheckControlClient
       id={`${instanceId}-select-all`}
       label="Select all rows"
       checked={checked}

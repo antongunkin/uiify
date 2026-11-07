@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import type { ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { useDirectionOverride } from "@gunkin/uiify/core/direction";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
 
@@ -20,7 +21,7 @@ import type {
 } from "./types.js";
 
 function getToolbarItems(root: HTMLDivElement): HTMLElement[] {
-  return Array.from(root.querySelectorAll<HTMLElement>('[data-uiify-toolbar][data-part="item"]'));
+  return Array.from(root.querySelectorAll<HTMLElement>(".uiify-toolbar-item"));
 }
 
 function isDisabledItem(item: HTMLElement): boolean {
@@ -99,7 +100,7 @@ export function ToolbarRootClient({
     const handleFocusIn = (event: FocusEvent) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
-      const item = target.closest<HTMLElement>('[data-uiify-toolbar][data-part="item"]');
+      const item = target.closest<HTMLElement>(".uiify-toolbar-item");
       if (!item || !root.contains(item) || isDisabledItem(item)) return;
       currentRef.current = syncTabStops(root, item);
     };
@@ -107,7 +108,7 @@ export function ToolbarRootClient({
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
-      const item = target.closest<HTMLElement>('[data-uiify-toolbar][data-part="item"]');
+      const item = target.closest<HTMLElement>(".uiify-toolbar-item");
       if (!item || !root.contains(item)) return;
 
       const enabled = getToolbarItems(root).filter((entry) => !isDisabledItem(entry));
@@ -151,14 +152,12 @@ export function ToolbarRootClient({
 
   return (
     <div
-      {...consumerProps}
-      className={className}
       data-orientation={orientation}
-      data-part="root"
-      data-uiify-toolbar=""
+      role="toolbar"
+      {...consumerProps}
+      className={cn("uiify-toolbar", className)}
       {...(dir ? { dir } : {})}
       ref={setRootRef}
-      role="toolbar"
     >
       {children}
     </div>

@@ -1,3 +1,4 @@
+import { cn } from "../../../core/class-names.js";
 import type { ElementType, ReactElement, ReactNode } from "react";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import type { PartName } from "../../../core/part-names.js";
@@ -26,10 +27,9 @@ function useMenuPart<TAs extends ElementType>(
     defaultTag: options.defaultTag,
     render,
     props: {
-      ...(className ? { className } : {}),
       role: options.role,
-      "data-part": options.part,
       ...consumerProps,
+      className: cn(`uiify-menu-${options.part}`, className),
       children,
     },
     state: {},

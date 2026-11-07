@@ -1,5 +1,6 @@
 "use client";
 import { useRef } from "react";
+import { cn } from "../../core/class-names.js";
 import type { CSSProperties, ElementType, FocusEvent, PointerEvent, ReactElement } from "react";
 import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import {
@@ -87,8 +88,8 @@ export function HoverCardTrigger<TAs extends ElementType = "button">(
       ...(consumerStyle ? { style: consumerStyle } : {}),
       "aria-controls": contentId,
       "aria-expanded": open,
-      ...(nativeButton ? { type: "button", "data-uiify-button": "" } : {}),
-      ...(className ? { className } : {}),
+      ...(nativeButton ? { type: "button" } : {}),
+      className: cn(nativeButton ? "uiify-button" : undefined, className),
       ...createAnchorTriggerProps(anchorNameForId(anchorId)),
       ...consumerProps,
       onBlur: composeEventHandlers(consumerOnBlur, (event: FocusEvent<HTMLElement>) => {
@@ -169,10 +170,8 @@ export function HoverCardContent<TAs extends ElementType = "div">(
       popover: "manual",
       // The consumer's own non-empty `id` wins; otherwise the context-generated id is used.
       id: resolvedId,
-      "data-part": "content",
-      "data-uiify-hover-card": "",
       "data-state": open ? "open" : "closed",
-      ...(className ? { className } : {}),
+      className: cn("uiify-hover-card-content", className),
       ...createAnchorPositionerProps({
         align,
         anchorName: anchorNameForId(anchorId),

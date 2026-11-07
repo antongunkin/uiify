@@ -5,8 +5,8 @@ exports[`preserves default Tooltip DOM 1`] = `
   [
     "button",
     [
+      "class=uiify-button",
       "data-anchor=--hint-anchor",
-      "data-uiify-button=",
       "type=button",
     ],
     "Help",
@@ -14,13 +14,12 @@ exports[`preserves default Tooltip DOM 1`] = `
   [
     "div",
     [
+      "class=uiify-tooltip",
       "data-align=center",
       "data-anchor=--hint-anchor",
-      "data-part=content",
       "data-positioning=native",
       "data-side=top",
       "data-state=closed",
-      "data-uiify-tooltip=",
       "id=hint-content",
       "popover=manual",
       "role=tooltip",

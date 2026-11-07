@@ -5,20 +5,17 @@ exports[`preserves default DrawerPanel DOM 1`] = `
   [
     "div",
     [
-      "data-part=root",
+      "class=uiify-drawer-root",
       "data-side=bottom",
-      "data-uiify-drawer=",
     ],
     null,
   ],
   [
     "button",
     [
+      "class=uiify-drawer-trigger uiify-button",
       "command=show-modal",
       "commandfor=settings",
-      "data-part=trigger",
-      "data-uiify-button=",
-      "data-uiify-drawer=",
       "type=button",
     ],
     "Open",
@@ -28,11 +25,10 @@ exports[`preserves default DrawerPanel DOM 1`] = `
     [
       "aria-describedby=settings-description",
       "aria-labelledby=settings-title",
+      "class=uiify-drawer uiify-drawer-content",
       "closedby=any",
-      "data-part=content",
       "data-side=bottom",
       "data-size=lg",
-      "data-uiify-drawer=",
       "id=settings",
     ],
     null,
@@ -41,24 +37,21 @@ exports[`preserves default DrawerPanel DOM 1`] = `
     "div",
     [
       "aria-hidden=true",
-      "data-part=grabber",
-      "data-uiify-drawer=",
+      "class=uiify-drawer-grabber",
     ],
     "",
   ],
   [
     "div",
     [
-      "data-part=header",
-      "data-uiify-drawer=",
+      "class=uiify-drawer-header",
     ],
     null,
   ],
   [
     "h2",
     [
-      "data-part=title",
-      "data-uiify-drawer=",
+      "class=uiify-drawer-title",
       "id=settings-title",
     ],
     "Settings",
@@ -66,8 +59,7 @@ exports[`preserves default DrawerPanel DOM 1`] = `
   [
     "p",
     [
-      "data-part=description",
-      "data-uiify-drawer=",
+      "class=uiify-drawer-description",
       "id=settings-description",
     ],
     "Preferences",
@@ -76,12 +68,10 @@ exports[`preserves default DrawerPanel DOM 1`] = `
     "button",
     [
       "aria-label=Close",
+      "class=uiify-drawer-close uiify-button",
       "command=request-close",
       "commandfor=settings",
-      "data-part=close",
       "data-size=icon",
-      "data-uiify-button=",
-      "data-uiify-drawer=",
       "data-variant=ghost",
       "type=button",
     ],
@@ -90,16 +80,14 @@ exports[`preserves default DrawerPanel DOM 1`] = `
   [
     "div",
     [
-      "data-part=body",
-      "data-uiify-drawer=",
+      "class=uiify-drawer-body",
     ],
     "Body",
   ],
   [
     "div",
     [
-      "data-part=footer",
-      "data-uiify-drawer=",
+      "class=uiify-drawer-footer",
     ],
     "Actions",
   ],

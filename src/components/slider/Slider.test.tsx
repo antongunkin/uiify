@@ -36,7 +36,15 @@ describe("Slider", () => {
     const slider = screen.getByRole("slider", { name: "Volume" });
     expect(slider.getAttribute("data-state")).toBe("55");
     expect(slider.getAttribute("style")).toContain("--uiify-slider-progress: 55%");
-    expect(slider.getAttribute("data-uiify-slider")).toBe("");
+    expect(slider.classList.contains("uiify-slider")).toBe(true);
+    expect(slider.hasAttribute("data-uiify-slider")).toBe(false);
+  });
+
+  it("renders its identity class without a legacy marker", () => {
+    render(<Slider defaultValue={25} aria-label="Volume" />);
+    const slider = screen.getByRole("slider", { name: "Volume" });
+    expect(slider.classList.contains("uiify-slider")).toBe(true);
+    expect(slider.hasAttribute("data-uiify-slider")).toBe(false);
   });
 
   it("lets consumers override data-disabled and data-state", () => {

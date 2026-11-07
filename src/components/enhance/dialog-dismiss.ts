@@ -1,8 +1,7 @@
 import { createBoxObserver } from "./internal/box-observer.js";
 
-/** The modal dialog surface `ModalContent` renders. */
-export const SHEET_DIALOG =
-  'dialog:is([data-uiify-modal], [data-uiify-drawer])[data-part="content"]';
+/** The modal dialog surface `DialogContent` renders. */
+export const SHEET_DIALOG = "dialog.uiify-dialog-content, dialog.uiify-drawer-content";
 
 interface Box {
   readonly left: number;

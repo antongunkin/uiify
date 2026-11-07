@@ -33,9 +33,25 @@ export function TableControls() {
 ## CSS
 
 ```css
-[data-uiify-field] { display: grid; gap: 0.5rem; }
-[data-uiify-field] input,
-[data-uiify-select] { min-block-size: 2.75rem; padding-inline: 0.75rem; }
-table { border-collapse: collapse; inline-size: 100%; }
-th, td { padding: 0.5rem; text-align: start; }
+.uiify-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.uiify-field input,
+.uiify-native-select {
+  min-block-size: 2.75rem;
+  padding-inline: 0.75rem;
+}
+
+table {
+  border-collapse: collapse;
+  inline-size: 100%;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: start;
+}
 ```

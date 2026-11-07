@@ -2,6 +2,7 @@ import { createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
+import { NativeCheckControl } from "../internal/native-check-control/NativeCheckControl.js";
 import { Checkbox } from "./Checkbox.js";
 function outline(html: string): string[] {
   const host = document.createElement("div");
@@ -20,7 +21,7 @@ it("preserves default checkbox DOM", () => {
         <>
           <Checkbox id="plain" label="Plain" />
           <Checkbox id="checked" label="Checked" defaultChecked disabled />
-          <Checkbox id="mixed" checked="indeterminate" aria-label="Mixed" />
+          <Checkbox id="controlled" checked aria-label="Controlled" />
         </>,
       ),
     ),
@@ -81,7 +82,45 @@ it("composes checkbox label classes, input refs and consumer-first change handle
   );
   const input = screen.getByRole("checkbox", { name: "Composed" });
   expect(ref.current).toBe(input);
-  expect(input.parentElement?.className).toBe("root-class slot-class");
+  expect(input.parentElement?.className).toBe("uiify-checkbox root-class slot-class");
   fireEvent.click(input);
   expect(calls).toEqual(["consumer", "library"]);
+});
+
+it("forwards required/form/autoComplete to the input", () => {
+  render(<Checkbox id="native" label="Native" required form="signup" autoComplete="off" />);
+  const input = screen.getByRole("checkbox", { name: "Native" });
+  expect(input.hasAttribute("required")).toBe(true);
+  expect(input.getAttribute("form")).toBe("signup");
+  expect(input.getAttribute("autocomplete")).toBe("off");
+});
+
+it("runs top-level onChange, slot onChange, then the library handler", () => {
+  const calls: string[] = [];
+  render(
+    <Checkbox
+      id="chain"
+      label="Chain"
+      onChange={() => calls.push("top")}
+      onCheckedChange={() => calls.push("library")}
+      slotProps={{ input: { onChange: () => calls.push("slot") } }}
+    />,
+  );
+  fireEvent.click(screen.getByRole("checkbox", { name: "Chain" }));
+  expect(calls).toEqual(["top", "slot", "library"]);
+});
+
+it("passes no onChange to the input when no handler is given", () => {
+  const props = (element: unknown) => (element as { props: { onChange?: unknown } }).props;
+  const bare = NativeCheckControl({ id: "bare", "aria-label": "Bare" });
+  expect(props(bare).onChange).toBeUndefined();
+  const one = NativeCheckControl({ id: "one", "aria-label": "One", onChange: () => {} });
+  expect(typeof props(one).onChange).toBe("function");
+});
+
+it("consumer aria-describedby wins", () => {
+  render(<Checkbox id="described" label="Described" aria-describedby="hint" />);
+  expect(screen.getByRole("checkbox", { name: "Described" }).getAttribute("aria-describedby")).toBe(
+    "hint",
+  );
 });

@@ -2,185 +2,185 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "1560 B"
+    "limit": "1970 B"
   },
   {
     "name": "enhance",
     "path": "dist/components/enhance.js",
-    "limit": "2340 B"
+    "limit": "2270 B"
   },
   {
-    "name": "modal/client",
-    "path": "dist/components/modal/client.js",
-    "limit": "860 B",
+    "name": "dialog/client",
+    "path": "dist/components/dialog/client.js",
+    "limit": "930 B",
     "import": "*"
   },
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "47600 B",
+    "limit": "48210 B",
     "import": "*"
   },
   {
-    "name": "root: native modal parts only",
+    "name": "root: native dialog parts only",
     "path": "dist/index.js",
-    "limit": "350 B",
-    "import": "{ ModalTrigger, ModalContent, ModalClose }"
+    "limit": "400 B",
+    "import": "{ DialogTrigger, DialogContent, DialogClose }"
   },
   {
     "name": "button",
     "path": "dist/components/button.js",
-    "limit": "350 B",
+    "limit": "410 B",
     "import": "*"
   },
   {
     "name": "input",
     "path": "dist/components/input.js",
-    "limit": "360 B",
+    "limit": "400 B",
     "import": "*"
   },
   {
     "name": "textarea",
     "path": "dist/components/textarea.js",
-    "limit": "360 B",
+    "limit": "420 B",
     "import": "*"
   },
   {
     "name": "checkbox",
     "path": "dist/components/checkbox.js",
-    "limit": "960 B",
+    "limit": "1340 B",
     "import": "*"
   },
   {
     "name": "radio-group",
     "path": "dist/components/radio-group.js",
-    "limit": "1370 B",
+    "limit": "250 B",
     "import": "*"
   },
   {
     "name": "switch",
     "path": "dist/components/switch.js",
-    "limit": "330 B",
+    "limit": "380 B",
     "import": "*"
   },
   {
     "name": "toggle",
     "path": "dist/components/toggle.js",
-    "limit": "400 B",
+    "limit": "440 B",
     "import": "*"
   },
   {
     "name": "toggle-group",
     "path": "dist/components/toggle-group.js",
-    "limit": "1420 B",
+    "limit": "1450 B",
     "import": "*"
   },
   {
     "name": "slider",
     "path": "dist/components/slider.js",
-    "limit": "520 B",
+    "limit": "550 B",
     "import": "*"
   },
   {
-    "name": "modal",
-    "path": "dist/components/modal.js",
-    "limit": "900 B",
+    "name": "dialog",
+    "path": "dist/components/dialog.js",
+    "limit": "960 B",
     "import": "*"
   },
   {
-    "name": "popup",
-    "path": "dist/components/popup.js",
-    "limit": "910 B",
+    "name": "popover",
+    "path": "dist/components/popover.js",
+    "limit": "320 B",
     "import": "*"
   },
   {
     "name": "tooltip",
     "path": "dist/components/tooltip.js",
-    "limit": "2210 B",
+    "limit": "2220 B",
     "import": "*"
   },
   {
     "name": "dropdown-menu",
     "path": "dist/components/dropdown-menu.js",
-    "limit": "6670 B",
+    "limit": "6730 B",
     "import": "*"
   },
   {
     "name": "tabs",
     "path": "dist/components/tabs.js",
-    "limit": "1350 B",
+    "limit": "440 B",
     "import": "*"
   },
   {
     "name": "accordion",
     "path": "dist/components/accordion.js",
-    "limit": "850 B",
+    "limit": "520 B",
     "import": "*"
   },
   {
     "name": "toast",
     "path": "dist/components/toast.js",
-    "limit": "2930 B",
+    "limit": "2960 B",
     "import": "*"
   },
   {
-    "name": "select",
-    "path": "dist/components/select.js",
-    "limit": "560 B",
+    "name": "native-select",
+    "path": "dist/components/native-select.js",
+    "limit": "580 B",
     "import": "*"
   },
   {
     "name": "combobox",
     "path": "dist/components/combobox.js",
-    "limit": "7560 B",
+    "limit": "7510 B",
     "import": "*"
   },
   {
     "name": "spinner",
     "path": "dist/components/spinner.js",
-    "limit": "470 B",
+    "limit": "520 B",
     "import": "*"
   },
   {
     "name": "skeleton",
     "path": "dist/components/skeleton.js",
-    "limit": "330 B",
+    "limit": "390 B",
     "import": "*"
   },
   {
     "name": "collapsible",
     "path": "dist/components/collapsible.js",
-    "limit": "460 B",
+    "limit": "480 B",
     "import": "*"
   },
   {
     "name": "breadcrumb",
     "path": "dist/components/breadcrumb.js",
-    "limit": "1390 B",
+    "limit": "1570 B",
     "import": "*"
   },
   {
     "name": "pagination",
     "path": "dist/components/pagination.js",
-    "limit": "3090 B",
+    "limit": "3180 B",
     "import": "*"
   },
   {
     "name": "table",
     "path": "dist/components/table.js",
-    "limit": "630 B",
+    "limit": "680 B",
     "import": "*"
   },
   {
-    "name": "alert-modal",
-    "path": "dist/components/alert-modal.js",
-    "limit": "620 B",
+    "name": "alert-dialog",
+    "path": "dist/components/alert-dialog.js",
+    "limit": "680 B",
     "import": "*"
   },
   {
     "name": "hover-card",
     "path": "dist/components/hover-card.js",
-    "limit": "1960 B",
+    "limit": "1970 B",
     "import": "*"
   },
   {
@@ -192,13 +192,13 @@
   {
     "name": "drawer",
     "path": "dist/components/drawer.js",
-    "limit": "4030 B",
+    "limit": "4080 B",
     "import": "*"
   },
   {
     "name": "context-menu",
     "path": "dist/components/context-menu.js",
-    "limit": "5080 B",
+    "limit": "5250 B",
     "import": "*"
   },
   {
@@ -210,183 +210,183 @@
   {
     "name": "file-upload",
     "path": "dist/components/file-upload.js",
-    "limit": "2320 B",
+    "limit": "2370 B",
     "import": "*"
   },
   {
     "name": "color-picker",
     "path": "dist/components/color-picker.js",
-    "limit": "1680 B",
+    "limit": "1460 B",
     "import": "*"
   },
   {
     "name": "carousel",
     "path": "dist/components/carousel.js",
-    "limit": "1830 B",
+    "limit": "1870 B",
     "import": "*"
   },
   {
     "name": "carousel/client",
     "path": "dist/components/carousel/client.js",
-    "limit": "7760 B",
+    "limit": "7800 B",
     "gzip": true,
     "import": "*"
   },
   {
     "name": "carousel/fade",
     "path": "dist/components/carousel/fade.js",
-    "limit": "6550 B",
+    "limit": "6580 B",
     "gzip": true,
     "import": "*"
   },
   {
     "name": "number-field",
     "path": "dist/components/number-field.js",
-    "limit": "2640 B",
+    "limit": "2680 B",
     "import": "*"
   },
   {
-    "name": "otp-input",
-    "path": "dist/components/otp-input.js",
-    "limit": "1710 B",
+    "name": "input-otp",
+    "path": "dist/components/input-otp.js",
+    "limit": "1730 B",
     "import": "*"
   },
   {
     "name": "segmented-control",
     "path": "dist/components/segmented-control.js",
-    "limit": "1420 B",
+    "limit": "1460 B",
     "import": "*"
   },
   {
     "name": "rating",
     "path": "dist/components/rating.js",
-    "limit": "1650 B",
+    "limit": "1690 B",
     "import": "*"
   },
   {
     "name": "rating/client",
     "path": "dist/components/rating/client.js",
-    "limit": "1890 B",
+    "limit": "1940 B",
     "import": "*"
   },
   {
     "name": "field",
     "path": "dist/components/field.js",
-    "limit": "690 B",
+    "limit": "770 B",
     "import": "*"
   },
   {
     "name": "form",
     "path": "dist/components/form.js",
-    "limit": "200 B",
+    "limit": "240 B",
     "import": "*"
   },
   {
     "name": "header/client",
     "path": "dist/components/header/client.js",
-    "limit": "950 B",
+    "limit": "1000 B",
     "import": "*"
   },
   {
     "name": "header",
     "path": "dist/components/header.js",
-    "limit": "150 B",
+    "limit": "180 B",
     "import": "*"
   },
   {
     "name": "virtual-scroll",
     "path": "dist/components/virtual-scroll.js",
-    "limit": "4910 B",
+    "limit": "4970 B",
     "import": "*"
   },
   {
-    "name": "elements/invoker",
-    "path": "dist/elements/invoker.js",
-    "limit": "140 B",
+    "name": "elements/native-invoker",
+    "path": "dist/elements/native-invoker.js",
+    "limit": "180 B",
     "import": "*"
   },
   {
-    "name": "elements/dialog",
-    "path": "dist/elements/dialog.js",
-    "limit": "340 B",
+    "name": "elements/native-dialog",
+    "path": "dist/elements/native-dialog.js",
+    "limit": "400 B",
     "import": "*"
   },
   {
-    "name": "elements/popover",
-    "path": "dist/elements/popover.js",
+    "name": "elements/native-popover",
+    "path": "dist/elements/native-popover.js",
+    "limit": "420 B",
+    "import": "*"
+  },
+  {
+    "name": "elements/native-details",
+    "path": "dist/elements/native-details.js",
     "limit": "380 B",
     "import": "*"
   },
   {
-    "name": "elements/details",
-    "path": "dist/elements/details.js",
-    "limit": "350 B",
-    "import": "*"
-  },
-  {
-    "name": "elements/choice",
-    "path": "dist/elements/choice.js",
-    "limit": "570 B",
+    "name": "elements/native-choice",
+    "path": "dist/elements/native-choice.js",
+    "limit": "600 B",
     "import": "*"
   },
   {
     "name": "elements barrel",
     "path": "dist/elements/index.js",
-    "limit": "1320 B",
+    "limit": "1390 B",
     "import": "*"
   },
   {
     "name": "table/client",
     "path": "dist/components/table/client.js",
-    "limit": "5470 B",
+    "limit": "5620 B",
     "import": "*"
   },
   {
     "name": "table-of-contents",
     "path": "dist/components/table-of-contents.js",
-    "limit": "700 B",
+    "limit": "750 B",
     "import": "*"
   },
   {
     "name": "table-of-contents/client",
     "path": "dist/components/table-of-contents/client.js",
-    "limit": "4230 B",
+    "limit": "4270 B",
     "import": "*"
   },
   {
     "name": "aspect-ratio",
     "path": "dist/components/aspect-ratio.js",
-    "limit": "290 B",
+    "limit": "340 B",
     "import": "*"
   },
   {
     "name": "badge",
     "path": "dist/components/badge.js",
-    "limit": "210 B",
+    "limit": "250 B",
     "import": "*"
   },
   {
     "name": "card",
     "path": "dist/components/card.js",
-    "limit": "170 B",
+    "limit": "360 B",
     "import": "*"
   },
   {
     "name": "progress",
     "path": "dist/components/progress.js",
-    "limit": "100 B",
+    "limit": "140 B",
     "import": "*"
   },
   {
     "name": "avatar",
     "path": "dist/components/avatar.js",
-    "limit": "310 B",
+    "limit": "370 B",
     "import": "*"
   },
   {
     "name": "alert",
     "path": "dist/components/alert.js",
-    "limit": "420 B",
+    "limit": "480 B",
     "import": "*"
   }
 ]

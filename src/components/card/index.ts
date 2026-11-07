@@ -1,2 +1,26 @@
-export { Card } from "./Card.js";
-export type { CardOwnProps, CardProps } from "./types.js";
+export {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./Card.js";
+export type {
+  CardActionOwnProps,
+  CardActionProps,
+  CardContentOwnProps,
+  CardContentProps,
+  CardDescriptionOwnProps,
+  CardDescriptionProps,
+  CardFooterOwnProps,
+  CardFooterProps,
+  CardHeaderOwnProps,
+  CardHeaderProps,
+  CardOwnProps,
+  CardProps,
+  CardSize,
+  CardTitleOwnProps,
+  CardTitleProps,
+} from "./types.js";

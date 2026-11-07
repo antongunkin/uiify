@@ -2,14 +2,18 @@
 
 /** Every part type a UI document may use. */
 export type UiType =
+  | "Accordion"
+  | "AccordionContent"
+  | "AccordionItem"
+  | "AccordionTrigger"
   | "Alert"
   | "AlertDescription"
   | "AlertTitle"
-  | "AlertModal"
-  | "AlertModalAction"
-  | "AlertModalCancel"
-  | "AlertModalContent"
-  | "AlertModalTrigger"
+  | "AlertDialog"
+  | "AlertDialogAction"
+  | "AlertDialogCancel"
+  | "AlertDialogContent"
+  | "AlertDialogTrigger"
   | "AspectRatio"
   | "Avatar"
   | "Badge"
@@ -20,12 +24,28 @@ export type UiType =
   | "Breadcrumb.Separator"
   | "Button"
   | "Card"
+  | "CardAction"
+  | "CardContent"
+  | "CardDescription"
+  | "CardFooter"
+  | "CardHeader"
+  | "CardTitle"
   | "Checkbox"
   | "ColorPicker"
   | "DatePicker"
   | "DescriptionDetails"
   | "DescriptionList"
   | "DescriptionTerm"
+  | "Dialog"
+  | "DialogBody"
+  | "DialogClose"
+  | "DialogContent"
+  | "DialogDescription"
+  | "DialogFooter"
+  | "DialogGrabber"
+  | "DialogHeader"
+  | "DialogTitle"
+  | "DialogTrigger"
   | "Drawer.Close"
   | "Drawer.Content"
   | "Drawer.Description"
@@ -41,13 +61,12 @@ export type UiType =
   | "EmptyContent"
   | "EmptyDescription"
   | "EmptyTitle"
-  | "Field.Root"
-  | "Field.Label"
-  | "Field.Control"
-  | "Field.Description"
-  | "Field.Error"
-  | "Fieldset"
-  | "FieldsetLegend"
+  | "Field"
+  | "FieldDescription"
+  | "FieldError"
+  | "FieldLabel"
+  | "FieldLegend"
+  | "FieldSet"
   | "FileUpload.Dropzone"
   | "FileUpload.HiddenInput"
   | "FileUpload.Item"
@@ -65,16 +84,11 @@ export type UiType =
   | "ItemContent"
   | "ItemMedia"
   | "ItemMetadata"
-  | "Modal"
-  | "ModalBody"
-  | "ModalClose"
-  | "ModalContent"
-  | "ModalDescription"
-  | "ModalFooter"
-  | "ModalGrabber"
-  | "ModalHeader"
-  | "ModalTitle"
-  | "ModalTrigger"
+  | "NativeSelectContent"
+  | "NativeSelectOptGroup"
+  | "NativeSelectOption"
+  | "NativeSelect"
+  | "NativeSelectSeparator"
   | "NumberField.Root"
   | "NumberField.Group"
   | "NumberField.Input"
@@ -85,20 +99,13 @@ export type UiType =
   | "Pagination.Link"
   | "Pagination.List"
   | "Pagination.Root"
-  | "Popup.Close"
-  | "Popup.Content"
-  | "Popup.Root"
-  | "Popup.Trigger"
-  | "PopupClose"
-  | "PopupContent"
-  | "PopupTrigger"
+  | "PopoverClose"
+  | "PopoverContent"
+  | "PopoverTrigger"
   | "Progress"
+  | "RadioGroup"
+  | "RadioGroupItem"
   | "Rating"
-  | "Select.Content"
-  | "Select.Group"
-  | "Select.Item"
-  | "Select.Root"
-  | "Select.Separator"
   | "Skeleton"
   | "Slider"
   | "Spinner"
@@ -112,6 +119,10 @@ export type UiType =
   | "Table.Header"
   | "Table.Root"
   | "Table.Row"
+  | "Tabs"
+  | "TabsContent"
+  | "TabsList"
+  | "TabsTrigger"
   | "Textarea"
   | "Toggle"
   | "Tooltip.Content"
@@ -151,6 +162,56 @@ export type UiType =
   | "h6"
   | "a"
   | "label";
+
+/**
+ * Reveal optional sections without hiding content most visitors need.
+ * Use when: The demonstrated disclosure relationship is present.
+ * Avoid when: Most visitors need the content; show it in the page.
+ * Avoid when: The sections are sequential steps; use stepper.
+ */
+export interface AccordionProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface AccordionContentProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface AccordionItemProps {
+  readonly value: string;
+  readonly name?: string;
+  readonly defaultOpen?: boolean;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface AccordionTriggerProps {
+  readonly disabled?: boolean;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
 
 /**
  * Give a short persistent message context beside the content it affects.
@@ -194,7 +255,7 @@ export interface AlertTitleProps {
  * Use when: The demonstrated destructive-confirmation relationship is present.
  * Avoid when: The task does not need this element; do not add it for coverage.
  */
-export interface AlertModalProps {
+export interface AlertDialogProps {
   readonly id: string;
   readonly trigger: string;
   readonly title: string;
@@ -208,7 +269,7 @@ export interface AlertModalProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-export interface AlertModalActionProps {
+export interface AlertDialogActionProps {
   readonly target: string;
   readonly command?: string;
   readonly commandfor?: string;
@@ -233,7 +294,7 @@ export interface AlertModalActionProps {
     | `mailto:${string}`;
 }
 
-export interface AlertModalCancelProps {
+export interface AlertDialogCancelProps {
   readonly target: string;
   readonly command?: string;
   readonly commandfor?: string;
@@ -258,7 +319,7 @@ export interface AlertModalCancelProps {
     | `mailto:${string}`;
 }
 
-export interface AlertModalContentProps {
+export interface AlertDialogContentProps {
   readonly id: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -268,7 +329,7 @@ export interface AlertModalContentProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-export interface AlertModalTriggerProps {
+export interface AlertDialogTriggerProps {
   readonly target: string;
   readonly command?: string;
   readonly commandfor?: string;
@@ -344,7 +405,7 @@ export interface AvatarProps {
  */
 export interface BadgeProps {
   readonly size?: "sm" | "md" | "lg";
-  readonly variant?: "secondary" | "success" | "warning" | "destructive";
+  readonly variant?: "default" | "secondary" | "outline" | "success" | "warning" | "destructive";
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -445,8 +506,8 @@ export interface ButtonProps {
   readonly disabled?: boolean;
   readonly selected?: boolean;
   readonly type?: "button" | "submit" | "reset";
-  readonly size?: "sm" | "md" | "lg" | "icon-sm" | "icon" | "icon-lg";
-  readonly variant?: "secondary" | "outline" | "ghost" | "destructive" | "link";
+  readonly size?: "xs" | "sm" | "default" | "lg" | "icon-xs" | "icon-sm" | "icon" | "icon-lg";
+  readonly variant?: "default" | "secondary" | "outline" | "ghost" | "destructive" | "link";
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -474,6 +535,67 @@ export interface ButtonProps {
  * Avoid when: The card would wrap every paragraph or create a whole-surface control around independent actions.
  */
 export interface CardProps {
+  readonly size?: "sm" | "default";
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface CardActionProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface CardContentProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface CardDescriptionProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface CardFooterProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface CardHeaderProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface CardTitleProps {
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -610,6 +732,154 @@ export interface DescriptionTermProps {
   readonly "aria-describedby"?: string;
   readonly hidden?: boolean;
   readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+/**
+ * Hold attention on a task that must be completed before returning to the page.
+ * Use when: The demonstrated blocking-modal relationship is present.
+ * Avoid when: The task can be completed while comparing the page; use inline content.
+ * Avoid when: The message is brief feedback; use toast.
+ * Avoid when: The user must confirm an irreversible action; use alert-dialog.
+ */
+export interface DialogProps {
+  readonly id: string;
+  readonly trigger: string;
+  readonly title: string;
+  readonly description?: string;
+  readonly closeLabel?: string;
+  readonly size?: "sm" | "md" | "lg" | "full";
+  readonly align?: "center" | "start";
+  readonly dismiss?: "any" | "closerequest" | "none";
+  readonly backdrop?: "opaque" | "blur" | "none";
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogBodyProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogCloseProps {
+  readonly target: string;
+  readonly command?: string;
+  readonly commandfor?: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly name?: string;
+  readonly value?: string;
+  readonly hidden?: boolean;
+  readonly disabled?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+  readonly formAction?:
+    | `/${string}`
+    | `./${string}`
+    | `../${string}`
+    | `#${string}`
+    | `?${string}`
+    | `http://${string}`
+    | `https://${string}`
+    | `mailto:${string}`;
+}
+
+export interface DialogContentProps {
+  readonly id: string;
+  readonly size?: "sm" | "md" | "lg" | "full";
+  readonly align?: "center" | "start";
+  readonly dismiss?: "any" | "closerequest" | "none";
+  readonly backdrop?: "opaque" | "blur" | "none";
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogDescriptionProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogFooterProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogGrabberProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogHeaderProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogTitleProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DialogTriggerProps {
+  readonly target: string;
+  readonly command?: string;
+  readonly commandfor?: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly name?: string;
+  readonly value?: string;
+  readonly hidden?: boolean;
+  readonly disabled?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+  readonly formAction?:
+    | `/${string}`
+    | `./${string}`
+    | `../${string}`
+    | `#${string}`
+    | `?${string}`
+    | `http://${string}`
+    | `https://${string}`
+    | `mailto:${string}`;
 }
 
 /**
@@ -862,12 +1132,11 @@ export interface EmptyTitleProps {
  * Use when: The demonstrated form-grouping relationship is present.
  * Avoid when: The task does not need this element; do not add it for coverage.
  */
-export interface FieldRootProps {
-  readonly id: string;
+export interface FieldProps {
+  readonly orientation?: "horizontal" | "vertical" | "responsive";
   readonly invalid?: boolean;
-  readonly required?: boolean;
-  readonly disabled?: boolean;
-  readonly name?: string;
+  readonly variant?: "card";
+  readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
@@ -876,13 +1145,42 @@ export interface FieldRootProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Field.Root`.
- */
+export interface FieldDescriptionProps {
+  readonly disabled?: boolean;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface FieldErrorProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
 export interface FieldLabelProps {
   readonly disabled?: boolean;
   readonly required?: boolean;
-  readonly fieldId: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly htmlFor?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface FieldLegendProps {
+  readonly variant?: "label" | "legend";
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -892,59 +1190,7 @@ export interface FieldLabelProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Field.Root`.
- */
-export interface FieldControlProps {
-  readonly disabled?: boolean;
-  readonly invalid?: boolean;
-  readonly required?: boolean;
-  readonly fieldId: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Field.Root`.
- */
-export interface FieldDescriptionProps {
-  readonly disabled?: boolean;
-  readonly fieldId: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Field.Root`.
- */
-export interface FieldErrorProps {
-  readonly invalid?: boolean;
-  readonly fieldId: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Give related form controls a native group name with a legend.
- * Use when: Related controls need a shared group name, such as a set of preferences.
- * Avoid when: There is only one unrelated field or a generic wrapper would imply a false group.
- */
-export interface FieldsetProps {
+export interface FieldSetProps {
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -953,16 +1199,6 @@ export interface FieldsetProps {
   readonly name?: string;
   readonly hidden?: boolean;
   readonly disabled?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface FieldsetLegendProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
@@ -1287,151 +1523,75 @@ export interface ItemMetadataProps {
 }
 
 /**
- * Hold attention on a task that must be completed before returning to the page.
- * Use when: The demonstrated blocking-modal relationship is present.
- * Avoid when: The task can be completed while comparing the page; use inline content.
- * Avoid when: The message is brief feedback; use toast.
- * Avoid when: The user must confirm an irreversible action; use alert-modal.
+ * Place inside `NativeSelect`.
  */
-export interface ModalProps {
-  readonly id: string;
-  readonly trigger: string;
-  readonly title: string;
-  readonly description?: string;
-  readonly closeLabel?: string;
-  readonly size?: "sm" | "md" | "lg" | "full";
-  readonly align?: "center" | "start";
-  readonly dismiss?: "any" | "closerequest" | "none";
-  readonly backdrop?: "opaque" | "blur" | "none";
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
+export interface NativeSelectContentProps {
+  readonly [name: string]: never;
 }
 
-export interface ModalBodyProps {
+/**
+ * Place inside `NativeSelect`.
+ */
+export interface NativeSelectOptGroupProps {
+  readonly label: string;
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
   readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalCloseProps {
-  readonly target: string;
-  readonly command?: string;
-  readonly commandfor?: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly name?: string;
-  readonly value?: string;
   readonly hidden?: boolean;
   readonly disabled?: boolean;
   readonly dir?: "ltr" | "rtl" | "auto";
-  readonly formAction?:
-    | `/${string}`
-    | `./${string}`
-    | `../${string}`
-    | `#${string}`
-    | `?${string}`
-    | `http://${string}`
-    | `https://${string}`
-    | `mailto:${string}`;
 }
 
-export interface ModalContentProps {
-  readonly id: string;
-  readonly size?: "sm" | "md" | "lg" | "full";
-  readonly align?: "center" | "start";
-  readonly dismiss?: "any" | "closerequest" | "none";
-  readonly backdrop?: "opaque" | "blur" | "none";
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalDescriptionProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalFooterProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalGrabberProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalHeaderProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalTitleProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface ModalTriggerProps {
-  readonly target: string;
-  readonly command?: string;
-  readonly commandfor?: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly name?: string;
-  readonly value?: string;
-  readonly hidden?: boolean;
+/**
+ * Place inside `NativeSelect`.
+ */
+export interface NativeSelectOptionProps {
   readonly disabled?: boolean;
+  readonly value: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
   readonly dir?: "ltr" | "rtl" | "auto";
-  readonly formAction?:
-    | `/${string}`
-    | `./${string}`
-    | `../${string}`
-    | `#${string}`
-    | `?${string}`
-    | `http://${string}`
-    | `https://${string}`
-    | `mailto:${string}`;
+}
+
+/**
+ * Choose one or several values from a fixed list.
+ * Use when: The demonstrated form-grouping relationship is present.
+ * Avoid when: The task does not need this element; do not add it for coverage.
+ */
+export interface NativeSelectProps {
+  readonly defaultValue?: string | readonly string[];
+  readonly multiple?: boolean;
+  readonly disabled?: boolean;
+  readonly name?: string;
+  readonly size?: "sm" | "md" | "lg";
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly autoComplete?: string;
+  readonly hidden?: boolean;
+  readonly required?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+/**
+ * Place inside `NativeSelect`.
+ */
+export interface NativeSelectSeparatorProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
 }
 
 /**
@@ -1644,64 +1804,7 @@ export interface PaginationRootProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Popup.Root`.
- */
-export interface PopupRootCloseProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Popup.Root`.
- */
-export interface PopupRootContentProps {
-  readonly align?: "start" | "center" | "end";
-  readonly side?: "top" | "right" | "bottom" | "left";
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * A small, optional piece of contextual content belongs beside its trigger and can be opened without blocking the page
- * Use when: The described popup interaction is present; keep it focused on the user's current task.
- * Avoid when: The task does not need popup; do not add it for coverage.
- */
-export interface PopupRootProps {
-  readonly id: string;
-  readonly mode?: "auto" | "manual" | "hint";
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Popup.Root`.
- */
-export interface PopupRootTriggerProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface PopupCloseProps {
+export interface PopoverCloseProps {
   readonly target: string;
   readonly command?: string;
   readonly commandfor?: string;
@@ -1726,7 +1829,7 @@ export interface PopupCloseProps {
     | `mailto:${string}`;
 }
 
-export interface PopupContentProps {
+export interface PopoverContentProps {
   readonly align?: "start" | "center" | "end";
   readonly id: string;
   readonly mode?: "auto" | "manual";
@@ -1739,7 +1842,7 @@ export interface PopupContentProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-export interface PopupTriggerProps {
+export interface PopoverTriggerProps {
   readonly target: string;
   readonly command?: string;
   readonly commandfor?: string;
@@ -1781,6 +1884,56 @@ export interface ProgressProps {
 }
 
 /**
+ * Choose exactly one option from a related set.
+ * Use when: Choose exactly one option from a related set.
+ * Avoid when: The task does not need this pattern; do not add it only for catalog coverage.
+ */
+export interface RadioGroupProps {
+  readonly orientation?: "horizontal" | "vertical";
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface RadioGroupItemProps {
+  readonly name: string;
+  readonly value: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly placeholder?: string;
+  readonly autoComplete?: string;
+  readonly pattern?: string;
+  readonly accept?: string;
+  readonly hidden?: boolean;
+  readonly required?: boolean;
+  readonly disabled?: boolean;
+  readonly readOnly?: boolean;
+  readonly multiple?: boolean;
+  readonly minLength?: number;
+  readonly maxLength?: number;
+  readonly min?: number;
+  readonly max?: number;
+  readonly step?: number;
+  readonly dir?: "ltr" | "rtl" | "auto";
+  readonly src?:
+    | `/${string}`
+    | `./${string}`
+    | `../${string}`
+    | `#${string}`
+    | `?${string}`
+    | `http://${string}`
+    | `https://${string}`
+    | `mailto:${string}`;
+}
+
+/**
  * Collect a numeric rating on a short ordered scale.
  * Use when: Collect a numeric rating on a short ordered scale.
  * Avoid when: The task does not need this pattern; do not add it only for catalog coverage.
@@ -1793,77 +1946,6 @@ export interface RatingProps {
   readonly disabled?: boolean;
   readonly "aria-label"?: string;
   readonly title?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Select.Root`.
- */
-export interface SelectContentProps {
-  readonly [name: string]: never;
-}
-
-/**
- * Place inside `Select.Root`.
- */
-export interface SelectGroupProps {
-  readonly label: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly disabled?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Select.Root`.
- */
-export interface SelectItemProps {
-  readonly disabled?: boolean;
-  readonly value: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Choose one or several values from a fixed list.
- * Use when: The demonstrated form-grouping relationship is present.
- * Avoid when: The task does not need this element; do not add it for coverage.
- */
-export interface SelectRootProps {
-  readonly multiple?: boolean;
-  readonly disabled?: boolean;
-  readonly name?: string;
-  readonly size?: "sm" | "md" | "lg";
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly autoComplete?: string;
-  readonly hidden?: boolean;
-  readonly required?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Select.Root`.
- */
-export interface SelectSeparatorProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
   readonly "aria-describedby"?: string;
   readonly hidden?: boolean;
@@ -2124,6 +2206,60 @@ export interface TableRowProps {
 }
 
 /**
+ * Switch between alternate views of the same object.
+ * Use when: The person needs one of several equivalent views of the same object.
+ * Avoid when: There are more than 12 views; use a select or separate pages.
+ * Avoid when: The choices are sequential steps; use stepper.
+ * Avoid when: The choices navigate to different pages; use links.
+ * Avoid when: People need to compare all views at once; show them together.
+ */
+export interface TabsProps {
+  readonly orientation?: "horizontal" | "vertical";
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface TabsContentProps {
+  readonly value: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface TabsListProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface TabsTriggerProps {
+  readonly name: string;
+  readonly value: string;
+  readonly id?: string;
+  readonly defaultChecked?: boolean;
+  readonly disabled?: boolean;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+/**
  * Accept a longer free-text value.
  * Use when: Accept a longer free-text value.
  * Avoid when: The task does not need this pattern; do not add it only for catalog coverage.
@@ -2190,7 +2326,7 @@ export interface TooltipProviderProps {
 /**
  * Add a brief supplemental label to a control without replacing its name.
  * Use when: The demonstrated supplemental-label relationship is present.
- * Avoid when: The information is essential or interactive; use visible text, popup, or hover-card.
+ * Avoid when: The information is essential or interactive; use visible text, popover, or hover-card.
  * Avoid when: The tooltip would be the only label for a form field.
  * Place inside `Tooltip.Provider`.
  */
@@ -3178,6 +3314,30 @@ export type UiChild = UiNode | string;
 /** One node of a UI document. Leaf parts take no `children`. */
 export type UiNode =
   | {
+      readonly type: "Accordion";
+      readonly props: AccordionProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "AccordionContent";
+      readonly props: AccordionContentProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "AccordionItem";
+      readonly props: AccordionItemProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "AccordionTrigger";
+      readonly props: AccordionTriggerProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
       readonly type: "Alert";
       readonly props: AlertProps;
       readonly children?: readonly (UiNodeInput | string)[];
@@ -3196,32 +3356,32 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "AlertModal";
-      readonly props: AlertModalProps;
+      readonly type: "AlertDialog";
+      readonly props: AlertDialogProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "AlertModalAction";
-      readonly props: AlertModalActionProps;
+      readonly type: "AlertDialogAction";
+      readonly props: AlertDialogActionProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "AlertModalCancel";
-      readonly props: AlertModalCancelProps;
+      readonly type: "AlertDialogCancel";
+      readonly props: AlertDialogCancelProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "AlertModalContent";
-      readonly props: AlertModalContentProps;
+      readonly type: "AlertDialogContent";
+      readonly props: AlertDialogContentProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "AlertModalTrigger";
-      readonly props: AlertModalTriggerProps;
+      readonly type: "AlertDialogTrigger";
+      readonly props: AlertDialogTriggerProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3280,6 +3440,42 @@ export type UiNode =
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
+  | {
+      readonly type: "CardAction";
+      readonly props: CardActionProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "CardContent";
+      readonly props: CardContentProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "CardDescription";
+      readonly props: CardDescriptionProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "CardFooter";
+      readonly props: CardFooterProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "CardHeader";
+      readonly props: CardHeaderProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "CardTitle";
+      readonly props: CardTitleProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
   | { readonly type: "Checkbox"; readonly props: CheckboxProps; readonly key?: never }
   | { readonly type: "ColorPicker"; readonly props: ColorPickerProps; readonly key?: never }
   | { readonly type: "DatePicker"; readonly props: DatePickerProps; readonly key?: never }
@@ -3298,6 +3494,61 @@ export type UiNode =
   | {
       readonly type: "DescriptionTerm";
       readonly props: DescriptionTermProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "Dialog";
+      readonly props: DialogProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogBody";
+      readonly props: DialogBodyProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogClose";
+      readonly props: DialogCloseProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogContent";
+      readonly props: DialogContentProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogDescription";
+      readonly props: DialogDescriptionProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogFooter";
+      readonly props: DialogFooterProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | { readonly type: "DialogGrabber"; readonly props: DialogGrabberProps; readonly key?: never }
+  | {
+      readonly type: "DialogHeader";
+      readonly props: DialogHeaderProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogTitle";
+      readonly props: DialogTitleProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DialogTrigger";
+      readonly props: DialogTriggerProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3392,44 +3643,38 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Field.Root";
-      readonly props: FieldRootProps;
+      readonly type: "Field";
+      readonly props: FieldProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Field.Label";
-      readonly props: FieldLabelProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Field.Control";
-      readonly props: FieldControlProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Field.Description";
+      readonly type: "FieldDescription";
       readonly props: FieldDescriptionProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Field.Error";
+      readonly type: "FieldError";
       readonly props: FieldErrorProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Fieldset";
-      readonly props: FieldsetProps;
+      readonly type: "FieldLabel";
+      readonly props: FieldLabelProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "FieldsetLegend";
-      readonly props: FieldsetLegendProps;
+      readonly type: "FieldLegend";
+      readonly props: FieldLegendProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "FieldSet";
+      readonly props: FieldSetProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3530,58 +3775,32 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Modal";
-      readonly props: ModalProps;
+      readonly type: "NativeSelectContent";
+      readonly props: NativeSelectContentProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "ModalBody";
-      readonly props: ModalBodyProps;
+      readonly type: "NativeSelectOptGroup";
+      readonly props: NativeSelectOptGroupProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "ModalClose";
-      readonly props: ModalCloseProps;
+      readonly type: "NativeSelectOption";
+      readonly props: NativeSelectOptionProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "ModalContent";
-      readonly props: ModalContentProps;
+      readonly type: "NativeSelect";
+      readonly props: NativeSelectProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "ModalDescription";
-      readonly props: ModalDescriptionProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "ModalFooter";
-      readonly props: ModalFooterProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | { readonly type: "ModalGrabber"; readonly props: ModalGrabberProps; readonly key?: never }
-  | {
-      readonly type: "ModalHeader";
-      readonly props: ModalHeaderProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "ModalTitle";
-      readonly props: ModalTitleProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "ModalTrigger";
-      readonly props: ModalTriggerProps;
-      readonly children?: readonly (UiNodeInput | string)[];
+      readonly type: "NativeSelectSeparator";
+      readonly props: NativeSelectSeparatorProps;
       readonly key?: never;
     }
   | {
@@ -3644,44 +3863,20 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Popup.Close";
-      readonly props: PopupRootCloseProps;
+      readonly type: "PopoverClose";
+      readonly props: PopoverCloseProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Popup.Content";
-      readonly props: PopupRootContentProps;
+      readonly type: "PopoverContent";
+      readonly props: PopoverContentProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Popup.Root";
-      readonly props: PopupRootProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Popup.Trigger";
-      readonly props: PopupRootTriggerProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "PopupClose";
-      readonly props: PopupCloseProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "PopupContent";
-      readonly props: PopupContentProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "PopupTrigger";
-      readonly props: PopupTriggerProps;
+      readonly type: "PopoverTrigger";
+      readonly props: PopoverTriggerProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3691,36 +3886,14 @@ export type UiNode =
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
+  | {
+      readonly type: "RadioGroup";
+      readonly props: RadioGroupProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | { readonly type: "RadioGroupItem"; readonly props: RadioGroupItemProps; readonly key?: never }
   | { readonly type: "Rating"; readonly props: RatingProps; readonly key?: never }
-  | {
-      readonly type: "Select.Content";
-      readonly props: SelectContentProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Select.Group";
-      readonly props: SelectGroupProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Select.Item";
-      readonly props: SelectItemProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Select.Root";
-      readonly props: SelectRootProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Select.Separator";
-      readonly props: SelectSeparatorProps;
-      readonly key?: never;
-    }
   | {
       readonly type: "Skeleton";
       readonly props: SkeletonProps;
@@ -3786,6 +3959,30 @@ export type UiNode =
   | {
       readonly type: "Table.Row";
       readonly props: TableRowProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "Tabs";
+      readonly props: TabsProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "TabsContent";
+      readonly props: TabsContentProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "TabsList";
+      readonly props: TabsListProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "TabsTrigger";
+      readonly props: TabsTriggerProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -4032,9 +4229,9 @@ export type UiNodeInput = UiNode | { readonly type: never };
  * reason. Tier 2 components are excluded as a whole and are not listed.
  */
 export const uiUnavailableParts = [
-  { type: "Accordion", reason: 'required prop "items" has type readonly AccordionItem[]' },
   { type: "Breadcrumb.Ellipsis", reason: "leaf part without usable props" },
   { type: "CandleChart", reason: 'required prop "data" has type readonly CandleChartData[]' },
+  { type: "CheckboxGroup", reason: 'required prop "items" has type readonly CheckboxGroupItem[]' },
   { type: "Collapsible", reason: 'required prop "content" takes React nodes' },
   {
     type: "FormErrorSummary",
@@ -4053,12 +4250,10 @@ export const uiUnavailableParts = [
     reason: "no flat export of the same component as HoverCard.Trigger for client-safe loading",
   },
   { type: "LineChart", reason: 'required prop "data" has type readonly LineChartData[]' },
-  { type: "RadioGroup", reason: 'required prop "items" has type readonly RadioGroupItem[]' },
   {
     type: "SegmentedControl",
     reason: 'required prop "items" has type readonly SegmentedControlItem[]',
   },
-  { type: "Tabs", reason: 'required prop "items" has type readonly TabsItem[]' },
   { type: "Toast.Root", reason: 'required prop "toast" has type ToastRecord' },
   { type: "Toast.Action", reason: "its root part Toast.Root is unusable" },
   { type: "Toast.Close", reason: "its root part Toast.Root is unusable" },
@@ -4113,14 +4308,18 @@ export const uiParts: Readonly<
     }
   >
 > = {
+  Accordion: { kind: "component", leaf: false },
+  AccordionContent: { kind: "component", leaf: false },
+  AccordionItem: { kind: "component", leaf: false },
+  AccordionTrigger: { kind: "component", leaf: false },
   Alert: { kind: "component", leaf: false },
   AlertDescription: { kind: "component", leaf: false },
   AlertTitle: { kind: "component", leaf: false },
-  AlertModal: { kind: "component", leaf: false },
-  AlertModalAction: { kind: "component", leaf: false },
-  AlertModalCancel: { kind: "component", leaf: false },
-  AlertModalContent: { kind: "component", leaf: false },
-  AlertModalTrigger: { kind: "component", leaf: false },
+  AlertDialog: { kind: "component", leaf: false },
+  AlertDialogAction: { kind: "component", leaf: false },
+  AlertDialogCancel: { kind: "component", leaf: false },
+  AlertDialogContent: { kind: "component", leaf: false },
+  AlertDialogTrigger: { kind: "component", leaf: false },
   AspectRatio: { kind: "component", leaf: false },
   Avatar: { kind: "component", leaf: true },
   Badge: { kind: "component", leaf: false },
@@ -4131,12 +4330,28 @@ export const uiParts: Readonly<
   "Breadcrumb.Separator": { kind: "component", leaf: false, rootType: "Breadcrumb.Root" },
   Button: { kind: "component", leaf: false },
   Card: { kind: "component", leaf: false },
+  CardAction: { kind: "component", leaf: false },
+  CardContent: { kind: "component", leaf: false },
+  CardDescription: { kind: "component", leaf: false },
+  CardFooter: { kind: "component", leaf: false },
+  CardHeader: { kind: "component", leaf: false },
+  CardTitle: { kind: "component", leaf: false },
   Checkbox: { kind: "component", leaf: true },
   ColorPicker: { kind: "component", leaf: true },
   DatePicker: { kind: "component", leaf: true },
   DescriptionDetails: { kind: "component", leaf: false },
   DescriptionList: { kind: "component", leaf: false },
   DescriptionTerm: { kind: "component", leaf: false },
+  Dialog: { kind: "component", leaf: false },
+  DialogBody: { kind: "component", leaf: false },
+  DialogClose: { kind: "component", leaf: false },
+  DialogContent: { kind: "component", leaf: false },
+  DialogDescription: { kind: "component", leaf: false },
+  DialogFooter: { kind: "component", leaf: false },
+  DialogGrabber: { kind: "component", leaf: true },
+  DialogHeader: { kind: "component", leaf: false },
+  DialogTitle: { kind: "component", leaf: false },
+  DialogTrigger: { kind: "component", leaf: false },
   "Drawer.Close": { kind: "component", leaf: false, rootType: "Drawer.Root" },
   "Drawer.Content": { kind: "component", leaf: false, rootType: "Drawer.Root" },
   "Drawer.Description": { kind: "component", leaf: false, rootType: "Drawer.Root" },
@@ -4152,13 +4367,12 @@ export const uiParts: Readonly<
   EmptyContent: { kind: "component", leaf: false },
   EmptyDescription: { kind: "component", leaf: false },
   EmptyTitle: { kind: "component", leaf: false },
-  "Field.Root": { kind: "component", leaf: false },
-  "Field.Label": { kind: "component", leaf: false, rootType: "Field.Root" },
-  "Field.Control": { kind: "component", leaf: false, rootType: "Field.Root" },
-  "Field.Description": { kind: "component", leaf: false, rootType: "Field.Root" },
-  "Field.Error": { kind: "component", leaf: false, rootType: "Field.Root" },
-  Fieldset: { kind: "component", leaf: false },
-  FieldsetLegend: { kind: "component", leaf: false },
+  Field: { kind: "component", leaf: false },
+  FieldDescription: { kind: "component", leaf: false },
+  FieldError: { kind: "component", leaf: false },
+  FieldLabel: { kind: "component", leaf: false },
+  FieldLegend: { kind: "component", leaf: false },
+  FieldSet: { kind: "component", leaf: false },
   "FileUpload.Dropzone": { kind: "component", leaf: false, rootType: "FileUpload.Root" },
   "FileUpload.HiddenInput": { kind: "component", leaf: true, rootType: "FileUpload.Root" },
   "FileUpload.Item": { kind: "component", leaf: false, rootType: "FileUpload.Root" },
@@ -4176,16 +4390,11 @@ export const uiParts: Readonly<
   ItemContent: { kind: "component", leaf: false },
   ItemMedia: { kind: "component", leaf: false },
   ItemMetadata: { kind: "component", leaf: false },
-  Modal: { kind: "component", leaf: false },
-  ModalBody: { kind: "component", leaf: false },
-  ModalClose: { kind: "component", leaf: false },
-  ModalContent: { kind: "component", leaf: false },
-  ModalDescription: { kind: "component", leaf: false },
-  ModalFooter: { kind: "component", leaf: false },
-  ModalGrabber: { kind: "component", leaf: true },
-  ModalHeader: { kind: "component", leaf: false },
-  ModalTitle: { kind: "component", leaf: false },
-  ModalTrigger: { kind: "component", leaf: false },
+  NativeSelectContent: { kind: "component", leaf: false, rootType: "NativeSelect" },
+  NativeSelectOptGroup: { kind: "component", leaf: false, rootType: "NativeSelect" },
+  NativeSelectOption: { kind: "component", leaf: false, rootType: "NativeSelect" },
+  NativeSelect: { kind: "component", leaf: false },
+  NativeSelectSeparator: { kind: "component", leaf: true, rootType: "NativeSelect" },
   "NumberField.Root": { kind: "component", leaf: false },
   "NumberField.Group": { kind: "component", leaf: false, rootType: "NumberField.Root" },
   "NumberField.Input": { kind: "component", leaf: true, rootType: "NumberField.Root" },
@@ -4196,20 +4405,13 @@ export const uiParts: Readonly<
   "Pagination.Link": { kind: "component", leaf: false, rootType: "Pagination.Root" },
   "Pagination.List": { kind: "component", leaf: false, rootType: "Pagination.Root" },
   "Pagination.Root": { kind: "component", leaf: false },
-  "Popup.Close": { kind: "component", leaf: false, rootType: "Popup.Root" },
-  "Popup.Content": { kind: "component", leaf: false, rootType: "Popup.Root" },
-  "Popup.Root": { kind: "component", leaf: false },
-  "Popup.Trigger": { kind: "component", leaf: false, rootType: "Popup.Root" },
-  PopupClose: { kind: "component", leaf: false },
-  PopupContent: { kind: "component", leaf: false },
-  PopupTrigger: { kind: "component", leaf: false },
+  PopoverClose: { kind: "component", leaf: false },
+  PopoverContent: { kind: "component", leaf: false },
+  PopoverTrigger: { kind: "component", leaf: false },
   Progress: { kind: "component", leaf: false },
+  RadioGroup: { kind: "component", leaf: false },
+  RadioGroupItem: { kind: "component", leaf: true },
   Rating: { kind: "component", leaf: true },
-  "Select.Content": { kind: "component", leaf: false, rootType: "Select.Root" },
-  "Select.Group": { kind: "component", leaf: false, rootType: "Select.Root" },
-  "Select.Item": { kind: "component", leaf: false, rootType: "Select.Root" },
-  "Select.Root": { kind: "component", leaf: false },
-  "Select.Separator": { kind: "component", leaf: true, rootType: "Select.Root" },
   Skeleton: { kind: "component", leaf: false },
   Slider: { kind: "component", leaf: true },
   Spinner: { kind: "component", leaf: false },
@@ -4223,6 +4425,10 @@ export const uiParts: Readonly<
   "Table.Header": { kind: "component", leaf: false, rootType: "Table.Root" },
   "Table.Root": { kind: "component", leaf: false },
   "Table.Row": { kind: "component", leaf: false, rootType: "Table.Root" },
+  Tabs: { kind: "component", leaf: false },
+  TabsContent: { kind: "component", leaf: false },
+  TabsList: { kind: "component", leaf: false },
+  TabsTrigger: { kind: "component", leaf: false },
   Textarea: { kind: "component", leaf: false },
   Toggle: { kind: "component", leaf: true },
   "Tooltip.Content": { kind: "component", leaf: false, rootType: "Tooltip.Root" },

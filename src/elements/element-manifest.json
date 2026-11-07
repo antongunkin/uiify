@@ -1,52 +1,52 @@
 {
   "$comment": "Source of truth for @gunkin/uiify/elements. Drives architecture tests, size budgets, fixtures and documentation.",
   "elements": {
-    "invoker": {
+    "native-invoker": {
       "native": "command/commandfor attributes",
-      "parts": ["Invoker"],
+      "parts": ["NativeInvoker"],
       "sizeTarget": "0.3 kB",
       "fixture": "element-invoker",
-      "docs": "/elements/invoker",
+      "docs": "/elements/native-invoker",
       "consumers": ["dialog"],
       "cssRules": []
     },
-    "dialog": {
+    "native-dialog": {
       "native": "dialog + command=show-modal",
-      "parts": ["Dialog.Trigger", "Dialog.Content", "Dialog.Close"],
+      "parts": ["NativeDialog.Trigger", "NativeDialog.Content", "NativeDialog.Close"],
       "sizeTarget": "0.5 kB",
       "fixture": "element-dialog",
-      "docs": "/elements/dialog",
-      "consumers": ["modal", "alert-modal", "drawer"],
+      "docs": "/elements/native-dialog",
+      "consumers": ["dialog", "alert-dialog", "drawer"],
       "cssRules": [
         "dialog:modal { overscroll-behavior: contain; }",
-        "dialog:not([open]) { display: none; }"
+        "dialog:not([open]) { display: none !important; }"
       ]
     },
-    "popover": {
+    "native-popover": {
       "native": "[popover] + popovertarget",
-      "parts": ["Popover.Trigger", "Popover.Surface", "Popover.Close"],
+      "parts": ["NativePopover.Trigger", "NativePopover.Surface", "NativePopover.Close"],
       "sizeTarget": "0.5 kB",
       "fixture": "element-popover",
-      "docs": "/elements/popover",
-      "consumers": ["popup"],
-      "cssRules": ["[popover]:not(:popover-open) { display: none; }"]
+      "docs": "/elements/native-popover",
+      "consumers": ["popover"],
+      "cssRules": ["[popover]:not(:popover-open) { display: none !important; }"]
     },
-    "details": {
+    "native-details": {
       "native": "details/summary",
-      "parts": ["Details.Root", "Details.Summary", "Details.Content"],
+      "parts": ["NativeDetails.Root", "NativeDetails.Summary", "NativeDetails.Content"],
       "sizeTarget": "0.4 kB",
       "fixture": "element-details",
-      "docs": "/elements/details",
+      "docs": "/elements/native-details",
       "consumers": ["accordion", "collapsible", "breadcrumb"],
       "cssRules": []
     },
-    "choice": {
+    "native-choice": {
       "native": "input[type=radio|checkbox] + label",
-      "parts": ["Choice.Group", "Choice.Item"],
+      "parts": ["NativeChoice.Group", "NativeChoice.Item"],
       "sizeTarget": "0.8 kB",
       "fixture": "element-choice",
-      "docs": "/elements/choice",
-      "consumers": ["radio-group", "tabs", "toggle-group", "segmented-control", "rating"],
+      "docs": "/elements/native-choice",
+      "consumers": ["toggle-group", "segmented-control", "rating"],
       "cssRules": []
     }
   }

@@ -5,4 +5,4 @@
  */
 @layer reset, tokens, base, components, layout, utilities;
 
-@import url("./tokens/theme.css");
+@import url("./themes/basic.css");

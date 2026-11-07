@@ -24,10 +24,10 @@ import type {
 interface CursorState extends LineChartPointerPosition {}
 
 interface InteractiveLineStyle extends CSSProperties {
-  "--line-scale": string;
-  "--line-content-size"?: string;
-  "--line-plot-height"?: string;
-  "--line-run"?: string;
+  "--uiify-line-scale": string;
+  "--uiify-line-content-size"?: string;
+  "--uiify-line-plot-height"?: string;
+  "--uiify-line-run"?: string;
 }
 
 interface LivePoint {
@@ -36,8 +36,8 @@ interface LivePoint {
 }
 
 /**
- * `[data-part="plot"]`'s fixed price-axis column (4.5rem) plus its grid gap
- * (0.75rem) — see line-chart.css. `useChartViewport` measures the whole
+ * `.uiify-line-chart-plot`'s fixed price-axis column (4.5rem) plus its grid gap
+ * (0.75rem) — see the LineChart recipe effects. `useChartViewport` measures the whole
  * `<figure>`, but points only ever get the width left over after this
  * column, so it must be subtracted before sizing `minItemWidth`.
  */
@@ -78,10 +78,15 @@ export function LineChartClient<TAs extends ElementType = "figure">(
     visibleCount,
     itemWidth: viewport.itemWidth,
     figureHeight: figureSize?.height,
-    scrollVariable: "--line-scroll-x",
+    scrollVariable: "--uiify-line-scroll-x",
     consumerStyle,
   });
-  useScrollbarReserve(liveWindow.chartRef, "--line-scrollbar-size", consumerStyle);
+  useScrollbarReserve(
+    liveWindow.chartRef,
+    "--uiify-line-scrollbar-size",
+    consumerStyle,
+    ".uiify-line-chart-scroll-viewport",
+  );
   // Cursor and selection hold absolute indices so they survive scrolling and appends.
   const [cursor, setCursor] = useState<CursorState | null>(null);
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | undefined>();
@@ -110,7 +115,7 @@ export function LineChartClient<TAs extends ElementType = "figure">(
   );
 
   const style: InteractiveLineStyle = {
-    "--line-scale": String(viewport.scale),
+    "--uiify-line-scale": String(viewport.scale),
     ...consumerStyle,
   };
 
@@ -183,10 +188,10 @@ export function LineChartClient<TAs extends ElementType = "figure">(
 
   const liveStyle: InteractiveLineStyle = {
     ...style,
-    "--line-content-size": `${contentSize}px`,
-    "--line-plot-height": `${plotHeight}px`,
+    "--uiify-line-content-size": `${contentSize}px`,
+    "--uiify-line-plot-height": `${plotHeight}px`,
     // One virtual row: the viewport holds `visibleCount` of them.
-    "--line-run": String(100 / visibleCount),
+    "--uiify-line-run": String(100 / visibleCount),
     ...consumerStyle,
   };
   const chartProps = {

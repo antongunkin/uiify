@@ -5,8 +5,7 @@
 - Tier 0 (RSC — zero client JavaScript); state source S1; native element `input[type=radio]`
 - Without JavaScript: full
 - Types file: `dist/components/radio-group.d.ts`
-- Related native Element (manifest): [choice](../elements/choice.md)
-- Note: Data-driven native radio group; browser owns selection. Built on @gunkin/uiify/elements/choice.
+- Note: Compound RadioGroup (div role=radiogroup) + RadioGroupItem (bare native radio); browser owns selection by shared name.
 
 ## Related knowledge
 
@@ -14,35 +13,30 @@
 
 ## Exports
 
-- Runtime: `RadioGroup`
-- Types: `RadioGroupItem`, `RadioGroupProps`, `RadioGroupSlotProps`
+- Runtime: `RadioGroup`, `RadioGroupItem`
+- Types: `RadioGroupItemOwnProps`, `RadioGroupItemProps`, `RadioGroupOrientation`, `RadioGroupOwnProps`, `RadioGroupProps`
+
+## Values
+
+- `RadioGroupOrientation`: `"horizontal" | "vertical"`
 
 ## Props and shapes
 
-### RadioGroupItem
+### RadioGroupOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `value` | `string` | yes |  |
-| `label` | `ReactNode` | yes |  |
-| `disabled` | `boolean` | no |  |
-| `className` | `string` | no |  |
+| `children` | `ReactNode` | no | RadioGroupItem controls, each with its label (usually one Field per option). |
+| `orientation` | `RadioGroupOrientation` | no | Written as data-orientation. |
 
-### RadioGroupProps
-
-Extends: `ChoiceGroupRootProps`
+### RadioGroupItemOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | `string` | yes |  |
-| `items` | `readonly RadioGroupItem[]` | yes |  |
-| `defaultValue` | `string` | no |  |
-| `name` | `string` | no |  |
-| `disabled` | `boolean` | no |  |
-| `orientation` | `"horizontal" \| "vertical"` | no |  |
-| `className` | `string` | no |  |
-| `slotProps` | `RadioGroupSlotProps` | no |  |
+| `name` | `string` | yes | Same literal name on every item of one group; the browser groups radios by name. |
+| `value` | `string` | yes | Submitted as `name=value` when this radio is checked. |
 
 ## Other types
 
-- `RadioGroupSlotProps`: `ChoiceOptionSlotProps`
+- `RadioGroupProps`: `` RadioGroupOwnProps & // `defaultValue` is omitted: on a div it does nothing; select with `defaultChecked` on an item. Omit<ComponentPropsWithRef<"div">, keyof RadioGroupOwnProps | "defaultValue"> `` — A `div role="radiogroup"`. Name it with `aria-label`/`aria-labelledby`, or leave it unnamed inside a FieldSet whose FieldLegend names the group. It has no `name`, `defaultValue`, `disabled` or `required`: those are native props of each RadioGroupItem.
+- `RadioGroupItemProps`: `RadioGroupItemOwnProps & Omit<ComponentPropsWithRef<"input">, keyof RadioGroupItemOwnProps | "type" | "children" | "dangerouslySetInnerHTML">` — A native `input type="radio"`. Label it with `FieldLabel htmlFor` (its `id`); select it initially with `defaultChecked`. `disabled`, `required` and `form` are native props.

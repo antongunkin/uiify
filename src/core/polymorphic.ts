@@ -18,6 +18,7 @@ export interface RenderCallbackProps<TState, TElement extends Element> {
     state: TState,
   ) => ReactElement | null;
   as?: never;
+  className?: string | undefined;
 }
 
 export type RenderableProps<

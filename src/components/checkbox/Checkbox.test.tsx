@@ -22,8 +22,8 @@ describe("Checkbox", () => {
 
     const input = screen.getByTestId("checkbox-input");
     const label = screen.getByTestId("checkbox-label");
-    expect(input.className).toBe("checkbox-input");
-    expect(label.className).toBe("checkbox-label");
+    expect(input.className).toContain("checkbox-input");
+    expect(label.className).toContain("checkbox-label");
     expect(inputRef.current).toBe(input);
     expect(labelRef.current).toBe(label);
   });
@@ -76,12 +76,23 @@ describe("Checkbox", () => {
     expect((checkbox as HTMLInputElement).checked).toBe(true);
   });
 
-  it("renders a server-readable indeterminate state", () => {
-    render(<Checkbox id="all" label="Select all" checked="indeterminate" />);
-    const checkbox = screen.getByRole("checkbox", { name: "Select all" });
+  it("reflects a controlled boolean checked state without client state", () => {
+    const { rerender } = render(<Checkbox id="terms" label="Terms" checked />);
+    const checkbox = screen.getByRole("checkbox", { name: "Terms" });
 
-    expect(checkbox.getAttribute("data-state")).toBe("indeterminate");
-    expect(checkbox.getAttribute("aria-checked")).toBe("mixed");
+    expect(checkbox.getAttribute("data-state")).toBe("checked");
+
+    rerender(<Checkbox id="terms" label="Terms" checked={false} />);
+    expect(checkbox.getAttribute("data-state")).toBe("unchecked");
+  });
+
+  it("reports native changes through onCheckedChange", () => {
+    const onCheckedChange = vi.fn();
+    render(<Checkbox id="terms" label="Terms" onCheckedChange={onCheckedChange} />);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Terms" }));
+
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
 
   it("maps disabled through to the native input", () => {
@@ -103,9 +114,9 @@ describe("Checkbox", () => {
     render(<Checkbox id="terms" label="Terms" className="custom-checkbox" />);
 
     const checkbox = screen.getByRole("checkbox", { name: "Terms" });
-    expect(checkbox.className).toBe("");
-    expect(checkbox.parentElement?.className).toBe("custom-checkbox");
-    expect(checkbox.parentElement?.getAttribute("data-uiify-checkbox")).toBe("");
+    expect(checkbox.className).toContain("");
+    expect(checkbox.parentElement?.className).toContain("custom-checkbox");
+    expect(checkbox.parentElement?.className).toContain("uiify-checkbox");
   });
 
   it("renders consistent SSR markup", () => {

@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useEventCallback } from "./use-event-callback.js";
+import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect.js";
 import { resolveSetStateAction, type SetStateAction } from "./utils/set-state-action.js";
 
 export interface UseControllableStateParams<T> {
@@ -27,9 +28,11 @@ export function useControllableState<T>(
   const value = (isControlled ? controlled : uncontrolled) as T;
 
   const valueRef = useRef(value);
-  valueRef.current = value;
   const isControlledRef = useRef(isControlled);
-  isControlledRef.current = isControlled;
+  useIsomorphicLayoutEffect(() => {
+    valueRef.current = value;
+    isControlledRef.current = isControlled;
+  });
 
   const emitChange = useEventCallback((next: T) => onChange?.(next));
 

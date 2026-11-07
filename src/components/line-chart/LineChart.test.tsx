@@ -15,22 +15,23 @@ describe("LineChart", () => {
   it("renders a CSS-only line with responsive point and segment geometry", () => {
     const { container } = render(<LineChart data={DATA} data-testid="chart" />);
     const chart = container.querySelector("[data-testid='chart']") as HTMLElement;
-    const points = [...chart.querySelectorAll('[data-part="points"] > li')];
+    const points = [...chart.querySelectorAll(".uiify-line-chart-points > li")];
 
     expect(chart.tagName).toBe("FIGURE");
-    expect(chart.getAttribute("data-uiify-line-chart")).toBe("");
+    expect(chart.classList.contains("uiify-line-chart")).toBe(true);
+    expect(chart.hasAttribute("data-uiify-line-chart")).toBe(false);
     expect(points).toHaveLength(3);
     expect(points[0]?.getAttribute("aria-hidden")).toBe("true");
-    expect(points[0]?.getAttribute("style")).toContain("--line-y:");
-    expect(points[0]?.getAttribute("style")).toContain("--line-slot: 50%");
-    expect(points[0]?.getAttribute("style")).toContain("--line-x: 0%");
-    expect(points[0]?.getAttribute("style")).not.toContain("--line-prev-y");
-    expect(points[1]?.getAttribute("style")).toContain("--line-prev-y:");
-    expect(points[0]?.getAttribute("style")).not.toContain("--line-rise");
-    expect(points[1]?.getAttribute("style")).toMatch(/--line-rise: -?\d/);
-    expect(points[1]?.getAttribute("style")).toContain("--line-prev-x: 0%");
+    expect(points[0]?.getAttribute("style")).toContain("--uiify-line-y:");
+    expect(points[0]?.getAttribute("style")).toContain("--uiify-line-slot: 50%");
+    expect(points[0]?.getAttribute("style")).toContain("--uiify-line-x: 0%");
+    expect(points[0]?.getAttribute("style")).not.toContain("--uiify-line-prev-y");
+    expect(points[1]?.getAttribute("style")).toContain("--uiify-line-prev-y:");
+    expect(points[0]?.getAttribute("style")).not.toContain("--uiify-line-rise");
+    expect(points[1]?.getAttribute("style")).toMatch(/--uiify-line-rise: -?\d/);
+    expect(points[1]?.getAttribute("style")).toContain("--uiify-line-prev-x: 0%");
     expect(points[1]?.getAttribute("data-time")).toBe("2026-09-02");
-    expect(chart.querySelectorAll('[data-part="points"] button')).toHaveLength(0);
+    expect(chart.querySelectorAll(".uiify-line-chart-points button")).toHaveLength(0);
   });
 
   it("renders a table fallback with the original values", () => {
@@ -46,9 +47,9 @@ describe("LineChart", () => {
   it("keeps a flat range renderable", () => {
     const { container } = render(<LineChart data={[{ time: 1, value: 10 }]} />);
 
-    expect(container.querySelector('[data-part="points"] > li')?.getAttribute("style")).toContain(
-      "--line-y: 50%",
-    );
+    expect(
+      container.querySelector(".uiify-line-chart-points > li")?.getAttribute("style"),
+    ).toContain("--uiify-line-y: 50%");
   });
 
   it("renders date and value axes and accepts consumer overrides", () => {
@@ -62,11 +63,11 @@ describe("LineChart", () => {
 
     expect(container.querySelector("[data-axis='time']")?.textContent).toBe("Launch");
     expect(container.querySelector("[data-axis='time'] li")?.getAttribute("style")).toContain(
-      "--line-axis-x: 0%",
+      "--uiify-line-axis-x: 0%",
     );
     expect(container.querySelector("[data-axis='value']")?.textContent).toBe("$100.25");
     expect(container.querySelector("[data-axis='value'] li")?.getAttribute("style")).toContain(
-      "--line-axis-y: 100%",
+      "--uiify-line-axis-y: 100%",
     );
   });
 
@@ -82,18 +83,20 @@ describe("LineChart", () => {
         onPointClick={onPointClick}
       />,
     );
-    const points = container.querySelectorAll('[data-part="points"] > li');
+    const points = container.querySelectorAll(".uiify-line-chart-points > li");
     const active = points[2];
     const hit = active?.querySelector("button") as HTMLButtonElement;
 
-    expect(container.querySelector('[data-part="plot"]')?.getAttribute("aria-hidden")).toBeNull();
+    expect(
+      container.querySelector(".uiify-line-chart-plot")?.getAttribute("aria-hidden"),
+    ).toBeNull();
     expect(active?.getAttribute("data-crosshair-active")).toBe("");
     expect(hit.getAttribute("aria-label")).toBe("Point 2026-10-01");
     expect(hit.getAttribute("aria-pressed")).toBe("true");
-    expect(container.querySelector('[data-part="readout"]')?.textContent).toContain("110");
-    expect(container.querySelector('[data-part="crosshair"]')).not.toBeNull();
-    expect(container.querySelector('[data-part="crosshair"]')?.getAttribute("style")).toContain(
-      "--line-crosshair-x: 100%",
+    expect(container.querySelector(".uiify-line-chart-readout")?.textContent).toContain("110");
+    expect(container.querySelector(".uiify-line-chart-crosshair")).not.toBeNull();
+    expect(container.querySelector(".uiify-line-chart-crosshair")?.getAttribute("style")).toContain(
+      "--uiify-line-crosshair-x: 100%",
     );
 
     fireEvent.click(hit);
@@ -136,8 +139,10 @@ describe("LineChart", () => {
     );
 
     expect(container.querySelector("figcaption")?.className).toContain("caption");
-    expect(container.querySelector('[data-part="plot"]')?.className).toContain("plot-custom");
-    expect(container.querySelectorAll('[data-part="point"]')[0]?.className).toContain("all-points");
+    expect(container.querySelector(".uiify-line-chart-plot")?.className).toContain("plot-custom");
+    expect(container.querySelectorAll(".uiify-line-chart-point")[0]?.className).toContain(
+      "all-points",
+    );
     expect(container.querySelector('[data-testid="middle-point"]')?.className).toContain(
       "middle-point",
     );
@@ -150,7 +155,7 @@ describe("LineChart", () => {
 
     fireEvent.click(container.querySelector('[data-testid="point-hit"]') as HTMLButtonElement);
     expect(onPointHitClick).toHaveBeenCalledOnce();
-    const indexedHit = container.querySelectorAll('[data-part="point-hit"]')[1];
+    const indexedHit = container.querySelectorAll(".uiify-line-chart-point-hit")[1];
     fireEvent.click(indexedHit as HTMLButtonElement);
     expect(onPointHitClickAtIndex).toHaveBeenCalledOnce();
   });
@@ -163,7 +168,7 @@ describe("LineChart", () => {
       />,
     );
     expect(container.querySelector('[data-part="consumer-plot"]')).not.toBeNull();
-    expect(container.querySelector('[data-part="point"]')?.getAttribute("data-trend")).toBe(
+    expect(container.querySelector(".uiify-line-chart-point")?.getAttribute("data-trend")).toBe(
       "custom",
     );
   });
@@ -180,7 +185,7 @@ describe("LineChart", () => {
       />,
     );
 
-    fireEvent.click(container.querySelector('[data-part="point-hit"]') as HTMLButtonElement);
+    fireEvent.click(container.querySelector(".uiify-line-chart-point-hit") as HTMLButtonElement);
     expect(onClick).toHaveBeenCalledOnce();
     expect(onPointClick).not.toHaveBeenCalled();
   });
@@ -207,7 +212,7 @@ describe("LineChart", () => {
     expect(container.querySelector("figure")?.className).toContain("custom");
 
     const html = assertSSRRenderable(<LineChart data={DATA} aria-label="Server prices" />);
-    expect(html).toContain("data-uiify-line-chart");
+    expect(html).toContain('class="uiify-line-chart');
     expect(html).not.toContain("use client");
   });
 });

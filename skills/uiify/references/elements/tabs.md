@@ -14,19 +14,19 @@ Use links for navigation, a stepper for sequential tasks, and side-by-side conte
 
 ## Structure
 
-UIify `Tabs` takes an `id`, `items` with a `value`, `label`, and `panel`, and an optional `defaultValue` and `orientation`. It renders a native radio group with one label and panel per item; it does not implement the ARIA tablist pattern. Use `slotProps.item`, `slotProps.input`, `slotProps.trigger`, and `slotProps.panel` to pass native props, `className`, `style`, refs, events or `data-*` to generated nodes; `slotProps.append` targets the wrapper around optional appended content. Repeated slots support `byItemValue`. Put Tailwind utilities on the slot they style. For custom markup, compose public `Choice.Group` and `Choice.Item` parts directly. Set `defaultValue` so a useful panel is selected initially. Keep labels short and make each panel's content match its label.
+UIify `Tabs` is compound: `<Tabs><TabsList><TabsTrigger name value defaultChecked>…</TabsTrigger>…</TabsList><TabsContent value>…</TabsContent>…</Tabs>`. Each `TabsTrigger` renders a native radio and its label; give every trigger of one `Tabs` the same literal `name` and a `value`, and set `defaultChecked` on one trigger (there is no root `defaultValue`). Contents pair with triggers by position, not by value: put `TabsTrigger` parts directly inside `TabsList`, put `TabsList` and every `TabsContent` directly inside `Tabs`, list the contents in trigger order, and use at most 12 tabs. `TabsContent value` repeats its trigger's value for readers and checks. `orientation` is `horizontal` or `vertical`. A trigger's native props, `className`, `style` and `ref` go to its label; `disabled` disables the radio. It does not implement the ARIA tablist pattern. Keep labels short and make each content match its label.
 
 ## Responsive
 
-Let the radio labels wrap or scroll as a group on narrow screens; do not shrink them until they are hard to read. Keep the selected label and its panel visually connected.
+Let the trigger labels wrap as a group on narrow screens; do not shrink them until they are hard to read. Keep the selected label and its content visually connected.
 
 ## States
 
-`defaultValue` selects the initial radio and panel; changing the native radio changes the visible panel. The panels are CSS-only and work without JavaScript. Use native radio keyboard behavior; do not assume the APG tablist arrow-key model.
+`defaultChecked` selects the initial trigger; with none checked the first content shows but no trigger looks selected. Changing the native radio changes the visible content with CSS only, without JavaScript. Use native radio keyboard behavior: arrow keys select the previous or next trigger; do not assume the APG tablist model.
 
 ## Verify
 
-Check one radio is selected, each label selects its matching panel, and Tab and arrow keys work as they do for a native radio group. Verify the group at narrow widths and with long labels.
+Check one trigger is selected, each label shows its matching content, contents are in trigger order, and Tab and arrow keys work as they do for a native radio group. Verify nested Tabs stay independent and the group works at narrow widths with long labels.
 
 ## Common mistake
 

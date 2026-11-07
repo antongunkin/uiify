@@ -1,6 +1,7 @@
 "use client";
 
 import type { ElementType, DragEvent, ReactElement, SyntheticEvent } from "react";
+import { cn } from "../../core/class-names.js";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { formatLabel } from "@gunkin/uiify/core/format-label";
@@ -30,7 +31,6 @@ export function FileUploadTrigger<TAs extends ElementType = "label">(
     tag === "button"
       ? {
           type: "button" as const,
-          "data-uiify-button": "",
           "aria-controls": inputId,
           disabled: disabled || undefined,
           onClick: composeEventHandlers(consumerOnClick, openPicker),
@@ -46,8 +46,11 @@ export function FileUploadTrigger<TAs extends ElementType = "label">(
     props: {
       ...consumerProps,
       ...interactiveProps,
-      "data-part": "trigger",
-      ...(className ? { className } : {}),
+      className: cn(
+        "uiify-file-upload-trigger",
+        tag === "button" ? "uiify-button" : undefined,
+        className,
+      ),
       children,
     },
     render,
@@ -72,7 +75,6 @@ export function FileUploadDropzone<TAs extends ElementType = "div">(
     props: {
       ...consumerProps,
       role: "region",
-      "data-part": "dropzone",
       "aria-label": labels.dropzone,
       "data-disabled": disabled ? "" : undefined,
       onDragOver: composeEventHandlers(consumerOnDragOver, (event: DragEvent<HTMLElement>) => {
@@ -83,7 +85,7 @@ export function FileUploadDropzone<TAs extends ElementType = "div">(
         if (disabled) return;
         processFiles(event.dataTransfer.files);
       }),
-      ...(className ? { className } : {}),
+      className: cn("uiify-file-upload-dropzone", className),
       children,
     },
     render,
@@ -99,8 +101,8 @@ export function FileUploadList(props: FileUploadListOwnProps): ReactElement | nu
     props: {
       ...consumerProps,
       role: "list",
-      "data-part": "list",
       children: typeof children === "function" ? children(files) : children,
+      className: cn("uiify-file-upload-list", (consumerProps as { className?: string }).className),
     },
     state: {},
   });
@@ -120,9 +122,8 @@ export function FileUploadItem<TAs extends ElementType = "li">(
     props: {
       ...consumerProps,
       role: "listitem",
-      "data-part": "item",
       "data-name": file?.name,
-      ...(className ? { className } : {}),
+      className: cn("uiify-file-upload-item", className),
       children: children ?? file?.name,
     },
     render,
@@ -161,8 +162,8 @@ export function FileUploadItemRemove(props: FileUploadItemRemoveOwnProps): React
           ? formatLabel(removeLabel, { name: files[index]?.name ?? "" })
           : labels.removeFallback),
       children,
-      "data-part": "remove",
       disabled: disabled || undefined,
+      className: cn("uiify-file-upload-remove", consumerProps.className),
       onClick: composeEventHandlers(onClick, () => {
         if (!disabled) removeAt(index);
       }),

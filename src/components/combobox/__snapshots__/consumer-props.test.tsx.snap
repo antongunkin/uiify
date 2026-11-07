@@ -2,15 +2,15 @@
 
 exports[`preserves default combobox DOM 1`] = `
 [
-  "div class="ui-cb" data-uiify-combobox=""",
-  "div class="ui-cb-control" data-anchor="--ui-_R_0H2_" data-part="control"",
-  "div class="ui-cb-tags" data-part="tags"",
-  "span class="ui-cb-tag" data-part="tag"",
-  "button aria-label="Remove Apple" class="ui-cb-remove" data-part="tag-remove" type="button"",
-  "input aria-autocomplete="list" aria-controls="uiify-_R_0_" aria-expanded="false" aria-label="Fruit" class="ui-cb-input" data-anchor="--ui-_R_0H2_" data-part="input" role="combobox" value=""",
-  "button aria-controls="uiify-_R_0_" aria-expanded="false" aria-haspopup="listbox" class="ui-cb-trigger" data-part="trigger" type="button"",
-  "div aria-multiselectable="true" class="ui-cb-content" data-align="start" data-anchor="--ui-_R_0H2_" data-native="" data-part="content" data-positioning="native" data-side="bottom" data-state="closed" id="uiify-_R_0_" popover="auto" role="listbox"",
-  "div aria-selected="true" class="ui-cb-item" data-part="item" data-selected="" id="uiify-_R_d_" role="option"",
-  "div class="ui-cb-empty" data-part="empty" role="presentation"",
+  "div class="uiify-combobox"",
+  "div class="uiify-combobox-control" data-anchor="--ui-_R_0H2_"",
+  "div class="uiify-combobox-tags"",
+  "span class="uiify-combobox-tag"",
+  "button aria-label="Remove Apple" class="uiify-combobox-tag-remove" type="button"",
+  "input aria-autocomplete="list" aria-controls="uiify-_R_0_" aria-expanded="false" aria-label="Fruit" class="uiify-combobox-input" data-anchor="--ui-_R_0H2_" role="combobox" value=""",
+  "button aria-controls="uiify-_R_0_" aria-expanded="false" aria-haspopup="listbox" class="uiify-combobox-trigger" type="button"",
+  "div aria-multiselectable="true" class="uiify-combobox-content" data-align="start" data-anchor="--ui-_R_0H2_" data-native="" data-positioning="native" data-side="bottom" data-state="closed" id="uiify-_R_0_" popover="auto" role="listbox"",
+  "div aria-selected="true" class="uiify-combobox-item" data-selected="" id="uiify-_R_d_" role="option"",
+  "div class="uiify-combobox-empty" role="presentation"",
 ]
 `;

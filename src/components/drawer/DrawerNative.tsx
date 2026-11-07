@@ -1,28 +1,18 @@
 import type { ReactElement } from "react";
+import { cn } from "../../core/class-names.js";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
 import type { DrawerProps, DrawerNativeContentProps, DrawerNativeInvokerProps } from "./types.js";
 const DEFAULT_DRAWER_LABELS = { close: "Close" } as const;
 export function DrawerNativeTrigger({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
-  return renderNativeInvoker(
-    "button",
-    "data-uiify-drawer",
-    "trigger",
-    "show-modal",
-    target,
-    props,
-    { button: true },
-  );
+  return renderNativeInvoker("button", "uiify-drawer-trigger", "show-modal", target, props, {
+    button: true,
+  });
 }
 export function DrawerNativeClose({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
-  return renderNativeInvoker(
-    "button",
-    "data-uiify-drawer",
-    "close",
-    "request-close",
-    target,
-    props,
-    { button: true, variant: "ghost" },
-  );
+  return renderNativeInvoker("button", "uiify-drawer-close", "request-close", target, props, {
+    button: true,
+    variant: "ghost",
+  });
 }
 export function DrawerNativeContent({
   size,
@@ -37,9 +27,8 @@ export function DrawerNativeContent({
       data-side={side}
       data-size={size}
       data-backdrop={backdrop}
-      data-part="content"
-      data-uiify-drawer=""
       {...props}
+      className={cn("uiify-drawer", "uiify-drawer-content", props.className)}
     />
   );
 }
@@ -62,7 +51,7 @@ export function DrawerPanel({
 }: DrawerProps): ReactElement {
   const effectiveCloseLabel = closeLabel ?? labels?.close ?? DEFAULT_DRAWER_LABELS.close;
   return (
-    <div data-part="root" data-side={side} data-uiify-drawer="" {...rootProps}>
+    <div data-side={side} {...rootProps} className={cn("uiify-drawer-root", rootProps.className)}>
       <DrawerNativeTrigger target={id} {...slotProps?.trigger}>
         {trigger}
       </DrawerNativeTrigger>
@@ -78,17 +67,27 @@ export function DrawerPanel({
         {...(backdrop ? { backdrop } : {})}
         {...slotProps?.content}
       >
-        <div data-part="grabber" data-uiify-drawer="" aria-hidden="true" {...slotProps?.grabber} />
-        <div data-part="header" data-uiify-drawer="" {...slotProps?.header}>
-          <h2 data-part="title" id={`${id}-title`} data-uiify-drawer="" {...slotProps?.title}>
+        <div
+          aria-hidden="true"
+          {...slotProps?.grabber}
+          className={cn("uiify-drawer-grabber", slotProps?.grabber?.className)}
+        />
+        <div
+          {...slotProps?.header}
+          className={cn("uiify-drawer-header", slotProps?.header?.className)}
+        >
+          <h2
+            id={`${id}-title`}
+            {...slotProps?.title}
+            className={cn("uiify-drawer-title", slotProps?.title?.className)}
+          >
             {title}
           </h2>
           {description === null || description === undefined ? null : (
             <p
-              data-part="description"
               id={`${id}-description`}
-              data-uiify-drawer=""
               {...slotProps?.description}
+              className={cn("uiify-drawer-description", slotProps?.description?.className)}
             >
               {description}
             </p>
@@ -101,12 +100,15 @@ export function DrawerPanel({
           />
         </div>
         {children === null || children === undefined ? null : (
-          <div data-part="body" data-uiify-drawer="" {...slotProps?.body}>
+          <div {...slotProps?.body} className={cn("uiify-drawer-body", slotProps?.body?.className)}>
             {children}
           </div>
         )}
         {footer === null || footer === undefined ? null : (
-          <div data-part="footer" data-uiify-drawer="" {...slotProps?.footer}>
+          <div
+            {...slotProps?.footer}
+            className={cn("uiify-drawer-footer", slotProps?.footer?.className)}
+          >
             {footer}
           </div>
         )}

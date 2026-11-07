@@ -5,7 +5,7 @@ import { createBoxObserver } from "./internal/box-observer.js";
 export const SHEET_QUERY = "(width < 40rem)";
 /** Where a press may start a swipe, besides the backdrop: the modal's own parts only. */
 const HANDLE =
-  ':is([data-uiify-modal], [data-uiify-drawer]):is([data-part="header"], [data-part="grabber"], [data-part="handle"])';
+  ".uiify-dialog-header, .uiify-dialog-grabber, .uiify-drawer-header, .uiify-drawer-grabber, .uiify-drawer-handle";
 /** Never start a swipe from these: the press is meant for them. */
 const INTERACTIVE = "a, button, input, select, textarea, [contenteditable], [data-no-swipe]";
 /** Pixels a press must travel down before it becomes a drag; below it the tap reaches `click`. */

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { ReactElement } from "react";
+import { cn } from "@gunkin/uiify/core/render";
 import { useIsomorphicLayoutEffect, useMergedRefs } from "@gunkin/uiify/hooks";
 import { useComboboxContext } from "./combobox-context.js";
 import type { ComboboxFormControlProps } from "./types.js";
@@ -76,10 +77,10 @@ export function ComboboxFormControl(props: ComboboxFormControlProps): ReactEleme
       hidden
       tabIndex={-1}
       aria-hidden="true"
-      data-part="form-control"
       disabled={disabled}
       required={required}
       {...consumerProps}
+      className={cn("uiify-combobox-form-control", consumerProps.className)}
       multiple
       value={values}
       ref={mergedRef}

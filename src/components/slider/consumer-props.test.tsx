@@ -32,6 +32,24 @@ it("preserves default slider DOM", () => {
   }).toMatchSnapshot();
 });
 
+it("renders SliderClient root and generated-part identities without legacy markers", () => {
+  const { container } = render(
+    <SliderClient
+      defaultValue={[20, 80]}
+      marks={[{ value: 50, label: "Half" }]}
+      aria-label="Volume"
+    />,
+  );
+  expect(container.querySelector(".uiify-slider-client")).toBeTruthy();
+  expect(container.querySelector(".uiify-slider-track")).toBeTruthy();
+  expect(container.querySelector(".uiify-slider-range")).toBeTruthy();
+  expect(container.querySelector(".uiify-slider-mark")).toBeTruthy();
+  expect(container.querySelector(".uiify-slider-thumb")).toBeTruthy();
+  expect(container.querySelector(".uiify-slider-visual-thumb")).toBeTruthy();
+  expect(container.querySelector("[data-uiify-slider-client]")).toBeNull();
+  expect(container.querySelector('[data-part="track"]')).toBeNull();
+});
+
 it("lets native and slotted props replace slider defaults and geometry", () => {
   const nativeStyle = { "--uiify-slider-progress": "7%" } as CSSProperties;
   const { container } = render(

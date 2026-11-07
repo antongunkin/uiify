@@ -11,7 +11,7 @@ const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".md", ".mjs", ".ts"]);
 
 const allowedPath =
-  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|scripts\/(?:lint|static)\.mjs|references\/(?:elements|laws|compositions|guides|examples)\/[a-z0-9-]+\.md))$/;
+  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|version\.json|scripts\/(?:lint|static|agents-section|check-screens|screens|sync-agents)\.mjs|references\/(?:(?:agents-rules|editor-lint)\.md|(?:elements|laws|compositions|guides|examples)\/[a-z0-9-]+\.md)))$/;
 const credentialLike = [
   /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
   /\bnpm_[A-Za-z0-9]{8,}\b/,
@@ -24,7 +24,7 @@ export function assertPackFiles(files) {
     const path = typeof file === "string" ? file : file.path;
     return typeof path !== "string" || !allowedPath.test(path.replace(/^package\//, ""));
   });
-  assert.equal(unexpected.length, 0, `unexpected files in npm tarball: ${unexpected.join(", ")}`);
+  assert.equal(unexpected.length, 0, `unexpected files in npm tarball: ${unexpected.map((file) => (typeof file === "string" ? file : file.path)).join(", ")}`);
 }
 
 // The shipped skill carries curated rules only; the owner's reasons, decisions and examples stay inside the harness.
@@ -133,7 +133,7 @@ async function main() {
         'import { Alert, AlertTitle, AlertDescription } from "@gunkin/uiify";',
         'import { Alert as DirectAlert, AlertTitle as DirectAlertTitle, AlertDescription as DirectAlertDescription } from "@gunkin/uiify/components/alert";',
         'if (Alert !== DirectAlert || AlertTitle !== DirectAlertTitle || AlertDescription !== DirectAlertDescription) throw new Error("Alert import mismatch");',
-        'import "@gunkin/uiify/elements/dialog";',
+        'import "@gunkin/uiify/elements/native-dialog";',
         'import "@gunkin/uiify/core/render";',
         'import "@gunkin/uiify/hooks";',
         'for (const specifier of ["@gunkin/uiify/components/behavior.css", "@gunkin/uiify/styles", "@gunkin/uiify/styles/tokens", "@gunkin/uiify/styles/layout", "@gunkin/uiify/styles/layout.css", "@gunkin/uiify/styles/controls", "@gunkin/uiify/styles/controls.css", "@gunkin/uiify/styles/reset"]) {',
@@ -208,7 +208,7 @@ async function main() {
           unpackedSize: packed.unpackedSize,
           files: packed.files?.length ?? 0,
           imports:
-            "root, components/alert (all parts), components/aspect-ratio, components/button, elements/dialog, core/render, hooks",
+            "root, components/alert (all parts), components/aspect-ratio, components/button, elements/native-dialog, core/render, hooks",
           css: "behavior.css, styles, styles/tokens, styles/layout, styles/layout.css, styles/controls, styles/controls.css, styles/reset",
           skillLint: "runs with the consumer's installed TypeScript parser",
           secrets: "none detected",

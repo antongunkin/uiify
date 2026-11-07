@@ -29,8 +29,8 @@ describe("DrawerPanel (native shell)", () => {
     expect(dialog?.getAttribute("closedby")).toBe("any");
     expect(dialog?.getAttribute("data-size")).toBe("lg");
     for (const part of ["header", "title", "body", "footer", "grabber", "close"])
-      expect(dialog?.querySelector(`[data-part="${part}"]`)).toBeTruthy();
-    expect(dialog?.querySelector('[data-part="close"]')?.getAttribute("aria-label")).toBe("Close");
+      expect(dialog?.querySelector(`.uiify-drawer-${part}`)).toBeTruthy();
+    expect(dialog?.querySelector(".uiify-drawer-close")?.getAttribute("aria-label")).toBe("Close");
   });
   it("renders a show-modal trigger and a request-close invoker", () => {
     render(<DrawerPanel id="settings" side="right" trigger="Open" title="Settings" />);
@@ -42,10 +42,10 @@ describe("DrawerPanel (native shell)", () => {
     expect(trigger.getAttribute("command")).toBe("show-modal");
     expect(trigger.getAttribute("commandfor")).toBe("settings");
     expect(trigger.getAttribute("type")).toBe("button");
-    expect(trigger.getAttribute("data-uiify-button")).toBe("");
+    expect(trigger.classList.contains("uiify-button")).toBe(true);
     expect(close.getAttribute("command")).toBe("request-close");
     expect(close.getAttribute("commandfor")).toBe("settings");
-    expect(close.getAttribute("data-uiify-button")).toBe("");
+    expect(close.classList.contains("uiify-button")).toBe(true);
     expect(close.getAttribute("data-variant")).toBe("ghost");
     expect(dialog.hasAttribute("popover")).toBe(false);
     expect(dialog.hasAttribute("open")).toBe(false);
@@ -461,7 +461,7 @@ describe("Drawer compound — props ownership", () => {
         </Drawer.Content>
       </Drawer.Root>,
     );
-    const handle = container.querySelector('[data-part="handle"]');
+    const handle = container.querySelector(".uiify-drawer-handle");
     expect(handle).not.toBeNull();
     fireEvent.pointerDown(handle as HTMLElement, { pointerId: 1 });
     fireEvent.pointerMove(handle as HTMLElement, { pointerId: 1 });

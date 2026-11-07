@@ -12,7 +12,8 @@ describe("Skeleton", () => {
       </Skeleton>,
     );
     const wrapper = ref.current;
-    expect(wrapper?.getAttribute("data-uiify-skeleton")).toBe("");
+    expect(wrapper?.classList.contains("uiify-skeleton")).toBe(true);
+    expect(wrapper?.hasAttribute("data-uiify-skeleton")).toBe(false);
     expect(wrapper?.getAttribute("data-variant")).toBe("none");
     expect(screen.queryByText("Ready")).toBeNull();
     rerender(

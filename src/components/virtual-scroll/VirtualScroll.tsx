@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "../../core/class-names.js";
 import {
   useEffect,
   useImperativeHandle,
@@ -12,7 +13,11 @@ import {
 } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { flushSync } from "react-dom";
-import { useResizeObserver } from "@gunkin/uiify/hooks";
+import {
+  useEventCallback,
+  useIsomorphicLayoutEffect,
+  useResizeObserver,
+} from "@gunkin/uiify/hooks";
 import { useMergedRefs } from "../../hooks/use-merged-refs.js";
 import { mergeRepeatedSlotProps, resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import { resolveVirtualScrollAnchorAdjustment } from "./virtual-scroll-anchor.js";
@@ -25,6 +30,7 @@ import {
   computeScrollAdjustmentForRowResize,
   createVirtualScrollMeasurementStore,
 } from "./virtual-scroll-measurements.js";
+import type { VirtualScrollMeasurementStore } from "./virtual-scroll-measurements.js";
 import {
   computeDynamicVirtualScrollRange,
   computeVirtualScrollRange,
@@ -62,6 +68,44 @@ import {
   VIRTUAL_SCROLL_ROW_HEIGHT,
   VIRTUAL_SCROLL_SCROLL_RESET_DELAY,
 } from "./types.js";
+
+function computeRange(
+  scrollTop: number,
+  {
+    dynamicLayout,
+    itemCount,
+    overscan,
+    rowHeight,
+    viewportSize,
+  }: {
+    readonly dynamicLayout: boolean;
+    readonly itemCount: number;
+    readonly overscan: number;
+    readonly rowHeight: number;
+    readonly viewportSize: number;
+  },
+  store: VirtualScrollMeasurementStore,
+): ReturnType<typeof computeVirtualScrollRange> {
+  if (dynamicLayout) {
+    return computeDynamicVirtualScrollRange({
+      scrollTop,
+      viewportHeight: viewportSize,
+      itemCount,
+      overscan,
+      findStartIndex: store.findStartIndex,
+      findEndIndex: store.findEndIndex,
+      getRowOffset: store.getRowOffset,
+    });
+  }
+
+  return computeVirtualScrollRange({
+    scrollTop,
+    viewportHeight: viewportSize,
+    itemCount,
+    rowHeight,
+    overscan,
+  });
+}
 
 function buildRowSlots<T extends VirtualScrollItem>(
   items: readonly T[],
@@ -119,9 +163,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     onTouchEnd: () => {},
   });
   const itemsRef = useRef(items);
-  itemsRef.current = items;
   const lastRangeChangeRef = useRef<string>("");
-  const measuredHeightsRef = useRef(new Map<string, number>());
   const anchorSnapshotRef = useRef({
     firstItemId: items[0]?.id,
     itemCount: items.length,
@@ -135,17 +177,18 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   const measuredSize = useResizeObserver(ref);
   const viewportSize = (horizontal ? measuredSize?.width : measuredSize?.height) ?? height;
 
-  const measurementStoreRef = useRef(
+  const [measurementStore] = useState(() =>
     createVirtualScrollMeasurementStore({
       itemCount: items.length,
       defaultRowHeight: rowHeight,
       ...(estimateRowHeight ? { estimateRowHeight } : {}),
-      measuredHeights: measuredHeightsRef.current,
-      itemIdAtIndex: (index) => itemsRef.current[index]?.id,
+      measuredHeights: new Map<string, number>(),
+      itemIdAtIndex: (index) => items[index]?.id,
     }),
   );
 
-  measurementStoreRef.current.syncItemCount(items.length);
+  // Render reads row geometry, so the store follows this render's items, not the last commit's.
+  measurementStore.syncItems(items.length, (index) => items[index]?.id);
 
   const scrollOptionsRef = useRef({
     dynamicLayout,
@@ -155,47 +198,8 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     rowHeight,
     viewportSize,
   });
-  scrollOptionsRef.current = {
-    dynamicLayout,
-    itemCount: items.length,
-    orientation,
-    overscan,
-    rowHeight,
-    viewportSize,
-  };
-
   const onRangeChangeRef = useRef(onRangeChange);
-  onRangeChangeRef.current = onRangeChange;
-
   const onScrollStateChangeRef = useRef(onScrollStateChange);
-  onScrollStateChangeRef.current = onScrollStateChange;
-
-  const computeRange = (): ReturnType<typeof computeVirtualScrollRange> => {
-    const { dynamicLayout, itemCount, overscan, rowHeight, viewportSize } =
-      scrollOptionsRef.current;
-    const scrollTop = scrollOffsetRef.current;
-
-    if (dynamicLayout) {
-      const store = measurementStoreRef.current;
-      return computeDynamicVirtualScrollRange({
-        scrollTop,
-        viewportHeight: viewportSize,
-        itemCount,
-        overscan,
-        findStartIndex: store.findStartIndex,
-        findEndIndex: store.findEndIndex,
-        getRowOffset: store.getRowOffset,
-      });
-    }
-
-    return computeVirtualScrollRange({
-      scrollTop,
-      viewportHeight: viewportSize,
-      itemCount,
-      rowHeight,
-      overscan,
-    });
-  };
 
   const emitRangeChange = (range: ReturnType<typeof computeVirtualScrollRange>): void => {
     const callback = onRangeChangeRef.current;
@@ -209,15 +213,17 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
   const syncRangeFromScrollRef = useRef((_offset?: number) => {});
 
-  syncRangeFromScrollRef.current = (offset?: number) => {
+  const syncRangeFromScroll = (offset?: number) => {
     const element = ref.current;
     if (!element) return;
 
-    const scrollOffset = offset ?? readScrollOffset(element, scrollOptionsRef.current.orientation);
-    const previousRange = computeRange();
+    const options = scrollOptionsRef.current;
+    const store = measurementStore;
+    const scrollOffset = offset ?? readScrollOffset(element, options.orientation);
+    const previousRange = computeRange(scrollOffsetRef.current, options, store);
     scrollOffsetRef.current = scrollOffset;
 
-    const nextRange = computeRange();
+    const nextRange = computeRange(scrollOffset, options, store);
     if (rangesEqual(previousRange, nextRange)) return;
 
     emitRangeChange(nextRange);
@@ -232,8 +238,6 @@ export function VirtualScroll<T extends VirtualScrollItem>(
         computeVirtualScrollSlotCount(viewportSize, rowHeight, overscan),
       ),
     );
-    const store = measurementStoreRef.current;
-
     // Write range CSS vars on the scroll handler so rows move in the same frame as the scroll offset.
     applyVirtualScrollRangeToDom(element, nextRange, {
       dynamicLayout,
@@ -255,7 +259,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     });
   };
 
-  const iosControllerRef = useRef(
+  const [iosController] = useState(() =>
     createVirtualScrollIosScroll({
       enabled: detectTouchScrollEnvironment(),
       resetDelay: isScrollingResetDelay,
@@ -264,7 +268,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
   const applyScrollDeltaRef = useRef((_delta: number) => {});
 
-  applyScrollDeltaRef.current = (delta: number) => {
+  const applyScrollDelta = (delta: number) => {
     const element = ref.current;
     if (!element || delta === 0) return;
     // Preserve the viewport while rows resize.
@@ -282,7 +286,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     const element = ref.current;
     if (!element) return;
 
-    const store = measurementStoreRef.current;
+    const store = measurementStore;
     const totalSize = dynamicLayout ? store.getTotalSize() : items.length * rowHeight;
     const clamped = clampScrollOffset(offset, totalSize, viewportSize);
     const current = scrollOffsetRef.current;
@@ -295,7 +299,24 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     (_offset: number, _behavior: VirtualScrollScrollBehaviorOptions["behavior"]) => {},
   );
 
-  applyScrollOffsetRef.current = applyScrollOffset;
+  // Handlers, observers and the imperative handle read this commit's values; layout
+  // effects run before the passive effects and any parent layout effect that scrolls.
+  useIsomorphicLayoutEffect(() => {
+    itemsRef.current = items;
+    scrollOptionsRef.current = {
+      dynamicLayout,
+      itemCount: items.length,
+      orientation,
+      overscan,
+      rowHeight,
+      viewportSize,
+    };
+    onRangeChangeRef.current = onRangeChange;
+    onScrollStateChangeRef.current = onScrollStateChange;
+    syncRangeFromScrollRef.current = syncRangeFromScroll;
+    applyScrollDeltaRef.current = applyScrollDelta;
+    applyScrollOffsetRef.current = applyScrollOffset;
+  });
 
   useImperativeHandle(
     scrollRef,
@@ -305,7 +326,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       },
       scrollToIndex(index: number, options?: VirtualScrollScrollToIndexOptions): void {
         const normalized = normalizeScrollToIndexOptions(options);
-        const store = measurementStoreRef.current;
+        const store = measurementStore;
         const metrics = {
           getRowOffset: store.getRowOffset.bind(store),
           getRowHeight: store.getRowHeight.bind(store),
@@ -324,7 +345,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
         applyScrollOffsetRef.current(offset, normalizeScrollBehaviorOptions(options));
       },
       scrollToEnd(options?: VirtualScrollScrollBehaviorOptions): void {
-        const store = measurementStoreRef.current;
+        const store = measurementStore;
         const totalSize = dynamicLayout
           ? store.getTotalSize()
           : scrollOptionsRef.current.itemCount * scrollOptionsRef.current.rowHeight;
@@ -332,16 +353,22 @@ export function VirtualScroll<T extends VirtualScrollItem>(
         applyScrollOffsetRef.current(offset, normalizeScrollBehaviorOptions(options));
       },
     }),
-    [dynamicLayout],
+    [dynamicLayout, measurementStore],
   );
 
   const range = useMemo(() => {
     void rangeVersion;
     void measurementVersion;
-    return computeRange();
+    return computeRange(
+      // oxlint-disable-next-line react/refs -- the scroll handler owns the live offset and re-renders (rangeVersion) only when the range changes; state would re-render on every scroll event.
+      scrollOffsetRef.current,
+      { dynamicLayout, itemCount: items.length, overscan, rowHeight, viewportSize },
+      measurementStore,
+    );
   }, [
     rangeVersion,
     measurementVersion,
+    measurementStore,
     dynamicLayout,
     items.length,
     overscan,
@@ -351,9 +378,9 @@ export function VirtualScroll<T extends VirtualScrollItem>(
 
   const totalSize = useMemo(() => {
     void measurementVersion;
-    if (dynamicLayout) return measurementStoreRef.current.getTotalSize();
+    if (dynamicLayout) return measurementStore.getTotalSize();
     return items.length * rowHeight;
-  }, [dynamicLayout, items.length, measurementVersion, rowHeight]);
+  }, [dynamicLayout, items.length, measurementStore, measurementVersion, rowHeight]);
 
   const slotCount = useMemo(() => {
     if (items.length === 0) return 0;
@@ -369,7 +396,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   );
 
   const handleRowMeasureRef = useRef((index: number, itemId: string, height: number) => {
-    const store = measurementStoreRef.current;
+    const store = measurementStore;
     const previousHeight = store.getRowHeight(index);
     const rowOffset = store.getRowOffset(index);
     if (!store.setMeasuredHeight(itemId, index, height)) return;
@@ -382,7 +409,7 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     });
 
     if (adjustment > 0) {
-      const ios = iosControllerRef.current;
+      const ios = iosController;
       if (ios.isTouchScrolling()) {
         ios.queueAdjustment(adjustment);
       } else {
@@ -433,12 +460,12 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       onChange: (isScrolling) => {
         onScrollStateChangeRef.current?.({ isScrolling });
         if (!isScrolling) {
-          iosControllerRef.current.flushAdjustments(applyScrollDeltaRef.current);
+          iosController.flushAdjustments(applyScrollDeltaRef.current);
         }
       },
     });
 
-    const ios = iosControllerRef.current;
+    const ios = iosController;
     const onTouchStart = (): void => ios.onTouchStart();
     const onTouchEnd = (): void => ios.onTouchEnd();
     let verifyFrame = 0;
@@ -483,11 +510,11 @@ export function VirtualScroll<T extends VirtualScrollItem>(
       };
       scrollState.dispose();
     };
-  }, [isScrollingResetDelay]);
+  }, [iosController, isScrollingResetDelay]);
 
   useEffect(() => {
     const element = ref.current;
-    const store = measurementStoreRef.current;
+    const store = measurementStore;
     const nextTotalSize = dynamicLayout ? store.getTotalSize() : items.length * rowHeight;
     const previous = anchorSnapshotRef.current;
     const scrollOffset = element ? readScrollOffset(element, orientation) : scrollOffsetRef.current;
@@ -516,11 +543,25 @@ export function VirtualScroll<T extends VirtualScrollItem>(
     }
 
     anchorSnapshotRef.current = nextSnapshot;
-  }, [anchor, followAppend, items, dynamicLayout, orientation, rowHeight, viewportSize]);
+  }, [
+    anchor,
+    followAppend,
+    items,
+    dynamicLayout,
+    measurementStore,
+    orientation,
+    rowHeight,
+    viewportSize,
+  ]);
 
   useEffect(() => {
     emitRangeChange(range);
   }, [range]);
+
+  const handleScroll = useEventCallback(() => eventHandlersRef.current.onScroll());
+  const handleScrollEnd = useEventCallback(() => eventHandlersRef.current.onScrollEnd());
+  const handleTouchStart = useEventCallback(() => eventHandlersRef.current.onTouchStart());
+  const handleTouchEnd = useEventCallback(() => eventHandlersRef.current.onTouchEnd());
 
   const scrollportStyle = {
     ...(suppliedHeight !== undefined || (!consumerStyle?.blockSize && !consumerStyle?.height)
@@ -543,34 +584,25 @@ export function VirtualScroll<T extends VirtualScrollItem>(
   return (
     <div
       data-testid={testId}
-      data-uiify-virtual-scroll=""
       data-dynamic-layout={dynamicLayout ? "" : undefined}
       data-orientation={orientation}
       role={listRole}
       {...consumerProps}
       ref={rootRef}
-      onScroll={composeEventHandlers(consumerProps.onScroll, () =>
-        eventHandlersRef.current.onScroll(),
-      )}
-      onScrollEnd={composeEventHandlers(consumerProps.onScrollEnd, () =>
-        eventHandlersRef.current.onScrollEnd(),
-      )}
-      onTouchStart={composeEventHandlers(consumerProps.onTouchStart, () =>
-        eventHandlersRef.current.onTouchStart(),
-      )}
-      onTouchEnd={composeEventHandlers(consumerProps.onTouchEnd, () =>
-        eventHandlersRef.current.onTouchEnd(),
-      )}
-      className={className}
+      onScroll={composeEventHandlers(consumerProps.onScroll, handleScroll)}
+      onScrollEnd={composeEventHandlers(consumerProps.onScrollEnd, handleScrollEnd)}
+      onTouchStart={composeEventHandlers(consumerProps.onTouchStart, handleTouchStart)}
+      onTouchEnd={composeEventHandlers(consumerProps.onTouchEnd, handleTouchEnd)}
+      className={cn("uiify-virtual-scroll", className)}
       style={scrollportStyle}
     >
       <div
-        data-part="spacer"
         {...slotProps?.spacer}
+        className={cn("uiify-virtual-scroll-spacer", slotProps?.spacer?.className)}
         style={{ ...spacerStyle, ...slotProps?.spacer?.style }}
       >
         {rowSlots.map((slot) => {
-          const store = measurementStoreRef.current;
+          const store = measurementStore;
           const rowOffset = dynamicLayout ? store.getRowOffset(slot.index) : undefined;
           const measuredRowHeight = dynamicLayout ? store.getRowHeight(slot.index) : undefined;
 

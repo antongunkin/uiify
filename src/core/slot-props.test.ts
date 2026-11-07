@@ -9,7 +9,7 @@ describe("SlotProps", () => {
       id: "custom-title",
       "aria-level": 3,
       "data-part": "heading",
-      "data-uiify-modal": undefined,
+      "data-uiify-dialog": undefined,
     };
     const trigger: SlotProps<"button"> = { type: "submit", "data-part": "opener" };
     expect([title.id, trigger.type]).toEqual(["custom-title", "submit"]);

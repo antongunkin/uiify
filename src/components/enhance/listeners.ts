@@ -28,13 +28,10 @@ export function attachEnhancers(doc: Document = document): () => void {
 
   const onChange = (event: Event): void => {
     const target = event.target as HTMLElement | null;
-    if (!target?.matches('[data-uiify-tabs] > [data-part="item"] > [data-part="control"]')) return;
-    // The root Tabs marker is `data-uiify-tabs`:
-    // the latter never existed outside this selector, so syncTabs was never
-    // reached in production. Pinned by listeners.test.ts, which now builds its
-    // fixture with renderToStaticMarkup instead of hand-written HTML.
-    const root = target.closest<HTMLElement>("[data-uiify-tabs]");
-    if (root?.id) syncTabs(root.id);
+    if (!target?.matches(".uiify-tabs > .uiify-tabs-list > .uiify-tabs-item > .uiify-tabs-control"))
+      return;
+    const root = target.closest<HTMLElement>(".uiify-tabs");
+    if (root) syncTabs(root);
   };
 
   doc.addEventListener("toggle", onToggle, true);

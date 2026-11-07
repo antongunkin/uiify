@@ -15,11 +15,12 @@ describe("Breadcrumb", () => {
         </Breadcrumb.List>
       </Breadcrumb.Root>,
     );
+    expect(screen.getByRole("navigation", { name: "Location" }).className).toBe("uiify-breadcrumb");
     expect(
-      screen.getByRole("navigation", { name: "Location" })?.getAttribute("data-uiify-breadcrumb"),
+      screen.getByRole("navigation", { name: "Location" }).getAttribute("data-uiify-breadcrumb"),
     ).toBe("override");
     expect(screen.getByRole("list")?.getAttribute("data-part")).toBe("override");
-    expect(screen.getByRole("link")?.getAttribute("data-part")).toBe("link");
+    expect(screen.getByRole("link")?.classList.contains("uiify-breadcrumb-link")).toBe(true);
   });
 
   it("renders nav > ol > li structure", () => {

@@ -1,3 +1,4 @@
+import { cn } from "../../core/class-names.js";
 import type { ElementType, ReactElement, SyntheticEvent } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
@@ -35,8 +36,6 @@ export function Textarea<TAs extends ElementType = "textarea">(
     as,
     defaultTag: "textarea",
     props: {
-      ...consumerProps,
-      "data-uiify-textarea": "",
       "aria-invalid": invalid || undefined,
       "data-autosize": autoSize ? "" : undefined,
       "data-disabled": disabled ? "" : undefined,
@@ -44,6 +43,8 @@ export function Textarea<TAs extends ElementType = "textarea">(
       "data-invalid": invalid ? "" : undefined,
       disabled: disabled || undefined,
       readOnly: readOnly || undefined,
+      ...consumerProps,
+      className: cn("uiify-textarea", (consumerProps as { className?: string }).className),
       onChange: onValueChange
         ? composeEventHandlers(consumerOnChange, handleChange)
         : consumerOnChange,

@@ -23,7 +23,6 @@ Keep the links reachable on small screens. The native popover trigger can expose
 ## States
 
 Use the base entry for native fragment navigation. The /client entry can add scroll tracking and controlled open/current state; it enhances the native shell after hydration.
-
 ## Verify
 
 Follow each link and confirm its target exists, is visible after navigation, and is not obscured by a sticky header. Check the named landmark and keyboard operation of the popover trigger.

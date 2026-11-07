@@ -1,5 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement } from "@gunkin/uiify/core/render";
 import type { BadgeProps } from "./types.js";
 
 export function Badge<TAs extends ElementType = "span">(
@@ -10,10 +10,11 @@ export function Badge<TAs extends ElementType = "span">(
     as,
     defaultTag: "span",
     props: {
-      ...consumerProps,
-      "data-uiify-badge": "",
       ...(size !== undefined ? { "data-size": size } : {}),
-      ...(variant !== undefined ? { "data-variant": variant } : {}),
+      // `default` is the unset look: no attribute, so the markup equals an omitted prop.
+      ...(variant !== undefined && variant !== "default" ? { "data-variant": variant } : {}),
+      ...consumerProps,
+      className: cn("uiify-badge", (consumerProps as { className?: string }).className),
     },
     render,
     state: {},

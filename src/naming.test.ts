@@ -24,7 +24,17 @@ test("value callbacks are named onValueChange, not onChange", () => {
 
 test("sizes use sm | md | lg", () => {
   const typeFiles = sourceFiles().filter((path) => path.endsWith("types.ts"));
-  expect(violations(typeFiles, /Size\s*=\s*[^;]*"(?:small|large|default)"/)).toEqual([]);
+  expect(violations(typeFiles, /Size\s*=\s*[^;]*"(?:small|large)"/)).toEqual([]);
+  // Button and Card follow shadcn: `default` is their unset size and renders no `data-size`.
+  const shadcnSized = new Set(
+    ["button", "card"].map((name) => resolve(sourceDirectory, `components/${name}/types.ts`)),
+  );
+  expect(
+    violations(
+      typeFiles.filter((path) => !shadcnSized.has(path)),
+      /Size\s*=\s*[^;]*"default"/,
+    ),
+  ).toEqual([]);
   const styles = sourceFiles().filter((path) => path.endsWith(".css"));
   expect(violations(styles, /data-size="(?:small|large|default)"/)).toEqual([]);
 });
@@ -81,12 +91,12 @@ test("data-part values come from the part vocabulary", () => {
 const IDENTITY_SUBNAMES = new Set([
   "alert-description",
   "alert-title",
+  "checkbox-group", // Group family in the checkbox folder; pairs with the single-checkbox identity.
   "description-details",
   "description-term",
   "empty-content",
   "empty-description",
   "empty-title",
-  "fieldset-legend",
   "item-actions",
   "item-content",
   "item-media",

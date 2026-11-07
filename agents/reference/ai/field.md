@@ -6,6 +6,7 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 
 ## Props shared by every part
 
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 - `aria-label` (optional): `string`
 - `aria-labelledby` (optional): `string`; a list of ids; separate ids with single spaces, each starting with a letter and using only letters, digits, -, _, : and .
@@ -13,7 +14,7 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 - `hidden` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
-## Field.Root
+## Field
 
 Keep a label and its form control together.
 Use when: The demonstrated form-grouping relationship is present.
@@ -21,51 +22,39 @@ Avoid when: The task does not need this element; do not add it for coverage.
 
 Optional `children`: nodes or strings.
 
-- `id` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. Stable id for deterministic label/control/error wiring. Required.
-- `invalid` (optional): `boolean`
-- `required` (optional): `boolean`
+- `orientation` (optional): `"horizontal" | "vertical" | "responsive"`; allowed: "horizontal", "vertical", "responsive". Layout of the label, control and content. `responsive` is vertical until the nearest size container (FieldGroup) is at least 28rem wide, then horizontal. Written as data-orientation.
+- `invalid` (optional): `boolean`. Marks the group with data-invalid. It does not reach the control: set `invalid` on the control and render FieldError with an id listed in its aria-describedby.
+- `variant` (optional): `"card"`; allowed: "card". `card` draws the field as a bordered choice card and stretches its FieldLabel over the card, so a click anywhere selects the control. Written as data-variant; omitted when unset.
+
+## FieldDescription
+
+Optional `children`: nodes or strings.
+
 - `disabled` (optional): `boolean`
+
+## FieldError
+
+Optional `children`: nodes or strings.
+
+Only shared props.
+
+## FieldLabel
+
+Optional `children`: nodes or strings.
+
+- `disabled` (optional): `boolean`
+- `required` (optional): `boolean`
+- `htmlFor` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## FieldLegend
+
+Optional `children`: nodes or strings.
+
+- `variant` (optional): `"label" | "legend"`; allowed: "label", "legend". `legend` sizes it as a section heading; `label` matches FieldLabel. Written as data-variant; omitted when unset, which renders as `legend`.
+
+## FieldSet
+
+Optional `children`: nodes or strings.
+
 - `name` (optional): `string`
-
-## Field.Label
-
-Place inside `Field.Root`.
-
-Optional `children`: nodes or strings.
-
 - `disabled` (optional): `boolean`
-- `required` (optional): `boolean`
-- `fieldId` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Field.Control
-
-Place inside `Field.Root`.
-
-Optional `children`: nodes or strings.
-
-- `disabled` (optional): `boolean`
-- `invalid` (optional): `boolean`
-- `required` (optional): `boolean`
-- `fieldId` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Field.Description
-
-Place inside `Field.Root`.
-
-Optional `children`: nodes or strings.
-
-- `disabled` (optional): `boolean`
-- `fieldId` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Field.Error
-
-Place inside `Field.Root`.
-
-Optional `children`: nodes or strings.
-
-- `invalid` (optional): `boolean`
-- `fieldId` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .

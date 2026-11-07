@@ -1,14 +1,13 @@
 import { expect, it } from "vitest";
-import type { RadioGroupProps } from "../../radio-group/types.js";
 import type { SegmentedControlProps } from "../../segmented-control/types.js";
 import type { ToggleGroupProps } from "../../toggle-group/types.js";
-import type { ChoiceInputSlotProps } from "../../../elements/choice/types.js";
+import type { NativeChoiceInputSlotProps } from "../../../elements/native-choice/types.js";
 
 it("accepts consumer props, including generated state and relationships", () => {
-  const directChoiceInput: ChoiceInputSlotProps = {
+  const directChoiceInput: NativeChoiceInputSlotProps = {
     checked: true,
   };
-  const valid: RadioGroupProps = {
+  const valid: ToggleGroupProps = {
     id: "plans",
     items: [],
     title: "Plans",
@@ -29,7 +28,7 @@ it("accepts consumer props, including generated state and relationships", () => 
       label: { title: "Plan label" },
     },
   };
-  const owned: RadioGroupProps = {
+  const owned: ToggleGroupProps = {
     id: "plans",
     items: [],
     slotProps: {
@@ -53,7 +52,7 @@ it("accepts consumer props, including generated state and relationships", () => 
       },
     },
   };
-  const invalidRoot: RadioGroupProps = {
+  const invalidRoot: ToggleGroupProps = {
     id: "plans",
     items: [],
     // @ts-expect-error -- the group root cannot replace generated content.

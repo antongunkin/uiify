@@ -7,20 +7,24 @@ describe("Avatar", () => {
     render(<Avatar name="Ada Lovelace" fallback="AL" />);
     const avatar = screen.getByRole("img", { name: "Ada Lovelace" });
     expect(avatar.tagName).toBe("SPAN");
+    expect(avatar.classList.contains("uiify-avatar")).toBe(true);
+    expect(avatar.hasAttribute("data-uiify-avatar")).toBe(false);
     expect(avatar.querySelector("img")).toBeNull();
-    expect(avatar.querySelector('[data-part="fallback"]')?.textContent).toBe("AL");
-    expect(avatar.querySelector('[data-part="fallback"]')?.getAttribute("aria-hidden")).toBe(
-      "true",
-    );
+    const fallback = avatar.querySelector(".uiify-avatar-fallback");
+    expect(fallback?.textContent).toBe("AL");
+    expect(fallback?.getAttribute("aria-hidden")).toBe("true");
+    expect(fallback?.hasAttribute("data-part")).toBe(false);
   });
 
   it("renders an empty-alt image when a source is supplied", () => {
     render(<Avatar name="Ada Lovelace" fallback="AL" src="/ada.png" size="lg" />);
     const avatar = screen.getByRole("img", { name: "Ada Lovelace" });
     const image = avatar.querySelector("img");
+    expect(image?.classList.contains("uiify-avatar-image")).toBe(true);
     expect(image?.getAttribute("src")).toBe("/ada.png");
     expect(image?.getAttribute("alt")).toBe("");
-    expect(avatar.querySelector('[data-part="fallback"]')).toBeNull();
+    expect(image?.hasAttribute("data-part")).toBe(false);
+    expect(avatar.querySelector(".uiify-avatar-fallback")).toBeNull();
     expect(avatar.getAttribute("data-size")).toBe("lg");
   });
 
@@ -32,7 +36,7 @@ describe("Avatar", () => {
         slotProps={{ fallback: { className: "fallback", "data-testid": "avatar-fallback" } }}
       />,
     );
-    expect(screen.getByTestId("avatar-fallback").className).toBe("fallback");
+    expect(screen.getByTestId("avatar-fallback").className).toBe("uiify-avatar-fallback fallback");
     rerender(
       <Avatar
         fallback="AL"
@@ -41,7 +45,7 @@ describe("Avatar", () => {
         src="/ada.png"
       />,
     );
-    expect(screen.getByTestId("avatar-image").className).toBe("image");
+    expect(screen.getByTestId("avatar-image").className).toBe("uiify-avatar-image image");
   });
 
   it("allows adjacent text to make the avatar decorative", () => {

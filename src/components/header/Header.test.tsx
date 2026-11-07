@@ -9,12 +9,13 @@ describe("Header.Root", () => {
     render(<Header.Root>Site navigation</Header.Root>);
     const root = screen.getByRole("banner");
     expect(root.tagName).toBe("HEADER");
-    expect(root.getAttribute("data-uiify-header")).toBe("");
+    expect(root.classList.contains("uiify-header")).toBe(true);
+    expect(root.hasAttribute("data-uiify-header")).toBe(false);
     expect(root.getAttribute("data-placement")).toBe("static");
     expect(root.textContent).toBe("Site navigation");
   });
 
-  it("owns its identity and placement attributes", () => {
+  it("preserves consumer attributes", () => {
     render(
       <Header.Root
         data-testid="root"
@@ -24,8 +25,8 @@ describe("Header.Root", () => {
       />,
     );
     const root = screen.getByTestId("root");
-    expect(root.getAttribute("data-uiify-header")).toBe("");
-    expect(root.getAttribute("data-placement")).toBe("sticky");
+    expect(root.getAttribute("data-uiify-header")).toBe("fake");
+    expect(root.getAttribute("data-placement")).toBe("fake");
   });
 
   it("forwards native attributes, consumer styling, data attributes, and events", () => {
@@ -42,7 +43,7 @@ describe("Header.Root", () => {
     );
     const root = screen.getByRole("banner", { name: "Site" });
     expect(root.id).toBe("site-header");
-    expect(root.className).toBe("custom-header");
+    expect(root.className).toBe("uiify-header custom-header");
     expect(root.style.color).toBe("red");
     expect(root.getAttribute("data-consumer")).toBe("value");
     fireEvent.click(root);

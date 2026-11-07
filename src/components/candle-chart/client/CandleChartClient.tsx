@@ -22,9 +22,9 @@ import { useMergedRefs } from "../../../hooks/use-merged-refs.js";
 import { useResizeObserver } from "../../../hooks/use-resize-observer.js";
 
 interface InteractiveCandleStyle extends CSSProperties {
-  "--candle-scale": string;
-  "--candle-content-size"?: string;
-  "--candle-plot-height"?: string;
+  "--uiify-candle-scale": string;
+  "--uiify-candle-content-size"?: string;
+  "--uiify-candle-plot-height"?: string;
 }
 
 interface CursorState extends CandleChartPointerPosition {}
@@ -35,7 +35,7 @@ interface LiveCandle {
 }
 
 /**
- * `[data-part="plot"]`'s fixed price-axis column (4.5rem) plus its grid gap
+ * `.uiify-candle-chart-plot`'s fixed price-axis column (4.5rem) plus its grid gap
  * (0.75rem) — see candle-chart.css. `useChartViewport` measures the whole
  * `<figure>`, but candles only ever get the width left over after this
  * column, so it must be subtracted before sizing `minItemWidth`.
@@ -77,10 +77,15 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     visibleCount,
     itemWidth: viewport.itemWidth,
     figureHeight: figureSize?.height,
-    scrollVariable: "--candle-scroll-x",
+    scrollVariable: "--uiify-candle-scroll-x",
     consumerStyle,
   });
-  useScrollbarReserve(liveWindow.chartRef, "--candle-scrollbar-size", consumerStyle);
+  useScrollbarReserve(
+    liveWindow.chartRef,
+    "--uiify-candle-scrollbar-size",
+    consumerStyle,
+    ".uiify-candle-chart-scroll-viewport",
+  );
   // Cursor and selection hold absolute indices so they survive scrolling and appends.
   const [cursor, setCursor] = useState<CursorState | null>(null);
   const [selectedCandleIndex, setSelectedCandleIndex] = useState<number | undefined>();
@@ -108,7 +113,7 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
     [data, live],
   );
   const style: InteractiveCandleStyle = {
-    "--candle-scale": String(viewport.scale),
+    "--uiify-candle-scale": String(viewport.scale),
     ...consumerStyle,
   };
 
@@ -183,8 +188,8 @@ export function CandleChartClient<TAs extends ElementType = "figure">(
 
   const liveStyle: InteractiveCandleStyle = {
     ...style,
-    "--candle-content-size": `${contentSize}px`,
-    "--candle-plot-height": `${plotHeight}px`,
+    "--uiify-candle-content-size": `${contentSize}px`,
+    "--uiify-candle-plot-height": `${plotHeight}px`,
     ...consumerStyle,
   };
   const chartProps = {

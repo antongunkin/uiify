@@ -50,10 +50,16 @@ describe("Toast server shell", () => {
     expect(screen.getByText("Saved")).toBeTruthy();
     expect(screen.getByText("Profile updated")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Undo" })).toBeTruthy();
-    expect(screen.getByText("Saved").getAttribute("data-part")).toBe("title");
-    expect(screen.getByText("Profile updated").getAttribute("data-part")).toBe("description");
-    expect(screen.getByRole("button", { name: "Undo" }).getAttribute("data-part")).toBe("action");
-    expect(screen.getByRole("button", { name: "Close" }).getAttribute("data-part")).toBe("close");
+    expect(screen.getByText("Saved").classList.contains("uiify-toast-title")).toBe(true);
+    expect(screen.getByText("Profile updated").classList.contains("uiify-toast-description")).toBe(
+      true,
+    );
+    expect(
+      screen.getByRole("button", { name: "Undo" }).classList.contains("uiify-toast-action"),
+    ).toBe(true);
+    expect(
+      screen.getByRole("button", { name: "Close" }).classList.contains("uiify-toast-close"),
+    ).toBe(true);
     expect(document.querySelector("[aria-live='polite']")).toBeNull();
     expect(document.querySelector("[aria-live='assertive']")).toBeNull();
   });
@@ -111,9 +117,11 @@ describe("Toast server shell", () => {
     );
 
     expect(screen.getByTestId("static-item").getAttribute("data-part")).toBe("consumer-override");
-    expect(screen.getByTestId("static-item").className).toBe("static-item");
+    expect(screen.getByTestId("static-item").className).toContain("static-item");
     expect(screen.getByTestId("static-item").getAttribute("style")).toContain("order: 2");
-    expect(screen.getByTestId("static-title").className).toBe("static-title-common static-title");
+    expect(screen.getByTestId("static-title").className).toContain(
+      "static-title-common static-title",
+    );
     expect(screen.getByTestId("static-description")).toBeTruthy();
     expect(screen.getByTestId("static-action")).toBeTruthy();
     expect(screen.getByTestId("static-close")).toBeTruthy();

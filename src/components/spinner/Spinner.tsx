@@ -1,6 +1,5 @@
 import type { ElementType, ReactElement } from "react";
-import { useRenderElement } from "@gunkin/uiify/core/render";
-import type { PolymorphicProps } from "@gunkin/uiify/core/render";
+import { cn, useRenderElement, type PolymorphicProps } from "@gunkin/uiify/core/render";
 import type { SpinnerLabels, SpinnerOwnProps, SpinnerProps } from "./types.js";
 
 const DEFAULT_SPINNER_LABELS: SpinnerLabels = { loading: "Loading" };
@@ -41,14 +40,20 @@ export function Spinner<TAs extends ElementType = "div">(
       "data-delay": delay > 0 ? `${delay}ms` : undefined,
       "data-size": size,
       "data-state": visible ? "visible" : "delayed",
-      "data-uiify-spinner": "",
       "data-value": percent,
       role: determinate ? "progressbar" : "status",
       ...consumerProps,
+      className: cn(
+        "uiify-spinner",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
       children: (
         <>
           {showLabel ? (
-            <span data-part="label" {...slotProps?.label}>
+            <span
+              {...slotProps?.label}
+              className={cn("uiify-spinner-label", slotProps?.label?.className)}
+            >
               {resolvedLabel}
             </span>
           ) : null}

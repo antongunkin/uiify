@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement, RefCallback } from "react";
+import { useEventCallback } from "@gunkin/uiify/hooks";
 
 export type PresenceState = "open" | "closing" | "closed";
 
@@ -21,12 +22,16 @@ export function Presence({ children, forceMount = false, present }: PresenceProp
   const cycleRef = useRef(0);
   const wasPresentRef = useRef(present);
   const [state, setState] = useState<PresenceState>(present ? "open" : "closed");
+  // Reopening interrupts a close in the same render, so a "closing" frame never commits.
+  if (present && state !== "open") setState("open");
+  const setElement = useEventCallback((element: Element | null) => {
+    elementRef.current = element;
+  });
 
   useEffect(() => {
     const cycle = ++cycleRef.current;
     if (present) {
       wasPresentRef.current = true;
-      setState("open");
       return;
     }
     if (!wasPresentRef.current) return;
@@ -54,10 +59,5 @@ export function Presence({ children, forceMount = false, present }: PresenceProp
 
   if (state === "closed" && !forceMount) return null;
 
-  return children({
-    presence: state,
-    ref(element) {
-      elementRef.current = element;
-    },
-  });
+  return children({ presence: state, ref: setElement });
 }

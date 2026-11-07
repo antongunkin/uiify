@@ -7,11 +7,12 @@ import type {
   ReactElement,
   SyntheticEvent,
 } from "react";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useControllableState } from "@gunkin/uiify/hooks";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { resolveDirection } from "@gunkin/uiify/core/text-direction";
+import { cn } from "../../../core/class-names.js";
 import { mergeRepeatedSlotProps, resolveRepeatedSlotProps } from "../../../core/slot-props.js";
 
 import { getSliderStops, snapSliderToStops } from "../slider-values.js";
@@ -21,6 +22,10 @@ import type {
   SliderClientValue,
   SliderMark,
 } from "../types.js";
+
+const subscribeToNothing = () => () => {};
+const isClient = () => true;
+const isServer = () => false;
 
 const DEFAULT_SLIDER_LABELS = {
   minimum: "Minimum value",
@@ -42,21 +47,45 @@ function normalizeValue(value: SliderClientValue, min: number, max: number): Sli
   return first <= second ? [first, second] : [second, first];
 }
 
+function applyValueGap(
+  value: SliderClientValue,
+  min: number,
+  max: number,
+  gap: number,
+): SliderClientValue {
+  if (typeof value === "number" || gap <= 0) return value;
+
+  let [lower, upper] = value;
+  if (upper - lower >= gap) return value;
+
+  lower = Math.max(min, upper - gap);
+  if (upper - lower < gap) upper = Math.min(max, lower + gap);
+  return [lower, upper];
+}
+
 function normalizeSelection(
   value: SliderClientValue,
   min: number,
   max: number,
   step: number | null,
   stops: readonly number[],
+  gap: number,
 ): SliderClientValue {
   const normalized = normalizeValue(value, min, max);
-  if (step !== null) return normalized;
+  const safeGap = Math.min(gap, max - min);
+  if (step !== null) return applyValueGap(normalized, min, max, safeGap);
   if (typeof normalized === "number") return snapSliderToStops(normalized, stops);
 
-  const lowerStops = stops.filter((stop) => stop <= normalized[1]);
-  const lower = snapSliderToStops(normalized[0], lowerStops);
-  const upperStops = stops.filter((stop) => stop >= lower);
-  return [lower, snapSliderToStops(normalized[1], upperStops)];
+  const lowerStops = stops.filter((stop) => stop <= normalized[1] - safeGap);
+  const lower = snapSliderToStops(normalized[0], lowerStops.length > 0 ? lowerStops : [stops[0]!]);
+  const upperStops = stops.filter((stop) => stop >= lower + safeGap);
+  return [
+    lower,
+    snapSliderToStops(
+      normalized[1],
+      upperStops.length > 0 ? upperStops : [stops[stops.length - 1]!],
+    ),
+  ];
 }
 
 function position(value: number, min: number, max: number): number {
@@ -96,30 +125,33 @@ export function SliderClient<TAs extends ElementType = "div">(
     min = 0,
     max = 100,
     step = 1,
+    minStepsBetweenValues = 0,
     disabled = false,
     orientation = "horizontal",
     marks = [],
     labels,
     slotProps,
     thumbLabels,
+    className,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
     ...consumerProps
   } = props as SliderClientProps<"div">;
 
   const stops = getSliderStops(min, max, marks);
-  const initialValue = normalizeSelection(defaultValue ?? min, min, max, step, stops);
+  const gap = Math.min(Math.max(0, minStepsBetweenValues), Math.max(0, max - min));
+  const initialValue = normalizeSelection(defaultValue ?? min, min, max, step, stops, gap);
   const safeControlledValue =
     controlledValue === undefined
       ? undefined
-      : normalizeSelection(controlledValue, min, max, step, stops);
+      : normalizeSelection(controlledValue, min, max, step, stops, gap);
   const [value, setValue] = useControllableState<SliderClientValue>({
     defaultValue: initialValue,
     onChange: onValueChange,
     value: safeControlledValue,
   });
-  const [enhanced, setEnhanced] = useState(false);
-  useEffect(() => setEnhanced(true), []);
+  // False for SSR and the hydration render, so both markups match; true once the client owns it.
+  const enhanced = useSyncExternalStore(subscribeToNothing, isClient, isServer);
 
   const normalizedValue = normalizeValue(value, min, max);
   const values: readonly number[] =
@@ -152,14 +184,14 @@ export function SliderClient<TAs extends ElementType = "div">(
       return;
     }
 
-    const lower = index === 0 ? min : values[0]!;
-    const upper = index === 0 ? values[1]! : max;
+    const lower = index === 0 ? min : values[0]! + gap;
+    const upper = index === 0 ? values[1]! - gap : max;
     const availableStops = stops.filter((stop) => stop >= lower && stop <= upper);
     const snapped = step === null ? snapSliderToStops(proposed, availableStops) : proposed;
     const nextValue =
       index === 0
-        ? ([Math.min(snapped, values[1]!), values[1]!] as const)
-        : ([values[0]!, Math.max(snapped, values[0]!)] as const);
+        ? ([Math.min(snapped, upper), values[1]!] as const)
+        : ([values[0]!, Math.max(snapped, lower)] as const);
     setValue(nextValue);
   };
 
@@ -186,11 +218,11 @@ export function SliderClient<TAs extends ElementType = "div">(
     event.preventDefault();
     const currentValue = values[index]!;
     const availableStops = isRange
-      ? stops.filter((stop) => (index === 0 ? stop <= values[1]! : stop >= values[0]!))
+      ? stops.filter((stop) => (index === 0 ? stop <= values[1]! - gap : stop >= values[0]! + gap))
       : stops;
     const currentIndex = availableStops.indexOf(currentValue);
     const nextValue = availableStops[currentIndex + direction];
-    if (nextValue !== undefined) setThumbValue(index, nextValue);
+    if (currentIndex !== -1 && nextValue !== undefined) setThumbValue(index, nextValue);
   };
 
   const thumbKeys = isRange ? (["minimum", "maximum"] as const) : (["value"] as const);
@@ -215,11 +247,11 @@ export function SliderClient<TAs extends ElementType = "div">(
         aria-label={inputLabel}
         aria-labelledby={inputLabelledBy}
         aria-orientation={orientation}
-        data-part="thumb"
         data-state={String(currentValue)}
         data-orientation={orientation}
         data-disabled={disabled ? "" : undefined}
         {...inputProps}
+        className={cn("uiify-slider-client-thumb uiify-slider-thumb", inputProps.className)}
         onChange={composeEventHandlers(inputProps.onChange, (event) => handleChange(index, event))}
         onKeyDown={composeEventHandlers(inputProps.onKeyDown, (event) =>
           handleKeyDown(index, event),
@@ -235,26 +267,38 @@ export function SliderClient<TAs extends ElementType = "div">(
       role: isRange ? "group" : undefined,
       "aria-label": isRange ? ariaLabel : undefined,
       "aria-labelledby": isRange ? ariaLabelledBy : undefined,
-      "data-uiify-slider-client": "",
-      "data-part": "root",
       "data-range": isRange ? "" : undefined,
       "data-state": isRange ? "range" : String(values[0]),
       "data-orientation": orientation,
       "data-disabled": disabled ? "" : undefined,
       "data-enhanced": enhanced ? "" : undefined,
       ...consumerProps,
+      className: cn("uiify-slider-client", className),
       style: rootStyle,
       children: (
         <>
-          <div data-part="track" aria-hidden="true" {...slotProps?.track}>
-            <span data-part="range" {...slotProps?.range} />
+          <div
+            aria-hidden="true"
+            {...slotProps?.track}
+            className={cn(
+              "uiify-slider-client-track uiify-slider-track",
+              slotProps?.track?.className,
+            )}
+          >
+            <span
+              {...slotProps?.range}
+              className={cn(
+                "uiify-slider-client-range uiify-slider-range",
+                slotProps?.range?.className,
+              )}
+            />
             {visibleMarks.map((mark, index) => {
               const markProps = resolveMarkSlotProps(slotProps?.mark, mark.value, index);
               return (
                 <span
                   key={index}
-                  data-part="mark"
                   {...markProps}
+                  className={cn("uiify-slider-client-mark uiify-slider-mark", markProps.className)}
                   style={
                     {
                       "--uiify-slider-position": String(position(mark.value, min, max)) + "%",
@@ -274,8 +318,11 @@ export function SliderClient<TAs extends ElementType = "div">(
               return (
                 <span
                   key={index}
-                  data-part="visual-thumb"
                   {...thumbProps}
+                  className={cn(
+                    "uiify-slider-client-visual-thumb uiify-slider-visual-thumb",
+                    thumbProps.className,
+                  )}
                   style={{ ...style, ...thumbProps.style }}
                 />
               );

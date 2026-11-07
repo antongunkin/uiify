@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Badge } from "./Badge.js";
 
 describe("Badge", () => {
@@ -7,11 +8,12 @@ describe("Badge", () => {
     render(<Badge>Ready</Badge>);
     const badge = screen.getByText("Ready");
     expect(badge.tagName).toBe("SPAN");
-    expect(badge.getAttribute("data-uiify-badge")).toBe("");
+    expect(badge.classList.contains("uiify-badge")).toBe(true);
+    expect(badge.hasAttribute("data-uiify-badge")).toBe(false);
     expect(badge.hasAttribute("role")).toBe(false);
   });
 
-  it("writes only supplied variant and size, and owns its marker", () => {
+  it("writes supplied variant and size and forwards consumer data", () => {
     render(
       <Badge variant="success" size="sm" data-uiify-badge="changed" data-testid="badge">
         Ready
@@ -20,7 +22,19 @@ describe("Badge", () => {
     const badge = screen.getByTestId("badge");
     expect(badge.getAttribute("data-variant")).toBe("success");
     expect(badge.getAttribute("data-size")).toBe("sm");
-    expect(badge.getAttribute("data-uiify-badge")).toBe("");
+    expect(badge.getAttribute("data-uiify-badge")).toBe("changed");
+  });
+
+  it("variant default renders like no variant", () => {
+    expect(renderToStaticMarkup(<Badge variant="default">Ready</Badge>)).toBe(
+      renderToStaticMarkup(<Badge>Ready</Badge>),
+    );
+  });
+
+  it("Badge outline sets data-variant=outline", () => {
+    expect(renderToStaticMarkup(<Badge variant="outline">Ready</Badge>)).toContain(
+      'data-variant="outline"',
+    );
   });
 
   it("keeps native props and supports a polymorphic root", () => {
@@ -43,7 +57,7 @@ describe("Badge", () => {
     );
     const badge = screen.getByTestId("badge");
     expect(ref.current).toBe(badge);
-    expect(badge.className).toBe("status-label");
+    expect(badge.className).toBe("uiify-badge status-label");
     expect(badge.style.color).toBe("red");
   });
 });

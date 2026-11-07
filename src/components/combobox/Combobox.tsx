@@ -43,7 +43,6 @@ import { ComboboxProvider, useComboboxContext } from "./combobox-context.js";
 import { ComboboxFormControl } from "./ComboboxFormControl.js";
 import type {
   ComboboxFormState,
-  ComboboxActiveStore,
   ComboboxControlProps,
   ComboboxItemData,
   ComboboxContextValue,
@@ -153,9 +152,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
   const validateValue = configuredValidateValue;
 
   const listboxId = useId();
-  const activeStoreRef = useRef<ComboboxActiveStore | null>(null);
-  activeStoreRef.current ??= createComboboxActiveStore();
-  const activeStore = activeStoreRef.current;
+  const [activeStore] = useState(createComboboxActiveStore);
   const inputRef = useRef<HTMLElement | null>(null);
   const isDisabled = useCallback(
     () => disabled || inputRef.current?.matches(":disabled") === true,
@@ -262,10 +259,13 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
   const showPopover = popover.openPopover;
   const anchor = useAnchorPosition();
 
-  const setInputElement = useCallback((element: HTMLElement | null) => {
-    inputRef.current = element;
-    setInputNode(element);
-  }, []);
+  const setInputElement = useCallback(
+    (element: HTMLElement | null) => {
+      inputRef.current = element;
+      setInputNode(element);
+    },
+    [setInputNode],
+  );
 
   const openPopover = useCallback(() => {
     if (!isDisabled()) showPopover();
@@ -279,7 +279,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       }
       onInputValueChange?.(next);
     },
-    [controlledInputValue, onInputValueChange],
+    [controlledInputValue, onInputValueChange, setInternalInputValue, setQueryDirty],
   );
 
   const setCommittedInputValue = useCallback(
@@ -290,7 +290,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       }
       onInputValueChange?.(next);
     },
-    [controlledInputValue, onInputValueChange],
+    [controlledInputValue, onInputValueChange, setInternalInputValue, setQueryDirty],
   );
 
   const reset = useCallback(() => {
@@ -317,6 +317,8 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     popover,
     selectedValues,
     setCommittedInputValue,
+    setQueryDirty,
+    setResetRevision,
     setSelectedValues,
     setSingleValue,
     singleValue,
@@ -411,7 +413,13 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
         return;
       }
       setSingleValue(item.value);
-      if (controlledValue === undefined || singleValue === item.value) {
+      // A controlled value waits for the parent's new `value` (the layout effect copies its label);
+      // a controlled input text has no such effect, so its owner receives the label now.
+      if (
+        controlledValue === undefined ||
+        controlledInputValue !== undefined ||
+        singleValue === item.value
+      ) {
         setCommittedInputValue(item.label);
       }
       activeStore.setActiveId(null);
@@ -419,6 +427,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     },
     [
       activeStore,
+      controlledInputValue,
       controlledValue,
       isDisabled,
       multiple,
@@ -446,7 +455,11 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
       if (!allowCustomValue || !(validateValue?.(normalizedValue) ?? true)) return false;
 
       setSingleValue(normalizedValue);
-      if (controlledValue === undefined || singleValue === normalizedValue) {
+      if (
+        controlledValue === undefined ||
+        controlledInputValue !== undefined ||
+        singleValue === normalizedValue
+      ) {
         setCommittedInputValue(normalizedValue);
         activeStore.setActiveId(null);
         popover.close();
@@ -456,6 +469,7 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
     [
       activeStore,
       allowCustomValue,
+      controlledInputValue,
       controlledValue,
       isDisabled,
       items,
@@ -561,11 +575,10 @@ export function ComboboxRoot(props: ComboboxRootProps): ReactElement | null {
 
   return (
     <div
-      data-uiify-combobox=""
       {...(size !== undefined ? { "data-size": size } : {})}
       {...consumerProps}
       id={id}
-      className={cn("ui-cb", className)}
+      className={cn("uiify-combobox", className)}
     >
       <CollectionProvider>
         <ComboboxProvider value={contextValue}>{children}</ComboboxProvider>
@@ -592,9 +605,9 @@ export function ComboboxControl<TAs extends ElementType = "div">(
     defaultTag: "div",
     props: {
       ...anchorProps,
-      "data-part": "control",
+
       ...consumerProps,
-      className: cn("ui-cb-control", className),
+      className: cn("uiify-combobox-control", className),
       children,
     },
     render,
@@ -615,20 +628,14 @@ function ComboboxTagsMultiple<TAs extends ElementType = "div">(
     const tagProps = resolveRepeatedSlotProps(slotProps?.tag, value);
     const removeProps = resolveRepeatedSlotProps(slotProps?.remove, value);
     return (
-      <span
-        data-part="tag"
-        {...tagProps}
-        className={cn("ui-cb-tag", tagProps.className)}
-        key={value}
-      >
+      <span {...tagProps} className={cn("uiify-combobox-tag", tagProps.className)} key={value}>
         {label}
         <button
           aria-label={`Remove ${label}`}
           disabled={disabled}
-          data-part="tag-remove"
           type="button"
           {...removeProps}
-          className={cn("ui-cb-remove", removeProps.className)}
+          className={cn("uiify-combobox-tag-remove", removeProps.className)}
           onMouseDown={composeEventHandlers(removeProps.onMouseDown, (event) =>
             event.preventDefault(),
           )}
@@ -644,9 +651,8 @@ function ComboboxTagsMultiple<TAs extends ElementType = "div">(
     as,
     defaultTag: "div",
     props: {
-      "data-part": "tags",
       ...consumerProps,
-      className: cn("ui-cb-tags", className),
+      className: cn("uiify-combobox-tags", className),
       children: (
         <>
           {tags}
@@ -796,8 +802,8 @@ export function ComboboxInput<TAs extends ElementType = "input">(
       "aria-controls": listboxId,
       "aria-expanded": openState,
       ...(validActiveId ? { "aria-activedescendant": validActiveId } : {}),
-      "data-part": "input",
-      className: cn("ui-cb-input", className),
+
+      className: cn("uiify-combobox-input", className),
       disabled,
       value: inputValue,
       ...withoutRef,
@@ -839,8 +845,8 @@ export function ComboboxTrigger<TAs extends ElementType = "button">(
       "aria-haspopup": "listbox",
       ...(nativeButton ? { disabled } : {}),
       ...(nativeButton ? { type: "button" } : {}),
-      className: cn("ui-cb-trigger", className),
-      "data-part": "trigger",
+      className: cn("uiify-combobox-trigger", className),
+
       ...consumerProps,
       children,
       onClick: composeEventHandlers(consumerOnClick, handleClick),
@@ -891,12 +897,11 @@ export function ComboboxContent(props: ComboboxContentOwnProps): ReactElement | 
       aria-multiselectable={multiple ? true : undefined}
       aria-busy={loading ? true : undefined}
       data-align={align}
-      data-part="content"
       data-side={side}
       data-state={openState ? "open" : "closed"}
       {...domProps}
       ref={mergedRef}
-      className={cn("ui-cb-content", className)}
+      className={cn("uiify-combobox-content", className)}
     >
       {children(filteredItems)}
     </DismissableLayer>
@@ -954,10 +959,10 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
       "data-disabled": item.disabled ? "" : undefined,
       "data-highlighted": active ? "" : undefined,
       "data-selected": selected ? "" : undefined,
-      "data-part": "item",
+
       ...consumerProps,
       ref,
-      className: cn("ui-cb-item", className),
+      className: cn("uiify-combobox-item", className),
       children: children === undefined ? item.label : children,
       onMouseDown: composeEventHandlers(consumerOnMouseDown, (event) => event.preventDefault()),
       onClick: composeEventHandlers(consumerOnClick, () => {
@@ -971,7 +976,8 @@ export function ComboboxItem(props: ComboboxItemOwnProps): ReactElement | null {
 export function ComboboxGroup(props: ComboboxGroupOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   return (
-    <div role="group" data-part="group" {...consumerProps} className={cn("ui-cb-group", className)}>
+    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- This groups options inside an ARIA listbox.
+    <div role="group" {...consumerProps} className={cn("uiify-combobox-group", className)}>
       {children}
     </div>
   );
@@ -981,7 +987,7 @@ ComboboxGroup.displayName = "ComboboxGroup";
 export function ComboboxGroupLabel(props: ComboboxGroupLabelOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   return (
-    <div data-part="group-label" {...consumerProps} className={cn("ui-cb-label", className)}>
+    <div {...consumerProps} className={cn("uiify-combobox-group-label", className)}>
       {children}
     </div>
   );
@@ -995,9 +1001,9 @@ export function ComboboxEmpty(props: ComboboxEmptyOwnProps): ReactElement | null
     defaultTag: "div",
     props: {
       role: "presentation",
-      "data-part": "empty",
+
       ...consumerProps,
-      className: cn("ui-cb-empty", className),
+      className: cn("uiify-combobox-empty", className),
       children,
     },
     state: {},
@@ -1013,9 +1019,9 @@ export function ComboboxStatus(props: ComboboxStatusProps): ReactElement | null 
       role: "status",
       "aria-live": "polite",
       "aria-atomic": true,
-      "data-part": "status",
+
       ...consumerProps,
-      className: cn("ui-cb-status", className),
+      className: cn("uiify-combobox-status", className),
       children,
     },
     state: {},

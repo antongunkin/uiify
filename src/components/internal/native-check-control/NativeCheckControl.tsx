@@ -1,12 +1,14 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
-import { useMergedRefs } from "@gunkin/uiify/hooks";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
+import { cn } from "@gunkin/uiify/core/render";
 import { mergeRepeatedSlotProps } from "../../../core/slot-props.js";
 import type { NativeCheckControlProps } from "./types.js";
 
+/**
+ * Hook-free native checkbox base shared by the Tier 0 `Checkbox`, the client wrapper and
+ * Table selection. It owns boolean `checked`/`defaultChecked` and the checked/unchecked
+ * `data-state`; the mixed state is layered on by `NativeCheckControlClient` after hydration.
+ */
 export function NativeCheckControl(props: NativeCheckControlProps): ReactElement {
   const {
     checked,
@@ -20,60 +22,59 @@ export function NativeCheckControl(props: NativeCheckControlProps): ReactElement
     slotProps,
     value,
     "aria-label": ariaLabel,
+    ...nativeProps
   } = props;
   const isControlled = checked !== undefined;
-  const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked ?? false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const inputProps = slotProps?.input ?? {};
   const labelProps = mergeRepeatedSlotProps({ className }, slotProps?.label);
-  const mergedInputRef = useMergedRefs(inputProps.ref, inputRef);
-  const checkedValue = isControlled ? checked === true : uncontrolledChecked;
-
-  useEffect(() => {
-    if (inputRef.current) inputRef.current.indeterminate = checked === "indeterminate";
-  }, [checked]);
+  const checkedValue = checked === true;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (checked === "indeterminate" && inputRef.current) {
-      inputRef.current.indeterminate = true;
-    }
-    if (!isControlled) setUncontrolledChecked(event.currentTarget.checked);
     onCheckedChange?.(event.currentTarget.checked);
   };
+  // Order: top-level onChange, then slot onChange, then the library handler.
+  // No handler at all stays undefined so Server Components never pass a function prop.
+  type ChangeHandler = (event: ChangeEvent<HTMLInputElement>) => void;
+  let handleInputChange: ChangeHandler | undefined = onCheckedChange ? handleChange : undefined;
+  for (const consumer of [inputProps.onChange, nativeProps.onChange]) {
+    if (!consumer) continue;
+    handleInputChange = handleInputChange
+      ? composeEventHandlers(consumer, handleInputChange)
+      : consumer;
+  }
 
   const input = (
     <input
-      aria-checked={checked === "indeterminate" ? "mixed" : undefined}
       aria-label={label === undefined ? ariaLabel : undefined}
       aria-labelledby={label !== undefined ? `${id}-label` : undefined}
       checked={isControlled ? checkedValue : undefined}
       data-disabled={disabled ? "" : undefined}
-      data-state={
-        isControlled
-          ? checked === "indeterminate"
-            ? "indeterminate"
-            : checkedValue
-              ? "checked"
-              : "unchecked"
-          : undefined
-      }
+      data-state={isControlled ? (checkedValue ? "checked" : "unchecked") : undefined}
       defaultChecked={!isControlled ? defaultChecked : undefined}
       disabled={disabled || undefined}
       id={id}
       name={name}
       type="checkbox"
       value={value}
-      {...(label === undefined ? { "data-uiify-checkbox": "" } : { "data-part": "control" })}
+      {...nativeProps}
       {...inputProps}
-      onChange={composeEventHandlers(inputProps.onChange, handleChange)}
-      ref={mergedInputRef}
+      className={cn(
+        "uiify-checkbox-control",
+        label === undefined ? className : undefined,
+        inputProps.className,
+      )}
+      onChange={handleInputChange}
     />
   );
 
   return label === undefined ? (
     input
   ) : (
-    <label data-uiify-checkbox="" id={`${id}-label`} {...labelProps}>
+    <label
+      id={`${id}-label`}
+      {...labelProps}
+      className={cn("uiify-checkbox", labelProps.className)}
+    >
       {input}
       {label}
     </label>

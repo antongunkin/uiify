@@ -67,7 +67,7 @@ describe("UiDocument", () => {
       .filter(([, spy]) => spy.mock.calls.length > 0)
       .map(([type]) => type)
       .sort();
-    expect(called).toEqual(["Button", "Select.Item", "Select.Root"]);
+    expect(called).toEqual(["Button", "NativeSelect", "NativeSelectOption"]);
     for (const type of called) expect(spies[type]).toHaveBeenCalledTimes(1);
   });
 
@@ -156,18 +156,11 @@ describe("UiDocument", () => {
     },
   );
 
-  it("never writes a style value from a rejected color or popup id", async () => {
+  it("never writes a style value from a rejected color or id", async () => {
     const injected = "#fff;x;position:fixed;inset:0;z-index:2147483647;background:url(x)";
     for (const node of [
       { type: "ColorPicker", props: { label: "Brand", defaultValue: injected } },
-      {
-        type: "Popup.Root",
-        props: { id: "p;position:fixed" },
-        children: [
-          { type: "Popup.Trigger", props: {}, children: ["Open"] },
-          { type: "Popup.Content", props: {}, children: ["Body"] },
-        ],
-      },
+      { type: "PopoverContent", props: { id: "p;position:fixed" }, children: ["Body"] },
     ]) {
       const { html, errors } = await renderReportingErrors(node);
       expect(errors[0]).toBeInstanceOf(UiDocumentError);
@@ -178,23 +171,13 @@ describe("UiDocument", () => {
     }
   });
 
-  it("writes an allowed color and popup id into their custom properties", async () => {
+  it("writes an allowed color into its custom property", async () => {
     expect(
       await renderDocumentHtml({
         type: "ColorPicker",
         props: { label: "Brand", defaultValue: "#336699" },
       }),
     ).toContain("--uiify-color-picker-value:#336699");
-    expect(
-      await renderDocumentHtml({
-        type: "Popup.Root",
-        props: { id: "menu-1" },
-        children: [
-          { type: "Popup.Trigger", props: {}, children: ["Open"] },
-          { type: "Popup.Content", props: {}, children: ["Body"] },
-        ],
-      }),
-    ).toContain("--uiify-anchor:--menu-1-anchor");
   });
 
   it("renders the document as validated, whatever happens to the object later", async () => {
@@ -265,7 +248,7 @@ describe("UiDocument", () => {
           key === "id" && reads++ > 0 ? "a;position:fixed" : Reflect.get(target, key),
       },
     );
-    const node = { type: "Popup.Root", props, children: [] };
+    const node = { type: "PopoverContent", props, children: [] };
     const error: unknown = await loadDocument(node).catch((reason: unknown) => reason);
     expect(error).toBeInstanceOf(UiDocumentError);
     expect((error as UiDocumentError).issues[0]?.message).toContain("plain data");

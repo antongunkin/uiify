@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { cn } from "../../core/class-names.js";
 import type {
   ElementType,
   KeyboardEvent,
@@ -9,7 +10,12 @@ import type {
   RefObject,
   SyntheticEvent,
 } from "react";
-import { useControllableState, useMergedRefs } from "@gunkin/uiify/hooks";
+import {
+  useControllableState,
+  useEventCallback,
+  useIsomorphicLayoutEffect,
+  useMergedRefs,
+} from "@gunkin/uiify/hooks";
 import { createPartContext, splitRef } from "@gunkin/uiify/core";
 import { useAnchorPosition } from "@gunkin/uiify/core/anchor-position";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
@@ -93,7 +99,9 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
   // Read by the scheduled close so a timer from a menu that already closed
   // cannot emit onOpenChange(false) over a sibling that opened since.
   const openRef = useRef(surface.open);
-  openRef.current = surface.open;
+  useIsomorphicLayoutEffect(() => {
+    openRef.current = surface.open;
+  });
   const cancelHoverClose = useCallback(() => intent.clearCloseTimer(), [intent]);
   const scheduleHoverClose = useCallback(() => {
     intent.scheduleClose(() => {
@@ -113,7 +121,7 @@ export function DropdownMenuRoot(props: DropdownMenuRootProps): ReactElement | n
     [cancelHoverClose, surface, dir, disabled, loop, scheduleHoverClose],
   );
   return (
-    <div data-uiify-menu="" {...rootProps} className={className}>
+    <div {...rootProps} className={cn("uiify-dropdown-menu", className)}>
       <DropdownMenuProvider value={value}>{children}</DropdownMenuProvider>
     </div>
   );
@@ -144,7 +152,9 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
     setTriggerElement,
     triggerProps,
   } = useDropdownMenuContext("Trigger");
-  hoverEnabledRef.current = openOnHover;
+  useIsomorphicLayoutEffect(() => {
+    hoverEnabledRef.current = openOnHover;
+  }, [hoverEnabledRef, openOnHover]);
   const [consumerRef, withoutRef] = splitRef<HTMLElement, typeof consumerProps>(consumerProps);
   const mergedRef = useMergedRefs(setTriggerElement, consumerRef);
   const nativeButton = !as || as === "button";
@@ -187,14 +197,12 @@ export function DropdownMenuTrigger<TAs extends ElementType = "button">(
     props: {
       ...triggerProps,
       ...anchorProps,
-      ...(nativeButton ? { "data-uiify-button": "" } : {}),
       "aria-haspopup": "menu",
-      "data-part": "trigger",
       "data-state": open ? "open" : "closed",
       "data-disabled": disabled ? "" : undefined,
       disabled: nativeButton && disabled ? true : undefined,
       ...(nativeButton && !triggerProps.type ? { type: "button" } : {}),
-      ...(className ? { className } : {}),
+      className: cn(nativeButton ? "uiify-button" : undefined, "uiify-menu-trigger", className),
 
       ...withoutRef,
       ref: mergedRef,
@@ -254,11 +262,18 @@ export function DropdownMenuContent<TAs extends ElementType = "div">(
       focusTrigger();
     }
   };
+  // The Trigger's `openOnHover` decides at event time, so a later prop change needs no re-render.
+  const handleHoverEnter = useEventCallback(() => {
+    if (hoverEnabledRef.current) cancelHoverClose();
+  });
+  const handleHoverLeave = useEventCallback(() => {
+    if (hoverEnabledRef.current) scheduleHoverClose();
+  });
   const contentProps = {
     ...popupProps,
     ...positionerProps,
     role: "menu",
-    "data-part": "content",
+    className: cn("uiify-menu-content", className),
     "data-align": align,
     "data-side": side,
     "data-state": open ? "open" : "closed",
@@ -267,12 +282,8 @@ export function DropdownMenuContent<TAs extends ElementType = "div">(
     ...withoutRef,
     ref: mergedRef,
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
-    ...(hoverEnabledRef.current
-      ? {
-          onPointerEnter: composeEventHandlers(consumerOnPointerEnter, cancelHoverClose),
-          onPointerLeave: composeEventHandlers(consumerOnPointerLeave, scheduleHoverClose),
-        }
-      : {}),
+    onPointerEnter: composeEventHandlers(consumerOnPointerEnter, handleHoverEnter),
+    onPointerLeave: composeEventHandlers(consumerOnPointerLeave, handleHoverLeave),
     children,
   };
   if (render)
@@ -372,9 +383,9 @@ function MenuItem<TAs extends ElementType>(
   const itemProps = {
     role: roleName,
     "aria-checked": checked,
-    "data-part": roleName === "menuitem" ? "item" : roleName.replace("menuitem", "") + "-item",
+
     "data-state": state,
-    ...(className ? { className } : {}),
+    className: cn("uiify-menu-item", className),
     ...consumerProps,
     onClick: composeEventHandlers(consumerOnClick, activation.select),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, activation.keyDown),
@@ -473,7 +484,12 @@ export function DropdownMenuRadioGroup<TAs extends ElementType = "div">(
         as,
         defaultTag: "div",
         render,
-        props: { role: "group", "data-part": "radio-group", ...consumerProps, children },
+        props: {
+          role: "group",
+          ...consumerProps,
+          className: cn("uiify-menu-radio-group", consumerProps.className),
+          children,
+        },
         state: { value },
       })}
     </RadioProvider>
@@ -512,7 +528,7 @@ function Part<TAs extends ElementType = "span">({
     as,
     defaultTag,
     render,
-    props: { "data-part": part, ...(className ? { className } : {}), ...consumerProps, children },
+    props: { ...consumerProps, className: cn(`uiify-menu-${part}`, className), children },
     state: {},
   });
 }
@@ -609,6 +625,7 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
     as,
     render,
     children,
+    className,
     disabled = false,
     textValue,
     ...consumerProps
@@ -624,7 +641,7 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
       onPointerEnter?: (event: PointerEvent<HTMLElement>) => void;
       onPointerLeave?: (event: PointerEvent<HTMLElement>) => void;
     };
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+  const handleKeyDown = useEventCallback((event: KeyboardEvent<HTMLElement>) => {
     const rtl = resolveDirection(event.currentTarget, root.dir) === "rtl";
     const openKey = rtl ? "ArrowLeft" : "ArrowRight";
     if (event.key === openKey || event.key === "Enter" || event.key === " ") {
@@ -634,26 +651,26 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
       sub.popover.openPopover();
       queueMicrotask(() => focusMenuItem(sub.contentRef.current));
     }
-  };
-  const handlePointerEnter = (event: PointerEvent<HTMLElement>) => {
+  });
+  const handlePointerEnter = useEventCallback((event: PointerEvent<HTMLElement>) => {
     clickedRef.current = false;
     sub.setResolvedSide(
       resolveDirection(event.currentTarget, root.dir) === "rtl" ? "left" : "right",
     );
     sub.popover.openPopover();
-  };
-  const handlePointerLeave = (event: PointerEvent<HTMLElement>) => {
+  });
+  const handlePointerLeave = useEventCallback((event: PointerEvent<HTMLElement>) => {
     if (clickedRef.current) return;
     const nextTarget = event.relatedTarget;
     if (nextTarget instanceof Node && sub.contentRef.current?.contains(nextTarget)) return;
     sub.popover.close();
-  };
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
+  });
+  const handleClick = useEventCallback((event: MouseEvent<HTMLElement>) => {
     clickedRef.current = true;
     if (!sub.open) {
       (sub.popover.triggerProps.onClick as (event: MouseEvent<HTMLElement>) => void)(event);
     }
-  };
+  });
   const triggerProps = {
     ...sub.popover.triggerProps,
     ...sub.anchor.anchorProps,
@@ -661,7 +678,7 @@ export function DropdownMenuSubTrigger<TAs extends ElementType = "button">(
     role: "menuitem",
     "aria-haspopup": "menu" as const,
     "aria-expanded": sub.open,
-    "data-part": "sub-trigger",
+    className: cn("uiify-menu-item", "uiify-menu-sub-trigger", className),
     "data-state": sub.open ? "open" : "closed",
     ...(withoutEvents as object),
     ref: useMergedRefs(sub.triggerRef, consumerRef),
@@ -721,11 +738,11 @@ export function DropdownMenuSubContent<TAs extends ElementType = "div">(
     ...sub.popover.popupProps,
     ...sub.anchor.positionerProps,
     role: "menu",
-    "data-part": "sub-content",
     "data-state": sub.open ? "open" : "closed",
     "data-side": side ?? sub.resolvedSide,
     "data-align": align,
     ...domProps,
+    className: cn("uiify-menu-content", "uiify-menu-sub-content", consumerProps.className),
     ref: useMergedRefs(sub.popover.popupRef, sub.contentRef, consumerRef),
     onKeyDown: composeEventHandlers(consumerOnKeyDown, handleKeyDown),
     onPointerLeave: composeEventHandlers(

@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`preserves default DialogClientContent DOM 1`] = `
+[
+  [
+    "dialog",
+    [
+      "aria-label=Settings",
+      "class=uiify-dialog uiify-dialog-content",
+      "closedby=any",
+      "data-size=lg",
+      "id=settings",
+    ],
+    "Body",
+  ],
+]
+`;

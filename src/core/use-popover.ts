@@ -54,7 +54,9 @@ export function usePopover({
     open: controlledOpen,
   });
   const openRef = useRef(open);
-  openRef.current = open;
+  useIsomorphicLayoutEffect(() => {
+    openRef.current = open;
+  });
   // SSR markup matches the initial open state so pre-hydration toggling works.
   const isNative = useSyncExternalStore(
     () => () => {},

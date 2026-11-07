@@ -14,7 +14,7 @@ Avoid when: The text is a control, a long explanation, or repeats an adjacent he
 Optional `children`: nodes or strings.
 
 - `size` (optional): `"sm" | "md" | "lg"`; allowed: "sm", "md", "lg"
-- `variant` (optional): `"secondary" | "success" | "warning" | "destructive"`; allowed: "secondary", "success", "warning", "destructive"
+- `variant` (optional): `"default" | "secondary" | "outline" | "success" | "warning" | "destructive"`; allowed: "default", "secondary", "outline", "success", "warning", "destructive"
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 - `aria-label` (optional): `string`

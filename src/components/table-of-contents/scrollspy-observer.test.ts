@@ -63,7 +63,7 @@ beforeEach(() => {
   vi.stubGlobal("ResizeObserver", Resize);
   vi.useFakeTimers();
   document.body.innerHTML =
-    '<nav data-uiify-table-of-contents=""><a data-part="link" href="#later">Later</a><a data-part="link" href="#intro">Intro</a></nav><article id="article"><h2 id="intro">Intro</h2><h2 id="later">Later</h2></article>';
+    '<nav class="uiify-table-of-contents"><a class="uiify-table-of-contents-link" href="#later">Later</a><a class="uiify-table-of-contents-link" href="#intro">Intro</a></nav><article id="article"><h2 id="intro">Intro</h2><h2 id="later">Later</h2></article>';
   Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
 });
 afterEach(() => {

@@ -118,7 +118,7 @@ describe("FileUpload", () => {
 
     for (const [testId, className, ref] of parts) {
       const element = screen.getByTestId(testId);
-      expect(element.className).toBe(className);
+      expect(element.className).toContain(className);
       expect(ref.current).toBe(element);
     }
   });
@@ -334,7 +334,12 @@ describe("FileUpload", () => {
   it("owns role/aria-label/data-disabled on Dropzone regardless of consumer override attempts", () => {
     render(
       <ClientFileUpload.Root>
-        <ClientFileUpload.Dropzone role="button" aria-label="Wrong label" data-disabled="nope">
+        <ClientFileUpload.Dropzone
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The dropzone owns its landmark role.
+          role="button"
+          aria-label="Wrong label"
+          data-disabled="nope"
+        >
           Drop here
         </ClientFileUpload.Dropzone>
       </ClientFileUpload.Root>,
@@ -351,7 +356,12 @@ describe("FileUpload", () => {
       <ClientFileUpload.Root>
         <ClientFileUpload.Dropzone>Drop here</ClientFileUpload.Dropzone>
         <ClientFileUpload.List>
-          <ClientFileUpload.Item index={0} role="button" data-name="wrong" />
+          <ClientFileUpload.Item
+            index={0}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The file item owns its listitem role.
+            role="button"
+            data-name="wrong"
+          />
         </ClientFileUpload.List>
       </ClientFileUpload.Root>,
     );

@@ -36,7 +36,7 @@ beforeEach(() => {
   instances.length = 0;
   vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
   document.body.innerHTML =
-    '<section><div data-part="viewport"><div data-part="slide"><section><div data-part="slide"></div></section></div><div data-part="slide"></div><div data-part="slide"></div></div></section>';
+    '<section><div class="uiify-carousel-viewport"><div class="uiify-carousel-slide"><section><div class="uiify-carousel-slide"></div></section></div><div class="uiify-carousel-slide"></div><div class="uiify-carousel-slide"></div></div></section>';
 });
 afterEach(() => {
   vi.unstubAllGlobals();

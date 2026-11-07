@@ -5,7 +5,8 @@ export interface VirtualScrollMeasurementStore {
   readonly setMeasuredHeight: (itemId: string, index: number, height: number) => boolean;
   readonly findStartIndex: (scrollTop: number) => number;
   readonly findEndIndex: (scrollBottom: number) => number;
-  readonly syncItemCount: (count: number) => void;
+  /** Points the store at the current items; offsets rebuild when the count changes. */
+  readonly syncItems: (count: number, itemIdAtIndex: (index: number) => string | undefined) => void;
   readonly rebuild: () => void;
 }
 
@@ -35,7 +36,8 @@ function lowerBound(offsets: readonly number[], value: number): number {
 export function createVirtualScrollMeasurementStore(
   options: CreateVirtualScrollMeasurementStoreOptions,
 ): VirtualScrollMeasurementStore {
-  const { defaultRowHeight, estimateRowHeight, measuredHeights, itemIdAtIndex } = options;
+  const { defaultRowHeight, estimateRowHeight, measuredHeights } = options;
+  let { itemIdAtIndex } = options;
   let itemCount = options.itemCount;
   let offsets = buildOffsets(itemCount);
   let totalSize = offsets[itemCount] ?? 0;
@@ -101,7 +103,8 @@ export function createVirtualScrollMeasurementStore(
       return Math.min(itemCount, lowerBound(offsets, clamped));
     },
 
-    syncItemCount(count: number): void {
+    syncItems(count: number, nextItemIdAtIndex: (index: number) => string | undefined): void {
+      itemIdAtIndex = nextItemIdAtIndex;
       if (count === itemCount) return;
       itemCount = count;
       rebuildOffsets();
