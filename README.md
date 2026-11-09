@@ -253,14 +253,14 @@ await db.pages.save(result.document);
 
 Interactivity is native: links, `GET`/`POST` forms and invoker commands (`commandfor`).
 
-| Export | Use |
-| --- | --- |
-| `UiDocument` | Validates and renders a document; suspends while it loads the parts it uses |
-| `validateDocument` | Returns `{ ok, document }` or `{ ok: false, issues }`; run it before saving |
-| `loadDocument` | Validates a document and loads only the components it uses |
-| `UiDocumentError` | Thrown for an invalid document; carries the same `issues` |
-| `uiDocumentSchema` | JSON Schema to give your own LLM; limits and nesting rules are checked by `validateDocument` only |
-| `Box`, `Grid`, `GridItem`, `Section`, `Stack`, `Heading`, `Text` | The same layout components as `@gunkin/uiify` |
+| Export                                                           | Use                                                                                               |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `UiDocument`                                                     | Validates and renders a document; suspends while it loads the parts it uses                       |
+| `validateDocument`                                               | Returns `{ ok, document }` or `{ ok: false, issues }`; run it before saving                       |
+| `loadDocument`                                                   | Validates a document and loads only the components it uses                                        |
+| `UiDocumentError`                                                | Thrown for an invalid document; carries the same `issues`                                         |
+| `uiDocumentSchema`                                               | JSON Schema to give your own LLM; limits and nesting rules are checked by `validateDocument` only |
+| `Box`, `Grid`, `GridItem`, `Section`, `Stack`, `Heading`, `Text` | The same layout components as `@gunkin/uiify`                                                     |
 
 Types: `UiNodeInput`, `UiDocumentData`, `UiDocumentProps`, `UiValidationIssue` and every part's
 `<Name>Props`. Parts that documents cannot use yet, with reasons, are declared as
