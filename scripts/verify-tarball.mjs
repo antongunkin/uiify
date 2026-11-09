@@ -8,7 +8,17 @@ import { fileURLToPath } from "node:url";
 
 const execFileAsync = promisify(execFile);
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".md", ".mjs", ".ts", ".tsx"]);
+const textExtensions = new Set([
+  ".css",
+  ".d.ts",
+  ".js",
+  ".json",
+  ".map",
+  ".md",
+  ".mjs",
+  ".ts",
+  ".tsx",
+]);
 
 const allowedPath =
   /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|version\.json|scripts\/(?:lint|static|agents-section|check-screens|screens|project-css|sync-agents|project-catalog)\.mjs|references\/(?:(?:agents-rules|claude-rules|editor-lint)\.md|(?:elements|laws|compositions|guides)\/[a-z0-9-]+\.md)))$/;
