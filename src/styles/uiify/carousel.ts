@@ -39,7 +39,7 @@ export const carousel = defineRecipe<Record<string, never>, CarouselPart>("carou
     control:
       "data-[carousel-action=rotation]:col-span-full data-[carousel-action=rotation]:justify-self-start data-[carousel-action=rotation]:mbe-2 data-[carousel-action=previous]:text-2xl data-[carousel-action=next]:text-2xl data-[carousel-action=previous]:leading-none data-[carousel-action=next]:leading-none",
     dots: "col-start-2 justify-self-stretch flex justify-center gap-1",
-    dot: "inline-grid size-10 place-items-center rounded-full bg-transparent text-muted-foreground no-underline transition-colors focus-visible:outline-2 focus-visible:outline-ring outline-offset-2 after:size-2 after:rounded-full after:bg-input aria-[current=true]:after:bg-primary",
+    dot: "inline-grid size-10 place-content-center place-items-center rounded-full bg-transparent text-muted-foreground no-underline transition-colors focus-visible:outline-2 focus-visible:outline-ring outline-offset-2 after:size-2 after:rounded-full after:bg-input aria-[current=true]:after:bg-primary",
     slide: "min-w-0 min-h-0 snap-start snap-always",
     "slide-content":
       "flex min-block-72 aspect-square items-center justify-center border border-border rounded-2xl bg-card text-foreground text-4xl font-semibold leading-none shadow-popover",

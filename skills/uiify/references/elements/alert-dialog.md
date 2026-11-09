@@ -31,7 +31,7 @@ Check name/description, keyboard opening/closing, containment, return and narrow
 ## Common mistake
 
 A red Delete button is not enough: name what will be deleted and what happens after each choice.
-Example: `references/examples/alert-confirmation.md`.
+Example: `node_modules/@gunkin/uiify/agents/examples/states/alert-confirmation.tsx`.
 
 Related laws: references/laws/error-prevention.md, references/laws/accessibility.md
 

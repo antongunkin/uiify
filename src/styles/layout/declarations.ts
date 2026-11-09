@@ -138,21 +138,27 @@ const columns: Record<string, CssDeclarations> = {
     ]),
   ),
 };
+/**
+ * Tailwind's text scale. Layout CSS works without Tailwind too, so each size reads the host's
+ * `--text-*` and falls back to Tailwind's default value.
+ */
+const tailwindTextSizes = {
+  xs: "0.75rem",
+  sm: "0.875rem",
+  base: "1rem",
+  lg: "1.125rem",
+  xl: "1.25rem",
+  "2xl": "1.5rem",
+  "3xl": "1.875rem",
+  "4xl": "2.25rem",
+  "5xl": "3rem",
+  "6xl": "3.75rem",
+} as const satisfies Record<(typeof textSizeValues)[number], string>;
 const typography = {
   size: propertyValues(
     "font-size",
     Object.fromEntries(
-      textSizeValues.map((size) => [
-        size,
-        {
-          xs: "0.75rem",
-          sm: "0.875rem",
-          base: "1rem",
-          lg: "1.125rem",
-          xl: "1.5rem",
-          "2xl": "2rem",
-        }[size],
-      ]),
+      textSizeValues.map((size) => [size, `var(--text-${size}, ${tailwindTextSizes[size]})`]),
     ),
   ),
   weight: propertyValues(
@@ -200,18 +206,16 @@ export const layoutDefaultDeclarations: LayoutDefaultDeclarations = {
     ...defaults,
     "margin-block-start": "0",
     "margin-block-end": "0",
-    "font-size": "1rem",
+    "font-size": "var(--text-base, 1rem)",
     "font-weight": "var(--weight-normal)",
-    color: "var(--foreground)",
     "line-height": "var(--leading-normal)",
   },
   Heading: {
     ...defaults,
     "margin-block-start": "0",
     "margin-block-end": "0",
-    "font-size": "1.5rem",
+    "font-size": "var(--text-2xl, 1.5rem)",
     "font-weight": "var(--weight-semibold)",
-    color: "var(--foreground)",
     "line-height": "var(--leading-tight)",
   },
 };

@@ -18,8 +18,8 @@
   --spacing-control-button: calc(var(--spacing) * 5);
   --spacing-control-button-lg: calc(var(--spacing) * 7);
 
-  /* UIify's own fields stop at 24rem. */
-  --container-field: calc(var(--spacing) * 96);
+  /* Fields fill their container, as under the adapter (owner, 2026-11-09; was 24rem). */
+  --container-field: none;
 
   /* A pill: the theme's own --radius-full primitive (themes/basic.css). */
   --radius-control: var(--radius-full);

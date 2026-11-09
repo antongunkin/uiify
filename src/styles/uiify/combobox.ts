@@ -19,7 +19,7 @@ export const combobox = defineRecipe("combobox", {
     "status",
   ],
   base: {
-    root: "relative w-full max-w-72",
+    root: "relative w-full max-w-field",
     control:
       "flex flex-wrap items-center gap-1 w-full box-border py-1 px-2 border border-input bg-card text-foreground transition-colors",
     tags: "contents",

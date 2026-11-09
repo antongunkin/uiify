@@ -2,7 +2,7 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "2020 B"
+    "limit": "1970 B"
   },
   {
     "name": "enhance",
@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "47920 B",
+    "limit": "46180 B",
     "import": "*"
   },
   {
@@ -78,7 +78,7 @@
   {
     "name": "slider",
     "path": "dist/components/slider.js",
-    "limit": "550 B",
+    "limit": "480 B",
     "import": "*"
   },
   {
@@ -290,13 +290,13 @@
   {
     "name": "header/client",
     "path": "dist/components/header/client.js",
-    "limit": "990 B",
+    "limit": "1010 B",
     "import": "*"
   },
   {
     "name": "header",
     "path": "dist/components/header.js",
-    "limit": "170 B",
+    "limit": "190 B",
     "import": "*"
   },
   {
@@ -374,7 +374,7 @@
   {
     "name": "card",
     "path": "dist/components/card.js",
-    "limit": "360 B",
+    "limit": "390 B",
     "import": "*"
   },
   {

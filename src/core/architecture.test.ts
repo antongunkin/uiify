@@ -97,61 +97,7 @@ describe("package architecture", () => {
     expect(existsSync(join(DIST, "core", "merge-props.js"))).toBe(false);
   });
 
-  // hooks → core → elements → components → blocks → ai. Blocks compose components, so no lower
-  // layer may import a block; a block reaches a component only through its folder index.
-  it("keeps blocks above components", () => {
-    const BLOCKS_SRC = join(SRC, "blocks");
-    const importPath = /(?:\bfrom\s*|\bimport\s*\(?\s*)["']([^"']+)["']/g;
-    const imports = (file: string) =>
-      [...readFileSync(file, "utf8").matchAll(importPath)].map((match) => match[1]!);
-    const below = collectProductionFiles(SRC).filter(
-      (file) =>
-        !file.startsWith(`${BLOCKS_SRC}/`) &&
-        !file.startsWith(`${join(SRC, "ai")}/`) &&
-        file !== join(SRC, "index.ts") &&
-        !/\.stories\.|\/test-utils(?:\/|\.ts)/.test(file),
-    );
-    const upward = below.flatMap((file) =>
-      imports(file)
-        .filter((path) => /(?:^|\/)blocks(?:\/|$)/.test(path))
-        .map((path) => `${file}: ${path}`),
-    );
-    expect(upward).toEqual([]);
-
-    // react, the render helpers, files of the same block, another block's index, a component's index.
-    const allowed = [
-      /^react$/,
-      /^@gunkin\/uiify\/core\/render$/,
-      /^\.\/[\w.-]+\.js$/,
-      /^\.\/[\w-]+\/index\.js$/,
-      /^\.\.\/[\w-]+\/index\.js$/,
-      /^\.\.\/\.\.\/components\/[\w-]+\/index\.js$/,
-    ];
-    const blockFiles = existsSync(BLOCKS_SRC) ? collectProductionFiles(BLOCKS_SRC) : [];
-    expect(blockFiles.length).toBeGreaterThan(0);
-    const offenders = blockFiles.flatMap((file) =>
-      imports(file)
-        .filter((path) => !allowed.some((pattern) => pattern.test(path)))
-        .map((path) => `${file}: ${path}`),
-    );
-    expect(offenders).toEqual([]);
-  });
-
-  // Blocks are Tier 0: no React hooks (useRenderElement is a render helper), no client directive.
-  it("keeps blocks Tier 0", () => {
-    const BLOCKS_SRC = join(SRC, "blocks");
-    const offenders = collectProductionFiles(BLOCKS_SRC).flatMap((file) => {
-      const source = readFileSync(file, "utf8");
-      const hooks = [...source.matchAll(/\b(use(?!RenderElement\b)[A-Z]\w*)\s*\(/g)].map(
-        (m) => m[1],
-      );
-      const client = /^\s*["']use client["']/m.test(source) ? ["use client"] : [];
-      return [...hooks, ...client].map((found) => `${file}: ${found}`);
-    });
-    expect(offenders).toEqual([]);
-  });
-
-  // `ai` is the top layer (hooks → core → elements → components → blocks → ai): nothing outside
+  // `ai` is the top layer (hooks → core → elements → components → ai): nothing outside
   // src/ai/ may import it. This one rule reads all of src/, not only src/core/. The other half of
   // the boundary (ai reaches components only through their public entries) is ai/boundary.test.ts.
   it("keeps every layer below ai free of ai imports", () => {

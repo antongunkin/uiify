@@ -2557,6 +2557,7 @@ const schema19 = {
       type: "object",
       properties: {
         size: { enum: ["sm", "default"] },
+        variant: { enum: ["default", "highlight"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2881,6 +2882,7 @@ const schema19 = {
       type: "object",
       properties: {
         placement: { enum: ["sticky", "static"] },
+        tone: { enum: ["default", "primary"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -4159,7 +4161,9 @@ const schema19 = {
     "attribute.layout-value.15": {
       enum: ["auto", "start", "center", "end", "stretch", "baseline"],
     },
-    "attribute.layout-value.16": { enum: ["xs", "sm", "base", "lg", "xl", "2xl"] },
+    "attribute.layout-value.16": {
+      enum: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
+    },
     "attribute.layout-value.17": { enum: ["normal", "medium", "semibold"] },
     "attribute.layout-value.18": { enum: ["default", "muted", "primary", "danger"] },
     "attribute.layout-value.19": { enum: ["normal", "tight"] },
@@ -12820,6 +12824,7 @@ const schema76 = {
   type: "object",
   properties: {
     size: { enum: ["sm", "default"] },
+    variant: { enum: ["default", "highlight"] },
     id: { $ref: "#/$defs/attribute.id" },
     title: { $ref: "#/$defs/attribute.title" },
     "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -12845,18 +12850,7 @@ function validate254(
   }
   if (data && typeof data == "object" && !Array.isArray(data)) {
     for (const key0 in data) {
-      if (
-        !(
-          key0 === "size" ||
-          key0 === "id" ||
-          key0 === "title" ||
-          key0 === "aria-label" ||
-          key0 === "aria-labelledby" ||
-          key0 === "aria-describedby" ||
-          key0 === "hidden" ||
-          key0 === "dir"
-        )
-      ) {
+      if (!func1.call(schema76.properties, key0)) {
         const err0 = {
           instancePath,
           schemaPath: "#/additionalProperties",
@@ -12886,6 +12880,24 @@ function validate254(
           vErrors = [err1];
         } else {
           vErrors.push(err1);
+        }
+        errors++;
+      }
+    }
+    if (data.variant !== undefined) {
+      let data1 = data.variant;
+      if (!(data1 === "default" || data1 === "highlight")) {
+        const err2 = {
+          instancePath: instancePath + "/variant",
+          schemaPath: "#/properties/variant/enum",
+          keyword: "enum",
+          params: { allowedValues: schema76.properties.variant.enum },
+          message: "must be equal to one of the allowed values",
+        };
+        if (vErrors === null) {
+          vErrors = [err2];
+        } else {
+          vErrors.push(err2);
         }
         errors++;
       }
@@ -12989,7 +13001,7 @@ function validate254(
       }
     }
   } else {
-    const err2 = {
+    const err3 = {
       instancePath,
       schemaPath: "#/type",
       keyword: "type",
@@ -12997,9 +13009,9 @@ function validate254(
       message: "must be object",
     };
     if (vErrors === null) {
-      vErrors = [err2];
+      vErrors = [err3];
     } else {
-      vErrors.push(err2);
+      vErrors.push(err3);
     }
     errors++;
   }
@@ -27869,6 +27881,7 @@ const schema159 = {
   type: "object",
   properties: {
     placement: { enum: ["sticky", "static"] },
+    tone: { enum: ["default", "primary"] },
     id: { $ref: "#/$defs/attribute.id" },
     title: { $ref: "#/$defs/attribute.title" },
     "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -27894,18 +27907,7 @@ function validate569(
   }
   if (data && typeof data == "object" && !Array.isArray(data)) {
     for (const key0 in data) {
-      if (
-        !(
-          key0 === "placement" ||
-          key0 === "id" ||
-          key0 === "title" ||
-          key0 === "aria-label" ||
-          key0 === "aria-labelledby" ||
-          key0 === "aria-describedby" ||
-          key0 === "hidden" ||
-          key0 === "dir"
-        )
-      ) {
+      if (!func1.call(schema159.properties, key0)) {
         const err0 = {
           instancePath,
           schemaPath: "#/additionalProperties",
@@ -27935,6 +27937,24 @@ function validate569(
           vErrors = [err1];
         } else {
           vErrors.push(err1);
+        }
+        errors++;
+      }
+    }
+    if (data.tone !== undefined) {
+      let data1 = data.tone;
+      if (!(data1 === "default" || data1 === "primary")) {
+        const err2 = {
+          instancePath: instancePath + "/tone",
+          schemaPath: "#/properties/tone/enum",
+          keyword: "enum",
+          params: { allowedValues: schema159.properties.tone.enum },
+          message: "must be equal to one of the allowed values",
+        };
+        if (vErrors === null) {
+          vErrors = [err2];
+        } else {
+          vErrors.push(err2);
         }
         errors++;
       }
@@ -28038,7 +28058,7 @@ function validate569(
       }
     }
   } else {
-    const err2 = {
+    const err3 = {
       instancePath,
       schemaPath: "#/type",
       keyword: "type",
@@ -28046,9 +28066,9 @@ function validate569(
       message: "must be object",
     };
     if (vErrors === null) {
-      vErrors = [err2];
+      vErrors = [err3];
     } else {
-      vErrors.push(err2);
+      vErrors.push(err3);
     }
     errors++;
   }
@@ -53348,7 +53368,7 @@ const schema295 = {
     },
   ],
 };
-const schema296 = { enum: ["xs", "sm", "base", "lg", "xl", "2xl"] };
+const schema296 = { enum: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"] };
 function validate1259(
   data,
   { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {},
@@ -53369,7 +53389,11 @@ function validate1259(
       data === "base" ||
       data === "lg" ||
       data === "xl" ||
-      data === "2xl"
+      data === "2xl" ||
+      data === "3xl" ||
+      data === "4xl" ||
+      data === "5xl" ||
+      data === "6xl"
     )
   ) {
     const err0 = {

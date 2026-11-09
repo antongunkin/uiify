@@ -23,7 +23,7 @@ export const button = defineRecipe<{ variant: ButtonVariant; size: ButtonSize }>
   base: [
     "relative isolate inline-flex items-center justify-center gap-1.5 min-h-control-md min-w-control-md py-0 px-control-button",
     "border border-transparent rounded-control bg-clip-padding text-control leading-6 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-    "no-underline cursor-pointer transition-colors unavailable:opacity-50 unavailable:cursor-not-allowed",
+    "no-underline whitespace-nowrap shrink-0 cursor-pointer transition-colors unavailable:opacity-50 unavailable:cursor-not-allowed",
     "not-data-variant:bg-primary-fill not-data-variant:text-primary-fill-foreground",
     "not-data-variant:hover-fine:available:bg-primary-fill/90 not-data-variant:active:available:bg-primary-fill/80",
     selected.replaceAll("selected:", "not-data-variant:selected:"),
@@ -35,7 +35,8 @@ export const button = defineRecipe<{ variant: ButtonVariant; size: ButtonSize }>
       secondary: `bg-foreground/10 text-foreground hover-fine:available:bg-foreground/20 active:available:bg-foreground/26 ${selected}`,
       outline: `border-foreground/20 ${tonal} ${selected}`,
       ghost: `${tonal} ${selected}`,
-      destructive: `bg-destructive-fill text-destructive-fill-foreground focus-visible:outline-destructive ${selected}`,
+      // shadcn's nova destructive: a destructive tint with destructive text, stronger on hover.
+      destructive: `bg-destructive/10 text-destructive hover-fine:available:bg-destructive/20 active:available:bg-destructive/26 focus-visible:outline-destructive ${selected}`,
       link: "min-w-0 px-0 border-0 rounded-none bg-transparent text-primary underline underline-offset-3 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-3",
     },
     size: {

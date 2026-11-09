@@ -14,7 +14,7 @@ Do not wrap every paragraph or list item in a card. Avoid whole-surface click be
 
 ## Structure
 
-`Card > CardHeader(CardTitle, CardDescription, CardAction?) + CardContent + CardFooter`. Every part is a `div`; give the title a heading with `CardTitle as="h2"` (or `h3`, following page order) and the root `as="article"` or `section` when the content warrants it. `CardAction` (a badge or small button) sits beside the title at the header's inline end; without it the title spans the header. `CardFooter` is a wrapping row of buttons or links. `size="sm"` tightens padding, gaps and title. Padding lives on the root, so plain children in a `Card` also work. For a form use `<Card as="form" action method>`; a `form` wrapped around content and footer breaks the card's gap.
+`Card > CardHeader(CardTitle, CardDescription, CardAction?) + CardContent + CardFooter`. Every part is a `div`; give the title a heading with `CardTitle as="h2"` (or `h3`, following page order) and the root `as="article"` or `section` when the content warrants it. `CardAction` (a badge or small button) sits beside the title at the header's inline end; without it the title spans the header. `CardFooter` is a wrapping row of buttons or links. `size="sm"` tightens padding, gaps and title. `variant="highlight"` adds a primary border and a raised shadow to the one card to notice, such as a recommended plan. Padding lives on the root, so plain children in a `Card` also work. For a form use `<Card as="form" action method>`; a `form` wrapped around content and footer breaks the card's gap.
 
 ## Responsive
 

@@ -11,13 +11,14 @@ import type {
 } from "./types.js";
 
 export function Card<TAs extends ElementType = "div">(props: CardProps<TAs>): ReactElement | null {
-  const { as, render, size, ...consumerProps } = props as CardProps<"div">;
+  const { as, render, size, variant, ...consumerProps } = props as CardProps<"div">;
   return useRenderElement({
     as,
     defaultTag: "div",
     props: {
       // `default` is the unset look: no attribute, so the markup equals an omitted prop.
       ...(size !== undefined && size !== "default" ? { "data-size": size } : {}),
+      ...(variant !== undefined && variant !== "default" ? { "data-variant": variant } : {}),
       ...consumerProps,
       className: cn(
         "uiify-card",

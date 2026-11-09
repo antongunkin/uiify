@@ -86,19 +86,6 @@ UI documents (`@gunkin/uiify/ai`) use many of these components as parts; the par
 | [form-error-summary](./reference/components/form-error-summary.md) | `@gunkin/uiify/components/form-error-summary` | 0 | none | `section + heading + ul + links` | `dist/components/form-error-summary.d.ts` | Static server-rendered error links; no alert or focus script. |
 | [description-list](./reference/components/description-list.md) | `@gunkin/uiify/components/description-list` | 0 | none | `dl + dt + dd` | `dist/components/description-list.d.ts` |  |
 
-## Blocks
-
-Tier 0 sections and slot content built from the components above. Import them from
-`@gunkin/uiify` (or `@gunkin/uiify/blocks`); their props are in the screen catalog (`catalog.md`).
-
-| Block | Import | Tier | Types |
-| --- | --- | --- | --- |
-| feature-grid | `@gunkin/uiify/blocks` | 0 | `dist/blocks/feature-grid/index.d.ts` |
-| hero | `@gunkin/uiify/blocks` | 0 | `dist/blocks/hero/index.d.ts` |
-| plan-option | `@gunkin/uiify/blocks` | 0 | `dist/blocks/plan-option/index.d.ts` |
-| pricing-plans | `@gunkin/uiify/blocks` | 0 | `dist/blocks/pricing-plans/index.d.ts` |
-| testimonial | `@gunkin/uiify/blocks` | 0 | `dist/blocks/testimonial/index.d.ts` |
-
 ## Elements
 
 | Element | Import | Native mechanism | Parts | Used by | Types |

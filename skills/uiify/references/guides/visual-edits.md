@@ -21,9 +21,9 @@ When the selection is one item of a repeated list (a card from `sample.tsx`), ch
 Take the first that does the job:
 
 1. A prop or variant of the component: `size`, `variant`, `tone`, `gap`.
-2. `slotProps` for a part of a block: `<Hero slotProps={{ title: { className: "text-5xl" } }} />`.
+2. `slotProps` for a part of a component that has them.
 3. `className` with theme classes on Tailwind's default scale.
-4. The design file: reorder or add catalog parts; a block when one fits the job.
+4. The design file: reorder or add catalog parts.
 5. A theme token in the project's CSS (`--primary` also fills the default `Button`; `--radius` sets the corners of every control and card) or a project component. Ask first: it changes every screen.
 
 Never style `uiify-*` classes, edit `node_modules`, copy a UIify component into the project or set a raw color. To show another design, change only the import in `active.ts`, or open the preview route; leave the other designs alone.

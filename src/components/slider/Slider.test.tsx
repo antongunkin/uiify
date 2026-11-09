@@ -5,6 +5,23 @@ import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { Slider } from "./Slider.js";
 
 describe("Slider", () => {
+  it("passes no onChange to the input when no handler is given (Server Components)", () => {
+    // The root div wraps the input element.
+    const props = (element: unknown) =>
+      (element as { props: { children: { props: { onChange?: unknown } } } }).props.children.props;
+    expect(props(Slider({ "aria-label": "Volume" })).onChange).toBeUndefined();
+    expect(typeof props(Slider({ onValueChange: () => {} })).onChange).toBe("function");
+    expect(typeof props(Slider({ onChange: () => {} })).onChange).toBe("function");
+  });
+
+  it("writes no inline style: CSS paints the fill from the native value", () => {
+    render(<Slider defaultValue={30} onValueChange={() => {}} aria-label="Volume" />);
+    const slider = screen.getByRole("slider", { name: "Volume" });
+    expect(slider.hasAttribute("style")).toBe(false);
+    fireEvent.change(slider, { target: { value: "42" } });
+    expect(slider.hasAttribute("style")).toBe(false);
+  });
+
   it("fires onValueChange from native range changes without owner rerenders", () => {
     const onValueChange = vi.fn();
     const { Wrapper, getCommitCount } = createRenderCounter();
@@ -18,7 +35,6 @@ describe("Slider", () => {
     const slider = screen.getByRole("slider", { name: "Volume" });
     fireEvent.change(slider, { target: { value: "42" } });
     expect(onValueChange).toHaveBeenCalledWith(42);
-    expect(slider.getAttribute("style")).toContain("--uiify-slider-progress: 42%");
     expect(getCommitCount()).toBe(1);
   });
 
@@ -35,15 +51,15 @@ describe("Slider", () => {
     render(<Slider value={55} aria-label="Volume" />);
     const slider = screen.getByRole("slider", { name: "Volume" });
     expect(slider.getAttribute("data-state")).toBe("55");
-    expect(slider.getAttribute("style")).toContain("--uiify-slider-progress: 55%");
-    expect(slider.classList.contains("uiify-slider")).toBe(true);
+    expect(slider.classList.contains("uiify-slider-input")).toBe(true);
     expect(slider.hasAttribute("data-uiify-slider")).toBe(false);
   });
 
   it("renders its identity class without a legacy marker", () => {
     render(<Slider defaultValue={25} aria-label="Volume" />);
     const slider = screen.getByRole("slider", { name: "Volume" });
-    expect(slider.classList.contains("uiify-slider")).toBe(true);
+    expect(slider.classList.contains("uiify-slider-input")).toBe(true);
+    expect(slider.parentElement?.classList.contains("uiify-slider")).toBe(true);
     expect(slider.hasAttribute("data-uiify-slider")).toBe(false);
   });
 

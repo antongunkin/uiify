@@ -5,6 +5,9 @@ import type { RenderableProps } from "@gunkin/uiify/core/render";
 /** `default` is the unset look; `sm` tightens the padding, gaps and title. */
 export type CardSize = "default" | "sm";
 
+/** `default` is the unset look; `highlight` marks the one card to notice (a recommended plan). */
+export type CardVariant = "default" | "highlight";
+
 export interface CardOwnProps {
   readonly children?: ReactNode;
   /**
@@ -12,6 +15,11 @@ export interface CardOwnProps {
    * same as unset.
    */
   readonly size?: CardSize;
+  /**
+   * `highlight` draws a primary border and a raised shadow. Written as data-variant; `default`
+   * renders none, the same as unset.
+   */
+  readonly variant?: CardVariant;
 }
 
 export type CardProps<TAs extends ElementType = "div"> = RenderableProps<

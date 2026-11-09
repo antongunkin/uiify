@@ -35,7 +35,18 @@ export const columnsValues = [
 export const columnSpanValues = [...trackValues, "full"] as const;
 export const columnStartValues = [...trackValues, "auto"] as const;
 export const alignSelfValues = ["auto", ...alignValues] as const;
-export const textSizeValues = ["xs", "sm", "base", "lg", "xl", "2xl"] as const;
+export const textSizeValues = [
+  "xs",
+  "sm",
+  "base",
+  "lg",
+  "xl",
+  "2xl",
+  "3xl",
+  "4xl",
+  "5xl",
+  "6xl",
+] as const;
 export const textWeightValues = ["normal", "medium", "semibold"] as const;
 export const textToneValues = ["default", "muted", "primary", "danger"] as const;
 export const textLeadingValues = ["normal", "tight"] as const;

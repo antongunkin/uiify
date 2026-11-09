@@ -15,6 +15,24 @@ describe("Header", () => {
     expect(root.textContent).toBe("Site navigation");
   });
 
+  it("writes data-tone for primary only; default and unset render none", () => {
+    render(
+      <>
+        <Header data-testid="primary" tone="primary" />
+        <Header data-testid="default" tone="default" />
+        <Header data-testid="unset" />
+      </>,
+    );
+    expect(screen.getByTestId("primary").getAttribute("data-tone")).toBe("primary");
+    expect(screen.getByTestId("default").hasAttribute("data-tone")).toBe(false);
+    expect(screen.getByTestId("unset").hasAttribute("data-tone")).toBe(false);
+  });
+
+  it("lets a consumer data-tone replace the library value", () => {
+    render(<Header data-testid="root" tone="primary" data-tone="custom" />);
+    expect(screen.getByTestId("root").getAttribute("data-tone")).toBe("custom");
+  });
+
   it("preserves consumer attributes", () => {
     render(
       <Header

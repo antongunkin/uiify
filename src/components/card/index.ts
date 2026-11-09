@@ -23,4 +23,5 @@ export type {
   CardSize,
   CardTitleOwnProps,
   CardTitleProps,
+  CardVariant,
 } from "./types.js";

@@ -14,11 +14,12 @@
 ## Exports
 
 - Runtime: `Header`
-- Types: `HeaderClientProps`, `HeaderClientState`, `HeaderPlacement`, `HeaderProps`
+- Types: `HeaderClientProps`, `HeaderClientState`, `HeaderPlacement`, `HeaderProps`, `HeaderTone`
 
 ## Values
 
 - `HeaderPlacement`: `"static" | "sticky"`
+- `HeaderTone`: `"default" | "primary"` — `default` is the unset look; `primary` fills the bar with the brand colour.
 - `HeaderClientState`: `"top" | "visible" | "hidden"`
 
 ## Props and shapes
@@ -30,6 +31,7 @@ Extends: `ComponentPropsWithRef<"header">`
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `placement` | `HeaderPlacement` | no |  |
+| `tone` | `HeaderTone` | no | `primary` fills the header with `--primary` and sets its text to `--primary-foreground`; `Text` without `tone` inherits it. Written as data-tone; `default` renders none. |
 
 ### HeaderClientProps
 

@@ -25,13 +25,14 @@ test("accepts only the curated knowledge and example reference directories", () 
       "skills/uiify/references/laws/accessibility.md",
       "skills/uiify/references/compositions/hero-actions.md",
       "skills/uiify/references/guides/surface.md",
-      "skills/uiify/references/examples/field-validation.md",
+      "agents/examples/forms/credit-card-form.tsx",
     ]),
   );
   for (const path of [
     "skills/uiify/references/other/x.md",
     "skills/uiify/references/elements/nested/button.md",
     "skills/uiify/references/nested/x.md",
+    "skills/uiify/references/examples/field-validation.md",
     "skills/uiify/references/guides/nested/x.md",
     "skills/uiify/references/eval/results.json",
   ]) {

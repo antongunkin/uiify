@@ -556,6 +556,7 @@ export interface ButtonProps {
  */
 export interface CardProps {
   readonly size?: "sm" | "default";
+  readonly variant?: "default" | "highlight";
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -1337,6 +1338,7 @@ export interface FormProps {
  */
 export interface HeaderProps {
   readonly placement?: "sticky" | "static";
+  readonly tone?: "default" | "primary";
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -2910,12 +2912,12 @@ export interface GridItemProps {
 
 export interface TextProps {
   readonly size?:
-    | ("xs" | "sm" | "base" | "lg" | "xl" | "2xl")
+    | ("xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl")
     | Readonly<{
-        base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-        sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-        md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-        lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
+        sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
+        md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
+        lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
       }>;
   readonly weight?:
     | ("normal" | "medium" | "semibold")
@@ -2973,12 +2975,12 @@ export interface TextProps {
 
 export interface HeadingProps {
   readonly size?:
-    | ("xs" | "sm" | "base" | "lg" | "xl" | "2xl")
+    | ("xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl")
     | Readonly<{
-        base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-        sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-        md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
-        lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+        base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
+        sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
+        md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
+        lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl";
       }>;
   readonly weight?:
     | ("normal" | "medium" | "semibold")

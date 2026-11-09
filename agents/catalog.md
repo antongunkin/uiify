@@ -3,8 +3,8 @@
 Import every name from "@gunkin/uiify".
 Every part also takes the native attributes of its element (`id`, `name`, `href`, `action`, `method`,
 `required`, `aria-*`, ...). `as` changes the element (`<Stack as="form">`). `className` (theme classes) and `style` customize a part.
-Responsive values: `{ base, sm, md, lg }` objects, e.g. `columns={{ base: 1, md: 2 }}`; they follow
-the nearest `container` ancestor, so give the screen's outer Stack `container`.
+Layout and text value props take `{ base, sm, md, lg }`: `size={{ base: "xl", md: "5xl" }}`; they follow
+the nearest `container` ancestor, so give the outer Stack `container`.
 
 ## Layout and text
 Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|lg|xl; paddingInline?: none|xs|sm|md|lg|xl; paddingBlock?: none|xs|sm|md|lg|xl; width?: auto|full|fit|sm|md|lg; height?: auto|full|screen; minWidth?: zero|full; maxWidth?: none|sm|md|lg|prose; grow?: 0|1; shrink?: 0|1; overflow?: visible|hidden|auto; container?: true|false; responsive?: container|viewport
@@ -13,7 +13,7 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - Stack: direction?: block|inline; gap?: none|xs|sm|md|lg|xl; align?: start|center|end|stretch|baseline; justify?: start|center|end|between|around|evenly; wrap?: true|false
 - Grid: columns?: 1..12|sidebar|sidebar-end|2:1|1:2|3:2|2:3; gap?: none|xs|sm|md|lg|xl; rowGap?: none|xs|sm|md|lg|xl; align?: start|center|end|stretch|baseline; justify?: start|center|end|between|around|evenly
 - GridItem: columnSpan?: 1..12|full; rowSpan?: 1..12; columnStart?: 1..12|auto; alignSelf?: auto|start|center|end|stretch|baseline
-- Text: size?: xs|sm|base|lg|xl|2xl; weight?: normal|medium|semibold; tone?: default|muted|primary|danger; leading?: normal|tight; align?: start|center|end; measure?: none|prose; wrap?: wrap|balance|pretty; responsive?: container|viewport
+- Text: size?: xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl; weight?: normal|medium|semibold; tone?: default|muted|primary|danger; leading?: normal|tight; align?: start|center|end; measure?: none|prose; wrap?: wrap|balance|pretty; responsive?: container|viewport
 - Heading: Text props; level?: 1..6
 
 ## Components
@@ -40,7 +40,7 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - BreadcrumbPage
 - BreadcrumbSeparator
 - Button: disabled?: boolean; selected?: boolean; type?: button|submit|reset; size?: xs|sm|default|lg|icon-xs|icon-sm|icon|icon-lg; variant?: default|secondary|outline|ghost|destructive|link; href?: string
-- Card: size?: sm|default
+- Card: size?: sm|default; variant?: default|highlight
 - CardAction
 - CardContent
 - CardDescription
@@ -90,7 +90,7 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - FieldSet
 - Form: validationBehavior?: native|aria
 - FormErrorSummary: title: node; errors: { href: string; message: node }[]
-- Header: placement?: sticky|static
+- Header: placement?: sticky|static; tone?: default|primary
 - Input: value?: string; defaultValue?: string; disabled?: boolean; readOnly?: boolean; invalid?: boolean; size?: sm|md|lg
 - InputGroup: size?: sm|md|lg
 - InputGroupAddon: align: start|end
@@ -144,22 +144,10 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - TooltipProvider: delayDuration?: number; skipDelayDuration?: number
 - TooltipTrigger
 
-## Blocks
-Ready sections and slot content built from the parts above; the design still lays out the page.
-- Feature: title: string; description?: string; media?: node; level?: 1..6
-- FeatureGrid: id?: string; title?: string; description?: string; level?: 1..6; columns?: Grid columns
-- Hero: id?: string; eyebrow?: string; title: string; description?: string; actions?: node; media?: node; align?: center|start; level?: 1..6
-- PlanOption: name: string; value: string; title: string; price?: string; description?: string; badge?: string; defaultChecked?: boolean; disabled?: boolean; required?: boolean
-- PricingPlan: name: string; price: string | { month: string; year: string }; period?: string | { month: string; year: string }; description?: string; features?: readonly string[]; action?: node | { month: node; year: node }; recommended?: string; level?: 1..6
-- PricingPlans: id: string; title?: string; description?: string; level?: 1..6; periods?: { readonly month: string; readonly year: string; }; defaultPeriod?: month|year; columns?: Grid columns
-- Testimonial: quote: string; name: string; byline?: string; avatar?: node; cite?: string; variant?: card|plain
-
 ## Patterns
 - Field with description: `<Field><FieldLabel htmlFor="email">Email</FieldLabel><Input id="email" type="email" name="email" aria-describedby="email-hint" /><FieldDescription id="email-hint">We never share it.</FieldDescription></Field>`
 - Invalid field: `<Field invalid><FieldLabel htmlFor="code">Code</FieldLabel><Input id="code" name="code" invalid aria-describedby="code-error" /><FieldError id="code-error">Enter the 6-digit code.</FieldError></Field>`
-- Checkbox with label: `<Checkbox id="terms" name="terms" label="I agree" />`
 - Single choice: `<RadioGroup aria-label="Plan"><Field orientation="horizontal"><RadioGroupItem name="plan" value="a" id="a" defaultChecked /><FieldLabel htmlFor="a">Plan A</FieldLabel></Field><Field orientation="horizontal"><RadioGroupItem name="plan" value="b" id="b" /><FieldLabel htmlFor="b">Plan B</FieldLabel></Field></RadioGroup>`
-- Plan choice cards: `<RadioGroup aria-label="Plan"><PlanOption name="plan" value="pro" title="Pro" price="$12 a month" badge="Popular" defaultChecked /><PlanOption name="plan" value="free" title="Free" price="$0" /></RadioGroup>`
 - Card with header and footer: `<Card><CardHeader><CardTitle as="h2">Team plan</CardTitle><CardDescription>Billed yearly.</CardDescription><CardAction><Badge variant="outline">Popular</Badge></CardAction></CardHeader><CardContent>$12 per seat.</CardContent><CardFooter><Button>Choose plan</Button></CardFooter></Card>`
 - Link that looks like a button: `<Button href="/auth/google" variant="outline">Continue with Google</Button>`
 - Divider with text: `<FieldSeparator>or</FieldSeparator>`

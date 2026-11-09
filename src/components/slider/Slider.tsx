@@ -1,17 +1,16 @@
-import type { CSSProperties, ElementType, ReactElement, SyntheticEvent } from "react";
+import type { ChangeEvent, CSSProperties, ElementType, ReactElement } from "react";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { useRenderElement } from "@gunkin/uiify/core/render";
 import { cn } from "../../core/class-names.js";
 import type { SliderProps } from "./types.js";
 
-function getProgressPercentage(value: number, min: number, max: number): number {
-  if (max <= min) return 0;
-  return Number(Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100)).toFixed(4));
-}
+type ChangeHandler = (event: ChangeEvent<HTMLInputElement>) => void;
 
-export function Slider<TAs extends ElementType = "input">(
-  props: SliderProps<TAs>,
-): ReactElement | null {
+/**
+ * A native range in a root that draws the track. The input paints the fill and thumb with CSS
+ * over its own value, so the slider works before hydration and in Server Components.
+ */
+export function Slider<TAs extends ElementType = "input">(props: SliderProps<TAs>): ReactElement {
   const {
     as,
     render,
@@ -23,37 +22,25 @@ export function Slider<TAs extends ElementType = "input">(
     step = 1,
     disabled = false,
     className,
+    style,
+    slotProps,
     ...consumerProps
-  } = props as SliderProps<"input">;
+  } = props as SliderProps<"input"> & { readonly style?: CSSProperties };
 
   const isControlled = value !== undefined;
-  const progressValue = value ?? defaultValue ?? min + (max - min) / 2;
-  const progress = getProgressPercentage(progressValue, min, max);
-  const consumerStyle = (consumerProps as { style?: CSSProperties }).style;
-  const style = {
-    "--uiify-slider-progress": `${progress}%`,
-    ...consumerStyle,
-  } as CSSProperties;
+  const inputProps = slotProps?.input ?? {};
+  // Order: top-level onChange, then slot onChange, then onValueChange. No handler at all stays
+  // undefined, so a Server Component never passes a function prop.
+  let onChange: ChangeHandler | undefined = onValueChange
+    ? (event) => onValueChange(event.currentTarget.valueAsNumber)
+    : undefined;
+  const consumerOnChange = (consumerProps as { readonly onChange?: ChangeHandler }).onChange;
+  for (const consumer of [inputProps.onChange, consumerOnChange]) {
+    if (!consumer) continue;
+    onChange = onChange ? composeEventHandlers(consumer, onChange) : consumer;
+  }
 
-  const handleChange = (event: SyntheticEvent<HTMLInputElement>): void => {
-    if (!isControlled) {
-      const nextProgress = getProgressPercentage(event.currentTarget.valueAsNumber, min, max);
-      const nextStyle = { "--uiify-slider-progress": `${nextProgress}%`, ...consumerStyle };
-      const nextValue = nextStyle["--uiify-slider-progress"];
-      if (nextValue === undefined)
-        event.currentTarget.style.removeProperty("--uiify-slider-progress");
-      else event.currentTarget.style.setProperty("--uiify-slider-progress", nextValue);
-    }
-    onValueChange?.(event.currentTarget.valueAsNumber);
-  };
-
-  const consumerOnChange = (
-    consumerProps as Record<string, unknown> & {
-      onChange?: (event: SyntheticEvent<HTMLInputElement>) => void;
-    }
-  ).onChange;
-
-  return useRenderElement({
+  const input = useRenderElement({
     as,
     defaultTag: "input",
     props: {
@@ -66,11 +53,19 @@ export function Slider<TAs extends ElementType = "input">(
       "data-state": isControlled ? String(value) : undefined,
       ...(isControlled ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
       ...consumerProps,
-      className: cn("uiify-slider", className),
-      style,
-      onChange: composeEventHandlers(consumerOnChange, handleChange),
+      ...inputProps,
+      className: cn("uiify-slider-input", inputProps.className),
+      onChange,
     },
     render,
     state: { min, max, step, disabled },
   });
+
+  return (
+    <div className={cn("uiify-slider", className)} style={style}>
+      {input}
+    </div>
+  );
 }
+
+Slider.displayName = "Slider";

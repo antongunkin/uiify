@@ -24,7 +24,6 @@ test("defines the uiify package and its initial public subpaths", () => {
     "./components/behavior.css": expect.anything(),
     "./elements": expect.anything(),
     "./elements/*": expect.anything(),
-    "./blocks": expect.anything(),
     "./ai": expect.anything(),
     "./styles": expect.anything(),
   });

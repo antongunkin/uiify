@@ -13,6 +13,7 @@ Avoid when: The task does not need this element; do not add it for coverage.
 Optional `children`: nodes or strings.
 
 - `placement` (optional): `"sticky" | "static"`; allowed: "sticky", "static"
+- `tone` (optional): `"default" | "primary"`; allowed: "default", "primary". `primary` fills the header with `--primary` and sets its text to `--primary-foreground`; `Text` without `tone` inherits it. Written as data-tone; `default` renders none.
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 - `title` (optional): `string`
 - `aria-label` (optional): `string`

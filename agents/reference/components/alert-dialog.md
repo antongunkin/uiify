@@ -11,7 +11,7 @@
 ## Related knowledge
 
 - Recipe: [alert-dialog](../../../skills/uiify/references/elements/alert-dialog.md)
-- Example: [alert-confirmation](../../../skills/uiify/references/examples/alert-confirmation.md)
+- Example: [alert-confirmation](../../examples/states/alert-confirmation.tsx)
 
 ## Exports
 

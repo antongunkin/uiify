@@ -1,6 +1,6 @@
 # pricing-table
 
-Binding: pricing-plans
+Binding: gap
 
 Let visitors compare plan features and choose a plan.
 
@@ -14,7 +14,7 @@ Do not present plans as cards if the contents cannot be compared, or use color a
 
 ## Structure
 
-For each plan, show its name, price and billing period, who it suits, key feature differences, and one action. Give each action a name that identifies its plan, such as “Choose Pro.” Mark a recommended plan with visible text as well as any styling. Use `PricingPlans` with one `PricingPlan` per plan (`price`, `period`, `features`, `action`, `recommended`); for a plan choice inside a form, use `PlanOption` items in a `RadioGroup`.
+For each plan, show its name, price and billing period, who it suits, key feature differences, and one action. Give each action a name that identifies its plan, such as “Choose Pro.” Mark a recommended plan with visible text as well as any styling. Use a `Grid` of `Card`s, one per plan (price, period, features, action, recommended); for a plan choice inside a form, use `RadioGroupItem`s with a `FieldLabel` and `FieldDescription` in a `RadioGroup`.
 
 ## Responsive
 
@@ -22,7 +22,7 @@ Stack plans on narrow screens in the same reading order. Keep plan names, prices
 
 ## States
 
-If people can switch billing periods, set `periods` on `PricingPlans`: it switches without JavaScript, and a `price`, `period` or `action` given as `{ month, year }` follows the switch, so both the price and its period label update. Check long plan names and feature lists without clipping.
+If people can switch billing periods, use a `SegmentedControl` and update both each price and its period label. Check long plan names and feature lists without clipping.
 
 ## Verify
 
@@ -31,6 +31,10 @@ Compare all plans at desktop and narrow widths. Confirm that each price has a pe
 ## Common mistake
 
 Giving every plan an identical “Get started” action makes it unclear which option the action will select.
+
+## Custom implementation
+
+This is an app-level composition; UIify does not ship a pricing table component. Compose it from a labeled `Section`, a `Grid` and one `Card` per plan.
 
 Related laws: references/laws/proximity.md
 

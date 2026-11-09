@@ -24,6 +24,7 @@ Avoid when: The card would wrap every paragraph or create a whole-surface contro
 Optional `children`: nodes or strings.
 
 - `size` (optional): `"sm" | "default"`; allowed: "sm", "default". `sm` tightens the padding, gaps and title. Written as data-size; `default` renders none, the same as unset.
+- `variant` (optional): `"default" | "highlight"`; allowed: "default", "highlight". `highlight` draws a primary border and a raised shadow. Written as data-variant; `default` renders none, the same as unset.
 
 ## CardAction
 

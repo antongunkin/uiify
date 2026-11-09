@@ -50,6 +50,24 @@ describe("Card", () => {
     expect(screen.getByTestId("unset").hasAttribute("data-size")).toBe(false);
   });
 
+  it("writes data-variant for highlight only; default and unset render none", () => {
+    render(
+      <>
+        <Card data-testid="highlight" variant="highlight" />
+        <Card data-testid="default" variant="default" />
+        <Card data-testid="unset" />
+      </>,
+    );
+    expect(screen.getByTestId("highlight").getAttribute("data-variant")).toBe("highlight");
+    expect(screen.getByTestId("default").hasAttribute("data-variant")).toBe(false);
+    expect(screen.getByTestId("unset").hasAttribute("data-variant")).toBe(false);
+  });
+
+  it("lets a consumer data-variant replace the library value", () => {
+    render(<Card data-testid="card" variant="highlight" data-variant="custom" />);
+    expect(screen.getByTestId("card").getAttribute("data-variant")).toBe("custom");
+  });
+
   it("lets a consumer data-size replace the library value", () => {
     render(<Card data-testid="card" size="sm" data-size="custom" />);
     expect(screen.getByTestId("card").getAttribute("data-size")).toBe("custom");

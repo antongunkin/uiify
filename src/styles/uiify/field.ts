@@ -29,7 +29,9 @@ export const field = defineRecipe<
       vertical: "",
       horizontal: { root: "flex flex-row items-start gap-3" },
       responsive: {
-        root: "flex flex-col @md:flex-row @md:items-center @md:gap-4 @md:max-w-none",
+        // In the row the parts size to their content, as shadcn's field does: a full-width control
+        // would squeeze the label (fields fill their container since 2026-11-09).
+        root: "flex flex-col @md:flex-row @md:items-center @md:gap-4 @md:max-w-none @md:*:w-auto",
       },
     },
     variant: {

@@ -58,9 +58,9 @@ Always describe the page as a UI tree first (`references/guides/document.md`): i
 
 `references/` paths are relative to this skill directory; `dist/` and `agents/` paths to the package root. Read each distinct file once.
 
-Match the needed elements to the Index by name or alias; never invent a binding. A `gap` or an unlisted element needs custom UI composed from available UIify controls or semantic native HTML, not a guessed UIify API.
+Match the needed elements to the Index by name or alias; never invent a binding. A `gap` or unlisted element needs custom UI from UIify controls or semantic native HTML, not a guessed API; start from the closest example in `agents/examples/index.md`.
 
-For each selected element with a fourth-column reference path, read that file once. A blank path means no curated recipe. From the Composition index, read only relationships where both elements are needed. Follow each selected reference and linked law, including laws named by element recipes. Do not load unrelated references or the complete catalog.
+For each selected element's fourth-column path, read that file once; a blank path means no curated recipe. From the Composition index, read only pairs where both elements are needed. Follow each selected reference and linked law, including laws named by recipes. Do not load unrelated references or the complete catalog.
 
 A reference's JSX is a recipe for structure and ids, not code to paste.
 
@@ -124,14 +124,14 @@ dialog|modal|dialog|references/elements/dialog.md
 drawer|sheet,off-canvas-menu|drawer|references/elements/drawer.md
 dropdown-menu|menu|dropdown-menu|references/elements/dropdown-menu.md
 empty-state|empty-state|empty|references/elements/empty-state.md
-feature-grid|feature-cards,feature-list|feature-grid|references/elements/feature-grid.md
+feature-grid|feature-cards,feature-list|gap|references/elements/feature-grid.md
 field|form-field,fieldset,fieldset-legend|field|references/elements/field.md
 file-upload|file-input,dropzone|file-upload|references/elements/file-upload.md
 footer|site-footer|gap|references/elements/footer.md
 form||form|references/elements/form.md
 form-error-summary|error-summary|form-error-summary|references/elements/form-error-summary.md
 header|navbar,top-nav|header|references/elements/header.md
-hero|hero-section,hero-banner|hero|references/elements/hero.md
+hero|hero-section,hero-banner|gap|references/elements/hero.md
 hover-card||hover-card|references/elements/hover-card.md
 image-gallery|gallery,lightbox|gap|references/elements/image-gallery.md
 inline-alert|banner-alert,callout|alert|references/elements/inline-alert.md
@@ -147,7 +147,7 @@ number-field|number-input|number-field|references/elements/number-field.md
 pagination||pagination|references/elements/pagination.md
 password-input|show-hide-password|gap|references/elements/password-input.md
 popover|popup|popover|references/elements/popover.md
-pricing-table|pricing,plan-cards,pricing-plans|pricing-plans|references/elements/pricing-table.md
+pricing-table|pricing,plan-cards,pricing-plans|gap|references/elements/pricing-table.md
 progress-bar|progress,linear-progress|progress|references/elements/progress-bar.md
 radio-group|radio|radio-group|references/elements/radio-group.md
 rating|star-rating|rating|references/elements/rating.md
@@ -165,7 +165,7 @@ table|data-table,comparison-table|table|references/elements/table.md
 table-of-contents|toc,in-page-nav|table-of-contents|references/elements/table-of-contents.md
 tabs|tab-navigation|tabs|references/elements/tabs.md
 tags-input|token-input|tags-input|references/elements/tags-input.md
-testimonial|testimonials,quote-card|testimonial|references/elements/testimonial.md
+testimonial|testimonials,quote-card|gap|references/elements/testimonial.md
 textarea||textarea|references/elements/textarea.md
 timeline||gap|references/elements/timeline.md
 toast|snackbar,toast-notification|toast|references/elements/toast.md

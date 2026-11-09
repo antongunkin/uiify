@@ -48,12 +48,6 @@ describe("behavior.css", () => {
     );
   });
 
-  it("lets the checked PricingPlans period hide the other period's values", () => {
-    expect(behaviorLayer()).toContain(
-      '.uiify-pricing-plans:has(.uiify-pricing-plans-control input[value="year"]:checked) [data-period="month"], .uiify-pricing-plans:has(.uiify-pricing-plans-control input[value="month"]:checked) [data-period="year"] { display: none; }',
-    );
-  });
-
   it("hides closed dialogs even when author CSS sets display", () => {
     expect(behaviorLayer()).toContain("dialog:not([open]) { display: none !important; }");
   });

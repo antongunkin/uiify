@@ -32,6 +32,28 @@ it("preserves default slider DOM", () => {
   }).toMatchSnapshot();
 });
 
+it("styles the Slider root with className and style, and the input through slotProps.input", () => {
+  const ref = createRef<HTMLInputElement>();
+  render(
+    <Slider
+      aria-label="Volume"
+      className="w-64"
+      style={{ inlineSize: "10rem" }}
+      ref={ref}
+      slotProps={{
+        input: { className: "accent", style: { cursor: "grab" }, "data-testid": "input" },
+      }}
+    />,
+  );
+  const input = screen.getByRole("slider", { name: "Volume" });
+  expect(ref.current).toBe(input);
+  expect(input).toBe(screen.getByTestId("input"));
+  expect(input.className).toBe("uiify-slider-input accent");
+  expect(input.style.cursor).toBe("grab");
+  expect(input.parentElement?.className).toBe("uiify-slider w-64");
+  expect(input.parentElement?.style.inlineSize).toBe("10rem");
+});
+
 it("renders SliderClient root and generated-part identities without legacy markers", () => {
   const { container } = render(
     <SliderClient
@@ -51,7 +73,7 @@ it("renders SliderClient root and generated-part identities without legacy marke
 });
 
 it("lets native and slotted props replace slider defaults and geometry", () => {
-  const nativeStyle = { "--uiify-slider-progress": "7%" } as CSSProperties;
+  const nativeStyle = { "--consumer-value": "7%" } as CSSProperties;
   const { container } = render(
     <>
       <Slider
@@ -116,7 +138,8 @@ it("lets native and slotted props replace slider defaults and geometry", () => {
   expect(native.getAttribute("type")).toBe("text");
   expect(native.hasAttribute("data-uiify-slider")).toBe(false);
   expect(native.getAttribute("data-state")).toBe("custom");
-  expect(native.style.getPropertyValue("--uiify-slider-progress")).toBe("7%");
+  // The root draws the track, so `style` (and `className`) style it; the input keeps the rest.
+  expect(native.parentElement?.style.getPropertyValue("--consumer-value")).toBe("7%");
   expect(screen.getByTestId("client").getAttribute("role")).toBe("note");
   expect(screen.getByTestId("client").getAttribute("data-state")).toBe("custom");
   expect(screen.getByTestId("client").style.getPropertyValue("--uiify-slider-start")).toBe("7%");
@@ -186,26 +209,4 @@ it("composes common and item handlers, honors keyboard veto and cleans up both r
   expect(firstCleanup).toHaveBeenCalled();
   expect(secondCleanup).toHaveBeenCalled();
   expect(rootRef.current).toBeNull();
-});
-
-it("keeps consumer native progress styles after change, including undefined removal", () => {
-  const { rerender } = render(
-    <Slider
-      defaultValue={20}
-      style={{ "--uiify-slider-progress": "7%" } as CSSProperties}
-      aria-label="Volume"
-    />,
-  );
-  const slider = screen.getByRole("slider");
-  fireEvent.change(slider, { target: { value: "42" } });
-  expect(slider.style.getPropertyValue("--uiify-slider-progress")).toBe("7%");
-  rerender(
-    <Slider
-      defaultValue={20}
-      style={{ "--uiify-slider-progress": undefined } as CSSProperties}
-      aria-label="Volume"
-    />,
-  );
-  fireEvent.change(slider, { target: { value: "43" } });
-  expect(slider.style.getPropertyValue("--uiify-slider-progress")).toBe("");
 });

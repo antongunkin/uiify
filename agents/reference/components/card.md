@@ -14,11 +14,12 @@
 ## Exports
 
 - Runtime: `Card`, `CardAction`, `CardContent`, `CardDescription`, `CardFooter`, `CardHeader`, `CardTitle`
-- Types: `CardActionOwnProps`, `CardActionProps`, `CardContentOwnProps`, `CardContentProps`, `CardDescriptionOwnProps`, `CardDescriptionProps`, `CardFooterOwnProps`, `CardFooterProps`, `CardHeaderOwnProps`, `CardHeaderProps`, `CardOwnProps`, `CardProps`, `CardSize`, `CardTitleOwnProps`, `CardTitleProps`
+- Types: `CardActionOwnProps`, `CardActionProps`, `CardContentOwnProps`, `CardContentProps`, `CardDescriptionOwnProps`, `CardDescriptionProps`, `CardFooterOwnProps`, `CardFooterProps`, `CardHeaderOwnProps`, `CardHeaderProps`, `CardOwnProps`, `CardProps`, `CardSize`, `CardTitleOwnProps`, `CardTitleProps`, `CardVariant`
 
 ## Values
 
 - `CardSize`: `"default" | "sm"` — `default` is the unset look; `sm` tightens the padding, gaps and title.
+- `CardVariant`: `"default" | "highlight"` — `default` is the unset look; `highlight` marks the one card to notice (a recommended plan).
 
 ## Props and shapes
 
@@ -28,6 +29,7 @@
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `size` | `CardSize` | no | `sm` tightens the padding, gaps and title. Written as data-size; `default` renders none, the same as unset. |
+| `variant` | `CardVariant` | no | `highlight` draws a primary border and a raised shadow. Written as data-variant; `default` renders none, the same as unset. |
 
 ### CardHeaderOwnProps
 

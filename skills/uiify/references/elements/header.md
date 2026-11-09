@@ -14,7 +14,7 @@ Do not turn the header into a second page body or hide all navigation behind a m
 
 ## Structure
 
-`Header` renders a semantic `<header>`. Place a home link for the site identity, a named `<nav>` with primary links, and at most one prominent action. Mark the current page link with `aria-current="page"`. Give repeated navigation landmarks distinct names when their link sets differ.
+`Header` renders a semantic `<header>`. Place a home link for the site identity, a named `<nav>` with primary links, and at most one prominent action. Mark the current page link with `aria-current="page"`. Give repeated navigation landmarks distinct names when their link sets differ. `tone="primary"` fills the bar with the brand colour; `Text` without `tone` inherits its text colour. `ghost`, `outline` and `link` Buttons keep their own colours, so check their contrast on that fill.
 
 ## Responsive
 

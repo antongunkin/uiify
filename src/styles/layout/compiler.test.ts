@@ -73,39 +73,63 @@ describe("one layout declaration compiler", () => {
   });
   it("keeps approved type defaults and semantic-independent responsive appearance in both outputs", () => {
     expect(layoutDefaultDeclarations.Text).toMatchObject({
-      "font-size": "1rem",
+      "font-size": "var(--text-base, 1rem)",
       "font-weight": "var(--weight-normal)",
-      color: "var(--foreground)",
       "line-height": "var(--leading-normal)",
       "margin-block-start": "0",
       "margin-block-end": "0",
     });
+    // Without `tone` the text takes its parent's colour: a Card, an Alert, a primary Header (M11 V5).
+    expect(layoutDefaultDeclarations.Text).not.toHaveProperty("color");
+    expect(layoutDefaultDeclarations.Heading).not.toHaveProperty("color");
     expect(layoutDefaultDeclarations.Heading).toMatchObject({
-      "font-size": "1.5rem",
+      "font-size": "var(--text-2xl, 1.5rem)",
       "font-weight": "var(--weight-semibold)",
       "line-height": "var(--leading-tight)",
     });
     const result = resolveLayoutDeclarations("Heading", {
       level: 1,
-      size: { base: "sm", lg: "2xl" },
+      size: { base: "sm", lg: "4xl" },
       weight: "medium",
       tone: "danger",
       measure: "prose",
       wrap: "balance",
     });
     expect(result.base).toMatchObject({
-      "font-size": "0.875rem",
+      "font-size": "var(--text-sm, 0.875rem)",
       "font-weight": "var(--weight-medium)",
       color: "var(--destructive)",
       "max-inline-size": "65ch",
       "text-wrap": "balance",
     });
-    expect(result.lg["font-size"]).toBe("2rem");
+    expect(result.lg["font-size"]).toBe("var(--text-4xl, 2.25rem)");
     expect(result.base).not.toHaveProperty("font-family");
     expect(result.base).not.toHaveProperty("letter-spacing");
-    expect(layoutTailwindClasses("Heading", { size: { lg: "2xl" } })).toContain(
-      "@min-[72rem]:[font-size:2rem]",
+    expect(layoutTailwindClasses("Heading", { size: { lg: "4xl" } })).toContain(
+      "@min-[72rem]:[font-size:var(--text-4xl,_2.25rem)]",
     );
+  });
+  it("puts text sizes on Tailwind's scale, read from the host's --text-* (M13 D3)", () => {
+    const tailwind = {
+      xs: "0.75rem",
+      sm: "0.875rem",
+      base: "1rem",
+      lg: "1.125rem",
+      xl: "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "3.75rem",
+    } as const;
+    for (const [size, value] of Object.entries(tailwind)) {
+      expect(
+        resolveLayoutDeclarations("Text", { size: size as keyof typeof tailwind }).base[
+          "font-size"
+        ],
+        size,
+      ).toBe(`var(--text-${size}, ${value})`);
+    }
   });
   it("fills the inline axis of a query container unless width says otherwise", () => {
     // A size-contained box has no content width: in a centring parent it collapsed to 0.

@@ -25,9 +25,9 @@ const PALETTE = /\b(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime
 /** A `#` in a URL is a fragment (`href="#add"`), not a color. */
 const URL_ATTRIBUTES = new Set(["href", "src", "action", "formAction"]);
 
-/** `@gunkin/uiify`, `@gunkin/uiify/blocks`, `@gunkin/uiify/components/<name>` and `@gunkin/uiify/components/<name>/client`. */
+/** `@gunkin/uiify`, `@gunkin/uiify/components/<name>` and `@gunkin/uiify/components/<name>/client`. */
 function isUiifyModule(spec) {
-  return spec === "@gunkin/uiify" || spec === "@gunkin/uiify/blocks" || /^@gunkin\/uiify\/components\/[^/]+(?:\/client)?$/.test(spec);
+  return spec === "@gunkin/uiify" || /^@gunkin\/uiify\/components\/[^/]+(?:\/client)?$/.test(spec);
 }
 
 const isExported = (ts, node) => node.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword) ?? false;
@@ -119,7 +119,7 @@ export function screenFindings(file, source, typescript, options = {}) {
       return;
     }
     if (!listed(spec)) {
-      report(node, "screen-import", `${kind} from "${spec}" is not allowed in screens (allowed: @gunkin/uiify, @gunkin/uiify/blocks, @gunkin/uiify/components/<name>[/client], relative paths inside the screens folder${allow.length ? `, ${allow.join(", ")}` : ""}; add a project module to package.json "uiify.components")`);
+      report(node, "screen-import", `${kind} from "${spec}" is not allowed in screens (allowed: @gunkin/uiify, @gunkin/uiify/components/<name>[/client], relative paths inside the screens folder${allow.length ? `, ${allow.join(", ")}` : ""}; add a project module to package.json "uiify.components")`);
     }
   };
 

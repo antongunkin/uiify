@@ -72,7 +72,12 @@ export const table = defineRecipe<
     },
     variant: {
       solid: {},
-      outline: { root: "border border-border rounded-2xl" },
+      // The frame already closes the table, so the last row drops its own bottom rule.
+      outline: {
+        root: "border border-border",
+        body: "last:*:last:*:border-be-0",
+        footer: "*:last:*:border-be-0",
+      },
       ghost: { root: "bg-transparent" },
     },
   },

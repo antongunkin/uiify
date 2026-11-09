@@ -10,7 +10,7 @@
 ## Related knowledge
 
 - Recipe: [field](../../../skills/uiify/references/elements/field.md)
-- Example: [field-validation](../../../skills/uiify/references/examples/field-validation.md)
+- Example: [field-validation](../../examples/forms/field-validation.tsx)
 
 ## Exports
 

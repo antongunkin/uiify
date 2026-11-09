@@ -30,8 +30,6 @@ const aliasKeys = [
   "--text-control-lg",
   "--color-primary-fill",
   "--color-primary-fill-foreground",
-  "--color-destructive-fill",
-  "--color-destructive-fill-foreground",
 ];
 const runtimeAlias =
   /--(?:control-[\w-]+|spacing-control[\w-]*|radius-control|text-control[\w-]*|color-(?:primary|destructive)-fill[\w-]*)\s*:/;
@@ -85,7 +83,7 @@ describe("control geometry aliases", () => {
     const nonStandard = reads.filter(
       (name) =>
         !/^--(?:spacing|radius-(?:sm|md|lg|xl)|text-(?:xs|sm|base|lg)|color-[\w-]+)$/.test(name) &&
-        !["--destructive", "--destructive-foreground", "--foreground"].includes(name),
+        !["--foreground"].includes(name),
     );
     expect(nonStandard).toEqual([]);
   });

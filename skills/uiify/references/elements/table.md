@@ -32,7 +32,7 @@ Inspect the accessibility tree for the caption, header cells, and their data rel
 
 A grid of `div` elements can look like a table but does not provide native row and column header relationships.
 
-Example: `references/examples/table-controls.md`.
+Example: `node_modules/@gunkin/uiify/agents/examples/data/table-controls.tsx`.
 
 Related laws: references/laws/proximity.md, references/laws/accessibility.md
 

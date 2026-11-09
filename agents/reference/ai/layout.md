@@ -113,7 +113,7 @@ Optional `children`: nodes or strings.
 
 Optional `children`: nodes or strings.
 
-- `size` (optional): `("xs" | "sm" | "base" | "lg" | "xl" | "2xl") | Readonly<{ base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl"; sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl"; md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl"; lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" }>`
+- `size` (optional): `("xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl") | Readonly<{ base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl"; sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl"; md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl"; lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" }>`
 - `weight` (optional): `("normal" | "medium" | "semibold") | Readonly<{ base?: "normal" | "medium" | "semibold"; sm?: "normal" | "medium" | "semibold"; md?: "normal" | "medium" | "semibold"; lg?: "normal" | "medium" | "semibold" }>`
 - `tone` (optional): `("default" | "muted" | "primary" | "danger") | Readonly<{ base?: "default" | "muted" | "primary" | "danger"; sm?: "default" | "muted" | "primary" | "danger"; md?: "default" | "muted" | "primary" | "danger"; lg?: "default" | "muted" | "primary" | "danger" }>`
 - `leading` (optional): `("normal" | "tight") | Readonly<{ base?: "normal" | "tight"; sm?: "normal" | "tight"; md?: "normal" | "tight"; lg?: "normal" | "tight" }>`
@@ -126,7 +126,7 @@ Optional `children`: nodes or strings.
 
 Optional `children`: nodes or strings.
 
-- `size` (optional): `("xs" | "sm" | "base" | "lg" | "xl" | "2xl") | Readonly<{ base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl"; sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl"; md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl"; lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" }>`
+- `size` (optional): `("xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl") | Readonly<{ base?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl"; sm?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl"; md?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl"; lg?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" }>`
 - `weight` (optional): `("normal" | "medium" | "semibold") | Readonly<{ base?: "normal" | "medium" | "semibold"; sm?: "normal" | "medium" | "semibold"; md?: "normal" | "medium" | "semibold"; lg?: "normal" | "medium" | "semibold" }>`
 - `tone` (optional): `("default" | "muted" | "primary" | "danger") | Readonly<{ base?: "default" | "muted" | "primary" | "danger"; sm?: "default" | "muted" | "primary" | "danger"; md?: "default" | "muted" | "primary" | "danger"; lg?: "default" | "muted" | "primary" | "danger" }>`
 - `leading` (optional): `("normal" | "tight") | Readonly<{ base?: "normal" | "tight"; sm?: "normal" | "tight"; md?: "normal" | "tight"; lg?: "normal" | "tight" }>`

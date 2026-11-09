@@ -9,7 +9,7 @@ import { dirname, join, resolve, sep } from "node:path";
 
 /** UIify-internal custom properties; `--my-control-x` is the project's own. */
 export const UIIFY_VAR =
-  /(?<![\w-])--(?:uiify-[\w-]*|control-[\w-]*|spacing-control-[\w-]*|radius-control[\w-]*|text-control[\w-]*|color-primary-fill[\w-]*|color-destructive-fill[\w-]*)/;
+  /(?<![\w-])--(?:uiify-[\w-]*|control-[\w-]*|spacing-control-[\w-]*|radius-control[\w-]*|text-control[\w-]*|color-primary-fill[\w-]*)/;
 /** `.uiify-*` classes and `[data-ui-*]` attributes; shadcn's `[data-slot]`, `[data-variant]`… are public. */
 export const UIIFY_SELECTOR = /(?<!\\)\.uiify-[\w-]+|\[\s*data-ui-[\w-]+/;
 /** `[class*="uiify-"]` and the like: the value is in a string, so it is matched on the unmasked text. */

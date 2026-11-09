@@ -32,7 +32,7 @@ Confirm the label is announced, options can be selected by keyboard, and the cho
 
 Replacing a native select with a custom popup without a clear interaction need.
 
-Example: `references/examples/select-basic.md`.
+Example: `node_modules/@gunkin/uiify/agents/examples/forms/select-basic.tsx`.
 
 Related laws: references/laws/proximity.md, references/laws/accessibility.md
 

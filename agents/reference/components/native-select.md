@@ -10,7 +10,7 @@
 ## Related knowledge
 
 - Recipe: [native-select](../../../skills/uiify/references/elements/native-select.md)
-- Example: [select-basic](../../../skills/uiify/references/examples/select-basic.md)
+- Example: [select-basic](../../examples/forms/select-basic.tsx)
 
 ## Exports
 

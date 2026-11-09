@@ -10,7 +10,7 @@
 ## Related knowledge
 
 - Recipe: [table](../../../skills/uiify/references/elements/table.md)
-- Example: [table-controls](../../../skills/uiify/references/examples/table-controls.md)
+- Example: [table-controls](../../examples/data/table-controls.tsx)
 
 ## Exports
 

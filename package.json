@@ -1,6 +1,6 @@
 {
   "name": "@gunkin/uiify",
-  "version": "0.0.33-alpha",
+  "version": "0.0.1-alpha",
   "description": "Native-first, accessible React 19 components that work before hydration.",
   "keywords": [
     "accessibility",
@@ -48,9 +48,6 @@
       ],
       "elements/*": [
         "dist/elements/*"
-      ],
-      "blocks": [
-        "dist/blocks/index.d.ts"
       ],
       "ai": [
         "dist/ai/index.d.ts"
@@ -110,10 +107,6 @@
     "./styles/uiify.css": "./dist/styles/uiify.css",
     "./styles/uiify.scoped.css": "./dist/styles/uiify.scoped.css",
     "./styles/uiify/*.css": "./dist/styles/uiify/*.css",
-    "./blocks": {
-      "types": "./dist/blocks/index.d.ts",
-      "import": "./dist/blocks/index.js"
-    },
     "./ai": {
       "types": "./dist/ai/index.d.ts",
       "import": "./dist/ai/index.js"

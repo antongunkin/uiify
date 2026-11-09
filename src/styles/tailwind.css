@@ -12,7 +12,7 @@
  * Tailwind emit the added keys even when the consumer's own code does not use them; a consumer
  * `@theme` after this import overrides them. The theme file sits in a sublayer of `theme`, so
  * Tailwind's theme values (and consumer overrides) win over it.
- * Control geometry and the solid fills are build-time aliases (`@theme inline reference`): the
+ * Control geometry and the default Button fill are build-time aliases (`@theme inline reference`): the
  * compiled recipes read shadcn's own knobs (`--spacing`, `--radius-lg`, `--text-sm`,
  * `--color-primary`), so a project changes `--radius`, `--primary`, `--spacing` or `--text-*`;
  * no `--control-*` variable exists at runtime.
@@ -97,7 +97,7 @@
 }
 
 /* Build-time aliases used by recipes: h-control-md, min-w-control-sm, px-control-x,
-   px-control-button, rounded-control, text-control, bg-primary-fill, bg-destructive-fill. `inline`
+   px-control-button, rounded-control, text-control, bg-primary-fill. `inline`
    writes each value into the utility and `reference` emits no variable, so the compiled CSS reads
    only standard keys. The values are shadcn/ui's "nova" controls (Button h-8 px-2.5 rounded-lg
    text-sm, bg-primary); UIify's own entry overrides this block in build/entry-own.css. */
@@ -110,7 +110,8 @@
   --spacing-control-button: calc(var(--spacing) * 2.5);
   --spacing-control-button-lg: calc(var(--spacing) * 2.5);
 
-  /* Text fields fill their container, as shadcn's Input, Textarea and Field do. */
+  /* Fields (text, combobox, slider) fill their container, as shadcn's Input, Textarea, Field and
+     Slider do. */
   --container-field: none;
   --radius-control: var(--radius-lg);
   --text-control: var(--text-sm);
@@ -120,14 +121,6 @@
   /* The default Button fills with the host's primary, as shadcn's default button does. */
   --color-primary-fill: var(--color-primary);
   --color-primary-fill-foreground: var(--color-primary-foreground);
-
-  /* Solid destructive fill: a true red at a fixed lightness so it stays saturated in dark mode
-     and carries light text in both themes. */
-  --color-destructive-fill: light-dark(
-    oklch(from var(--destructive) 55% 0.22 27deg),
-    oklch(from var(--destructive) 56% 0.2 h)
-  );
-  --color-destructive-fill-foreground: light-dark(var(--destructive-foreground), var(--foreground));
 }
 /* stylelint-enable custom-property-pattern */
 
@@ -148,4 +141,26 @@
 /* Not disabled — natively, by `data-disabled`, or (for a label) through its disabled control. */
 @custom-variant available (&:not(:disabled, [data-disabled], :disabled + *));
 @custom-variant unavailable (&:is(:disabled, [data-disabled], :disabled + *));
+
+/* Parts of a native range input (Slider): each engine names them differently, so every variant
+   writes one rule per engine; a selector list mixing them would be dropped whole. */
+@custom-variant range-thumb {
+  &::-webkit-slider-thumb {
+    @slot;
+  }
+  &::-moz-range-thumb {
+    @slot;
+  }
+}
+
+@custom-variant range-track {
+  &::-webkit-slider-runnable-track {
+    @slot;
+  }
+  &::-moz-range-track {
+    @slot;
+  }
+}
+
+@custom-variant range-progress (&::-moz-range-progress);
 /* stylelint-enable nesting-selector-no-missing-scoping-root */

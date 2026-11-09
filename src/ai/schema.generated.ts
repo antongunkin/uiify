@@ -2549,6 +2549,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         size: { enum: ["sm", "default"] },
+        variant: { enum: ["default", "highlight"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2873,6 +2874,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         placement: { enum: ["sticky", "static"] },
+        tone: { enum: ["default", "primary"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -4151,7 +4153,9 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
     "attribute.layout-value.15": {
       enum: ["auto", "start", "center", "end", "stretch", "baseline"],
     },
-    "attribute.layout-value.16": { enum: ["xs", "sm", "base", "lg", "xl", "2xl"] },
+    "attribute.layout-value.16": {
+      enum: ["xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl"],
+    },
     "attribute.layout-value.17": { enum: ["normal", "medium", "semibold"] },
     "attribute.layout-value.18": { enum: ["default", "muted", "primary", "danger"] },
     "attribute.layout-value.19": { enum: ["normal", "tight"] },

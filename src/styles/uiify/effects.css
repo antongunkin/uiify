@@ -10,82 +10,70 @@
  */
 
 @layer components.uiify {
-  /* Range pseudo-elements have engine-specific paint hooks the recipe compiler cannot emit. */
-  .uiify-slider {
-    --uiify-slider-track-size: 0.375rem;
-    --uiify-slider-track-radius: 999px;
-    --uiify-slider-thumb-size: 1.125rem;
-
-    padding-inline: 0.5625rem;
+  /* Progress parts are vendor pseudo-elements: the track and the fill are drawn in the theme
+     colours with round ends (the element clips them), and an indeterminate bar, which Blink and
+     WebKit draw without a fill part, slides a band across the track. */
+  .uiify-progress::-webkit-progress-bar {
+    background-color: var(--muted);
   }
 
-  .uiify-slider-client {
-    --uiify-slider-track-size: 0.375rem;
-    --uiify-slider-track-radius: 999px;
-    --uiify-slider-thumb-size: 1.125rem;
+  .uiify-progress::-webkit-progress-value {
+    background-color: var(--primary);
+    border-radius: inherit;
+    transition: inline-size 0.3s;
   }
 
-  .uiify-slider::-webkit-slider-runnable-track {
-    block-size: var(--uiify-slider-track-size);
-    border-radius: var(--uiify-slider-track-radius);
-    background: linear-gradient(
-      to right,
-      var(--primary) 0 var(--uiify-slider-progress, 50%),
-      var(--muted) var(--uiify-slider-progress, 50%) 100%
-    );
+  .uiify-progress::-moz-progress-bar {
+    background-color: var(--primary);
+    border-radius: inherit;
   }
 
-  .uiify-slider::-webkit-slider-thumb {
-    box-sizing: border-box;
-    inline-size: var(--uiify-slider-thumb-size);
-    block-size: var(--uiify-slider-thumb-size);
-    margin-block-start: calc((var(--uiify-slider-track-size) - var(--uiify-slider-thumb-size)) / 2);
-    border: 2px solid var(--background);
-    border-radius: 50%;
-    background: var(--primary);
-    box-shadow: 0 0 0 1px var(--primary);
-    appearance: none;
-  }
-
-  .uiify-slider::-moz-range-thumb {
-    box-sizing: border-box;
-    inline-size: var(--uiify-slider-thumb-size);
-    block-size: var(--uiify-slider-thumb-size);
-    border: 2px solid var(--background);
-    border-radius: 50%;
-    background: var(--primary);
-    box-shadow: 0 0 0 1px var(--primary);
-  }
-
-  .uiify-slider::-moz-range-track {
-    block-size: var(--uiify-slider-track-size);
-    border: 0;
-    border-radius: var(--uiify-slider-track-radius);
-    background: linear-gradient(
-      to right,
-      var(--primary) 0 var(--uiify-slider-progress, 50%),
-      var(--muted) var(--uiify-slider-progress, 50%) 100%
-    );
-  }
-
-  .uiify-slider::-moz-range-progress {
-    background: transparent;
-  }
-
-  .uiify-slider:dir(rtl)::-webkit-slider-runnable-track {
+  .uiify-progress:indeterminate {
     background-image: linear-gradient(
-      to left,
-      var(--primary) 0 var(--uiify-slider-progress, 50%),
-      var(--muted) var(--uiify-slider-progress, 50%) 100%
+      90deg,
+      transparent,
+      var(--primary) 40%,
+      var(--primary) 60%,
+      transparent
     );
+    background-repeat: no-repeat;
+    background-size: 40% 100%;
   }
 
-  .uiify-slider:dir(rtl)::-moz-range-track {
-    background-image: linear-gradient(
-      to left,
-      var(--primary) 0 var(--uiify-slider-progress, 50%),
-      var(--muted) var(--uiify-slider-progress, 50%) 100%
-    );
+  .uiify-progress:indeterminate::-webkit-progress-bar {
+    background-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .uiify-progress:indeterminate {
+      animation: uiify-progress-slide 1.4s ease-in-out infinite;
+    }
+
+    @keyframes uiify-progress-slide {
+      /* A percentage offsets by (track - band) of it: -67% and 167% put the 40% band fully
+         outside the track at both ends, so the loop restarts unseen. */
+      from {
+        background-position: -67% 0;
+      }
+
+      to {
+        background-position: 167% 0;
+      }
+    }
+  }
+
+  /* Slider's fill up to its thumb, with no script: Blink and WebKit have no progress part, so the
+     thumb's border-image draws a track-high band towards the start, and the input's overflow
+     clips it at its edge, where the root's round `after:` cap starts the fill (Gecko uses
+     `range-progress:`). The band is the text colour, like the cap; 0.25rem is half the h-2 track. */
+  .uiify-slider-input::-webkit-slider-thumb {
+    border-image: linear-gradient(currentcolor 0 0) 0 1 / calc(50% - 0.25rem) 0 calc(50% - 0.25rem)
+      100vw / 0 0 0 100vw;
+  }
+
+  .uiify-slider-input:dir(rtl)::-webkit-slider-thumb {
+    border-image-width: calc(50% - 0.25rem) 100vw calc(50% - 0.25rem) 0;
+    border-image-outset: 0 100vw 0 0;
   }
 
   /* These positions follow per-instance range/mark values and cannot be fixed recipe utilities. */
@@ -95,22 +83,20 @@
     inline-size: calc(var(--uiify-slider-end) - var(--uiify-slider-start));
   }
 
-  /* Preserve the native track's 9px gutter; the closest standard utility is 10px. */
+  /* The track box spans the thumb centre's travel, as Slider's: inset 4px, padding 2px, half of
+     the 28px thumb. A single value fills from the start of the visible track, as Slider does. */
   .uiify-slider-client > .uiify-slider-track {
-    inset-inline: 0.5625rem;
+    inset-inline: 1.25rem;
   }
 
-  /* Keep the measured 18px thumb and its single shadow ring, which the standard scale lacks. */
-  .uiify-slider-client .uiify-slider-client-visual-thumb {
-    inline-size: var(--uiify-slider-thumb-size);
-    block-size: var(--uiify-slider-thumb-size);
-    box-shadow: 0 0 0 1px var(--primary);
+  .uiify-slider-client:not([data-range]) .uiify-slider-range {
+    inset-inline-start: -1.25rem;
+    inline-size: calc(var(--uiify-slider-end) + 1.25rem);
   }
 
-  /* Keep the error panel's border and wash blended with the surface, as in the CSS recipe. */
+  /* The error panel has no border: a wash of the destructive colour blended with the surface. */
   .uiify-form-error-summary {
-    border-color: color-mix(in oklab, var(--destructive) 45%, var(--border));
-    background-color: color-mix(in oklab, var(--destructive) 4%, var(--background));
+    background-color: color-mix(in oklab, var(--destructive) 10%, var(--background));
   }
 
   .uiify-form-error-summary-title {
@@ -127,7 +113,7 @@
   }
 
   .uiify-slider-client .uiify-slider-mark {
-    inset-block-start: calc(50% + 0.75rem);
+    inset-block-start: calc(50% + 1rem);
     inset-inline-start: var(--uiify-slider-position);
     translate: -50% 0;
   }
@@ -145,12 +131,6 @@
     translate: -50% -50%;
   }
 
-  /* Focus is on an invisible native input while its visible track receives the ring. */
-  .uiify-slider-client:has(> .uiify-slider-thumb:focus-visible) > .uiify-slider-track {
-    outline: 3px solid var(--ring);
-    outline-offset: 0.25rem;
-  }
-
   /* The enhanced native inputs clip opposite halves of a range as values change. */
   .uiify-slider-client[data-enhanced][data-range] > .uiify-slider-thumb:first-of-type {
     clip-path: inset(0 calc(100% - var(--uiify-slider-middle)) 0 0);
@@ -166,10 +146,10 @@
   }
 
   .uiify-slider-client[data-orientation="vertical"] > .uiify-slider-track {
-    inset-inline: 0.5625rem;
+    inset-inline: 1.25rem;
     inset-block: 50% auto;
     inline-size: auto;
-    block-size: var(--uiify-slider-track-size);
+    block-size: 0.5rem;
     translate: 50% 0;
   }
 
@@ -192,7 +172,7 @@
 
   .uiify-slider-client[data-orientation="vertical"] > .uiify-slider-track > .uiify-slider-mark {
     inset-block-start: var(--uiify-slider-position);
-    inset-inline: calc(50% + 0.75rem) auto;
+    inset-inline: calc(50% + 1rem) auto;
     justify-items: start;
     writing-mode: horizontal-tb;
     translate: 0 -50%;
@@ -552,27 +532,19 @@
     padding: var(--border-width);
   }
 
+  /* Tinted and transparent variants have no light layers: a white wash would glow on a tint. */
   .uiify-button[data-variant="outline"]::before,
-  .uiify-button:is([data-variant="ghost"], [data-variant="link"])::before,
-  .uiify-button:is([data-variant="ghost"], [data-variant="link"])::after {
+  .uiify-button:is(
+      [data-variant="ghost"],
+      [data-variant="link"],
+      [data-variant="destructive"]
+    )::before,
+  .uiify-button:is(
+      [data-variant="ghost"],
+      [data-variant="link"],
+      [data-variant="destructive"]
+    )::after {
     content: none;
-  }
-
-  /* Destructive lowers the fill's lightness on hover/press, keeping its chroma — a relative
-     color utilities cannot express. */
-  .uiify-button[data-variant="destructive"] {
-    --uiify-button-fill: --theme(--color-destructive-fill);
-    --uiify-button-wash: rgb(255 255 255 / 15%);
-  }
-
-  @media (any-hover: hover) and (any-pointer: fine) {
-    .uiify-button[data-variant="destructive"]:hover:not(:disabled, [data-disabled]) {
-      background-color: oklch(from var(--uiify-button-fill) calc(l - 0.05) c h);
-    }
-  }
-
-  .uiify-button[data-variant="destructive"]:active:not(:disabled, [data-disabled]) {
-    background-color: oklch(from var(--uiify-button-fill) calc(l - 0.09) c h);
   }
 
   .uiify-button:is([data-selected], [aria-pressed="true"], [aria-current="page"], :checked + *) {

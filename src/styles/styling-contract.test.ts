@@ -65,7 +65,10 @@ describe("strict styling contract", () => {
       "layout/declarations.ts",
     ]
       .map((path) => readFileSync(resolve(stylesRoot, path), "utf8"))
-      .join("\n");
+      .join("\n")
+      // Text and Heading sizes read Tailwind's own `--text-*` keys with Tailwind's value as the
+      // fallback, so layout CSS works without Tailwind too (M13 D3).
+      .replace(/var\(--text-(?:\$\{size\}|xs|sm|base|lg|xl|[234]xl), [^)]+\)/g, "");
 
     expect(migratedSources).not.toMatch(/var\(--(?:space|text)-/);
   });

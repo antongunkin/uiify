@@ -15,6 +15,15 @@ export interface SliderOwnProps {
   readonly max?: number;
   readonly step?: number;
   readonly disabled?: boolean;
+  /**
+   * `className` and `style` style the root (it draws the track); every other native prop and
+   * `ref` go to the range input. `input` reaches the input's own class and style.
+   */
+  readonly slotProps?: SliderSlotProps;
+}
+
+export interface SliderSlotProps {
+  readonly input?: SlotProps<"input">;
 }
 
 export type SliderClientValue = number | readonly [number, number];

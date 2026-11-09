@@ -7,7 +7,7 @@ import { uiify } from "./uiify/index.js";
 /**
  * M8 round 4: in a shadcn/Tailwind project a UIify Input sat at 24rem inside a card where shadcn's
  * Input fills the width. Under the adapter the field family fills its container like shadcn's
- * (`w-full`, no cap); UIify's own look keeps its 24rem field width.
+ * (`w-full`, no cap). UIify's own look fills too since 2026-11-09 (it stopped at 24rem).
  */
 const roots = [
   ".uiify-field",
@@ -17,6 +17,10 @@ const roots = [
   ".uiify-form-error-summary",
   ".uiify-date-picker",
   ".uiify-color-picker-surface",
+  // M13 D4: Combobox and both Sliders join the field width.
+  ".uiify-combobox",
+  ".uiify-slider",
+  ".uiify-slider-client",
 ];
 
 async function maxWidths(entry: string) {
@@ -40,8 +44,8 @@ describe("field width", () => {
     for (const root of roots) expect(widths[root], root).toEqual(["none"]);
   });
 
-  it("keeps UIify's own 24rem field width", async () => {
+  it("fills its container in UIify's own look too (was 24rem until 2026-11-09)", async () => {
     const widths = await maxWidths("entry-own.css");
-    for (const root of roots) expect(widths[root], root).toEqual(["calc(var(--spacing) * 96)"]);
+    for (const root of roots) expect(widths[root], root).toEqual(["none"]);
   });
 });

@@ -1,4 +1,4 @@
-import type { CardSize } from "../../components/card/types.js";
+import type { CardSize, CardVariant } from "../../components/card/types.js";
 import { defineRecipe } from "../define.js";
 
 /**
@@ -9,7 +9,7 @@ import { defineRecipe } from "../define.js";
  * `as="h2"`/`as="p"`.
  */
 export const card = defineRecipe<
-  { size: CardSize },
+  { size: CardSize; variant: CardVariant },
   "header" | "title" | "description" | "action" | "content" | "footer"
 >("card", {
   parts: ["header", "title", "description", "action", "content", "footer"],
@@ -27,6 +27,12 @@ export const card = defineRecipe<
       // `default` renders no `data-size`; the base styles it.
       default: "",
       sm: { root: "gap-3 p-3", title: "text-sm" },
+    },
+    variant: {
+      // `default` renders no `data-variant`; the base styles it.
+      default: "",
+      // The card to notice: a primary rim and a raised shadow, no new colour.
+      highlight: "border-2 border-primary shadow-lg",
     },
   },
 });

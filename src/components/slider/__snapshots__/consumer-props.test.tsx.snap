@@ -3,7 +3,8 @@
 exports[`preserves default slider DOM 1`] = `
 {
   "native": [
-    "input aria-label="Volume" class="uiify-slider" max="100" min="0" step="1" style="--uiify-slider-progress:20%" type="range" value="20"",
+    "div class="uiify-slider"",
+    "input aria-label="Volume" class="uiify-slider-input" max="100" min="0" step="1" type="range" value="20"",
   ],
   "range": [
     "div class="uiify-slider-client" data-orientation="horizontal" data-range="" data-state="range" role="group" style="--uiify-slider-start:20%;--uiify-slider-end:80%;--uiify-slider-middle:50%"",

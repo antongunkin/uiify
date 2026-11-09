@@ -1,6 +1,6 @@
 # hero
 
-Binding: hero
+Binding: gap
 
 Introduce the product and its next action.
 
@@ -14,7 +14,7 @@ Do not lead with a generic slogan, a large decorative image, or multiple equally
 
 ## Structure
 
-Start with one specific `h1` that states the page's purpose, one supporting sentence, and one main action. Add a secondary action only for a different useful path. Use an image only when it shows the product or subject and supports the page's claim; prefer existing assets from the project, preserve the focal point across responsive crops, and provide suitable alternative text. If no suitable asset exists, keep the layout complete without inventing one. Use the `Hero` block: `title`, `description`, `actions` (main action first) and optional `media`; it keeps this reading order.
+Start with one specific `h1` that states the page's purpose, one supporting sentence, and one main action. Add a secondary action only for a different useful path. Use an image only when it shows the product or subject and supports the page's claim; prefer existing assets from the project, preserve the focal point across responsive crops, and provide suitable alternative text. If no suitable asset exists, keep the layout complete without inventing one. Compose it from `Stack`, `Heading`, `Text` and `Button` in this reading order: heading, supporting sentence, actions (main action first), then optional media.
 
 ## Responsive
 
@@ -31,6 +31,10 @@ Confirm there is one `h1`, the main action is visible at 390×844 and 1440×900,
 ## Common mistake
 
 A generic slogan, decorative gradient, and two equal buttons do not explain the page or the next step.
+
+## Custom implementation
+
+This is an app-level composition; UIify does not ship a hero component. Compose it from `Stack`, `Heading` (level 1), `Text` and `Button`, in reading order: heading, supporting sentence, actions with the main action first.
 
 Related laws: references/laws/von-restorff.md, references/laws/accessibility.md
 

@@ -35,6 +35,13 @@
 | `max` | `number` | no |  |
 | `step` | `number` | no |  |
 | `disabled` | `boolean` | no |  |
+| `slotProps` | `SliderSlotProps` | no | `className` and `style` style the root (it draws the track); every other native prop and `ref` go to the range input. `input` reaches the input's own class and style. |
+
+### SliderSlotProps
+
+| Member | Type | Required | Description |
+| --- | --- | --- | --- |
+| `input` | `SlotProps<"input">` | no |  |
 
 ### SliderClientOwnProps
 

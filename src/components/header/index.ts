@@ -4,4 +4,5 @@ export type {
   HeaderClientState,
   HeaderPlacement,
   HeaderProps,
+  HeaderTone,
 } from "./types.js";

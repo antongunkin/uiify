@@ -11,7 +11,7 @@ describe("public typography parts", () => {
         <Heading level={1} size="sm">
           Title
         </Heading>
-        <Text as="span" size="2xl">
+        <Text as="span" size="3xl">
           Detail
         </Text>
       </>,

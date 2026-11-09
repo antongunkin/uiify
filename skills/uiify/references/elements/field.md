@@ -30,13 +30,13 @@ Native constraint validation (`required`, `type`) works without JavaScript. For 
 
 ## Verify
 
-Click the label: its control gets focus. In the accessibility tree the control's description includes the error text when invalid. Check required, disabled, and long-message states.
+Click the label: its control gets focus. When invalid, the control description includes the error text. Check required, disabled, and long-message states.
 
 ## Common mistake
 
 A description or error whose `id` is missing from the control's `aria-describedby` is never read (`screen-field-description`). `htmlFor` must equal the control's `id`. `FieldGroup` is a size container: in a shrink-to-fit context (inline flex row, popover) give it a width or it collapses.
 
-Example: `references/examples/field-validation.md`.
+Example: `node_modules/@gunkin/uiify/agents/examples/forms/field-validation.tsx`.
 
 Related laws: references/laws/proximity.md, references/laws/accessibility.md
 
