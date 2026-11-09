@@ -16,7 +16,7 @@ In a monorepo, link from the app's folder to the hoisted package (`../../../../n
 
 ## Upgrade the package
 
-Use `npm install @gunkin/uiify@latest`; `npm update` does not cross `0.0.x` alpha versions. Then run `sync-agents.mjs --write`, then `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` and `tsc`; fix what they report. A name a release removed fails `tsc` on every screen that still uses it.
+Use `npm install @gunkin/uiify@latest`; `npm update` does not cross `0.0.x` alpha versions. Then run `sync-agents.mjs --write`, then `node .agents/skills/uiify/scripts/check-screens.mjs <dir>`, which runs `tsc` too; fix what it reports. A name a release removed fails `tsc` on every screen that still uses it.
 
 ## React 19.3
 

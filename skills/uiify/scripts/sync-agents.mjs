@@ -146,7 +146,7 @@ async function sync() {
   }
 
   if (write && upgraded) {
-    console.log("Run `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` and `tsc`; fix what they report.");
+    console.log("Run `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` (it runs `tsc` too) and fix what it reports.");
   }
   process.exitCode = failed ? 1 : 0;
 }

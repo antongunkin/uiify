@@ -38,4 +38,4 @@ Never style `uiify-*` classes, edit `node_modules`, copy a UIify component into 
 
 ## After the edit
 
-Run `node <skill>/scripts/check-screens.mjs <dir>` and `tsc`. Report in one line what changed and in which file.
+Run `node <skill>/scripts/check-screens.mjs <dir>` once, when the edits are done; it runs `tsc` too. Report in one line what changed and in which file.

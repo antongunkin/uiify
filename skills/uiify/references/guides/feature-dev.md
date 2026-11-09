@@ -32,7 +32,7 @@ same `action` and `method`; the handler is yours.
 ## Ship
 
 CI runs the checks before the build: `node .agents/skills/uiify/scripts/sync-agents.mjs --check`,
-`node .agents/skills/uiify/scripts/check-screens.mjs <dir>` and `tsc --noEmit`. Add the steps if CI lacks them.
+`node .agents/skills/uiify/scripts/check-screens.mjs <dir>`, which runs `tsc --noEmit` too. Add the steps if CI lacks them.
 
 Run the build. Its route list has no `/uiify/*`, and a text that only another design has is not in the output.
 

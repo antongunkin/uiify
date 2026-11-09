@@ -18,5 +18,5 @@
 - Roles. To create, change or choose a feature as the PM, read `.agents/skills/uiify/references/guides/feature.md`; to connect, extend or ship one as the developer, read `feature-dev.md` next to it. The role comes from the request or a `uiify role:` line in the person's own instructions; without either, work as the developer. Do not ask.
 - A request about a selected element (from a visual editor): first read `.agents/skills/uiify/references/guides/visual-edits.md`.
 - The project's `tsconfig` has `strict` and `noUnusedParameters`; without them `tsc` misses a slot that a design takes but does not render.
-- After every change run `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` and `tsc`.
+- When the edits are done, run `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` once: it runs the project's `tsc` too and ends with `screens: ok, tsc: ok`.
 - Report a check as passed only if you ran it in this session. When the checks pass, answer in one line.
