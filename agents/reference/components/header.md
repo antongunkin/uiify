@@ -13,8 +13,8 @@
 
 ## Exports
 
-- Runtime: `Header`, `HeaderRoot`
-- Types: `HeaderClientProps`, `HeaderClientState`, `HeaderPlacement`, `HeaderRootProps`
+- Runtime: `Header`
+- Types: `HeaderClientProps`, `HeaderClientState`, `HeaderPlacement`, `HeaderProps`
 
 ## Values
 
@@ -23,7 +23,7 @@
 
 ## Props and shapes
 
-### HeaderRootProps
+### HeaderProps
 
 Extends: `ComponentPropsWithRef<"header">`
 
@@ -33,7 +33,7 @@ Extends: `ComponentPropsWithRef<"header">`
 
 ### HeaderClientProps
 
-Extends: `HeaderRootProps`
+Extends: `HeaderProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |

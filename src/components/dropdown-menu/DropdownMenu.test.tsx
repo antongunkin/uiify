@@ -1,6 +1,6 @@
 import { createRef, Profiler, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 import { DropdownMenu } from "./DropdownMenu.js";
@@ -548,7 +548,8 @@ describe("DropdownMenu", () => {
     const trigger = screen.getByRole("button", { name: "Menu" });
     fireEvent.keyDown(trigger, { key: "ArrowDown" });
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    await vi.waitFor(() => {
+    // Focus moves after the open commit; RTL's waitFor flushes that update inside act().
+    await waitFor(() => {
       expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Alpha" }));
     });
   });
@@ -566,7 +567,8 @@ describe("DropdownMenu", () => {
     const trigger = screen.getByRole("button", { name: "Menu" });
     fireEvent.keyDown(trigger, { key: "ArrowUp" });
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    await vi.waitFor(() => {
+    // Focus moves after the open commit; RTL's waitFor flushes that update inside act().
+    await waitFor(() => {
       expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Beta" }));
     });
   });

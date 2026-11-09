@@ -1,19 +1,27 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
-import { Breadcrumb } from "./Breadcrumb.js";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "./Breadcrumb.js";
 
 describe("Breadcrumb", () => {
   it("preserves custom navigation labels and styling overrides", () => {
     render(
-      <Breadcrumb.Root aria-label="Location" data-uiify-breadcrumb="override">
-        <Breadcrumb.List data-part="override">
-          <Breadcrumb.Item>
-            <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
-            <Breadcrumb.Separator />
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb aria-label="Location" data-uiify-breadcrumb="override">
+        <BreadcrumbList data-part="override">
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
     expect(screen.getByRole("navigation", { name: "Location" }).className).toBe("uiify-breadcrumb");
     expect(
@@ -25,18 +33,16 @@ describe("Breadcrumb", () => {
 
   it("renders nav > ol > li structure", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Breadcrumb.Link href="/docs" current>
-              Docs
-            </Breadcrumb.Link>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Docs</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
     expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeTruthy();
     expect(screen.getByRole("list")).toBeTruthy();
@@ -44,66 +50,65 @@ describe("Breadcrumb", () => {
   });
 
   it("uses label defaults and lets aria-label override the root label", () => {
-    const { rerender } = render(<Breadcrumb.Root labels={{ root: "Навигация" }} />);
+    const { rerender } = render(<Breadcrumb labels={{ root: "Навигация" }} />);
     expect(screen.getByRole("navigation", { name: "Навигация" })).toBeTruthy();
-    rerender(<Breadcrumb.Root aria-label="Location" labels={{ root: "Навигация" }} />);
+    rerender(<Breadcrumb aria-label="Location" labels={{ root: "Навигация" }} />);
     expect(screen.getByRole("navigation", { name: "Location" })).toBeTruthy();
   });
 
-  it("sets aria-current=page on current link", () => {
+  it("renders the current page as a span with aria-current=page, not a link", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Link href="/docs" current>
-              Docs
-            </Breadcrumb.Link>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbPage>Docs</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
-    expect(screen.getByRole("link", { name: "Docs" }).getAttribute("aria-current")).toBe("page");
+    const page = screen.getByText("Docs");
+    expect(page.localName).toBe("span");
+    expect(page.getAttribute("aria-current")).toBe("page");
+    expect(screen.queryByRole("link")).toBeNull();
   });
 
   it("renders separator as aria-hidden", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Separator>/</Breadcrumb.Separator>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbSeparator>/</BreadcrumbSeparator>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
-    expect(screen.getByText("/").getAttribute("aria-hidden")).toBe("true");
+    const separator = screen.getByText("/");
+    expect(separator.localName).toBe("li");
+    expect(separator.getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("accepts current-link native overrides", () => {
+  it("accepts current-page native overrides", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Link href="/docs" current aria-current="step" data-current="bogus">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbPage aria-current="step" data-current="bogus">
               Docs
-            </Breadcrumb.Link>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
-    const link = screen.getByRole("link", { name: "Docs" });
-    expect(link.getAttribute("aria-current")).toBe("step");
-    expect(link.getAttribute("data-current")).toBe("bogus");
+    const page = screen.getByText("Docs");
+    expect(page.getAttribute("aria-current")).toBe("step");
+    expect(page.getAttribute("data-current")).toBe("bogus");
   });
 
   it("accepts separator native overrides", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Separator aria-hidden={false}>/</Breadcrumb.Separator>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbSeparator aria-hidden={false}>/</BreadcrumbSeparator>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
     expect(screen.getByText("/").getAttribute("aria-hidden")).toBe("false");
   });
@@ -111,13 +116,13 @@ describe("Breadcrumb", () => {
   it("throws when maxItems is given without the data-driven items prop", () => {
     expect(() =>
       render(
-        <Breadcrumb.Root>
-          <Breadcrumb.List maxItems={4}>
-            <Breadcrumb.Item>
-              <Breadcrumb.Link href="/1">One</Breadcrumb.Link>
-            </Breadcrumb.Item>
-          </Breadcrumb.List>
-        </Breadcrumb.Root>,
+        <Breadcrumb>
+          <BreadcrumbList maxItems={4}>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/1">One</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>,
       ),
     ).toThrow(/maxItems requires the data-driven `items` prop/);
   });
@@ -131,25 +136,21 @@ describe("Breadcrumb", () => {
       { key: "5", href: "/5", label: "Five", current: true },
     ];
     const { container } = render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List
-          items={items}
-          itemsAfterCollapse={1}
-          itemsBeforeCollapse={1}
-          maxItems={4}
-        />
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList items={items} itemsAfterCollapse={1} itemsBeforeCollapse={1} maxItems={4} />
+      </Breadcrumb>,
     );
     expect(screen.getByLabelText("Show collapsed breadcrumbs")).toBeTruthy();
     expect(screen.getByRole("link", { name: "One" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Five" })).toBeTruthy();
-    expect(container.querySelector("li li")).toBeNull();
+    expect(screen.getByText("Five").getAttribute("aria-current")).toBe("page");
+    // Hidden links sit in their own list items inside the disclosure's list, never directly in an li.
+    expect(container.querySelector("li > li")).toBeNull();
   });
 
   it("allows the collapsed breadcrumbs summary label to be translated", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List
+      <Breadcrumb>
+        <BreadcrumbList
           items={[
             { key: "1", label: "One" },
             { key: "2", label: "Two" },
@@ -158,7 +159,7 @@ describe("Breadcrumb", () => {
           labels={{ root: "Breadcrumb", showCollapsed: "Afficher les éléments masqués" }}
           maxItems={2}
         />
-      </Breadcrumb.Root>,
+      </Breadcrumb>,
     );
     expect(screen.getByLabelText("Afficher les éléments masqués")).toBeTruthy();
   });
@@ -174,12 +175,9 @@ describe("Breadcrumb", () => {
     }
 
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List
-          items={routeSegments.map(toItemData)}
-          separator={<Breadcrumb.Separator>/</Breadcrumb.Separator>}
-        />
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList items={routeSegments.map(toItemData)} separator="/" />
+      </Breadcrumb>,
     );
 
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
@@ -191,30 +189,32 @@ describe("Breadcrumb", () => {
 
   it("routes generated item and link props by each item's key", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List
+      <Breadcrumb>
+        <BreadcrumbList
           items={[
             { href: "/", key: "home", label: "Home" },
             { current: true, href: "/docs", key: "docs", label: "Docs" },
           ]}
           slotProps={{
             item: { byItemValue: { docs: { className: "docs-item", "data-testid": "docs-item" } } },
-            link: { byItemValue: { docs: { className: "docs-link", "data-testid": "docs-link" } } },
+            link: { byItemValue: { home: { className: "home-link", "data-testid": "home-link" } } },
+            page: { byItemValue: { docs: { className: "docs-page", "data-testid": "docs-page" } } },
           }}
         />
-      </Breadcrumb.Root>,
+      </Breadcrumb>,
     );
 
     expect(screen.getByTestId("docs-item").classList.contains("docs-item")).toBe(true);
-    expect(screen.getByTestId("docs-link").classList.contains("docs-link")).toBe(true);
-    expect(screen.getByTestId("docs-link").getAttribute("href")).toBe("/docs");
-    expect(screen.getByTestId("docs-link").getAttribute("aria-current")).toBe("page");
+    expect(screen.getByTestId("home-link").classList.contains("home-link")).toBe(true);
+    expect(screen.getByTestId("home-link").getAttribute("href")).toBe("/");
+    expect(screen.getByTestId("docs-page").classList.contains("docs-page")).toBe(true);
+    expect(screen.getByTestId("docs-page").getAttribute("aria-current")).toBe("page");
   });
 
   it("routes props to the collapsed wrapper, disclosure and hidden item links", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List
+      <Breadcrumb>
+        <BreadcrumbList
           items={[
             { href: "/", key: "home", label: "Home" },
             { href: "/one", key: "one", label: "One" },
@@ -234,7 +234,7 @@ describe("Breadcrumb", () => {
             },
           }}
         />
-      </Breadcrumb.Root>,
+      </Breadcrumb>,
     );
 
     expect(screen.getByTestId("ellipsis-item").tagName).toBe("LI");
@@ -246,46 +246,47 @@ describe("Breadcrumb", () => {
     expect(screen.getByTestId("hidden-link").getAttribute("href")).toBe("/one");
   });
 
-  it("lets the standalone ellipsis style its generated list item and glyph", () => {
+  it("renders the standalone ellipsis as a hidden span the consumer places in an item", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Ellipsis
-            slotProps={{
-              item: { className: "ellipsis-item", "data-testid": "standalone-ellipsis-item" },
-              ellipsis: { className: "ellipsis-glyph", "data-testid": "standalone-ellipsis-glyph" },
-            }}
-          />
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem data-testid="standalone-ellipsis-item">
+            <BreadcrumbEllipsis
+              className="ellipsis-glyph"
+              data-testid="standalone-ellipsis-glyph"
+            />
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
 
-    expect(screen.getByTestId("standalone-ellipsis-item").classList.contains("ellipsis-item")).toBe(
-      true,
-    );
-    expect(
-      screen.getByTestId("standalone-ellipsis-glyph").classList.contains("ellipsis-glyph"),
-    ).toBe(true);
+    const glyph = screen.getByTestId("standalone-ellipsis-glyph");
+    expect(glyph.localName).toBe("span");
+    expect(glyph.getAttribute("aria-hidden")).toBe("true");
+    expect(glyph.classList.contains("ellipsis-glyph")).toBe(true);
+    expect(glyph.parentElement).toBe(screen.getByTestId("standalone-ellipsis-item"));
   });
 
   it("marks the current item from data-driven items", () => {
     render(
-      <Breadcrumb.Root>
-        <Breadcrumb.List items={[{ current: true, href: "/docs", key: "1", label: "Docs" }]} />
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList items={[{ current: true, href: "/docs", key: "1", label: "Docs" }]} />
+      </Breadcrumb>,
     );
-    expect(screen.getByRole("link", { name: "Docs" }).getAttribute("aria-current")).toBe("page");
+    const page = screen.getByText("Docs");
+    expect(page.localName).toBe("span");
+    expect(page.getAttribute("aria-current")).toBe("page");
   });
 
   it("SSR renders without throwing", () => {
     const html = assertSSRRenderable(
-      <Breadcrumb.Root>
-        <Breadcrumb.List>
-          <Breadcrumb.Item>
-            <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
-          </Breadcrumb.Item>
-        </Breadcrumb.List>
-      </Breadcrumb.Root>,
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>,
     );
     expect(html).toContain('aria-label="Breadcrumb"');
   });

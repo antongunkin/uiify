@@ -13,29 +13,31 @@ import {
 } from "../TableShell.js";
 import { TableBody } from "./TableBody.js";
 import { TableRow } from "./TableRow.js";
-import { TableColumnHeader } from "./TableColumnHeader.js";
+import { TableHead } from "./TableHead.js";
 import { TableRowSelect, TableSelectAll } from "./TableSelection.js";
 import { TableExpandedRow, TableExpandTrigger } from "./TableExpansion.js";
 import { TableProvider } from "./table-context.js";
 import { createTableStore } from "../table-store.js";
-import type { TableClientRootProps } from "../types.js";
+import type { TableClientProps } from "../types.js";
 
 export type { SelectionMode, SortDescriptor } from "../types.js";
 export {
   TableCaption,
   TableCell,
   TableHeader,
+  TableFooter,
+  TableRowHeader,
   TableBody,
   TableRow,
-  TableColumnHeader,
+  TableHead,
   TableSelectAll,
   TableRowSelect,
   TableExpandedRow,
   TableExpandTrigger,
 };
 
-export function TableRoot<TAs extends ElementType = "table">(
-  props: TableClientRootProps<TAs>,
+export function Table<TAs extends ElementType = "table">(
+  props: TableClientProps<TAs>,
 ): ReactElement | null {
   const {
     as,
@@ -57,7 +59,7 @@ export function TableRoot<TAs extends ElementType = "table">(
     selectionMode = "none",
     sortDescriptor,
     ...consumerProps
-  } = props as TableClientRootProps<"table">;
+  } = props as TableClientProps<"table">;
 
   const instanceId = useId();
   const [expandedKeys, setExpandedKeys] = useControllableState<Set<string>>({
@@ -126,20 +128,4 @@ export function TableRoot<TAs extends ElementType = "table">(
 
   return <TableProvider value={contextValue}>{element}</TableProvider>;
 }
-TableRoot.displayName = "TableRoot";
-
-export const Table = {
-  Footer: TableFooter,
-  RowHeader: TableRowHeader,
-  ExpandTrigger: TableExpandTrigger,
-  ExpandedRow: TableExpandedRow,
-  Body: TableBody,
-  Caption: TableCaption,
-  Cell: TableCell,
-  ColumnHeader: TableColumnHeader,
-  Header: TableHeader,
-  Root: TableRoot,
-  Row: TableRow,
-  RowSelect: TableRowSelect,
-  SelectAll: TableSelectAll,
-};
+Table.displayName = "Table";

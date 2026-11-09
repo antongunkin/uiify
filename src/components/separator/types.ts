@@ -10,7 +10,7 @@ export interface SeparatorOwnProps {
 
 /**
  * A native hr: a thematic break exposed as a separator. For a purely decorative line pass
- * role="presentation" (and aria-orientation={undefined} when vertical).
+ * role="none" (and aria-orientation={undefined} when vertical).
  */
 export type SeparatorProps = SeparatorOwnProps &
   Omit<ComponentPropsWithRef<"hr">, keyof SeparatorOwnProps>;

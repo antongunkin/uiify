@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`preserves default DrawerPanel DOM 1`] = `
+exports[`preserves default Drawer DOM 1`] = `
 [
   [
     "div",

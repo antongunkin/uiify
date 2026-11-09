@@ -17,11 +17,13 @@ export type UiType =
   | "AspectRatio"
   | "Avatar"
   | "Badge"
-  | "Breadcrumb.Item"
-  | "Breadcrumb.Link"
-  | "Breadcrumb.List"
-  | "Breadcrumb.Root"
-  | "Breadcrumb.Separator"
+  | "Breadcrumb"
+  | "BreadcrumbEllipsis"
+  | "BreadcrumbItem"
+  | "BreadcrumbLink"
+  | "BreadcrumbList"
+  | "BreadcrumbPage"
+  | "BreadcrumbSeparator"
   | "Button"
   | "Card"
   | "CardAction"
@@ -46,17 +48,16 @@ export type UiType =
   | "DialogHeader"
   | "DialogTitle"
   | "DialogTrigger"
-  | "Drawer.Close"
-  | "Drawer.Content"
-  | "Drawer.Description"
-  | "Drawer.Handle"
-  | "Drawer.Root"
-  | "Drawer.Title"
-  | "Drawer.Trigger"
-  | "DrawerPanel"
-  | "DrawerNativeTrigger"
-  | "DrawerNativeClose"
-  | "DrawerNativeContent"
+  | "Drawer"
+  | "DrawerClose"
+  | "DrawerContent"
+  | "DrawerTrigger"
+  | "DrawerBody"
+  | "DrawerDescription"
+  | "DrawerFooter"
+  | "DrawerGrabber"
+  | "DrawerHeader"
+  | "DrawerTitle"
   | "Empty"
   | "EmptyContent"
   | "EmptyDescription"
@@ -75,7 +76,7 @@ export type UiType =
   | "FileUpload.Root"
   | "FileUpload.Trigger"
   | "Form"
-  | "Header.Root"
+  | "Header"
   | "Input"
   | "InputGroup"
   | "InputGroupAddon"
@@ -110,25 +111,27 @@ export type UiType =
   | "Slider"
   | "Spinner"
   | "Switch"
-  | "Table.Footer"
-  | "Table.RowHeader"
-  | "Table.Body"
-  | "Table.Caption"
-  | "Table.Cell"
-  | "Table.ColumnHeader"
-  | "Table.Header"
-  | "Table.Root"
-  | "Table.Row"
+  | "Table"
+  | "TableFooter"
+  | "TableRowHeader"
+  | "TableBody"
+  | "TableCaption"
+  | "TableCell"
+  | "TableHead"
+  | "TableHeader"
+  | "TableRow"
   | "Tabs"
   | "TabsContent"
   | "TabsList"
   | "TabsTrigger"
   | "Textarea"
+  | "ToastProvider"
+  | "ToastViewport"
   | "Toggle"
-  | "Tooltip.Content"
-  | "Tooltip.Provider"
-  | "Tooltip.Root"
-  | "Tooltip.Trigger"
+  | "Tooltip"
+  | "TooltipContent"
+  | "TooltipProvider"
+  | "TooltipTrigger"
   | "Box"
   | "Section"
   | "Stack"
@@ -416,7 +419,32 @@ export interface BadgeProps {
 }
 
 /**
- * Place inside `Breadcrumb.Root`.
+ * Show the current page within a hierarchy of parent pages.
+ * Use when: Show the current page within a hierarchy of parent pages.
+ * Avoid when: The task does not need this pattern; do not add it only for catalog coverage.
+ */
+export interface BreadcrumbProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface BreadcrumbEllipsisProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+/**
+ * Place inside `BreadcrumbList`.
  */
 export interface BreadcrumbItemProps {
   readonly id?: string;
@@ -429,11 +457,7 @@ export interface BreadcrumbItemProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Breadcrumb.Root`.
- */
 export interface BreadcrumbLinkProps {
-  readonly current?: boolean;
   readonly href?:
     | `/${string}`
     | `./${string}`
@@ -454,7 +478,7 @@ export interface BreadcrumbLinkProps {
 }
 
 /**
- * Place inside `Breadcrumb.Root`.
+ * Place inside `Breadcrumb`.
  */
 export interface BreadcrumbListProps {
   readonly itemsAfterCollapse?: number;
@@ -469,12 +493,7 @@ export interface BreadcrumbListProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Show the current page within a hierarchy of parent pages.
- * Use when: Show the current page within a hierarchy of parent pages.
- * Avoid when: The task does not need this pattern; do not add it only for catalog coverage.
- */
-export interface BreadcrumbRootProps {
+export interface BreadcrumbPageProps {
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -485,7 +504,7 @@ export interface BreadcrumbRootProps {
 }
 
 /**
- * Place inside `Breadcrumb.Root`.
+ * Place inside `BreadcrumbList`.
  */
 export interface BreadcrumbSeparatorProps {
   readonly id?: string;
@@ -493,6 +512,7 @@ export interface BreadcrumbSeparatorProps {
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
   readonly "aria-describedby"?: string;
+  readonly value?: string;
   readonly hidden?: boolean;
   readonly dir?: "ltr" | "rtl" | "auto";
 }
@@ -883,9 +903,31 @@ export interface DialogTriggerProps {
 }
 
 /**
- * Place inside `Drawer.Root`.
+ * A focused secondary task or navigation surface should enter from an edge and temporarily cover or accompany the page
+ * Use when: The described drawer interaction is present; keep it focused on the user's current task.
+ * Avoid when: The task does not need drawer; do not add it for coverage.
  */
+export interface DrawerProps {
+  readonly id: string;
+  readonly trigger: string;
+  readonly title: string;
+  readonly description?: string;
+  readonly closeLabel?: string;
+  readonly side?: "top" | "right" | "bottom" | "left";
+  readonly size?: "sm" | "lg" | "md" | "full";
+  readonly dismiss?: "none" | "any" | "closerequest";
+  readonly backdrop?: "opaque" | "transparent";
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
 export interface DrawerCloseProps {
+  readonly target: string;
+  readonly command?: string;
+  readonly commandfor?: string;
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -907,13 +949,46 @@ export interface DrawerCloseProps {
     | `mailto:${string}`;
 }
 
-/**
- * Place inside `Drawer.Root`.
- */
 export interface DrawerContentProps {
-  readonly size?: "sm" | "md" | "lg" | "full";
-  readonly dismiss?: "any" | "closerequest" | "none";
+  readonly id: string;
+  readonly side?: "top" | "right" | "bottom" | "left";
+  readonly size?: "sm" | "lg" | "md" | "full";
+  readonly dismiss?: "none" | "any" | "closerequest";
   readonly backdrop?: "opaque" | "transparent";
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+export interface DrawerTriggerProps {
+  readonly target: string;
+  readonly command?: string;
+  readonly commandfor?: string;
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly name?: string;
+  readonly value?: string;
+  readonly hidden?: boolean;
+  readonly disabled?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+  readonly formAction?:
+    | `/${string}`
+    | `./${string}`
+    | `../${string}`
+    | `#${string}`
+    | `?${string}`
+    | `http://${string}`
+    | `https://${string}`
+    | `mailto:${string}`;
+}
+
+export interface DrawerBodyProps {
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -923,9 +998,6 @@ export interface DrawerContentProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Drawer.Root`.
- */
 export interface DrawerDescriptionProps {
   readonly id?: string;
   readonly title?: string;
@@ -936,10 +1008,7 @@ export interface DrawerDescriptionProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Drawer.Root`.
- */
-export interface DrawerHandleProps {
+export interface DrawerFooterProps {
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -949,131 +1018,28 @@ export interface DrawerHandleProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * A focused secondary task or navigation surface should enter from an edge and temporarily cover or accompany the page
- * Use when: The described drawer interaction is present; keep it focused on the user's current task.
- * Avoid when: The task does not need drawer; do not add it for coverage.
- */
-export interface DrawerRootProps {
-  readonly closeOnOverlayClick?: boolean;
-  readonly defaultActiveSnapPoint?: number;
-  readonly defaultOpen?: boolean;
-  readonly dismissible?: boolean;
-  readonly modal?: boolean;
-  readonly side?: "top" | "right" | "bottom" | "left";
+export interface DrawerGrabberProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
 }
 
-/**
- * Place inside `Drawer.Root`.
- */
+export interface DrawerHeaderProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
 export interface DrawerTitleProps {
   readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Drawer.Root`.
- */
-export interface DrawerTriggerProps {
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly name?: string;
-  readonly value?: string;
-  readonly hidden?: boolean;
-  readonly disabled?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-  readonly formAction?:
-    | `/${string}`
-    | `./${string}`
-    | `../${string}`
-    | `#${string}`
-    | `?${string}`
-    | `http://${string}`
-    | `https://${string}`
-    | `mailto:${string}`;
-}
-
-export interface DrawerPanelProps {
-  readonly id: string;
-  readonly trigger: string;
-  readonly title: string;
-  readonly description?: string;
-  readonly closeLabel?: string;
-  readonly side?: "top" | "right" | "bottom" | "left";
-  readonly size?: "sm" | "md" | "lg" | "full";
-  readonly dismiss?: "any" | "closerequest" | "none";
-  readonly backdrop?: "opaque" | "transparent";
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-export interface DrawerNativeTriggerProps {
-  readonly target: string;
-  readonly command?: string;
-  readonly commandfor?: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly name?: string;
-  readonly value?: string;
-  readonly hidden?: boolean;
-  readonly disabled?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-  readonly formAction?:
-    | `/${string}`
-    | `./${string}`
-    | `../${string}`
-    | `#${string}`
-    | `?${string}`
-    | `http://${string}`
-    | `https://${string}`
-    | `mailto:${string}`;
-}
-
-export interface DrawerNativeCloseProps {
-  readonly target: string;
-  readonly command?: string;
-  readonly commandfor?: string;
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly "aria-describedby"?: string;
-  readonly name?: string;
-  readonly value?: string;
-  readonly hidden?: boolean;
-  readonly disabled?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-  readonly formAction?:
-    | `/${string}`
-    | `./${string}`
-    | `../${string}`
-    | `#${string}`
-    | `?${string}`
-    | `http://${string}`
-    | `https://${string}`
-    | `mailto:${string}`;
-}
-
-export interface DrawerNativeContentProps {
-  readonly id: string;
-  readonly side?: "top" | "right" | "bottom" | "left";
-  readonly size?: "sm" | "md" | "lg" | "full";
-  readonly dismiss?: "any" | "closerequest" | "none";
-  readonly backdrop?: "opaque" | "transparent";
   readonly title?: string;
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
@@ -1369,8 +1335,8 @@ export interface FormProps {
  * Use when: The demonstrated page-frame relationship is present.
  * Avoid when: The task does not need this element; do not add it for coverage.
  */
-export interface HeaderRootProps {
-  readonly placement?: "static" | "sticky";
+export interface HeaderProps {
+  readonly placement?: "sticky" | "static";
   readonly id?: string;
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -2071,7 +2037,25 @@ export interface SwitchProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Compare structured member records.
+ * Use when: The demonstrated table-controls relationship is present.
+ * Avoid when: The task does not need this element; do not add it for coverage.
+ */
+export interface TableProps {
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly layout?: "auto" | "fixed";
+  readonly size?: "sm" | "lg" | "md";
+  readonly variant?: "outline" | "ghost" | "solid";
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
+/**
+ * Place inside `Table`.
  */
 export interface TableFooterProps {
   readonly sticky?: boolean;
@@ -2085,10 +2069,10 @@ export interface TableFooterProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
 export interface TableRowHeaderProps {
-  readonly align?: "start" | "center" | "end";
+  readonly align?: "center" | "start" | "end";
   readonly sticky?: "start" | "end";
   readonly id?: string;
   readonly title?: string;
@@ -2100,7 +2084,7 @@ export interface TableRowHeaderProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
 export interface TableBodyProps {
   readonly id?: string;
@@ -2113,7 +2097,7 @@ export interface TableBodyProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
 export interface TableCaptionProps {
   readonly id?: string;
@@ -2126,10 +2110,10 @@ export interface TableCaptionProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
 export interface TableCellProps {
-  readonly align?: "start" | "center" | "end";
+  readonly align?: "center" | "start" | "end";
   readonly sticky?: "start" | "end";
   readonly id?: string;
   readonly title?: string;
@@ -2141,13 +2125,13 @@ export interface TableCellProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
-export interface TableColumnHeaderProps {
+export interface TableHeadProps {
   readonly allowsSorting?: boolean;
-  readonly id: string;
+  readonly id?: string;
   readonly sortDirection?: "ascending" | "descending";
-  readonly align?: "start" | "center" | "end";
+  readonly align?: "center" | "start" | "end";
   readonly sticky?: "start" | "end";
   readonly title?: string;
   readonly "aria-label"?: string;
@@ -2158,7 +2142,7 @@ export interface TableColumnHeaderProps {
 }
 
 /**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
 export interface TableHeaderProps {
   readonly sticky?: boolean;
@@ -2172,29 +2156,11 @@ export interface TableHeaderProps {
 }
 
 /**
- * Compare structured member records.
- * Use when: The demonstrated table-controls relationship is present.
- * Avoid when: The task does not need this element; do not add it for coverage.
- */
-export interface TableRootProps {
-  readonly "aria-label"?: string;
-  readonly "aria-labelledby"?: string;
-  readonly layout?: "auto" | "fixed";
-  readonly size?: "sm" | "md" | "lg";
-  readonly variant?: "solid" | "outline" | "ghost";
-  readonly id?: string;
-  readonly title?: string;
-  readonly "aria-describedby"?: string;
-  readonly hidden?: boolean;
-  readonly dir?: "ltr" | "rtl" | "auto";
-}
-
-/**
- * Place inside `Table.Root`.
+ * Place inside `Table`.
  */
 export interface TableRowProps {
   readonly disabled?: boolean;
-  readonly id: string;
+  readonly id?: string;
   readonly selected?: boolean;
   readonly sticky?: boolean;
   readonly title?: string;
@@ -2285,6 +2251,20 @@ export interface TextareaProps {
   readonly dir?: "ltr" | "rtl" | "auto";
 }
 
+export interface ToastProviderProps {
+  readonly limit?: number;
+}
+
+export interface ToastViewportProps {
+  readonly id?: string;
+  readonly title?: string;
+  readonly "aria-label"?: string;
+  readonly "aria-labelledby"?: string;
+  readonly "aria-describedby"?: string;
+  readonly hidden?: boolean;
+  readonly dir?: "ltr" | "rtl" | "auto";
+}
+
 /**
  * Expose a binary value with a toggle-style presentation.
  * Use when: Expose a binary value with a toggle-style presentation.
@@ -2304,10 +2284,22 @@ export interface ToggleProps {
 }
 
 /**
- * Place inside `Tooltip.Root`.
+ * Add a brief supplemental label to a control without replacing its name.
+ * Use when: The demonstrated supplemental-label relationship is present.
+ * Avoid when: The information is essential or interactive; use visible text, popover, or hover-card.
+ * Avoid when: The tooltip would be the only label for a form field.
+ * Place inside `TooltipProvider`.
+ */
+export interface TooltipProps {
+  readonly defaultOpen?: boolean;
+  readonly id?: string;
+}
+
+/**
+ * Place inside `Tooltip`.
  */
 export interface TooltipContentProps {
-  readonly align?: "start" | "center" | "end";
+  readonly align?: "center" | "start" | "end";
   readonly side?: "top" | "right" | "bottom" | "left";
   readonly id?: string;
   readonly title?: string;
@@ -2324,19 +2316,7 @@ export interface TooltipProviderProps {
 }
 
 /**
- * Add a brief supplemental label to a control without replacing its name.
- * Use when: The demonstrated supplemental-label relationship is present.
- * Avoid when: The information is essential or interactive; use visible text, popover, or hover-card.
- * Avoid when: The tooltip would be the only label for a form field.
- * Place inside `Tooltip.Provider`.
- */
-export interface TooltipRootProps {
-  readonly defaultOpen?: boolean;
-  readonly id?: string;
-}
-
-/**
- * Place inside `Tooltip.Root`.
+ * Place inside `Tooltip`.
  */
 export interface TooltipTriggerProps {
   readonly id?: string;
@@ -3399,31 +3379,43 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Breadcrumb.Item";
+      readonly type: "Breadcrumb";
+      readonly props: BreadcrumbProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "BreadcrumbEllipsis";
+      readonly props: BreadcrumbEllipsisProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "BreadcrumbItem";
       readonly props: BreadcrumbItemProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Breadcrumb.Link";
+      readonly type: "BreadcrumbLink";
       readonly props: BreadcrumbLinkProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Breadcrumb.List";
+      readonly type: "BreadcrumbList";
       readonly props: BreadcrumbListProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Breadcrumb.Root";
-      readonly props: BreadcrumbRootProps;
+      readonly type: "BreadcrumbPage";
+      readonly props: BreadcrumbPageProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Breadcrumb.Separator";
+      readonly type: "BreadcrumbSeparator";
       readonly props: BreadcrumbSeparatorProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
@@ -3553,68 +3545,57 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Drawer.Close";
+      readonly type: "Drawer";
+      readonly props: DrawerProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "DrawerClose";
       readonly props: DrawerCloseProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Drawer.Content";
+      readonly type: "DrawerContent";
       readonly props: DrawerContentProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Drawer.Description";
-      readonly props: DrawerDescriptionProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Drawer.Handle";
-      readonly props: DrawerHandleProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Drawer.Root";
-      readonly props: DrawerRootProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Drawer.Title";
-      readonly props: DrawerTitleProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Drawer.Trigger";
+      readonly type: "DrawerTrigger";
       readonly props: DrawerTriggerProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "DrawerPanel";
-      readonly props: DrawerPanelProps;
+      readonly type: "DrawerBody";
+      readonly props: DrawerBodyProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "DrawerNativeTrigger";
-      readonly props: DrawerNativeTriggerProps;
+      readonly type: "DrawerDescription";
+      readonly props: DrawerDescriptionProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "DrawerNativeClose";
-      readonly props: DrawerNativeCloseProps;
+      readonly type: "DrawerFooter";
+      readonly props: DrawerFooterProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | { readonly type: "DrawerGrabber"; readonly props: DrawerGrabberProps; readonly key?: never }
+  | {
+      readonly type: "DrawerHeader";
+      readonly props: DrawerHeaderProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "DrawerNativeContent";
-      readonly props: DrawerNativeContentProps;
+      readonly type: "DrawerTitle";
+      readonly props: DrawerTitleProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3726,8 +3707,8 @@ export type UiNode =
       readonly key?: never;
     }
   | {
-      readonly type: "Header.Root";
-      readonly props: HeaderRootProps;
+      readonly type: "Header";
+      readonly props: HeaderProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
@@ -3909,55 +3890,55 @@ export type UiNode =
     }
   | { readonly type: "Switch"; readonly props: SwitchProps; readonly key?: never }
   | {
-      readonly type: "Table.Footer";
+      readonly type: "Table";
+      readonly props: TableProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "TableFooter";
       readonly props: TableFooterProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.RowHeader";
+      readonly type: "TableRowHeader";
       readonly props: TableRowHeaderProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.Body";
+      readonly type: "TableBody";
       readonly props: TableBodyProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.Caption";
+      readonly type: "TableCaption";
       readonly props: TableCaptionProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.Cell";
+      readonly type: "TableCell";
       readonly props: TableCellProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.ColumnHeader";
-      readonly props: TableColumnHeaderProps;
+      readonly type: "TableHead";
+      readonly props: TableHeadProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.Header";
+      readonly type: "TableHeader";
       readonly props: TableHeaderProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Table.Root";
-      readonly props: TableRootProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Table.Row";
+      readonly type: "TableRow";
       readonly props: TableRowProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
@@ -3992,27 +3973,39 @@ export type UiNode =
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
+  | {
+      readonly type: "ToastProvider";
+      readonly props: ToastProviderProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "ToastViewport";
+      readonly props: ToastViewportProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
   | { readonly type: "Toggle"; readonly props: ToggleProps; readonly key?: never }
   | {
-      readonly type: "Tooltip.Content";
+      readonly type: "Tooltip";
+      readonly props: TooltipProps;
+      readonly children?: readonly (UiNodeInput | string)[];
+      readonly key?: never;
+    }
+  | {
+      readonly type: "TooltipContent";
       readonly props: TooltipContentProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Tooltip.Provider";
+      readonly type: "TooltipProvider";
       readonly props: TooltipProviderProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
     }
   | {
-      readonly type: "Tooltip.Root";
-      readonly props: TooltipRootProps;
-      readonly children?: readonly (UiNodeInput | string)[];
-      readonly key?: never;
-    }
-  | {
-      readonly type: "Tooltip.Trigger";
+      readonly type: "TooltipTrigger";
       readonly props: TooltipTriggerProps;
       readonly children?: readonly (UiNodeInput | string)[];
       readonly key?: never;
@@ -4229,7 +4222,6 @@ export type UiNodeInput = UiNode | { readonly type: never };
  * reason. Tier 2 components are excluded as a whole and are not listed.
  */
 export const uiUnavailableParts = [
-  { type: "Breadcrumb.Ellipsis", reason: "leaf part without usable props" },
   { type: "CandleChart", reason: 'required prop "data" has type readonly CandleChartData[]' },
   { type: "CheckboxGroup", reason: 'required prop "items" has type readonly CheckboxGroupItem[]' },
   { type: "Collapsible", reason: 'required prop "content" takes React nodes' },
@@ -4254,13 +4246,11 @@ export const uiUnavailableParts = [
     type: "SegmentedControl",
     reason: 'required prop "items" has type readonly SegmentedControlItem[]',
   },
-  { type: "Toast.Root", reason: 'required prop "toast" has type ToastRecord' },
-  { type: "Toast.Action", reason: "its root part Toast.Root is unusable" },
-  { type: "Toast.Close", reason: "its root part Toast.Root is unusable" },
-  { type: "Toast.Description", reason: "its root part Toast.Root is unusable" },
-  { type: "Toast.Provider", reason: "its root part Toast.Root is unusable" },
-  { type: "Toast.Title", reason: "its root part Toast.Root is unusable" },
-  { type: "Toast.Viewport", reason: "its root part Toast.Root is unusable" },
+  { type: "Toast", reason: 'required prop "toast" has type ToastRecord' },
+  { type: "ToastAction", reason: "its root part Toast is unusable" },
+  { type: "ToastClose", reason: "its root part Toast is unusable" },
+  { type: "ToastDescription", reason: "its root part Toast is unusable" },
+  { type: "ToastTitle", reason: "its root part Toast is unusable" },
   { type: "ToggleGroup", reason: 'required prop "items" has type readonly ChoiceItem[]' },
   {
     type: "Toolbar.Button",
@@ -4323,11 +4313,13 @@ export const uiParts: Readonly<
   AspectRatio: { kind: "component", leaf: false },
   Avatar: { kind: "component", leaf: true },
   Badge: { kind: "component", leaf: false },
-  "Breadcrumb.Item": { kind: "component", leaf: false, rootType: "Breadcrumb.Root" },
-  "Breadcrumb.Link": { kind: "component", leaf: false, rootType: "Breadcrumb.Root" },
-  "Breadcrumb.List": { kind: "component", leaf: false, rootType: "Breadcrumb.Root" },
-  "Breadcrumb.Root": { kind: "component", leaf: false },
-  "Breadcrumb.Separator": { kind: "component", leaf: false, rootType: "Breadcrumb.Root" },
+  Breadcrumb: { kind: "component", leaf: false },
+  BreadcrumbEllipsis: { kind: "component", leaf: false },
+  BreadcrumbItem: { kind: "component", leaf: false, rootType: "BreadcrumbList" },
+  BreadcrumbLink: { kind: "component", leaf: false },
+  BreadcrumbList: { kind: "component", leaf: false, rootType: "Breadcrumb" },
+  BreadcrumbPage: { kind: "component", leaf: false },
+  BreadcrumbSeparator: { kind: "component", leaf: false, rootType: "BreadcrumbList" },
   Button: { kind: "component", leaf: false },
   Card: { kind: "component", leaf: false },
   CardAction: { kind: "component", leaf: false },
@@ -4352,17 +4344,16 @@ export const uiParts: Readonly<
   DialogHeader: { kind: "component", leaf: false },
   DialogTitle: { kind: "component", leaf: false },
   DialogTrigger: { kind: "component", leaf: false },
-  "Drawer.Close": { kind: "component", leaf: false, rootType: "Drawer.Root" },
-  "Drawer.Content": { kind: "component", leaf: false, rootType: "Drawer.Root" },
-  "Drawer.Description": { kind: "component", leaf: false, rootType: "Drawer.Root" },
-  "Drawer.Handle": { kind: "component", leaf: false, rootType: "Drawer.Root" },
-  "Drawer.Root": { kind: "component", leaf: false },
-  "Drawer.Title": { kind: "component", leaf: false, rootType: "Drawer.Root" },
-  "Drawer.Trigger": { kind: "component", leaf: false, rootType: "Drawer.Root" },
-  DrawerPanel: { kind: "component", leaf: false },
-  DrawerNativeTrigger: { kind: "component", leaf: false },
-  DrawerNativeClose: { kind: "component", leaf: false },
-  DrawerNativeContent: { kind: "component", leaf: false },
+  Drawer: { kind: "component", leaf: false },
+  DrawerClose: { kind: "component", leaf: false },
+  DrawerContent: { kind: "component", leaf: false },
+  DrawerTrigger: { kind: "component", leaf: false },
+  DrawerBody: { kind: "component", leaf: false },
+  DrawerDescription: { kind: "component", leaf: false },
+  DrawerFooter: { kind: "component", leaf: false },
+  DrawerGrabber: { kind: "component", leaf: true },
+  DrawerHeader: { kind: "component", leaf: false },
+  DrawerTitle: { kind: "component", leaf: false },
   Empty: { kind: "component", leaf: false },
   EmptyContent: { kind: "component", leaf: false },
   EmptyDescription: { kind: "component", leaf: false },
@@ -4381,7 +4372,7 @@ export const uiParts: Readonly<
   "FileUpload.Root": { kind: "component", leaf: false },
   "FileUpload.Trigger": { kind: "component", leaf: false, rootType: "FileUpload.Root" },
   Form: { kind: "component", leaf: false },
-  "Header.Root": { kind: "component", leaf: false },
+  Header: { kind: "component", leaf: false },
   Input: { kind: "component", leaf: true },
   InputGroup: { kind: "component", leaf: false },
   InputGroupAddon: { kind: "component", leaf: false },
@@ -4416,25 +4407,27 @@ export const uiParts: Readonly<
   Slider: { kind: "component", leaf: true },
   Spinner: { kind: "component", leaf: false },
   Switch: { kind: "component", leaf: true },
-  "Table.Footer": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.RowHeader": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.Body": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.Caption": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.Cell": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.ColumnHeader": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.Header": { kind: "component", leaf: false, rootType: "Table.Root" },
-  "Table.Root": { kind: "component", leaf: false },
-  "Table.Row": { kind: "component", leaf: false, rootType: "Table.Root" },
+  Table: { kind: "component", leaf: false },
+  TableFooter: { kind: "component", leaf: false, rootType: "Table" },
+  TableRowHeader: { kind: "component", leaf: false, rootType: "Table" },
+  TableBody: { kind: "component", leaf: false, rootType: "Table" },
+  TableCaption: { kind: "component", leaf: false, rootType: "Table" },
+  TableCell: { kind: "component", leaf: false, rootType: "Table" },
+  TableHead: { kind: "component", leaf: false, rootType: "Table" },
+  TableHeader: { kind: "component", leaf: false, rootType: "Table" },
+  TableRow: { kind: "component", leaf: false, rootType: "Table" },
   Tabs: { kind: "component", leaf: false },
   TabsContent: { kind: "component", leaf: false },
   TabsList: { kind: "component", leaf: false },
   TabsTrigger: { kind: "component", leaf: false },
   Textarea: { kind: "component", leaf: false },
+  ToastProvider: { kind: "component", leaf: false },
+  ToastViewport: { kind: "component", leaf: false },
   Toggle: { kind: "component", leaf: true },
-  "Tooltip.Content": { kind: "component", leaf: false, rootType: "Tooltip.Root" },
-  "Tooltip.Provider": { kind: "component", leaf: false },
-  "Tooltip.Root": { kind: "component", leaf: false, rootType: "Tooltip.Provider" },
-  "Tooltip.Trigger": { kind: "component", leaf: false, rootType: "Tooltip.Root" },
+  Tooltip: { kind: "component", leaf: false, rootType: "TooltipProvider" },
+  TooltipContent: { kind: "component", leaf: false, rootType: "Tooltip" },
+  TooltipProvider: { kind: "component", leaf: false },
+  TooltipTrigger: { kind: "component", leaf: false, rootType: "Tooltip" },
   Box: { kind: "layout", leaf: false },
   Section: { kind: "layout", leaf: false },
   Stack: { kind: "layout", leaf: false },

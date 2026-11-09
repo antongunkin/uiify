@@ -122,7 +122,7 @@ function HeaderStory({ enhanced = false }: { readonly enhanced?: boolean }) {
           {navigation}
         </HeaderClient>
       ) : (
-        <Header.Root placement="sticky">{navigation}</Header.Root>
+        <Header placement="sticky">{navigation}</Header>
       )}
       <main id={`${prefix}-home`}>
         <h1>Team workspace</h1>

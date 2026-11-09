@@ -1,9 +1,10 @@
 # @gunkin/uiify screen catalog
 
-Import every name from "@gunkin/uiify". `Name.Part` is also exported flat as `NamePart`.
+Import every name from "@gunkin/uiify".
 Every part also takes the native attributes of its element (`id`, `name`, `href`, `action`, `method`,
-`required`, `aria-*`, ...). `as` changes the element (`<Stack as="form">`). No `className`/`style`.
-Responsive values: `{ base, sm, md, lg }` objects, e.g. `columns={{ base: 1, md: 2 }}`.
+`required`, `aria-*`, ...). `as` changes the element (`<Stack as="form">`). `className` (theme classes) and `style` customize a part.
+Responsive values: `{ base, sm, md, lg }` objects, e.g. `columns={{ base: 1, md: 2 }}`; they follow
+the nearest `container` ancestor, so give the screen's outer Stack `container`.
 
 ## Layout and text
 Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|lg|xl; paddingInline?: none|xs|sm|md|lg|xl; paddingBlock?: none|xs|sm|md|lg|xl; width?: auto|full|fit|sm|md|lg; height?: auto|full|screen; minWidth?: zero|full; maxWidth?: none|sm|md|lg|prose; grow?: 0|1; shrink?: 0|1; overflow?: visible|hidden|auto; container?: true|false; responsive?: container|viewport
@@ -31,11 +32,12 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - AspectRatio: ratio?: number
 - Avatar: name: string; fallback: string; src?: string; size?: sm|md|lg
 - Badge: size?: sm|md|lg; variant?: default|secondary|outline|success|warning|destructive
+- Breadcrumb
 - BreadcrumbEllipsis
 - BreadcrumbItem
-- BreadcrumbLink: current?: boolean; href?: string
+- BreadcrumbLink: href?: string
 - BreadcrumbList: items?: { key: string; current?: boolean; href?: string; label: node }[]; itemsAfterCollapse?: number; itemsBeforeCollapse?: number; maxItems?: number; separator?: node
-- BreadcrumbRoot
+- BreadcrumbPage
 - BreadcrumbSeparator
 - Button: disabled?: boolean; selected?: boolean; type?: button|submit|reset; size?: xs|sm|default|lg|icon-xs|icon-sm|icon|icon-lg; variant?: default|secondary|outline|ghost|destructive|link; href?: string
 - Card: size?: sm|default
@@ -62,10 +64,16 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - DialogHeader
 - DialogTitle
 - DialogTrigger: target: string
-- DrawerPanel: id: string; trigger: node; title: node; description?: node; closeLabel?: string; footer?: node; side?: top|right|bottom|left; size?: sm|md|lg|full; dismiss?: any|closerequest|none; backdrop?: opaque|transparent
-- DrawerNativeTrigger: target: string
-- DrawerNativeClose: target: string
-- DrawerNativeContent: id: string; side?: top|right|bottom|left; size?: sm|md|lg|full; dismiss?: any|closerequest|none; backdrop?: opaque|transparent
+- Drawer: id: string; trigger: node; title: node; description?: node; closeLabel?: string; footer?: node; side?: top|right|bottom|left; size?: sm|lg|md|full; dismiss?: none|any|closerequest; backdrop?: opaque|transparent
+- DrawerClose: target: string
+- DrawerContent: id: string; side?: top|right|bottom|left; size?: sm|lg|md|full; dismiss?: none|any|closerequest; backdrop?: opaque|transparent
+- DrawerTrigger: target: string
+- DrawerBody
+- DrawerDescription
+- DrawerFooter
+- DrawerGrabber
+- DrawerHeader
+- DrawerTitle
 - Empty
 - EmptyContent
 - EmptyDescription
@@ -82,7 +90,7 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - FieldSet
 - Form: validationBehavior?: native|aria
 - FormErrorSummary: title: node; errors: { href: string; message: node }[]
-- HeaderRoot: placement?: static|sticky
+- Header: placement?: sticky|static
 - Input: value?: string; defaultValue?: string; disabled?: boolean; readOnly?: boolean; invalid?: boolean; size?: sm|md|lg
 - InputGroup: size?: sm|md|lg
 - InputGroupAddon: align: start|end
@@ -108,40 +116,50 @@ Geometry props on Box, Section, Stack, Grid, GridItem: padding?: none|xs|sm|md|l
 - Slider: value?: number; defaultValue?: number; min?: number; max?: number; step?: number; disabled?: boolean
 - Spinner: align?: center|fixed|absolute; delay?: number; label?: string; showLabel?: boolean; size?: sm|md|lg; value?: number
 - Switch: checked?: boolean; defaultChecked?: boolean; disabled?: boolean
+- Table: aria-label?: string; aria-labelledby?: string; layout?: auto|fixed; size?: sm|lg|md; variant?: outline|ghost|solid
 - TableFooter: sticky?: boolean
-- TableRowHeader: align?: start|center|end; sticky?: start|end
+- TableRowHeader: align?: center|start|end; sticky?: start|end
 - TableBody
 - TableCaption
-- TableCell: align?: start|center|end; sticky?: start|end
-- TableColumnHeader: allowsSorting?: boolean; id: string; sortDirection?: ascending|descending; align?: start|center|end; sticky?: start|end
+- TableCell: align?: center|start|end; sticky?: start|end
+- TableHead: allowsSorting?: boolean; id?: string; sortDirection?: ascending|descending; align?: center|start|end; sticky?: start|end
 - TableHeader: sticky?: boolean
-- TableRoot: aria-label?: string; aria-labelledby?: string; layout?: auto|fixed; size?: sm|md|lg; variant?: solid|outline|ghost
-- TableRow: disabled?: boolean; id: string; selected?: boolean; sticky?: boolean
+- TableRow: disabled?: boolean; id?: string; selected?: boolean; sticky?: boolean
 - Tabs: orientation?: horizontal|vertical
 - TabsContent: value: string
 - TabsList
 - TabsTrigger: name: string; value: string; id?: string; defaultChecked?: boolean; disabled?: boolean
 - Textarea: value?: string; defaultValue?: string; autoSize?: boolean; disabled?: boolean; readOnly?: boolean; invalid?: boolean
+- Toast: toast: ToastRecord
 - ToastAction
 - ToastClose
 - ToastDescription
 - ToastProvider: limit?: number
-- ToastRoot: toast: ToastRecord
 - ToastTitle
 - ToastViewport
 - Toggle: id: string; label: node; pressed?: boolean; defaultPressed?: boolean; disabled?: boolean
 - ToggleGroup: id: string; type?: single|multiple; items: { value: string; label: node; disabled?: boolean }[]; defaultValue?: string | readonly string[]; disabled?: boolean; orientation?: horizontal|vertical; size?: sm|md|lg
-- TooltipContent: align?: start|center|end; side?: top|right|bottom|left
+- Tooltip: defaultOpen?: boolean; id?: string; open?: boolean
+- TooltipContent: align?: center|start|end; side?: top|right|bottom|left
 - TooltipProvider: delayDuration?: number; skipDelayDuration?: number
-- TooltipRoot: defaultOpen?: boolean; id?: string; open?: boolean
 - TooltipTrigger
+
+## Blocks
+Ready sections and slot content built from the parts above; the design still lays out the page.
+- Feature: title: string; description?: string; media?: node; level?: 1..6
+- FeatureGrid: id?: string; title?: string; description?: string; level?: 1..6; columns?: Grid columns
+- Hero: id?: string; eyebrow?: string; title: string; description?: string; actions?: node; media?: node; align?: center|start; level?: 1..6
+- PlanOption: name: string; value: string; title: string; price?: string; description?: string; badge?: string; defaultChecked?: boolean; disabled?: boolean; required?: boolean
+- PricingPlan: name: string; price: string | { month: string; year: string }; period?: string | { month: string; year: string }; description?: string; features?: readonly string[]; action?: node | { month: node; year: node }; recommended?: string; level?: 1..6
+- PricingPlans: id: string; title?: string; description?: string; level?: 1..6; periods?: { readonly month: string; readonly year: string; }; defaultPeriod?: month|year; columns?: Grid columns
+- Testimonial: quote: string; name: string; byline?: string; avatar?: node; cite?: string; variant?: card|plain
 
 ## Patterns
 - Field with description: `<Field><FieldLabel htmlFor="email">Email</FieldLabel><Input id="email" type="email" name="email" aria-describedby="email-hint" /><FieldDescription id="email-hint">We never share it.</FieldDescription></Field>`
 - Invalid field: `<Field invalid><FieldLabel htmlFor="code">Code</FieldLabel><Input id="code" name="code" invalid aria-describedby="code-error" /><FieldError id="code-error">Enter the 6-digit code.</FieldError></Field>`
 - Checkbox with label: `<Checkbox id="terms" name="terms" label="I agree" />`
 - Single choice: `<RadioGroup aria-label="Plan"><Field orientation="horizontal"><RadioGroupItem name="plan" value="a" id="a" defaultChecked /><FieldLabel htmlFor="a">Plan A</FieldLabel></Field><Field orientation="horizontal"><RadioGroupItem name="plan" value="b" id="b" /><FieldLabel htmlFor="b">Plan B</FieldLabel></Field></RadioGroup>`
-- Choice cards: `<RadioGroup aria-label="Plan"><Field orientation="horizontal" variant="card"><RadioGroupItem name="plan" value="pro" id="pro" aria-describedby="pro-hint" /><FieldContent><FieldLabel htmlFor="pro">Pro</FieldLabel><FieldDescription id="pro-hint">$12 a month.</FieldDescription></FieldContent></Field></RadioGroup>`
+- Plan choice cards: `<RadioGroup aria-label="Plan"><PlanOption name="plan" value="pro" title="Pro" price="$12 a month" badge="Popular" defaultChecked /><PlanOption name="plan" value="free" title="Free" price="$0" /></RadioGroup>`
 - Card with header and footer: `<Card><CardHeader><CardTitle as="h2">Team plan</CardTitle><CardDescription>Billed yearly.</CardDescription><CardAction><Badge variant="outline">Popular</Badge></CardAction></CardHeader><CardContent>$12 per seat.</CardContent><CardFooter><Button>Choose plan</Button></CardFooter></Card>`
 - Link that looks like a button: `<Button href="/auth/google" variant="outline">Continue with Google</Button>`
 - Divider with text: `<FieldSeparator>or</FieldSeparator>`

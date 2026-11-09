@@ -14,18 +14,18 @@ describe("Combobox recipe", () => {
     expect(combobox.parts).toContain("item");
   });
 
-  it("uses the shared soft focus ring on standalone and grouped inputs", () => {
+  it("uses the shared solid focus outline on standalone and grouped inputs", () => {
     expect(css).toMatch(
-      /\.uiify-combobox-input:focus-visible \{[^}]*box-shadow: 0 0 0 var\(--ring-width\) color-mix\(in oklch, var\(--ring\) 20%, transparent\);/,
+      /\.uiify-combobox-input:focus-visible \{[^}]*outline: 2px solid var\(--ring\);\s*outline-offset: var\(--ring-offset\);/,
     );
     expect(css).toMatch(
-      /\.uiify-combobox-control:focus-within \{[^}]*box-shadow: 0 0 0 var\(--ring-width\) color-mix\(in oklch, var\(--ring\) 20%, transparent\);/,
+      /\.uiify-combobox-control:focus-within \{[^}]*outline: 2px solid var\(--ring\);\s*outline-offset: var\(--ring-offset\);/,
     );
   });
 
-  it("keeps the control corners at pill radius when tags wrap onto more rows", () => {
+  it("keeps the control corners at the control radius, at most a pill, when tags wrap onto more rows", () => {
     expect(css).toMatch(
-      /\.uiify-combobox-control \{[^}]*border-radius: calc\(var\(--uiify-control-size, var\(--control-md\)\) \/ 2\);/,
+      /\.uiify-combobox-control \{[^}]*border-radius: min\(\s*var\(--uiify-control-radius\),\s*calc\(var\(--uiify-control-size\) \/ 2\)\s*\);/,
     );
   });
 

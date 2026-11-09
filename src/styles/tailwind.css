@@ -5,23 +5,32 @@
  *   @import "@gunkin/uiify/tailwind.css";
  *   @import "@gunkin/uiify/styles/uiify.css"; (omit for headless)
  *
- * Declares the cascade layers, required behavior CSS, the default theme and every theme value the
- * compiled styles reference. `@theme static` makes Tailwind emit them even when the consumer's own
- * code does not use them; a consumer `@theme` after this import overrides them. The theme file sits
- * in a sublayer of `theme`, so Tailwind's theme values (and consumer overrides) win over it.
+ * Declares the cascade layers, required behavior CSS, layout and text geometry, the default theme
+ * and the theme keys UIify adds (semantic colors, popover and modal shadows). It never changes a
+ * key Tailwind already defines (`text-xl`, `rounded-lg`, `ease-out`, …): recipes use the standard scale, so they follow the host
+ * theme, and importing UIify leaves the app's own utilities as they were. `@theme static` makes
+ * Tailwind emit the added keys even when the consumer's own code does not use them; a consumer
+ * `@theme` after this import overrides them. The theme file sits in a sublayer of `theme`, so
+ * Tailwind's theme values (and consumer overrides) win over it.
+ * Control geometry and the solid fills are build-time aliases (`@theme inline reference`): the
+ * compiled recipes read shadcn's own knobs (`--spacing`, `--radius-lg`, `--text-sm`,
+ * `--color-primary`), so a project changes `--radius`, `--primary`, `--spacing` or `--text-*`;
+ * no `--control-*` variable exists at runtime.
  * Custom variants used by recipes live only in this file.
  *
  * Cascade, weakest first: base (preflight) → components.ui (behavior) → components.uiify (recipes)
+ * → components.layout (Box, Stack, Grid, Text and Heading geometry, needed with or without recipes)
  * → components.app (consumer overrides) → utilities (`className`). behavior.css is imported into
  * `components`, so its own `ui.*` and `app` layers land in `components.ui` and `components.app`;
  * a top-level import would place them after `utilities` and let behavior beat every `className`.
  */
 @layer theme, base, components, utilities;
-@layer components.ui, components.uiify, components.app;
+@layer components.ui, components.uiify, components.layout, components.app;
 
 /* stylelint-disable import-notation -- Tailwind resolves these relative to this file. */
 @import "../components/behavior.css" layer(components);
 @import "./themes/basic.css" layer(theme);
+@import "./layout.generated.css" layer(components);
 /* stylelint-enable import-notation */
 
 /* Tailwind v4 pairs font sizes with `--text-*--line-height` theme properties. */
@@ -62,16 +71,9 @@
   /* Spacing: the standard Tailwind scale (p-4 = 1rem). */
   --spacing: 0.25rem;
 
-  /* Radii → rounded-*: the UIify scale, derived from the theme's --radius base (Tailwind's
-     own `--radius` default would otherwise replace it). */
-  --radius: var(--radius-3);
-  --radius-xs: calc(var(--radius) * 0.4);
-  --radius-sm: calc(var(--radius) * 0.8);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) * 1.6);
-  --radius-xl: calc(var(--radius) * 2);
-
-  /* Type scale → text-*. */
+  /* Standard Tailwind values, repeated so they are emitted for every consumer. Only keys whose value
+     equals Tailwind's default belong here: radii, `text-xl` and up, leading, fonts and motion come
+     from the host theme (tailwind-theme-isolation.test.ts). */
   --text-xs: 0.75rem;
   --text-xs--line-height: calc(1 / 0.75);
   --text-sm: 0.875rem;
@@ -80,31 +82,52 @@
   --text-base--line-height: calc(1.5 / 1);
   --text-lg: 1.125rem;
   --text-lg--line-height: calc(1.75 / 1.125);
-  --text-xl: 1.5rem;
-  --text-xl--line-height: calc(2 / 1.5);
-  --text-2xl: 2rem;
-  --text-2xl--line-height: calc(2.5 / 2);
-  --text-4xl: 2.25rem;
-  --text-4xl--line-height: calc(2.5 / 2.25);
-  --leading-tight: 1.2;
   --leading-normal: 1.5;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-sans: system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", monospace;
 
   /* Standard Tailwind blur step used by Dialog backdrop; emitted for every consumer. */
   --blur-xs: 4px;
 
-  /* Elevation and motion. */
+  /* Elevation. */
   --shadow-popover: var(--shadow-2);
   --shadow-modal: var(--shadow-3);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --default-transition-duration: var(--duration-fast);
-  --default-transition-timing-function: var(--ease-out);
+}
+
+/* Build-time aliases used by recipes: h-control-md, min-w-control-sm, px-control-x,
+   px-control-button, rounded-control, text-control, bg-primary-fill, bg-destructive-fill. `inline`
+   writes each value into the utility and `reference` emits no variable, so the compiled CSS reads
+   only standard keys. The values are shadcn/ui's "nova" controls (Button h-8 px-2.5 rounded-lg
+   text-sm, bg-primary); UIify's own entry overrides this block in build/entry-own.css. */
+@theme inline reference {
+  --spacing-control-xs: calc(var(--spacing) * 6);
+  --spacing-control-sm: calc(var(--spacing) * 7);
+  --spacing-control-md: calc(var(--spacing) * 8);
+  --spacing-control-lg: calc(var(--spacing) * 9);
+  --spacing-control-x: calc(var(--spacing) * 2.5);
+  --spacing-control-button: calc(var(--spacing) * 2.5);
+  --spacing-control-button-lg: calc(var(--spacing) * 2.5);
+
+  /* Text fields fill their container, as shadcn's Input, Textarea and Field do. */
+  --container-field: none;
+  --radius-control: var(--radius-lg);
+  --text-control: var(--text-sm);
+  --text-control-sm: var(--text-xs);
+  --text-control-lg: var(--text-sm);
+
+  /* The default Button fills with the host's primary, as shadcn's default button does. */
+  --color-primary-fill: var(--color-primary);
+  --color-primary-fill-foreground: var(--color-primary-foreground);
+
+  /* Solid destructive fill: a true red at a fixed lightness so it stays saturated in dark mode
+     and carries light text in both themes. */
+  --color-destructive-fill: light-dark(
+    oklch(from var(--destructive) 55% 0.22 27deg),
+    oklch(from var(--destructive) 56% 0.2 h)
+  );
+  --color-destructive-fill-foreground: light-dark(var(--destructive-foreground), var(--foreground));
 }
 /* stylelint-enable custom-property-pattern */
 

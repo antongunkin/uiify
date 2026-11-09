@@ -30,4 +30,4 @@
 
 ## Other types
 
-- `SeparatorProps`: `SeparatorOwnProps & Omit<ComponentPropsWithRef<"hr">, keyof SeparatorOwnProps>` — A native hr: a thematic break exposed as a separator. For a purely decorative line pass role="presentation" (and aria-orientation={undefined} when vertical).
+- `SeparatorProps`: `SeparatorOwnProps & Omit<ComponentPropsWithRef<"hr">, keyof SeparatorOwnProps>` — A native hr: a thematic break exposed as a separator. For a purely decorative line pass role="none" (and aria-orientation={undefined} when vertical).

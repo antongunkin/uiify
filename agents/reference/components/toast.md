@@ -12,8 +12,8 @@
 
 ## Exports
 
-- Runtime: `Toast`, `ToastAction`, `ToastClose`, `ToastDescription`, `ToastProvider`, `ToastRoot`, `ToastTitle`, `ToastViewport`, `useToast`
-- Types: `ToastActionOwnProps`, `ToastActionProps`, `ToastCloseOwnProps`, `ToastCloseProps`, `ToastLabels`, `ToastProviderSlotProps`, `ToastRootSlotProps`, `ToastViewportSlotProps`, `ToastItemSlotProps`, `ToastTitleSlotProps`, `ToastDescriptionSlotProps`, `ToastActionSlotProps`, `ToastCloseSlotProps`, `ToastDescriptionOwnProps`, `ToastProviderOwnProps`, `ToastRootOwnProps`, `ToastTitleOwnProps`, `ToastViewportOwnProps`, `ToastInput`, `ToastPriority`, `ToastRecord`, `ToastStore`
+- Runtime: `Toast`, `ToastAction`, `ToastClose`, `ToastDescription`, `ToastProvider`, `ToastTitle`, `ToastViewport`, `useToast`
+- Types: `ToastActionOwnProps`, `ToastActionProps`, `ToastCloseOwnProps`, `ToastCloseProps`, `ToastLabels`, `ToastProviderSlotProps`, `ToastSlotProps`, `ToastViewportSlotProps`, `ToastItemSlotProps`, `ToastTitleSlotProps`, `ToastDescriptionSlotProps`, `ToastActionSlotProps`, `ToastCloseSlotProps`, `ToastDescriptionOwnProps`, `ToastProviderOwnProps`, `ToastOwnProps`, `ToastTitleOwnProps`, `ToastViewportOwnProps`, `ToastInput`, `ToastPriority`, `ToastRecord`, `ToastStore`
 
 ## Values
 
@@ -96,7 +96,7 @@
 | `store` | `ToastStore` | yes |  |
 | `labels` | `ToastLabels` | yes |  |
 
-### ToastRootSlotProps
+### ToastSlotProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -107,7 +107,7 @@
 
 ### ToastViewportSlotProps
 
-Extends: `ToastRootSlotProps`
+Extends: `ToastSlotProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -138,14 +138,14 @@ Extends: `Omit<ComponentPropsWithRef<"section">, "dangerouslySetInnerHTML">`, `C
 | `labels` | `Partial<ToastLabels>` | no |  |
 | `slotProps` | `ToastViewportSlotProps` | no |  |
 
-### ToastRootOwnProps
+### ToastOwnProps
 
 Extends: `Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">`, `ConsumerDataAttributes`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `labels` | `Partial<ToastLabels>` | no |  |
-| `slotProps` | `ToastRootSlotProps` | no |  |
+| `slotProps` | `ToastSlotProps` | no |  |
 | `toast` | `ToastRecord` | yes |  |
 
 ### ToastTitleOwnProps

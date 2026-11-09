@@ -11,7 +11,7 @@ const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const textExtensions = new Set([".css", ".d.ts", ".js", ".json", ".map", ".md", ".mjs", ".ts"]);
 
 const allowedPath =
-  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|version\.json|scripts\/(?:lint|static|agents-section|check-screens|screens|sync-agents)\.mjs|references\/(?:(?:agents-rules|editor-lint)\.md|(?:elements|laws|compositions|guides|examples)\/[a-z0-9-]+\.md)))$/;
+  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|version\.json|scripts\/(?:lint|static|agents-section|check-screens|screens|project-css|sync-agents|project-catalog)\.mjs|references\/(?:(?:agents-rules|claude-rules|editor-lint)\.md|(?:elements|laws|compositions|guides|examples)\/[a-z0-9-]+\.md)))$/;
 const credentialLike = [
   /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
   /\bnpm_[A-Za-z0-9]{8,}\b/,

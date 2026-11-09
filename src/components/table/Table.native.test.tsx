@@ -1,29 +1,38 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Table } from "./index.js";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableRowHeader,
+} from "./index.js";
 
 describe("native Table", () => {
   it("renders headers, footer, row headers and explicit logical sticky seams", () => {
     const { container } = render(
-      <Table.Root aria-label="Invoices" layout="fixed" size="sm" variant="outline">
-        <Table.Header sticky>
-          <Table.Row id="head">
-            <Table.ColumnHeader id="name" sticky="start">
+      <Table aria-label="Invoices" layout="fixed" size="sm" variant="outline">
+        <TableHeader sticky>
+          <TableRow id="head">
+            <TableHead id="name" sticky="start">
               Name
-            </Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          <Table.Row id="a" sticky>
-            <Table.RowHeader sticky="start">Alice</Table.RowHeader>
-          </Table.Row>
-        </Table.Body>
-        <Table.Footer sticky>
-          <Table.Row id="total">
-            <Table.Cell>Total</Table.Cell>
-          </Table.Row>
-        </Table.Footer>
-      </Table.Root>,
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow id="a" sticky>
+            <TableRowHeader sticky="start">Alice</TableRowHeader>
+          </TableRow>
+        </TableBody>
+        <TableFooter sticky>
+          <TableRow id="total">
+            <TableCell>Total</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>,
     );
     expect(screen.getByRole("table").classList.contains("uiify-table")).toBe(true);
     expect(screen.getByRole("table").getAttribute("data-layout")).toBe("fixed");
@@ -36,23 +45,23 @@ describe("native Table", () => {
 
 it("owns logical alignment for each native cell part", () => {
   render(
-    <Table.Root>
-      <Table.Header>
-        <Table.Row id="head">
-          <Table.ColumnHeader id="amount" align="end">
+    <Table>
+      <TableHeader>
+        <TableRow id="head">
+          <TableHead id="amount" align="end">
             Amount
-          </Table.ColumnHeader>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        <Table.Row id="item">
-          <Table.RowHeader align="center">Item</Table.RowHeader>
-          <Table.Cell align="end" data-align="start">
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow id="item">
+          <TableRowHeader align="center">Item</TableRowHeader>
+          <TableCell align="end" data-align="start">
             42
-          </Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table.Root>,
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
   );
   expect(screen.getByRole("columnheader").getAttribute("data-align")).toBe("end");
   expect(screen.getByRole("rowheader").getAttribute("data-align")).toBe("center");

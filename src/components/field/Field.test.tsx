@@ -177,7 +177,7 @@ describe("FieldSeparator", () => {
     expect(kids.map((kid) => kid.tagName)).toEqual(["HR", "SPAN", "HR"]);
     for (const line of [kids[0]!, kids[2]!]) {
       expect(line.className).toBe("uiify-field-separator-line");
-      expect(line.getAttribute("role")).toBe("presentation");
+      expect(line.getAttribute("role")).toBe("none");
     }
     expect(kids[1]!.className).toBe("uiify-field-separator-content");
     expect(kids[1]!.textContent).toBe("or");

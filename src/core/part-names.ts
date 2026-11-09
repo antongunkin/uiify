@@ -39,14 +39,16 @@ export const PART_NAMES = [
   "expand-trigger",
   "expanded-row",
   "fallback",
+  "features",
   "file-info",
   "file-size",
   "footer",
   "form-control",
   "grabber",
   "group",
-  "group-label", // Visible heading for a named Combobox option group.
+  "group-label",
   "handle",
+  "head",
   "header",
   "image",
   "increment",
@@ -54,7 +56,7 @@ export const PART_NAMES = [
   "input",
   "input-slot",
   "item",
-  "item-content", // Existing rich Combobox text hooks retained during the class migration.
+  "item-content",
   "item-description",
   "item-icon",
   "item-indicator",
@@ -69,11 +71,13 @@ export const PART_NAMES = [
   "media",
   "metadata",
   "native-input",
+  "page",
   "panel",
   "plot",
   "point",
   "point-hit",
   "points",
+  "price",
   "price-axis",
   "radio-group",
   "radio-item",
@@ -86,12 +90,12 @@ export const PART_NAMES = [
   "row",
   "row-header",
   "scroll-viewport",
-  "select-all", // Aggregate checkbox rendered by CheckboxGroupClient.
+  "select-all",
   "separator",
-  "separator-content", // FieldSeparator text between its lines.
-  "separator-line", // FieldSeparator line.
-  "set", // FieldSet.
-  "set-legend", // FieldLegend.
+  "separator-content",
+  "separator-line",
+  "set",
+  "set-legend",
   "shortcut",
   "slide",
   "slide-content",

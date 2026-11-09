@@ -59,7 +59,7 @@ describe("Checkbox", () => {
         label: { "data-uiify-checkbox": "custom", htmlFor: "native", id: "native-label" },
       },
     };
-    render(<Checkbox id="terms" label="Terms" {...nativeProps} />);
+    render(<Checkbox id="terms" label="Terms" onCheckedChange={() => {}} {...nativeProps} />);
     const input = screen.getByRole("radio", { name: "Terms" });
     expect(input.id).toBe("native");
     expect(input.getAttribute("checked")).toBe("");
@@ -77,12 +77,15 @@ describe("Checkbox", () => {
   });
 
   it("reflects a controlled boolean checked state without client state", () => {
-    const { rerender } = render(<Checkbox id="terms" label="Terms" checked />);
+    // A controlled checkbox comes with its change handler, as a native controlled input does.
+    const { rerender } = render(
+      <Checkbox id="terms" label="Terms" checked onCheckedChange={() => {}} />,
+    );
     const checkbox = screen.getByRole("checkbox", { name: "Terms" });
 
     expect(checkbox.getAttribute("data-state")).toBe("checked");
 
-    rerender(<Checkbox id="terms" label="Terms" checked={false} />);
+    rerender(<Checkbox id="terms" label="Terms" checked={false} onCheckedChange={() => {}} />);
     expect(checkbox.getAttribute("data-state")).toBe("unchecked");
   });
 

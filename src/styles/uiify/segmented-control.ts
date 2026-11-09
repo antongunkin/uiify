@@ -10,7 +10,7 @@ export const segmentedControl = defineRecipe<
   childParts: ["item"],
   requires: ["button"],
   base: {
-    root: "relative inline-flex box-border items-stretch gap-0 border border-border p-1 rounded-full bg-muted",
+    root: "relative inline-flex box-border items-stretch gap-0 border border-border p-1 rounded-control bg-muted",
     item: "relative grid",
     input: "sr-only",
     label:
@@ -20,7 +20,7 @@ export const segmentedControl = defineRecipe<
     orientation: {
       horizontal: { label: "min-h-0" },
       vertical: {
-        root: "flex-col rounded-xl",
+        root: "flex-col rounded-2xl",
       },
     },
     fullWidth: {
@@ -33,7 +33,7 @@ export const segmentedControl = defineRecipe<
     size: {
       sm: { label: "text-sm leading-5" },
       md: {},
-      lg: { label: "text-lg leading-7" },
+      lg: { label: "text-control-lg leading-7" },
     },
   },
   defaultVariants: {
@@ -41,8 +41,8 @@ export const segmentedControl = defineRecipe<
     size: "md",
   },
   compoundVariants: [
-    { orientation: "horizontal", size: "sm", class: { root: "h-8" } },
-    { orientation: "horizontal", size: "md", class: { root: "h-10" } },
-    { orientation: "horizontal", size: "lg", class: { root: "h-12" } },
+    { orientation: "horizontal", size: "sm", class: { root: "h-control-sm" } },
+    { orientation: "horizontal", size: "md", class: { root: "h-control-md" } },
+    { orientation: "horizontal", size: "lg", class: { root: "h-control-lg" } },
   ],
 });

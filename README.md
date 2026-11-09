@@ -4,12 +4,12 @@
 
 <h1 align="center">uiify</h1>
 
-<p align="center"><strong>Interactive before hydration.</strong><br>Native-first, accessible React components. The platform first, JavaScript when needed.</p>
+<p align="center"><strong>Turn a brief into three designs from your design system.</strong><br>React components and a skill for your coding agent.</p>
 
 <p align="center">
   <a href="https://uiify.gunkin.dev/components"><strong>Components</strong></a> ·
   <a href="https://uiify.gunkin.dev/docs">Docs</a> ·
-  <a href="#install">Get started</a> ·
+  <a href="#try-it-with-your-coding-agent">Get started</a> ·
   <a href="#ai-coding-agents">AI agents</a>
 </p>
 
@@ -20,12 +20,39 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-7f8bff?labelColor=101114" alt="MIT license"></a>
 </p>
 
-uiify is a React component library built on modern HTML, CSS, and DOM APIs. Components work
-before hydration and with JavaScript disabled; client JavaScript is added only where the
-accessibility tree needs it. It is tree-shakeable, works in Server Components, and ships rules and
-an `/uiify` skill that teach your coding agent to use it.
+UIify gives your coding agent your components and their rules, so you write a short brief, compare
+three designs in a preview and ship one by changing one line.
 
-> Alpha: APIs may change before the first stable release.
+> Early alpha: APIs may change between versions. Tested with Claude Code on Next.js and Vite.
+
+## Try it with your coding agent
+
+Paste this into your coding agent in a React 19.3 project with Tailwind CSS 4.1 or later. Replace
+"our sign-up page" with the screen you want to try:
+
+```text
+Install @gunkin/uiify in this project. Link its skill from node_modules/@gunkin/uiify/skills/uiify into .agents/skills/uiify and .claude/skills/uiify, then run node .agents/skills/uiify/scripts/sync-agents.mjs --write (details: https://uiify.gunkin.dev/docs/ai-agents). Then, as the PM, write a brief and three designs for our sign-up page and show me the preview.
+```
+
+1. **Write a brief.** A few lines: the problem, who sees the screen, the one number that should move
+   and the real copy.
+2. **Get three designs.** The agent builds three layouts from your design system's components, fills
+   them with your copy and shows them side by side in a preview.
+3. **Pick one by changing one line.** One file imports the chosen design. Change that import to ship
+   another; the page and its data stay as they are.
+
+It works next to shadcn/ui and your own components: UIify adds two lines to your stylesheet after
+shadcn's and uses your shadcn colors and radii. How the agent is connected, and the checks that keep
+its screens on your system, are in [AI coding agents](#ai-coding-agents).
+
+Tried it? Tell us where you got stuck:
+[open an issue](https://github.com/antongunkin/uiify/issues/new?template=tried-it.yml).
+
+## Components
+
+The components are built on modern HTML, CSS, and DOM APIs. They work before hydration and with
+JavaScript disabled; client JavaScript is added only where the accessibility tree needs it. They are
+tree-shakeable and work in Server Components.
 
 <p align="center">
   <a href="https://uiify.gunkin.dev/components"><img src="docs/assets/screenshot.png" alt="The uiify component catalog: 63 components with live previews, grouped by category" width="100%"></a>
@@ -59,66 +86,6 @@ export function SaveButton() {
 Use focused `@gunkin/uiify/components/*`, `@gunkin/uiify/elements/*`, `@gunkin/uiify/core/*`, or `@gunkin/uiify/hooks` imports in
 Server Components so client boundaries remain explicit.
 
-## UI documents (`@gunkin/uiify/ai`)
-
-A UI document is a JSON tree of UIify parts: `{ type, props, children }`, with no styling and no
-code. An agent writes it in your repository, or an LLM in your product stores it in a database;
-`UiDocument` renders it in Server Components, with SSR and hydration, and without JavaScript in
-the browser.
-
-By default `/uiify` writes ordinary component JSX. Ask for a document when the UI is stored or
-generated, for example `/uiify Add a status filter above the orders table at /orders as a UI document`.
-The result is an ordinary component that renders one:
-
-```tsx
-import { Suspense } from "react";
-import { UiDocument, type UiNodeInput } from "@gunkin/uiify/ai";
-
-const filter = {
-  type: "form",
-  props: { method: "get", role: "search" },
-  children: [
-    { type: "label", props: { htmlFor: "status" }, children: ["Status"] },
-    {
-      type: "NativeSelect",
-      props: { id: "status", name: "status" },
-      children: [
-        { type: "NativeSelectOption", props: { value: "open" }, children: ["Open"] },
-        { type: "NativeSelectOption", props: { value: "closed" }, children: ["Closed"] },
-      ],
-    },
-    { type: "Button", props: { type: "submit" }, children: ["Apply"] },
-  ],
-} satisfies UiNodeInput;
-
-export function OrdersFilter() {
-  return (
-    <Suspense>
-      <UiDocument node={filter} />
-    </Suspense>
-  );
-}
-```
-
-`satisfies UiNodeInput` makes TypeScript reject an unknown part, prop or value at the line that is
-wrong. For a document from a database, validate it before saving; `UiDocument` validates again
-before rendering and never renders an invalid document:
-
-```ts
-import { validateDocument } from "@gunkin/uiify/ai";
-
-const result = validateDocument(JSON.parse(body));
-if (!result.ok) return Response.json(result.issues, { status: 422 });
-// result.issues[0] for `variant: "primary"`:
-// { breadcrumb: "form › Stack › Button.props.variant",
-//   message: "\"primary\" is not allowed; use one of \"secondary\", \"outline\", …" }
-await db.pages.save(result.document);
-```
-
-Interactivity is native: links, `GET`/`POST` forms and invoker commands (`commandfor`). Parts
-documents cannot use yet are listed in `uiUnavailableParts`; `uiDocumentSchema` is the JSON Schema
-to give your own LLM.
-
 ## AI coding agents
 
 The package ships a closed component catalog for coding agents, the `/uiify` skill and a screen
@@ -136,11 +103,17 @@ node .agents/skills/uiify/scripts/sync-agents.mjs --write
 `sync-agents.mjs` adds a section between `uiify:start` and `uiify:end` with a few fixed rules and
 every component, part and closed prop value under its shadcn name (`Dialog`, `PopoverContent`,
 `InputOTP`, `NativeSelect`, `CardHeader`, `RadioGroupItem`, `TabsTrigger`). It also updates
-`CLAUDE.md` when that file exists. Run it again after each upgrade; `--check` fails CI when the
-section is missing, outdated or edited.
+`CLAUDE.md` when that file exists and does not import `AGENTS.md` (`@AGENTS.md`), and writes
+`.claude/rules/uiify.md`, a short real file (not a symlink) with the screen rules and the skill path,
+for agents that expand neither `@AGENTS.md` imports nor symlinks, such as Onlook's. Run it again
+after each upgrade; `--check` fails CI when the section is missing, outdated or edited.
 
-A screen arranges UIify parts and never sets `className` or `style`. Check what the agent wrote,
-together with `tsc`:
+A screen arranges UIify parts and never sets a raw color; `className` and `style` customize a part
+(`className` with theme classes on Tailwind's default scale: no palette colors; arbitrary values like
+`p-[13px]` only when no step fits, the check warns). A feature with
+several designs keeps its slots in `contract.ts`, and the check makes every design take exactly those
+slots and makes `active.ts` import exactly one design, so the build gets only that one. Check what the agent wrote, together with `tsc` (with TypeScript 7, also install
+`@typescript/typescript6`: the check needs its parser API):
 
 ```bash
 node .agents/skills/uiify/scripts/check-screens.mjs src/screens
@@ -214,6 +187,85 @@ that call's configured cap and blocks later paid calls. `results.json` is atomic
 before and after calls and throughout page verification; an existing non-empty output directory is
 not reused. This protects recorded progress but does not measure whether one skill produces better
 designs than another.
+
+## UI documents (`@gunkin/uiify/ai`)
+
+A UI document is a JSON tree of UIify parts: `{ type, props, children }`, with no styling and no
+code. An agent writes it in your repository, or an LLM in your product stores it in a database;
+`UiDocument` renders it in Server Components or any SSR host, with hydration.
+
+This layer is frozen: it is kept for stored and generated UI and is not growing. Product screens
+are ordinary TSX built from the closed catalog (see [AI coding agents](#ai-coding-agents)).
+
+A document works without JavaScript when the server sends its HTML after every Suspense boundary
+has resolved: a static prerender, or `onAllReady` with `renderToPipeableStream`. When a boundary
+is streamed, an inline script reveals it, so it stays hidden without JavaScript or under a CSP
+that blocks inline scripts.
+
+By default `/uiify` writes ordinary component JSX. Ask for a document when the UI is stored or
+generated, for example `/uiify Add a status filter above the orders table at /orders as a UI document`.
+The result is an ordinary component that renders one:
+
+```tsx
+import { Suspense } from "react";
+import { UiDocument, type UiNodeInput } from "@gunkin/uiify/ai";
+
+const filter = {
+  type: "form",
+  props: { method: "get", role: "search" },
+  children: [
+    { type: "label", props: { htmlFor: "status" }, children: ["Status"] },
+    {
+      type: "NativeSelect",
+      props: { id: "status", name: "status" },
+      children: [
+        { type: "NativeSelectOption", props: { value: "open" }, children: ["Open"] },
+        { type: "NativeSelectOption", props: { value: "closed" }, children: ["Closed"] },
+      ],
+    },
+    { type: "Button", props: { type: "submit" }, children: ["Apply"] },
+  ],
+} satisfies UiNodeInput;
+
+export function OrdersFilter() {
+  return (
+    <Suspense>
+      <UiDocument node={filter} />
+    </Suspense>
+  );
+}
+```
+
+`satisfies UiNodeInput` makes TypeScript reject an unknown part, prop or value at the line that is
+wrong. For a document from a database, validate it before saving; `UiDocument` validates again
+before rendering and never renders an invalid document:
+
+```ts
+import { validateDocument } from "@gunkin/uiify/ai";
+
+const result = validateDocument(JSON.parse(body));
+if (!result.ok) return Response.json(result.issues, { status: 422 });
+// result.issues[0] for `variant: "primary"`:
+// { breadcrumb: "form › Stack › Button.props.variant",
+//   message: "\"primary\" is not allowed; use one of \"secondary\", \"outline\", …" }
+await db.pages.save(result.document);
+```
+
+Interactivity is native: links, `GET`/`POST` forms and invoker commands (`commandfor`).
+
+| Export | Use |
+| --- | --- |
+| `UiDocument` | Validates and renders a document; suspends while it loads the parts it uses |
+| `validateDocument` | Returns `{ ok, document }` or `{ ok: false, issues }`; run it before saving |
+| `loadDocument` | Validates a document and loads only the components it uses |
+| `UiDocumentError` | Thrown for an invalid document; carries the same `issues` |
+| `uiDocumentSchema` | JSON Schema to give your own LLM; limits and nesting rules are checked by `validateDocument` only |
+| `Box`, `Grid`, `GridItem`, `Section`, `Stack`, `Heading`, `Text` | The same layout components as `@gunkin/uiify` |
+
+Types: `UiNodeInput`, `UiDocumentData`, `UiDocumentProps`, `UiValidationIssue` and every part's
+`<Name>Props`. Parts that documents cannot use yet, with reasons, are declared as
+`uiUnavailableParts` in `dist/ai/catalog.generated.d.ts`; it is a type declaration, not a runtime
+export.
 
 Documentation: https://uiify.gunkin.dev/
 

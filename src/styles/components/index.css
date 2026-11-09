@@ -1,3 +1,2 @@
 /* All component skins. Each file scopes itself to @layer components. */
-@import url("./control-size.css");
 @import url("./dialog-surface.css");

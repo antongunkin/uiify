@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-// Resolve from this file, not process.cwd(): the root vitest.config.ts include
+// Resolve from this file, not process.cwd(): the root vitest.config.mts include
 // (`packages/*/src/**/*.test.{ts,tsx}`) picks this suite up when vitest runs
 // from the repo root, where cwd-relative "src" reads throw ENOENT and the whole
 // architecture gate fails to collect instead of asserting anything.

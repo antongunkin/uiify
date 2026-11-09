@@ -23,6 +23,14 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Solid destructive fill: a true red at a fixed lightness so it stays saturated in dark mode
+     and carries light text in both themes. */
+  --color-destructive-fill: light-dark(
+    oklch(from var(--destructive) 55% 0.22 27deg),
+    oklch(from var(--destructive) 56% 0.2 h)
+  );
+  --color-destructive-fill-foreground: light-dark(var(--destructive-foreground), var(--foreground));
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
@@ -36,24 +44,25 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* Radii → rounded-*. Tailwind and UIify share these variable names, so
-     referencing the variable itself here would make each value cyclic. */
-  --radius-xs: calc(var(--radius) * 0.4);
-  --radius-sm: calc(var(--radius) * 0.8);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) * 1.6);
-  --radius-xl: calc(var(--radius) * 2);
+  /* Radii and type: Tailwind's default steps, written out because this entry is used without
+     Tailwind's default theme. Recipes use these standard steps, as in tailwind.css. */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
 
   /* Type scale → text-* */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-lg: 1.125rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 2rem;
-
-  /* Tailwind v4's default --leading-tight is 1.25; UIify defines it as 1.2. */
-  --leading-tight: 1.2;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --leading-tight: 1.25;
   --leading-normal: 1.5;
 
   /* Font families → font-* */

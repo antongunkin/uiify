@@ -14,8 +14,8 @@
 
 ## Exports
 
-- Runtime: `Table`, `TableFooter`, `TableRowHeader`, `TableBody`, `TableCaption`, `TableCell`, `TableColumnHeader`, `TableHeader`, `TableRoot`, `TableRow`
-- Types: `TableFooterProps`, `TableRowHeaderProps`, `TableStickySectionOwnProps`, `TableStickyCellOwnProps`, `TableBodyProps`, `TableCaptionProps`, `TableCellProps`, `TableColumnHeaderOwnProps`, `TableColumnHeaderProps`, `TableContextValue`, `TableInteractiveRootOwnProps`, `TableHeaderProps`, `TableRowSelectOwnProps`, `TableRowOwnProps`, `TableRowProps`, `TableStore`, `TableStoreOptions`, `TableRootProps`, `SelectionMode`, `SortDescriptor`, `SortDirection`
+- Runtime: `Table`, `TableFooter`, `TableRowHeader`, `TableBody`, `TableCaption`, `TableCell`, `TableHead`, `TableHeader`, `TableRow`
+- Types: `TableFooterProps`, `TableRowHeaderProps`, `TableStickySectionOwnProps`, `TableStickyCellOwnProps`, `TableBodyProps`, `TableCaptionProps`, `TableCellProps`, `TableHeadOwnProps`, `TableHeadProps`, `TableContextValue`, `TableInteractiveRootOwnProps`, `TableHeaderProps`, `TableRowSelectOwnProps`, `TableRowOwnProps`, `TableRowProps`, `TableStore`, `TableStoreOptions`, `TableProps`, `SelectionMode`, `SortDescriptor`, `SortDirection`
 
 ## Values
 
@@ -83,7 +83,7 @@
 | `toggleExpanded` | `(id: string) => void` | yes |  |
 | `store` | `TableStore` | yes |  |
 
-### TableRootOwnProps
+### TableOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -111,10 +111,10 @@ Extends: `TableStickySectionOwnProps`
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `disabled` | `boolean` | no |  |
-| `id` | `string` | yes |  |
+| `id` | `string` | no | Needed only by the client Table, where it keys selection and expansion. |
 | `selected` | `boolean` | no |  |
 
-### TableColumnHeaderOwnProps
+### TableHeadOwnProps
 
 Extends: `TableStickyCellOwnProps`
 
@@ -122,7 +122,7 @@ Extends: `TableStickyCellOwnProps`
 | --- | --- | --- | --- |
 | `allowsSorting` | `boolean` | no |  |
 | `children` | `ReactNode` | no |  |
-| `id` | `string` | yes |  |
+| `id` | `string` | no | Needed only by the client Table, where it keys sorting. |
 | `onClick` | `React.MouseEventHandler<HTMLTableCellElement>` | no |  |
 | `sortDirection` | `SortDescriptor["direction"] \| null` | no |  |
 
@@ -139,15 +139,15 @@ Extends: `TableStickyCellOwnProps`
 | --- | --- | --- | --- |
 | `slotProps` | `TableSelectionSlotProps` | no |  |
 
-### TableClientColumnHeaderSlotProps
+### TableClientHeadSlotProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `sortButton` | `SlotProps<"button">` | no |  |
 
-### TableClientRootOwnProps
+### TableClientOwnProps
 
-Extends: `TableRootOwnProps`
+Extends: `TableOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -195,15 +195,16 @@ Extends: `Omit<ComponentPropsWithRef<"tr">, "hidden" | "id">`
 
 ## Other types
 
-- `TableRootProps<TAs>`: `RenderableProps<TAs, TableRootOwnProps, Record<string, never>, HTMLTableElement>`
+- `TableProps<TAs>`: `RenderableProps<TAs, TableOwnProps, Record<string, never>, HTMLTableElement>`
 - `TableHeaderProps<TAs>`: `RenderableProps<TAs, TableStickySectionOwnProps, Record<string, never>, HTMLTableSectionElement>`
 - `TableBodyProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLTableSectionElement>`
 - `TableRowProps<TAs>`: `RenderableProps<TAs, TableRowOwnProps, { selected: boolean }, HTMLTableRowElement>`
 - `TableSelectionSlotProps`: `NativeCheckControlSlotProps`
-- `TableClientColumnHeaderProps<TAs>`: `TableColumnHeaderProps<TAs> & { readonly slotProps?: TableClientColumnHeaderSlotProps; }`
-- `TableColumnHeaderProps<TAs>`: `RenderableProps<TAs, TableColumnHeaderOwnProps, Record<string, never>, HTMLTableCellElement>`
+- `TableClientHeadProps<TAs>`: `TableHeadProps<TAs> & { /** Sorting is keyed by the column id. */ readonly id: string; readonly slotProps?: TableClientHeadSlotProps; }`
+- `TableClientRowProps<TAs>`: `TableRowProps<TAs> & { readonly id: string; }` — A client Table row: selection and expansion are keyed by its id.
+- `TableHeadProps<TAs>`: `RenderableProps<TAs, TableHeadOwnProps, Record<string, never>, HTMLTableCellElement>`
 - `TableCellProps<TAs>`: `RenderableProps<TAs, TableStickyCellOwnProps, Record<string, never>, HTMLTableCellElement>`
 - `TableCaptionProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLTableCaptionElement>`
-- `TableClientRootProps<TAs>`: `RenderableProps<TAs, TableClientRootOwnProps, Record<string, never>, HTMLTableElement>`
+- `TableClientProps<TAs>`: `RenderableProps<TAs, TableClientOwnProps, Record<string, never>, HTMLTableElement>`
 - `TableFooterProps<TAs>`: `RenderableProps<TAs, TableStickySectionOwnProps, Record<string, never>, HTMLTableSectionElement>`
 - `TableRowHeaderProps<TAs>`: `RenderableProps<TAs, TableStickyCellOwnProps, Record<string, never>, HTMLTableCellElement>`

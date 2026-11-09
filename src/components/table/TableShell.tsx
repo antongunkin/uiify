@@ -8,15 +8,15 @@ import type {
   TableCaptionProps,
   TableCellProps,
   TableRowProps,
-  TableColumnHeaderProps,
+  TableHeadProps,
   TableHeaderProps,
-  TableRootProps,
+  TableProps,
 } from "./types.js";
 
 export type { SelectionMode, SortDescriptor } from "./types.js";
 
-export function TableRoot<TAs extends ElementType = "table">(
-  props: TableRootProps<TAs>,
+export function Table<TAs extends ElementType = "table">(
+  props: TableProps<TAs>,
 ): ReactElement | null {
   const {
     as,
@@ -27,7 +27,7 @@ export function TableRoot<TAs extends ElementType = "table">(
     size,
     variant,
     ...consumerProps
-  } = props as TableRootProps<"table">;
+  } = props as TableProps<"table">;
 
   return useRenderElement({
     as,
@@ -110,8 +110,8 @@ export function TableRow<TAs extends ElementType = "tr">(
   });
 }
 
-export function TableColumnHeader<TAs extends ElementType = "th">(
-  props: TableColumnHeaderProps<TAs>,
+export function TableHead<TAs extends ElementType = "th">(
+  props: TableHeadProps<TAs>,
 ): ReactElement | null {
   const {
     as,
@@ -124,7 +124,7 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
     align,
     sticky,
     ...consumerProps
-  } = props as TableColumnHeaderProps<"th">;
+  } = props as TableHeadProps<"th">;
 
   return useRenderElement({
     as,
@@ -135,7 +135,7 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
       scope: "col",
       ...(align ? { "data-align": align } : {}),
       "data-sticky": sticky,
-      className: cn("uiify-table-column-header", consumerProps.className),
+      className: cn("uiify-table-head", consumerProps.className),
       onClick,
       children,
       id,
@@ -215,15 +215,3 @@ export function TableRowHeader<TAs extends ElementType = "th">(
     state: {},
   });
 }
-
-export const Table = {
-  Footer: TableFooter,
-  RowHeader: TableRowHeader,
-  Body: TableBody,
-  Caption: TableCaption,
-  Cell: TableCell,
-  ColumnHeader: TableColumnHeader,
-  Header: TableHeader,
-  Root: TableRoot,
-  Row: TableRow,
-};

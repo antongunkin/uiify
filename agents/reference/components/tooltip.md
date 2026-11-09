@@ -12,8 +12,8 @@
 
 ## Exports
 
-- Runtime: `Tooltip`, `TooltipContent`, `TooltipProvider`, `TooltipRoot`, `TooltipTrigger`
-- Types: `TooltipContentOwnProps`, `TooltipContentProps`, `TooltipProviderOwnProps`, `TooltipRootOwnProps`, `TooltipRootProps`, `TooltipTriggerOwnProps`, `TooltipTriggerProps`
+- Runtime: `Tooltip`, `TooltipContent`, `TooltipProvider`, `TooltipTrigger`
+- Types: `TooltipContentOwnProps`, `TooltipContentProps`, `TooltipProviderOwnProps`, `TooltipOwnProps`, `TooltipProps`, `TooltipTriggerOwnProps`, `TooltipTriggerProps`
 
 ## Props and shapes
 
@@ -41,7 +41,7 @@
 | `delayDuration` | `number` | no |  |
 | `skipDelayDuration` | `number` | no |  |
 
-### TooltipRootOwnProps
+### TooltipOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -50,9 +50,9 @@
 | `onOpenChange` | `PopoverChangeHandler` | no |  |
 | `open` | `boolean` | no |  |
 
-### TooltipRootProps
+### TooltipProps
 
-Extends: `TooltipRootOwnProps`
+Extends: `TooltipOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |

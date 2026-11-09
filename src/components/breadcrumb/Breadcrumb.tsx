@@ -9,14 +9,15 @@ import {
 import { collapseBreadcrumbItems } from "./breadcrumb-collapse.js";
 import type {
   BreadcrumbLabels,
-  BreadcrumbRootProps,
+  BreadcrumbProps,
   BreadcrumbListProps,
   BreadcrumbItemProps,
   BreadcrumbItemData,
   BreadcrumbLinkProps,
+  BreadcrumbPageProps,
   BreadcrumbSeparatorProps,
   BreadcrumbEllipsisProps,
-  BreadcrumbEllipsisPartProps,
+  BreadcrumbListSlotProps,
 } from "./types.js";
 
 const DEFAULT_BREADCRUMB_LABELS: BreadcrumbLabels = {
@@ -24,10 +25,11 @@ const DEFAULT_BREADCRUMB_LABELS: BreadcrumbLabels = {
   showCollapsed: "Show collapsed breadcrumbs",
 };
 
-export function BreadcrumbRoot<TAs extends ElementType = "nav">(
-  props: BreadcrumbRootProps<TAs>,
+// API informed by shadcn/ui public documentation (names and props only).
+export function Breadcrumb<TAs extends ElementType = "nav">(
+  props: BreadcrumbProps<TAs>,
 ): ReactElement | null {
-  const { as, render, labels, ...consumerProps } = props as BreadcrumbRootProps<"nav">;
+  const { as, render, labels, ...consumerProps } = props as BreadcrumbProps<"nav">;
   const resolvedLabels = { ...DEFAULT_BREADCRUMB_LABELS, ...labels };
 
   return useRenderElement({
@@ -46,22 +48,52 @@ export function BreadcrumbRoot<TAs extends ElementType = "nav">(
   });
 }
 
+/** The current item is a BreadcrumbPage; the others are links. */
+function renderEntry(
+  item: BreadcrumbItemData,
+  slotProps: BreadcrumbListSlotProps | undefined,
+): ReactElement {
+  return item.current ? (
+    <BreadcrumbPage {...resolveRepeatedSlotProps(slotProps?.page, item.key)}>
+      {item.label}
+    </BreadcrumbPage>
+  ) : (
+    <BreadcrumbLink
+      {...(item.href !== undefined ? { href: item.href } : {})}
+      {...resolveRepeatedSlotProps(slotProps?.link, item.key)}
+    >
+      {item.label}
+    </BreadcrumbLink>
+  );
+}
+
 function renderDataItem(
   item: BreadcrumbItemData,
-  separator: ReactNode,
-  slotProps: BreadcrumbListProps["slotProps"],
+  slotProps: BreadcrumbListSlotProps | undefined,
 ): ReactElement {
   return (
     <BreadcrumbItem {...resolveRepeatedSlotProps(slotProps?.item, item.key)} key={item.key}>
-      <BreadcrumbLink
-        {...(item.current !== undefined ? { current: item.current } : {})}
-        {...(item.href !== undefined ? { href: item.href } : {})}
-        {...resolveRepeatedSlotProps(slotProps?.link, item.key)}
-      >
-        {item.label}
-      </BreadcrumbLink>
-      {separator}
+      {renderEntry(item, slotProps)}
     </BreadcrumbItem>
+  );
+}
+
+/** Items with a BreadcrumbSeparator `li` between each two, as shadcn/ui lays them out. */
+function withSeparators(
+  entries: readonly ReactElement[],
+  separator: ReactNode,
+  slotProps: BreadcrumbListSlotProps | undefined,
+): ReactNode[] {
+  if (separator === undefined || separator === null) return [...entries];
+  return entries.flatMap((entry, index) =>
+    index === 0
+      ? [entry]
+      : [
+          <BreadcrumbSeparator {...slotProps?.separator} key={`separator-${entry.key ?? index}`}>
+            {separator}
+          </BreadcrumbSeparator>,
+          entry,
+        ],
   );
 }
 
@@ -85,7 +117,7 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
 
   if (maxItems !== undefined && items === undefined) {
     throw new Error(
-      "Breadcrumb.List: maxItems requires the data-driven `items` prop — collapsing can't " +
+      "BreadcrumbList: maxItems requires the data-driven `items` prop — collapsing can't " +
         "safely introspect `children` (a .map() through a wrapper component hides real " +
         "elements from child traversal until React actually renders them).",
     );
@@ -97,28 +129,19 @@ export function BreadcrumbList<TAs extends ElementType = "ol">(
       maxItems === undefined
         ? undefined
         : collapseBreadcrumbItems(items, maxItems, itemsBeforeCollapse, itemsAfterCollapse);
-
-    content = collapsed
+    const entries = collapsed
       ? [
-          ...collapsed.before.map((item) => renderDataItem(item, separator, slotProps)),
-          <BreadcrumbEllipsis
+          ...collapsed.before.map((item) => renderDataItem(item, slotProps)),
+          <BreadcrumbCollapse
             hiddenItems={collapsed.hidden}
             key="ellipsis"
             labels={resolvedLabels}
-            separator={separator}
             {...(slotProps ? { slotProps } : {})}
           />,
-          ...collapsed.after.map((item, index) =>
-            renderDataItem(
-              item,
-              index === collapsed.after.length - 1 ? null : separator,
-              slotProps,
-            ),
-          ),
+          ...collapsed.after.map((item) => renderDataItem(item, slotProps)),
         ]
-      : items.map((item, index) =>
-          renderDataItem(item, index === items.length - 1 ? null : separator, slotProps),
-        );
+      : items.map((item) => renderDataItem(item, slotProps));
+    content = withSeparators(entries, separator, slotProps);
   }
 
   return useRenderElement({
@@ -162,21 +185,12 @@ export function BreadcrumbItem<TAs extends ElementType = "li">(
 export function BreadcrumbLink<TAs extends ElementType = "a">(
   props: BreadcrumbLinkProps<TAs>,
 ): ReactElement | null {
-  const {
-    as,
-    render,
-    children,
-    current = false,
-    href,
-    ...consumerProps
-  } = props as BreadcrumbLinkProps<"a">;
+  const { as, render, children, href, ...consumerProps } = props as BreadcrumbLinkProps<"a">;
 
   return useRenderElement({
     as,
     defaultTag: "a",
     props: {
-      "aria-current": current ? "page" : undefined,
-      "data-current": current ? "" : undefined,
       href,
       ...consumerProps,
       className: cn(
@@ -186,24 +200,43 @@ export function BreadcrumbLink<TAs extends ElementType = "a">(
       children,
     },
     render,
-    state: { current },
+    state: {},
   });
 }
 
-export function BreadcrumbSeparator<TAs extends ElementType = "span">(
-  props: BreadcrumbSeparatorProps<TAs>,
+export function BreadcrumbPage<TAs extends ElementType = "span">(
+  props: BreadcrumbPageProps<TAs>,
 ): ReactElement | null {
-  const {
-    as,
-    render,
-    children = "/",
-    ...consumerProps
-  } = props as BreadcrumbSeparatorProps<"span">;
+  const { as, render, children, ...consumerProps } = props as BreadcrumbPageProps<"span">;
 
   return useRenderElement({
     as,
     defaultTag: "span",
     props: {
+      "aria-current": "page",
+      ...consumerProps,
+      className: cn(
+        "uiify-breadcrumb-page",
+        "className" in consumerProps ? consumerProps.className : undefined,
+      ),
+      children,
+    },
+    render,
+    state: {},
+  });
+}
+
+export function BreadcrumbSeparator<TAs extends ElementType = "li">(
+  props: BreadcrumbSeparatorProps<TAs>,
+): ReactElement | null {
+  const { as, render, children = "/", ...consumerProps } = props as BreadcrumbSeparatorProps<"li">;
+
+  return useRenderElement({
+    as,
+    defaultTag: "li",
+    props: {
+      // shadcn/ui writes role="presentation"; "none" is the same role in the form html-validate asks for.
+      role: "none",
       "aria-hidden": true,
       ...consumerProps,
       className: cn(
@@ -217,15 +250,21 @@ export function BreadcrumbSeparator<TAs extends ElementType = "span">(
   });
 }
 
+interface BreadcrumbCollapseProps {
+  readonly hiddenItems: readonly BreadcrumbItemData[];
+  readonly labels: BreadcrumbLabels;
+  readonly slotProps?: BreadcrumbListSlotProps;
+}
+
 /**
- * Built on the native Details Element so the collapsed links work without JavaScript.
+ * The collapsed middle of `items`: built on the native Details Element so the hidden links work
+ * without JavaScript. Each hidden link sits in its own list item.
  */
-function BreadcrumbEllipsis({
+function BreadcrumbCollapse({
   hiddenItems,
   labels,
-  separator,
   slotProps,
-}: BreadcrumbEllipsisProps): ReactElement {
+}: BreadcrumbCollapseProps): ReactElement {
   return (
     <BreadcrumbItem {...slotProps?.ellipsisItem}>
       <NativeDetailsRoot
@@ -240,42 +279,25 @@ function BreadcrumbEllipsis({
           {...slotProps?.ellipsisContent}
           className={cn("uiify-breadcrumb-ellipsis-content", slotProps?.ellipsisContent?.className)}
         >
-          {hiddenItems.map((item) => (
-            <BreadcrumbLink
-              key={item.key}
-              {...(item.current !== undefined ? { current: item.current } : {})}
-              {...(item.href !== undefined ? { href: item.href } : {})}
-              {...resolveRepeatedSlotProps(slotProps?.link, item.key)}
-            >
-              {item.label}
-            </BreadcrumbLink>
-          ))}
+          {hiddenItems.map((item) => renderDataItem(item, slotProps))}
         </NativeDetailsContent>
       </NativeDetailsRoot>
-      {separator}
     </BreadcrumbItem>
   );
 }
-BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
+BreadcrumbCollapse.displayName = "BreadcrumbCollapse";
 
-export function BreadcrumbEllipsisPart({
-  slotProps,
-}: BreadcrumbEllipsisPartProps = {}): ReactElement {
-  return (
-    <BreadcrumbItem {...slotProps?.item}>
-      <span aria-hidden="true" {...slotProps?.ellipsis}>
-        …
-      </span>
-    </BreadcrumbItem>
-  );
+/** A decorative "…" (aria-hidden); place it inside a BreadcrumbItem, as in shadcn/ui. */
+export function BreadcrumbEllipsis<TAs extends ElementType = "span">(
+  props: BreadcrumbEllipsisProps<TAs>,
+): ReactElement | null {
+  const { as, render, children = "…", ...consumerProps } = props as BreadcrumbEllipsisProps<"span">;
+
+  return useRenderElement({
+    as,
+    defaultTag: "span",
+    props: { "aria-hidden": true, ...consumerProps, children },
+    render,
+    state: {},
+  });
 }
-BreadcrumbEllipsisPart.displayName = "BreadcrumbEllipsisPart";
-
-export const Breadcrumb = {
-  Ellipsis: BreadcrumbEllipsisPart,
-  Item: BreadcrumbItem,
-  Link: BreadcrumbLink,
-  List: BreadcrumbList,
-  Root: BreadcrumbRoot,
-  Separator: BreadcrumbSeparator,
-};

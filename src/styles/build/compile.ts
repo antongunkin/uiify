@@ -15,7 +15,7 @@ export interface CompiledStyle {
   /** The whole style under `[data-style="<style>"]`, for previewing several styles on one page. */
   readonly scoped: string;
   /**
-   * The theme values the adapter declares (`@layer theme { :root { … } }`), for hosts that load the
+   * The theme values the entry declares (`@layer theme { :root { … } }`), for hosts that load the
    * compiled style without running Tailwind with `@gunkin/uiify/tailwind.css`.
    */
   readonly theme: string;

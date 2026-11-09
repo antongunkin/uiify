@@ -1,9 +1,8 @@
 export {
   Table,
-  TableRoot,
   TableBody,
   TableRow,
-  TableColumnHeader,
+  TableHead,
   TableCaption,
   TableCell,
   TableHeader,

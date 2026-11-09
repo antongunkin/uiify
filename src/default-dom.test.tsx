@@ -9,7 +9,7 @@ import {
 } from "./components/accordion/Accordion.js";
 import { AlertDialog } from "./components/alert-dialog/AlertDialog.js";
 import { Collapsible } from "./components/collapsible/Collapsible.js";
-import { DrawerPanel } from "./components/drawer/DrawerNative.js";
+import { Drawer } from "./components/drawer/DrawerNative.js";
 
 /**
  * Characterization of the default DOM (no consumer overrides) of components migrated to
@@ -52,9 +52,9 @@ it("keeps the default DOM of migrated components", () => {
       </AlertDialog>,
     ),
     drawerPanel: outline(
-      <DrawerPanel footer="Actions" id="d" size="lg" title="Settings" trigger="Open">
+      <Drawer footer="Actions" id="d" size="lg" title="Settings" trigger="Open">
         Body
-      </DrawerPanel>,
+      </Drawer>,
     ),
   }).toMatchSnapshot();
 });

@@ -172,6 +172,18 @@
   }
 
   /*
+   * PricingPlans block: a per-period price, period label or action renders both values, marked
+   * data-period. The checked radio of the period switch hides the other one. Only month and year:
+   * CSS cannot compare an arbitrary value to the checked one.
+   */
+  .uiify-pricing-plans:has(.uiify-pricing-plans-control input[value="year"]:checked)
+    [data-period="month"],
+  .uiify-pricing-plans:has(.uiify-pricing-plans-control input[value="month"]:checked)
+    [data-period="year"] {
+    display: none;
+  }
+
+  /*
    * Tabs pair by position, not by value (Tier 0 has no context): the i-th checked trigger in the
    * direct TabsList shows the i-th direct TabsContent, up to 12 tabs. Child combinators keep a
    * nested Tabs independent. With no trigger checked, the first content shows.

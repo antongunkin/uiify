@@ -69,7 +69,15 @@ const widths = Object.fromEntries([
   ]),
 ]);
 const common = {
-  // Property order is semantic: shorthand precedes axes; width precedes maxWidth.
+  // Property order is semantic: shorthand precedes axes; container precedes width; width
+  // precedes maxWidth.
+  // A query container is size-contained, so it has no content width: in a parent that does not
+  // stretch it (a centring Stack, a row) it would collapse to 0. It fills the inline axis instead;
+  // an explicit width, declared after it, still wins.
+  container: {
+    true: { "container-type": "inline-size", "inline-size": "100%" },
+    false: { "container-type": "normal" },
+  },
   padding: paddingValues(["inline", "block"]),
   paddingInline: paddingValues(["inline"]),
   paddingBlock: paddingValues(["block"]),
@@ -80,7 +88,6 @@ const common = {
   grow: propertyValues("flex-grow", { 0: "0", 1: "1" }),
   shrink: propertyValues("flex-shrink", { 0: "0", 1: "1" }),
   overflow: propertyValues("overflow", { visible: "visible", hidden: "hidden", auto: "auto" }),
-  container: { true: { "container-type": "inline-size" }, false: { "container-type": "normal" } },
 };
 const gaps = Object.fromEntries(
   Object.entries(spaces).map(([value, css]) => [

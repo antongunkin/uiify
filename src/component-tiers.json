@@ -149,8 +149,8 @@
       "sizeNow": "8.23 kB",
       "sizeTarget": "12 kB",
       "status": "done",
-      "clientDefault": true,
-      "note": "DrawerPanel native shell + compound Drawer.* client API; snap-point drag on client entry."
+      "clientDefault": false,
+      "note": "Tier 0 Drawer (native dialog shell, show-modal/request-close) in the root entry; the client Drawer (controlled state, snap-point drag, shadcn/Vaul names) is @gunkin/uiify/components/drawer/client."
     },
     "field": {
       "tier": 0,

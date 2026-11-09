@@ -16,16 +16,16 @@ import { useDialog } from "@gunkin/uiify/core/dialog";
 import { createDrawerStore } from "./drawer-store.js";
 import type {
   DrawerContextValue,
-  DrawerRootProps,
-  DrawerTriggerProps,
-  DrawerContentProps,
-  DrawerTitleOwnProps,
-  DrawerDescriptionOwnProps,
-  DrawerCloseProps,
-  DrawerHandleOwnProps,
+  DrawerClientProps,
+  DrawerClientTriggerProps,
+  DrawerClientContentProps,
+  DrawerClientTitleOwnProps,
+  DrawerClientDescriptionOwnProps,
+  DrawerClientCloseProps,
+  DrawerClientHandleOwnProps,
 } from "./types.js";
 const [DrawerProvider, useDrawerContext] = createPartContext<DrawerContextValue>("Drawer");
-export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
+export function Drawer(props: DrawerClientProps): ReactElement | null {
   const {
     activeSnapPoint,
     closeOnOverlayClick = true,
@@ -114,8 +114,8 @@ export function DrawerRoot(props: DrawerRootProps): ReactElement | null {
   );
   return <DrawerProvider value={contextValue}>{children}</DrawerProvider>;
 }
-DrawerRoot.displayName = "DrawerRoot";
-export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
+Drawer.displayName = "Drawer";
+export function DrawerTrigger(props: DrawerClientTriggerProps): ReactElement | null {
   const { children, className, ref, ...consumerProps } = props;
   const { contentId, open, openDialog, triggerRef } = useDrawerContext("Trigger");
   const mergedRef = useMergedRefs(triggerRef, ref);
@@ -135,7 +135,7 @@ export function DrawerTrigger(props: DrawerTriggerProps): ReactElement | null {
     state: {},
   });
 }
-export function DrawerContent(props: DrawerContentProps): ReactElement | null {
+export function DrawerContent(props: DrawerClientContentProps): ReactElement | null {
   const {
     children,
     className,
@@ -220,7 +220,7 @@ export function DrawerContent(props: DrawerContentProps): ReactElement | null {
   });
   return content;
 }
-export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
+export function DrawerTitle(props: DrawerClientTitleOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   const id = useId();
   const { setLabelId } = useDrawerContext("Title");
@@ -239,7 +239,7 @@ export function DrawerTitle(props: DrawerTitleOwnProps): ReactElement | null {
     state: {},
   });
 }
-export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElement | null {
+export function DrawerDescription(props: DrawerClientDescriptionOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   const id = useId();
   const { setDescriptionId } = useDrawerContext("Description");
@@ -258,7 +258,7 @@ export function DrawerDescription(props: DrawerDescriptionOwnProps): ReactElemen
     state: {},
   });
 }
-export function DrawerClose(props: DrawerCloseProps): ReactElement | null {
+export function DrawerClose(props: DrawerClientCloseProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
   const { close } = useDrawerContext("Close");
   return useRenderElement({
@@ -276,7 +276,7 @@ export function DrawerClose(props: DrawerCloseProps): ReactElement | null {
     state: {},
   });
 }
-export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
+export function DrawerHandle(props: DrawerClientHandleOwnProps): ReactElement | null {
   const {
     className,
     onPointerCancel,
@@ -343,12 +343,3 @@ export function DrawerHandle(props: DrawerHandleOwnProps): ReactElement | null {
     state: { dragging },
   });
 }
-export const Drawer = {
-  Close: DrawerClose,
-  Content: DrawerContent,
-  Description: DrawerDescription,
-  Handle: DrawerHandle,
-  Root: DrawerRoot,
-  Title: DrawerTitle,
-  Trigger: DrawerTrigger,
-};

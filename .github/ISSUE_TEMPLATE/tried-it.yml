@@ -1,0 +1,59 @@
+name: I tried UIify
+description: You ran the prompt from the README with your coding agent. Tell us how far it got.
+title: "Tried it: "
+labels: ["tried-it"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying UIify. One honest line about where it worked or where it got stuck helps more than a long report.
+  - type: dropdown
+    id: result
+    attributes:
+      label: How far did it get?
+      options:
+        - It worked: brief, three designs, preview and the choice
+        - It stopped while installing or connecting the agent
+        - It stopped while writing the brief or the designs
+        - The preview did not open or looked broken
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: stuck
+    attributes:
+      label: Where did it get stuck, or what surprised you?
+      description: The step, the error or the agent's question, and what you expected instead.
+    validations:
+      required: false
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      options:
+        - Next.js (App Router)
+        - Vite
+        - Other React framework
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Coding agent and version
+      placeholder: "Claude Code 2.x, Codex, Cursor…"
+    validations:
+      required: true
+  - type: checkboxes
+    id: setup
+    attributes:
+      label: Project
+      options:
+        - label: The project already uses shadcn/ui
+        - label: The project already uses Tailwind CSS 4
+  - type: input
+    id: version
+    attributes:
+      label: "@gunkin/uiify version"
+      placeholder: "0.1.0-alpha"
+    validations:
+      required: false

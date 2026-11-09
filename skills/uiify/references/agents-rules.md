@@ -1,6 +1,22 @@
 ## UIify screens
 
-- A screen in `<dir>` (the folder where the project keeps its screens) imports only from `@gunkin/uiify`, blocks and project components. It never sets `className` or `style`.
+- A screen in `<dir>` (the folder where the project keeps its screens) imports only from `@gunkin/uiify`, files inside `<dir>` and the project components listed below (package.json `"uiify": { "components": [...] }`); never a project component with a UIify name: use UIify's. It never sets a raw color (`color="violet"`, `fill="#7c3aed"`, `bg-violet-600`). Reach for props and variants first; `className` and `style` customize a component or block: `className` is a literal string of theme classes on Tailwind's default scale (`className="w-full md:w-auto"`), never a palette color; an arbitrary value (`p-[13px]`) only when no step fits (the check warns); a color in `style` is a theme variable (`var(--primary)`).
+- Never style UIify internals: no `.uiify-*` or `[data-ui-*]` selectors and no `--control-*`/`--uiify-*` variables in the project's CSS, `className` or `style`; `check-screens` fails on them. Change the instance's `className` or props, or ask before changing a shadcn/Tailwind theme token (`--primary`, `--radius`).
 - Take component names and props from the catalog below. Do not read the package types for them.
+- When a block (`Hero`, `PricingPlans`, `FeatureGrid`, `Testimonial`, `PlanOption`) fits a section's job, use it instead of rebuilding it; the design still sets the page layout and the order of sections.
+- A feature with several designs keeps its slots in one contract; switching designs never changes the page:
+  - `contract.ts`: `export type PaywallSlots = { title: string; plans: readonly ReactElement[]; faq?: ReactNode };`, a plain object type (no `&`, `extends` or `interface`). A slot the designs put inside a text part (`Heading`, `Text`, `EmptyTitle`, `Button`…) is `string`: the design picks the part. Any other slot is `ReactNode`, rendered bare or in a layout part; a repeated slot is `readonly ReactElement[]`. No state flags.
+  - `designs/<name>.tsx`: `export default function Compact({ title, plans, faq }: PaywallSlots)`. Destructure and render every slot, optional ones too; no `...rest`, no props type of its own.
+  - Wrap an optional slot only under a condition: `{faq && <Card>{faq}</Card>}`; a bare wrapper renders empty without it.
+  - Render a repeated slot directly in its container: `<Stack gap="md">{plans}</Stack>`. If each row needs a wrapper, write `key={plan.key ?? index}`, never `key={plan.key}`.
+  - `sample.tsx`: one object per state, `export const full = { ... } satisfies PaywallSlots;`.
+  - `designs/index.ts` lists every design: `export const designs = { compact, split } satisfies Record<string, FC<PaywallSlots>>;`. Only the preview imports it.
+  - `active.ts` picks the product's design: `import design from "./designs/compact"; const active: FC<PaywallSlots> = design; export default active;`. Switch designs by changing that import only; never import `./designs` there, it puts every design into the bundle.
+  - Every design of a feature posts its forms to the same `action` and `method`.
+  - To show the designs, read `.agents/skills/uiify/references/guides/preview.md`.
+  - Never delete a design that is not connected; the person decides.
+- Roles. To create, change or choose a feature as the PM, read `.agents/skills/uiify/references/guides/feature.md`; to connect, extend or ship one as the developer, read `feature-dev.md` next to it. The role comes from the request or a `uiify role:` line in the person's own instructions; without either, work as the developer. Do not ask.
+- A request about a selected element (from a visual editor): first read `.agents/skills/uiify/references/guides/visual-edits.md`.
+- The project's `tsconfig` has `strict` and `noUnusedParameters`; without them `tsc` misses a slot that a design takes but does not render.
 - After every change run `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` and `tsc`.
-- When the checks pass, answer in one line.
+- Report a check as passed only if you ran it in this session. When the checks pass, answer in one line.

@@ -14,8 +14,8 @@ Do not use breadcrumbs as the only way to navigate or show unrelated destination
 
 ## Structure
 
-Use BreadcrumbRoot, BreadcrumbList, BreadcrumbItem, and BreadcrumbLink inside a labelled navigation landmark. Keep items in ancestor order, use current to identify the current page, and use links for ancestors.
-When BreadcrumbList renders its data-driven `items`, use `slotProps.item` and `slotProps.link` for each generated item and link. Address a specific item with `byItemValue[item.key]`. Collapsed lists also accept `slotProps.ellipsisItem`, `ellipsis`, `ellipsisTrigger`, and `ellipsisContent`. The standalone `Breadcrumb.Ellipsis` uses `slotProps.item` and `slotProps.ellipsis`.
+Use Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink and BreadcrumbPage inside a labelled navigation landmark, as shadcn/ui does. Keep items in ancestor order: links for ancestors, `BreadcrumbPage` (a `span` with aria-current="page", not a link) for the current page. `BreadcrumbSeparator` is its own list item between two items, never inside one. Place `BreadcrumbEllipsis` (an aria-hidden "…") inside a `BreadcrumbItem`.
+When BreadcrumbList renders its data-driven `items`, an item with `current: true` becomes a BreadcrumbPage and the `separator` prop is the content of the separator list items between items. Use `slotProps.item`, `slotProps.link`, `slotProps.page` and `slotProps.separator` for the generated parts; address a specific item with `byItemValue[item.key]`. Collapsed lists also accept `slotProps.ellipsisItem`, `ellipsis`, `ellipsisTrigger`, and `ellipsisContent`; each hidden link sits in its own list item.
 
 ## Responsive
 

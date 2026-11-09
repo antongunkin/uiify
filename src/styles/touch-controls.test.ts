@@ -19,17 +19,12 @@ const textEntryControls = [["uiify/effects.css", ".uiify-tags-input-input {"]] a
 const pillControls = [["uiify/effects.css", ".uiify-combobox-input {"]] as const;
 
 describe("touch text-entry controls", () => {
-  it.each(pillControls)(
-    "%s sizes %s from the control font, defaulting to the base text step",
-    (file, selector) => {
-      expect(ruleBody(read(file), selector)).toMatch(
-        /font-size: var\(--uiify-control-font, 1rem\);/,
-      );
-    },
-  );
+  it.each(pillControls)("%s sizes %s from the control font its root sets", (file, selector) => {
+    expect(ruleBody(read(file), selector)).toMatch(/font-size: var\(--uiify-control-font\);/);
+  });
 
-  it("keeps the Select recipe at the base text step by default", () => {
-    expect(read("uiify/native-select.ts")).toMatch(/block-10 .*text-base/);
+  it("keeps the Select recipe at the control height and text token by default", () => {
+    expect(read("uiify/native-select.ts")).toMatch(/block-control-md .*text-control/);
   });
 
   it.each(textEntryControls)("%s sizes %s from the control text token", (file, selector) => {

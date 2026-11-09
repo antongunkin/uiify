@@ -7,13 +7,13 @@ export interface BreadcrumbLabels {
   readonly showCollapsed: string;
 }
 
-export interface BreadcrumbRootOwnProps {
+export interface BreadcrumbOwnProps {
   readonly labels?: Partial<BreadcrumbLabels>;
 }
 
-export type BreadcrumbRootProps<TAs extends ElementType = "nav"> = RenderableProps<
+export type BreadcrumbProps<TAs extends ElementType = "nav"> = RenderableProps<
   TAs,
-  BreadcrumbRootOwnProps,
+  BreadcrumbOwnProps,
   Record<string, never>,
   HTMLElement
 >;
@@ -23,6 +23,7 @@ export type BreadcrumbRootProps<TAs extends ElementType = "nav"> = RenderablePro
  * requires (see BreadcrumbList's own doc comment for why). */
 export interface BreadcrumbItemData {
   readonly key: string;
+  /** The current page: rendered as BreadcrumbPage, not a link. */
   readonly current?: boolean;
   readonly href?: string | undefined;
   readonly label: ReactNode;
@@ -43,6 +44,7 @@ export interface BreadcrumbListOwnProps {
   readonly itemsAfterCollapse?: number;
   readonly itemsBeforeCollapse?: number;
   readonly maxItems?: number;
+  /** Content of the BreadcrumbSeparator rendered between `items`; none without it. */
   readonly separator?: ReactNode;
   readonly slotProps?: BreadcrumbListSlotProps;
 }
@@ -50,6 +52,8 @@ export interface BreadcrumbListOwnProps {
 export interface BreadcrumbListSlotProps {
   readonly item?: RepeatedSlotProps<SlotProps<"li">>;
   readonly link?: RepeatedSlotProps<SlotProps<"a">>;
+  readonly page?: RepeatedSlotProps<SlotProps<"span">>;
+  readonly separator?: SlotProps<"li">;
   readonly ellipsisItem?: SlotProps<"li">;
   readonly ellipsis?: SlotProps<"details">;
   readonly ellipsisTrigger?: SlotProps<"summary">;
@@ -72,38 +76,40 @@ export type BreadcrumbItemProps<TAs extends ElementType = "li"> = RenderableProp
 
 export interface BreadcrumbLinkOwnProps {
   readonly children?: ReactNode;
-  readonly current?: boolean;
   readonly href?: string | undefined;
 }
 
 export type BreadcrumbLinkProps<TAs extends ElementType = "a"> = RenderableProps<
   TAs,
   BreadcrumbLinkOwnProps,
-  { current: boolean },
+  Record<string, never>,
   HTMLAnchorElement
+>;
+
+/** The current page: a `span` with aria-current="page", not a link and not focusable. */
+export type BreadcrumbPageProps<TAs extends ElementType = "span"> = RenderableProps<
+  TAs,
+  { readonly children?: ReactNode },
+  Record<string, never>,
+  HTMLSpanElement
 >;
 
 export interface BreadcrumbSeparatorOwnProps {
   readonly children?: ReactNode;
 }
 
-export type BreadcrumbSeparatorProps<TAs extends ElementType = "span"> = RenderableProps<
+/** A list item between two BreadcrumbItems, hidden from assistive technology. */
+export type BreadcrumbSeparatorProps<TAs extends ElementType = "li"> = RenderableProps<
   TAs,
   BreadcrumbSeparatorOwnProps,
   Record<string, never>,
-  HTMLElement
+  HTMLLIElement
 >;
 
-export interface BreadcrumbEllipsisProps {
-  readonly hiddenItems: readonly BreadcrumbItemData[];
-  readonly labels: BreadcrumbLabels;
-  readonly separator?: ReactNode;
-  readonly slotProps?: BreadcrumbListSlotProps;
-}
-
-export interface BreadcrumbEllipsisPartProps {
-  readonly slotProps?: {
-    readonly item?: SlotProps<"li">;
-    readonly ellipsis?: SlotProps<"span">;
-  };
-}
+/** A decorative "…" placed inside a BreadcrumbItem by the consumer. */
+export type BreadcrumbEllipsisProps<TAs extends ElementType = "span"> = RenderableProps<
+  TAs,
+  { readonly children?: ReactNode },
+  Record<string, never>,
+  HTMLSpanElement
+>;

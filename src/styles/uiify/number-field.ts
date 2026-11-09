@@ -8,7 +8,7 @@ export const numberField = defineRecipe<
   childParts: ["group"],
   requires: ["button", "input"],
   base: {
-    root: "relative inline-flex items-stretch overflow-hidden rounded-md border border-input bg-card focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring",
+    root: "relative inline-flex items-stretch overflow-hidden rounded-lg border border-input bg-card focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring",
     group: "inline-flex items-stretch",
     input:
       "w-16 min-h-9 px-3 py-0 border-0 bg-transparent text-foreground text-center leading-5 outline-none",

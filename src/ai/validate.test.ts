@@ -27,7 +27,7 @@ const fieldLabel = (htmlFor: string): Json => ({
   children: ["Name"],
 });
 const input = (props: Json): Json => ({ type: "Input", props });
-const breadcrumbList = (): Json => ({ type: "Breadcrumb.List", props: {}, children: [] });
+const breadcrumbList = (): Json => ({ type: "BreadcrumbList", props: {}, children: [] });
 
 describe("validateDocument", () => {
   it.each([
@@ -232,8 +232,6 @@ describe("validateDocument", () => {
         ["Slider", { value: 5 }],
         ["ColorPicker", { label: "Brand", value: "#336699" }],
         ["Pagination.Root", { count: 5, page: 2 }],
-        ["Drawer.Root", { open: true }],
-        ["Drawer.Root", { activeSnapPoint: 1 }],
       ])("rejects the controlled prop of %s, which has its default form", (type, props) => {
         const issue = single({ type, props });
         expect(issue.message).toMatch(/^unknown prop/);
@@ -248,7 +246,6 @@ describe("validateDocument", () => {
         ["Slider", { defaultValue: 5 }],
         ["ColorPicker", { label: "Brand", defaultValue: "#336699" }],
         ["Pagination.Root", { count: 5, defaultPage: 2 }],
-        ["Drawer.Root", { defaultOpen: true, defaultActiveSnapPoint: 1 }],
       ])("accepts the default form on %s", (type, props) => {
         expect(validateDocument({ type, props }).ok).toBe(true);
       });
@@ -281,14 +278,28 @@ describe("validateDocument", () => {
   describe("rules", () => {
     it("rejects a part outside its root", () => {
       const issue = single(form(breadcrumbList()));
-      expect(issue.breadcrumb).toBe("form › Breadcrumb.List");
-      expect(issue.message).toContain(uiParts["Breadcrumb.List"].rootType);
-      expect(issue.message).toContain("Breadcrumb.Root");
+      expect(issue.breadcrumb).toBe("form › BreadcrumbList");
+      expect(issue.message).toContain(uiParts["BreadcrumbList"].rootType);
+      expect(issue.message).toContain("Breadcrumb");
+    });
+
+    it.each([
+      ["TooltipTrigger", "Tooltip"],
+      ["TableRow", "Table"],
+    ])("rejects a flat %s outside its root %s", (part, root) => {
+      const result = validateDocument(form({ type: part, props: {}, children: ["x"] }));
+      expect(result.ok).toBe(false);
+      const issues = result.ok ? [] : result.issues;
+      expect(
+        issues.some(
+          (issue) => issue.breadcrumb === `form › ${part}` && issue.message.includes(root),
+        ),
+      ).toBe(true);
     });
 
     it("accepts a part inside its root through layout nodes", () => {
       const stack = { type: "Stack", props: {}, children: [breadcrumbList()] };
-      const root = { type: "Breadcrumb.Root", props: {}, children: [stack] };
+      const root = { type: "Breadcrumb", props: {}, children: [stack] };
       expect(validateDocument(root).ok).toBe(true);
     });
 
@@ -334,7 +345,7 @@ describe("validateDocument", () => {
         children,
       });
       const row = (id: string, ...children: unknown[]): Json => ({
-        ...node("Table.Row", ...children),
+        ...node("TableRow", ...children),
         props: { id },
       });
 
@@ -395,65 +406,62 @@ describe("validateDocument", () => {
 
       it("rejects component buttons nested through physical or transparent parts", () => {
         expect(single(node("Button", node("Stack", button()))).message).toContain("button");
-        const tooltip = node(
-          "Tooltip.Provider",
-          node("Tooltip.Root", node("Tooltip.Trigger", button())),
-        );
+        const tooltip = node("TooltipProvider", node("Tooltip", node("TooltipTrigger", button())));
         expect(single(tooltip).breadcrumb).toBe(
-          "Tooltip.Provider › Tooltip.Root › Tooltip.Trigger › Button",
+          "TooltipProvider › Tooltip › TooltipTrigger › Button",
         );
         const nested = node(
           "Button",
-          node("Tooltip.Provider", node("Tooltip.Root", node("Tooltip.Trigger", "Help"))),
+          node("TooltipProvider", node("Tooltip", node("TooltipTrigger", "Help"))),
         );
         expect(single(nested).message).toContain("button");
         expect(validateDocument(node("Button", node("button", "Native"))).ok).toBe(false);
       });
 
       it.each([
-        node("Table.Root", row("row", node("Table.Cell", "x"))),
-        node("Table.Root", node("Table.Cell", "x")),
-        node("Table.Root", node("Stack", node("Table.Body"))),
-        node("Table.Root", node("Table.Body", node("Table.Cell", "x"))),
-        node("Table.Root", node("Table.Body", row("row", node("Stack", node("Table.Cell", "x"))))),
-        node("Table.Root", node("Table.Body", node("Table.Header"))),
-        node("Table.Root", node("Table.Body", "text")),
-        node("Table.Root", node("Table.Body", row("row", "text"))),
+        node("Table", row("row", node("TableCell", "x"))),
+        node("Table", node("TableCell", "x")),
+        node("Table", node("Stack", node("TableBody"))),
+        node("Table", node("TableBody", node("TableCell", "x"))),
+        node("Table", node("TableBody", row("row", node("Stack", node("TableCell", "x"))))),
+        node("Table", node("TableBody", node("TableHeader"))),
+        node("Table", node("TableBody", "text")),
+        node("Table", node("TableBody", row("row", "text"))),
       ])("rejects table anatomy the HTML parser rewrites: %j", (value) => {
         expect(validateDocument(value).ok).toBe(false);
       });
 
       it("uses effective parents through transparent parts without inventing wrappers", () => {
         const table = node(
-          "Table.Root",
+          "Table",
           node(
-            "Tooltip.Provider",
+            "TooltipProvider",
             node(
-              "Tooltip.Root",
-              node("Table.Caption", "Users"),
+              "Tooltip",
+              node("TableCaption", "Users"),
               node(
-                "Table.Header",
+                "TableHeader",
                 row("head", {
-                  type: "Table.ColumnHeader",
+                  type: "TableHead",
                   props: { id: "name" },
                   children: ["Name"],
                 }),
               ),
               node(
-                "Table.Body",
-                row("body", node("Table.RowHeader", "Ada"), node("Table.Cell", "Active")),
+                "TableBody",
+                row("body", node("TableRowHeader", "Ada"), node("TableCell", "Active")),
               ),
-              node("Table.Footer", row("foot", node("Table.Cell", "Total"))),
+              node("TableFooter", row("foot", node("TableCell", "Total"))),
             ),
           ),
         );
         expect(validateDocument(table).ok).toBe(true);
         expect(
           validateDocument(
-            node("ul", node("Tooltip.Provider", node("Tooltip.Root", node("Item", "Name")))),
+            node("ul", node("TooltipProvider", node("Tooltip", node("Item", "Name")))),
           ).ok,
         ).toBe(true);
-        expect(validateDocument(node("ul", node("Tooltip.Provider", "text"))).ok).toBe(false);
+        expect(validateDocument(node("ul", node("TooltipProvider", "text"))).ok).toBe(false);
         expect(
           validateDocument(
             node(

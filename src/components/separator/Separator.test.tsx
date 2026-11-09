@@ -23,7 +23,7 @@ describe("Separator", () => {
 
   it("forwards ref, merges className and lets consumer attributes win", () => {
     const ref = createRef<HTMLHRElement>();
-    const decorative = { role: "presentation", "aria-orientation": undefined } as const;
+    const decorative = { role: "none", "aria-orientation": undefined } as const;
     render(
       <Separator
         ref={ref}
@@ -36,7 +36,7 @@ describe("Separator", () => {
     const line = screen.getByTestId("line");
     expect(ref.current).toBe(line);
     expect(line.className).toBe("uiify-separator mine");
-    expect(line.getAttribute("role")).toBe("presentation");
+    expect(line.getAttribute("role")).toBe("none");
     expect(line.hasAttribute("aria-orientation")).toBe(false);
   });
 });

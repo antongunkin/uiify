@@ -14,8 +14,8 @@
 
 ## Exports
 
-- Runtime: `Breadcrumb`, `BreadcrumbEllipsis`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbList`, `BreadcrumbRoot`, `BreadcrumbSeparator`
-- Types: `BreadcrumbItemData`, `BreadcrumbEllipsisPartProps`, `BreadcrumbLabels`, `BreadcrumbItemProps`, `BreadcrumbLinkOwnProps`, `BreadcrumbLinkProps`, `BreadcrumbListOwnProps`, `BreadcrumbListProps`, `BreadcrumbListSlotProps`, `BreadcrumbRootOwnProps`, `BreadcrumbRootProps`, `BreadcrumbSeparatorOwnProps`, `BreadcrumbSeparatorProps`
+- Runtime: `Breadcrumb`, `BreadcrumbEllipsis`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbList`, `BreadcrumbPage`, `BreadcrumbSeparator`
+- Types: `BreadcrumbItemData`, `BreadcrumbEllipsisProps`, `BreadcrumbLabels`, `BreadcrumbItemProps`, `BreadcrumbLinkOwnProps`, `BreadcrumbLinkProps`, `BreadcrumbListOwnProps`, `BreadcrumbListProps`, `BreadcrumbListSlotProps`, `BreadcrumbOwnProps`, `BreadcrumbPageProps`, `BreadcrumbProps`, `BreadcrumbSeparatorOwnProps`, `BreadcrumbSeparatorProps`
 
 ## Props and shapes
 
@@ -26,7 +26,7 @@
 | `root` | `string` | yes |  |
 | `showCollapsed` | `string` | yes |  |
 
-### BreadcrumbRootOwnProps
+### BreadcrumbOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -39,7 +39,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `key` | `string` | yes |  |
-| `current` | `boolean` | no |  |
+| `current` | `boolean` | no | The current page: rendered as BreadcrumbPage, not a link. |
 | `href` | `string \| undefined` | no |  |
 | `label` | `ReactNode` | yes |  |
 
@@ -53,7 +53,7 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | `itemsAfterCollapse` | `number` | no |  |
 | `itemsBeforeCollapse` | `number` | no |  |
 | `maxItems` | `number` | no |  |
-| `separator` | `ReactNode` | no |  |
+| `separator` | `ReactNode` | no | Content of the BreadcrumbSeparator rendered between `items`; none without it. |
 | `slotProps` | `BreadcrumbListSlotProps` | no |  |
 
 ### BreadcrumbListSlotProps
@@ -62,6 +62,8 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | --- | --- | --- | --- |
 | `item` | `RepeatedSlotProps<SlotProps<"li">>` | no |  |
 | `link` | `RepeatedSlotProps<SlotProps<"a">>` | no |  |
+| `page` | `RepeatedSlotProps<SlotProps<"span">>` | no |  |
+| `separator` | `SlotProps<"li">` | no |  |
 | `ellipsisItem` | `SlotProps<"li">` | no |  |
 | `ellipsis` | `SlotProps<"details">` | no |  |
 | `ellipsisTrigger` | `SlotProps<"summary">` | no |  |
@@ -72,7 +74,6 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
-| `current` | `boolean` | no |  |
 | `href` | `string \| undefined` | no |  |
 
 ### BreadcrumbSeparatorOwnProps
@@ -81,25 +82,12 @@ One logical breadcrumb entry. Used by `BreadcrumbList`'s `items` prop — the da
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 
-### BreadcrumbEllipsisProps
-
-| Member | Type | Required | Description |
-| --- | --- | --- | --- |
-| `hiddenItems` | `readonly BreadcrumbItemData[]` | yes |  |
-| `labels` | `BreadcrumbLabels` | yes |  |
-| `separator` | `ReactNode` | no |  |
-| `slotProps` | `BreadcrumbListSlotProps` | no |  |
-
-### BreadcrumbEllipsisPartProps
-
-| Member | Type | Required | Description |
-| --- | --- | --- | --- |
-| `slotProps` | `{ readonly item?: SlotProps<"li">; readonly ellipsis?: SlotProps<"span">; }` | no |  |
-
 ## Other types
 
-- `BreadcrumbRootProps<TAs>`: `RenderableProps<TAs, BreadcrumbRootOwnProps, Record<string, never>, HTMLElement>`
+- `BreadcrumbProps<TAs>`: `RenderableProps<TAs, BreadcrumbOwnProps, Record<string, never>, HTMLElement>`
 - `BreadcrumbListProps<TAs>`: `RenderableProps<TAs, BreadcrumbListOwnProps, Record<string, never>, HTMLOListElement>`
 - `BreadcrumbItemProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLLIElement>`
-- `BreadcrumbLinkProps<TAs>`: `RenderableProps<TAs, BreadcrumbLinkOwnProps, { current: boolean }, HTMLAnchorElement>`
-- `BreadcrumbSeparatorProps<TAs>`: `RenderableProps<TAs, BreadcrumbSeparatorOwnProps, Record<string, never>, HTMLElement>`
+- `BreadcrumbLinkProps<TAs>`: `RenderableProps<TAs, BreadcrumbLinkOwnProps, Record<string, never>, HTMLAnchorElement>`
+- `BreadcrumbPageProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLSpanElement>` — The current page: a `span` with aria-current="page", not a link and not focusable.
+- `BreadcrumbSeparatorProps<TAs>`: `RenderableProps<TAs, BreadcrumbSeparatorOwnProps, Record<string, never>, HTMLLIElement>` — A list item between two BreadcrumbItems, hidden from assistive technology.
+- `BreadcrumbEllipsisProps<TAs>`: `RenderableProps<TAs, { readonly children?: ReactNode }, Record<string, never>, HTMLSpanElement>` — A decorative "…" placed inside a BreadcrumbItem by the consumer.

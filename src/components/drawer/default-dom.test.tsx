@@ -1,11 +1,11 @@
 import { expect, it } from "vitest";
-import { DrawerPanel } from "./DrawerNative.js";
+import { Drawer } from "./DrawerNative.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 
-it("preserves default DrawerPanel DOM", () => {
+it("preserves default Drawer DOM", () => {
   const host = document.createElement("div");
   host.innerHTML = renderToStaticMarkup(
-    <DrawerPanel
+    <Drawer
       id="settings"
       trigger="Open"
       title="Settings"
@@ -14,7 +14,7 @@ it("preserves default DrawerPanel DOM", () => {
       footer="Actions"
     >
       Body
-    </DrawerPanel>,
+    </Drawer>,
   );
   expect(
     [...host.querySelectorAll("*")].map((element) => [

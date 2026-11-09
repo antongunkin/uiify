@@ -21,14 +21,14 @@ export interface TooltipProviderOwnProps {
   readonly skipDelayDuration?: number;
 }
 
-export interface TooltipRootOwnProps {
+export interface TooltipOwnProps {
   readonly defaultOpen?: boolean;
   readonly id?: string;
   readonly onOpenChange?: PopoverChangeHandler;
   readonly open?: boolean;
 }
 
-export interface TooltipRootProps extends TooltipRootOwnProps {
+export interface TooltipProps extends TooltipOwnProps {
   readonly children?: ReactNode;
 }
 

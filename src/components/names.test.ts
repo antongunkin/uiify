@@ -76,3 +76,43 @@ test("the agent catalog names no removed component", () => {
   const old = new RegExp(`\\b(?:${OLD_NAMES.join("|")})\\b`, "g");
   expect(catalog.match(old) ?? []).toEqual([]);
 });
+
+// M3 P6 (brief docs/superpowers/plans/2026-11-07-shadcn-names-remaining.md): no namespace objects.
+const FLAT_ROOTS = ["Header", "Toast", "Tooltip", "Table", "Breadcrumb", "Drawer"];
+const FLAT_NEW = [
+  ...FLAT_ROOTS,
+  "TableHead",
+  "BreadcrumbPage",
+  "DrawerTrigger",
+  "DrawerClose",
+  "DrawerContent",
+  "DrawerHeader",
+  "DrawerTitle",
+  "DrawerDescription",
+  "DrawerBody",
+  "DrawerFooter",
+  "DrawerGrabber",
+];
+const FLAT_OLD = [
+  "HeaderRoot",
+  "ToastRoot",
+  "TooltipRoot",
+  "TableRoot",
+  "TableColumnHeader",
+  "BreadcrumbRoot",
+  "DrawerPanel",
+  "DrawerNativeTrigger",
+  "DrawerNativeClose",
+  "DrawerNativeContent",
+  "DrawerRoot",
+  "DrawerHandle",
+];
+
+test("Header, Toast, Tooltip, Table, Breadcrumb and Drawer use flat shadcn names", () => {
+  const exported = root as Record<string, unknown>;
+  expect(FLAT_NEW.filter((name) => !(name in exported))).toEqual([]);
+  expect(FLAT_OLD.filter((name) => name in exported)).toEqual([]);
+  expect(FLAT_ROOTS.filter((name) => typeof exported[name] !== "function")).toEqual([]);
+  const catalog = readFileSync(resolve(import.meta.dirname, "../../agents/catalog.md"), "utf8");
+  expect(catalog.match(new RegExp(`\\b(?:${FLAT_OLD.join("|")})\\b`, "g")) ?? []).toEqual([]);
+});

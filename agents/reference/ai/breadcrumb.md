@@ -14,35 +14,7 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 - `hidden` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
-## Breadcrumb.Item
-
-Place inside `Breadcrumb.Root`.
-
-Optional `children`: nodes or strings.
-
-- `value` (optional): `string`
-
-## Breadcrumb.Link
-
-Place inside `Breadcrumb.Root`.
-
-Optional `children`: nodes or strings.
-
-- `current` (optional): `boolean`
-- `href` (optional): `` `/${string}` | `./${string}` | `../${string}` | `#${string}` | `?${string}` | `http://${string}` | `https://${string}` | `mailto:${string}` ``; an allowed URL; use a relative path or an http:, https: or mailto: URL, with no leading space or control character and no tab or line break
-- `target` (optional): `"_self" | "_blank"`; allowed: "_self", "_blank"
-
-## Breadcrumb.List
-
-Place inside `Breadcrumb.Root`.
-
-Optional `children`: nodes or strings.
-
-- `itemsAfterCollapse` (optional): `number`
-- `itemsBeforeCollapse` (optional): `number`
-- `maxItems` (optional): `number`
-
-## Breadcrumb.Root
+## Breadcrumb
 
 Show the current page within a hierarchy of parent pages.
 Use when: Show the current page within a hierarchy of parent pages.
@@ -52,10 +24,47 @@ Optional `children`: nodes or strings.
 
 Only shared props.
 
-## Breadcrumb.Separator
-
-Place inside `Breadcrumb.Root`.
+## BreadcrumbEllipsis
 
 Optional `children`: nodes or strings.
 
 Only shared props.
+
+## BreadcrumbItem
+
+Place inside `BreadcrumbList`.
+
+Optional `children`: nodes or strings.
+
+- `value` (optional): `string`
+
+## BreadcrumbLink
+
+Optional `children`: nodes or strings.
+
+- `href` (optional): `` `/${string}` | `./${string}` | `../${string}` | `#${string}` | `?${string}` | `http://${string}` | `https://${string}` | `mailto:${string}` ``; an allowed URL; use a relative path or an http:, https: or mailto: URL, with no leading space or control character and no tab or line break
+- `target` (optional): `"_self" | "_blank"`; allowed: "_self", "_blank"
+
+## BreadcrumbList
+
+Place inside `Breadcrumb`.
+
+Optional `children`: nodes or strings.
+
+- `itemsAfterCollapse` (optional): `number`
+- `itemsBeforeCollapse` (optional): `number`
+- `maxItems` (optional): `number`
+
+## BreadcrumbPage
+
+Optional `children`: nodes or strings.
+
+Only shared props.
+
+## BreadcrumbSeparator
+
+Place inside `BreadcrumbList`.
+
+Optional `children`: nodes or strings.
+
+- `value` (optional): `string`

@@ -1,32 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import {
-  ToastAction,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastRoot,
-  ToastTitle,
-  ToastViewport,
-} from "./ToastElements.js";
-
-const Toast = {
-  Action: ToastAction,
-  Close: ToastClose,
-  Description: ToastDescription,
-  Provider: ToastProvider,
-  Root: ToastRoot,
-  Title: ToastTitle,
-  Viewport: ToastViewport,
-};
+import { ToastClose, ToastProvider, Toast, ToastViewport } from "./ToastElements.js";
 
 describe("Toast server shell", () => {
   it("renders authored toast markup inside the viewport without live announcers", () => {
     render(
-      <Toast.Provider>
-        <Toast.Viewport slotProps={{ item: { className: "client-generated-card" } }}>
-          <Toast.Root
+      <ToastProvider>
+        <ToastViewport slotProps={{ item: { className: "client-generated-card" } }}>
+          <Toast
             toast={{
               id: "saved",
               duration: 4000,
@@ -39,8 +21,8 @@ describe("Toast server shell", () => {
               },
             }}
           />
-        </Toast.Viewport>
-      </Toast.Provider>,
+        </ToastViewport>
+      </ToastProvider>,
     );
 
     expect(screen.getByRole("region", { name: "Notifications" })).toBeTruthy();
@@ -66,9 +48,9 @@ describe("Toast server shell", () => {
 
   it("renders static SSR markup for server-authored toasts", () => {
     const markup = renderToStaticMarkup(
-      <Toast.Provider>
-        <Toast.Viewport>
-          <Toast.Root
+      <ToastProvider>
+        <ToastViewport>
+          <Toast
             toast={{
               id: "saved",
               duration: 0,
@@ -77,8 +59,8 @@ describe("Toast server shell", () => {
               description: "Profile updated",
             }}
           />
-        </Toast.Viewport>
-      </Toast.Provider>,
+        </ToastViewport>
+      </ToastProvider>,
     );
 
     expect(markup).toContain("<section");
@@ -89,7 +71,7 @@ describe("Toast server shell", () => {
 
   it("forwards slot props and consumer marker overrides to server-authored toast nodes", () => {
     render(
-      <Toast.Root
+      <Toast
         toast={{
           id: "static-toast",
           duration: 0,
@@ -129,7 +111,7 @@ describe("Toast server shell", () => {
 
   it("allows localized labels while keeping explicit viewport labels and toast titles ahead", () => {
     render(
-      <Toast.Viewport
+      <ToastViewport
         aria-label="Alertes"
         labels={{
           region: "Notifications traduites",
@@ -137,15 +119,15 @@ describe("Toast server shell", () => {
           close: "Fermer",
         }}
       >
-        <Toast.Root
+        <Toast
           labels={{ notification: "Notification traduite", close: "Fermer" }}
           toast={{ id: "untitled", duration: 0, priority: "polite" }}
         />
-        <Toast.Root
+        <Toast
           labels={{ notification: "Notification traduite", close: "Fermer" }}
           toast={{ id: "titled", duration: 0, priority: "polite", title: "Saved" }}
         />
-      </Toast.Viewport>,
+      </ToastViewport>,
     );
     expect(screen.getByRole("region", { name: "Alertes" })).toBeTruthy();
     expect(screen.getByRole("group", { name: "Notification traduite" })).toBeTruthy();
@@ -154,16 +136,16 @@ describe("Toast server shell", () => {
   });
 
   it("lets consumers replace ToastClose's computed aria-label", () => {
-    render(<Toast.Close aria-label="consumer-label">Dismiss</Toast.Close>);
+    render(<ToastClose aria-label="consumer-label">Dismiss</ToastClose>);
     const button = screen.getByRole("button", { name: "consumer-label" });
     expect(button.getAttribute("aria-label")).toBe("consumer-label");
   });
 
   it("lets consumers replace the fallback close label with non-string children", () => {
     render(
-      <Toast.Close aria-label="consumer-label">
+      <ToastClose aria-label="consumer-label">
         <span aria-hidden="true">x</span>
-      </Toast.Close>,
+      </ToastClose>,
     );
     const button = screen.getByRole("button", { name: "consumer-label" });
     expect(button.getAttribute("aria-label")).toBe("consumer-label");

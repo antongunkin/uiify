@@ -14,7 +14,7 @@ Do not put essential instructions or interactive content in a tooltip. Keep fiel
 
 ## Structure
 
-Nest `Tooltip.Root`, `Tooltip.Trigger`, and `Tooltip.Content` inside `Tooltip.Provider`. Content is a non-focusable tooltip associated with its trigger. For touch users, make the same information available without hover.
+Nest `Tooltip`, `TooltipTrigger`, and `TooltipContent` inside `TooltipProvider`. Content is a non-focusable tooltip associated with its trigger. For touch users, make the same information available without hover.
 
 ## Responsive
 

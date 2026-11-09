@@ -2,7 +2,7 @@
   {
     "name": "behavior.css",
     "path": "dist/components/behavior.css",
-    "limit": "1970 B"
+    "limit": "2020 B"
   },
   {
     "name": "enhance",
@@ -18,7 +18,7 @@
   {
     "name": "root convenience export",
     "path": "dist/index.js",
-    "limit": "48210 B",
+    "limit": "47920 B",
     "import": "*"
   },
   {
@@ -60,7 +60,7 @@
   {
     "name": "switch",
     "path": "dist/components/switch.js",
-    "limit": "380 B",
+    "limit": "390 B",
     "import": "*"
   },
   {
@@ -96,7 +96,7 @@
   {
     "name": "tooltip",
     "path": "dist/components/tooltip.js",
-    "limit": "2220 B",
+    "limit": "2180 B",
     "import": "*"
   },
   {
@@ -120,7 +120,7 @@
   {
     "name": "toast",
     "path": "dist/components/toast.js",
-    "limit": "2960 B",
+    "limit": "2920 B",
     "import": "*"
   },
   {
@@ -156,7 +156,7 @@
   {
     "name": "breadcrumb",
     "path": "dist/components/breadcrumb.js",
-    "limit": "1570 B",
+    "limit": "1540 B",
     "import": "*"
   },
   {
@@ -168,7 +168,7 @@
   {
     "name": "table",
     "path": "dist/components/table.js",
-    "limit": "680 B",
+    "limit": "630 B",
     "import": "*"
   },
   {
@@ -190,9 +190,15 @@
     "import": "*"
   },
   {
+    "name": "drawer/client",
+    "path": "dist/components/drawer/client.js",
+    "limit": "3630 B",
+    "import": "*"
+  },
+  {
     "name": "drawer",
     "path": "dist/components/drawer.js",
-    "limit": "4080 B",
+    "limit": "940 B",
     "import": "*"
   },
   {
@@ -284,13 +290,13 @@
   {
     "name": "header/client",
     "path": "dist/components/header/client.js",
-    "limit": "1000 B",
+    "limit": "990 B",
     "import": "*"
   },
   {
     "name": "header",
     "path": "dist/components/header.js",
-    "limit": "180 B",
+    "limit": "170 B",
     "import": "*"
   },
   {
@@ -338,7 +344,7 @@
   {
     "name": "table/client",
     "path": "dist/components/table/client.js",
-    "limit": "5620 B",
+    "limit": "5550 B",
     "import": "*"
   },
   {

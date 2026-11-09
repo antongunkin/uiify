@@ -46,19 +46,35 @@ describe("form control size", () => {
   });
 
   it("maps sm and lg to the Button heights and text sizes for every control", () => {
-    const css = readFileSync(
-      resolve(import.meta.dirname, "../styles/components/control-size.css"),
+    const effects = readFileSync(
+      resolve(import.meta.dirname, "../styles/uiify/effects.css"),
       "utf8",
     );
-    for (const name of controls.map(([control]) => control)) {
-      if (name !== "input" && name !== "native-select" && name !== "segmented-control")
-        expect(css).toContain(`.uiify-${name}`);
+    const generated = readFileSync(
+      resolve(import.meta.dirname, "../styles/generated/uiify.css"),
+      "utf8",
+    );
+    const sized = controls
+      .map(([control]) => control)
+      .filter(
+        (name) => name !== "input" && name !== "native-select" && name !== "segmented-control",
+      );
+    for (const name of sized) {
+      for (const [size, height, font] of [
+        ["sm", "spacing-control-sm", "text-control-sm"],
+        ["lg", "spacing-control-lg", "text-control-lg"],
+      ] as const) {
+        expect(effects).toContain(
+          `.uiify-${name}[data-size="${size}"] {\n    --uiify-control-size: --theme(--${height});\n    --uiify-control-font: --theme(--${font});`,
+        );
+      }
+      // UIify's own entry: 32px and 48px, as on Button.
+      expect(generated).toContain(
+        `.uiify-${name}[data-size=sm]{--uiify-control-size:calc(var(--spacing) * 8);--uiify-control-font:var(--text-sm)}`,
+      );
+      expect(generated).toContain(
+        `.uiify-${name}[data-size=lg]{--uiify-control-size:calc(var(--spacing) * 12);--uiify-control-font:var(--text-lg)}`,
+      );
     }
-    expect(css).toMatch(
-      /"sm"\] \{\s*--uiify-control-size: var\(--control-sm\);\s*--uiify-control-font: 0\.875rem;/,
-    );
-    expect(css).toMatch(
-      /"lg"\] \{\s*--uiify-control-size: var\(--control-lg\);\s*--uiify-control-font: 1\.125rem;/,
-    );
   });
 });

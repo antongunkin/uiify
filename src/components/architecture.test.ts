@@ -24,7 +24,7 @@ import { describe, expect, it } from "vitest";
 
 import { isServerComponent, loadTierManifest, type TierManifest } from "./tier-manifest.js";
 
-// Resolve from this file, not process.cwd(): the root vitest.config.ts include
+// Resolve from this file, not process.cwd(): the root vitest.config.mts include
 // (`packages/*/src/**/*.test.{ts,tsx}`) picks this suite up when vitest runs
 // from the repo root, where every cwd-relative "src" read throws ENOENT and the
 // whole architecture gate fails to collect. Matches tier-manifest.ts.

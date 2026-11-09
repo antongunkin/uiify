@@ -5,7 +5,7 @@ type TablePart =
   | "body"
   | "footer"
   | "row"
-  | "column-header"
+  | "head"
   | "row-header"
   | "cell"
   | "caption"
@@ -26,7 +26,7 @@ export const table = defineRecipe<
     "body",
     "footer",
     "row",
-    "column-header",
+    "head",
     "row-header",
     "cell",
     "caption",
@@ -42,8 +42,7 @@ export const table = defineRecipe<
     body: "",
     footer: "bg-secondary font-semibold data-[sticky]:sticky data-[sticky]:z-2",
     row: "hover:bg-secondary data-[selected]:bg-accent data-[sticky]:sticky data-[sticky]:z-2 focus-visible:outline-2 focus-visible:outline-ring -outline-offset-2",
-    "column-header":
-      "py-3 px-4 text-start align-middle border-be border-border bg-inherit data-[align=center]:text-center data-[align=end]:text-end data-[sticky]:sticky data-[sticky]:z-1",
+    head: "py-3 px-4 text-start align-middle border-be border-border bg-inherit data-[align=center]:text-center data-[align=end]:text-end data-[sticky]:sticky data-[sticky]:z-1",
     "row-header":
       "py-3 px-4 text-start align-middle border-be border-border bg-inherit data-[align=center]:text-center data-[align=end]:text-end data-[sticky]:sticky data-[sticky]:z-1",
     cell: "py-3 px-4 text-start align-middle border-be border-border bg-inherit data-[align=center]:text-center data-[align=end]:text-end data-[sticky]:sticky data-[sticky]:z-1",
@@ -60,20 +59,20 @@ export const table = defineRecipe<
     },
     size: {
       sm: {
-        "column-header": "py-2 px-3",
+        head: "py-2 px-3",
         "row-header": "py-2 px-3",
         cell: "py-2 px-3",
       },
       md: {},
       lg: {
-        "column-header": "py-4 px-5",
+        head: "py-4 px-5",
         "row-header": "py-4 px-5",
         cell: "py-4 px-5",
       },
     },
     variant: {
       solid: {},
-      outline: { root: "border border-border rounded-lg" },
+      outline: { root: "border border-border rounded-2xl" },
       ghost: { root: "bg-transparent" },
     },
   },

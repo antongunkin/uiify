@@ -70,7 +70,8 @@ describe("compileStyle", () => {
     expect(theme.startsWith("@layer theme{")).toBe(true);
     expect(theme).toContain("--spacing:.25rem");
     expect(theme).toContain("--color-primary:var(--primary)");
-    expect(theme).toContain("--radius-md:var(--radius)");
+    // Radii are Tailwind's own steps, not a scale derived from --radius (M3: the adapter keeps the host theme).
+    expect(theme).not.toContain("var(--radius)");
     expect(theme).not.toContain(".uiify-");
     expect(theme).not.toContain("--gray-1:");
   });

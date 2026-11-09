@@ -1,0 +1,32 @@
+/*
+ * Build-time Tailwind entry for UIify's own look (src/styles/generated/, used by
+ * `@gunkin/uiify/styles`, the docs site and the test fixtures): the recipe entry, then the
+ * control aliases of the adapter set to UIify's 40px pill controls and monochrome default Button.
+ * Values are written into the compiled rules; no alias variable exists at runtime. Not exported.
+ */
+/* stylelint-disable import-notation */
+@import "./entry.css";
+/* stylelint-enable import-notation */
+
+/* stylelint-disable custom-property-pattern -- Tailwind theme keys. */
+@theme inline reference {
+  --spacing-control-xs: calc(var(--spacing) * 6);
+  --spacing-control-sm: calc(var(--spacing) * 8);
+  --spacing-control-md: calc(var(--spacing) * 10);
+  --spacing-control-lg: calc(var(--spacing) * 12);
+  --spacing-control-x: calc(var(--spacing) * 4);
+  --spacing-control-button: calc(var(--spacing) * 5);
+  --spacing-control-button-lg: calc(var(--spacing) * 7);
+
+  /* UIify's own fields stop at 24rem. */
+  --container-field: calc(var(--spacing) * 96);
+
+  /* A pill: the theme's own --radius-full primitive (themes/basic.css). */
+  --radius-control: var(--radius-full);
+  --text-control: var(--text-base);
+  --text-control-sm: var(--text-sm);
+  --text-control-lg: var(--text-lg);
+  --color-primary-fill: var(--color-foreground);
+  --color-primary-fill-foreground: var(--color-background);
+}
+/* stylelint-enable custom-property-pattern */

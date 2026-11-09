@@ -41,17 +41,10 @@
     /* Success (green) — used by a couple of demo states. */
     --green-6: oklch(62% 0.17 150deg);
 
-    /* Control heights: every interactive control (Button, inputs, select, segmented control)
-       is --control-md tall; --control-sm and --control-lg are the Button sizes around it. */
-    --control-sm: 2rem;
-    --control-md: 2.5rem;
-    --control-lg: 3rem;
-
     /* Radii — about a quarter of the element height (40px controls → 10px), capped by
        the pill: a Button is --radius-full (20px at 40px, 24px at 48px, the largest
-       corner in the system). --radius-3 is the base; the semantic steps derive from
-       --radius, so changing it rescales every corner. These raw values mirror the
-       derived steps at the default base:
+       corner in the system). --radius-3 is the base. Recipes use Tailwind's rounded-* steps
+       (host theme), not these raw values:
        1: checkbox, kbd, skeleton, 2: tooltip and small parts, 3: 40px controls,
        4: menus, popovers, cards, alerts, 5: dialogs, drawers, large panels. */
     --radius-1: 4px;
@@ -123,13 +116,9 @@
     --chart-4: var(--red-5);
     --chart-5: var(--gray-7);
 
-    /* Structural aliases (theme-independent). */
+    /* Structural aliases (theme-independent). `--radius` is the shadcn-style base; recipes use
+       Tailwind's `rounded-*` steps, so their corners follow the host theme. */
     --radius: var(--radius-3);
-    --radius-xs: calc(var(--radius) * 0.4);
-    --radius-sm: calc(var(--radius) * 0.8);
-    --radius-md: var(--radius);
-    --radius-lg: calc(var(--radius) * 1.6);
-    --radius-xl: calc(var(--radius) * 2);
     --shadow-popover: var(--shadow-2);
     --shadow-modal: var(--shadow-3);
     --transition-colors:
@@ -150,7 +139,11 @@
     color-scheme: light;
   }
 
-  [data-theme="basic-dark"] {
+  /* `.dark` is the class shadcn/ui and next-themes put on the root. After Lightning CSS turns
+     light-dark() into variables, only a rule that sets color-scheme switches them; the inline
+     style next-themes writes does not. */
+  [data-theme="basic-dark"],
+  .dark {
     color-scheme: dark;
   }
 }

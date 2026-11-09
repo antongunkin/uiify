@@ -21,7 +21,7 @@ it("preserves default checkbox DOM", () => {
         <>
           <Checkbox id="plain" label="Plain" />
           <Checkbox id="checked" label="Checked" defaultChecked disabled />
-          <Checkbox id="controlled" checked aria-label="Controlled" />
+          <Checkbox id="controlled" checked aria-label="Controlled" onCheckedChange={() => {}} />
         </>,
       ),
     ),
@@ -33,6 +33,7 @@ it("lets native checkbox slots override input identity, state and label wiring",
       id="terms"
       label="Terms"
       checked
+      onCheckedChange={() => {}}
       disabled
       name="terms"
       value="yes"

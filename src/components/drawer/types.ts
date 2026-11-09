@@ -29,7 +29,7 @@ export interface DrawerOwnProps extends DrawerAppearanceProps {
   readonly labels?: Partial<DrawerLabels>;
   readonly footer?: ReactNode;
   readonly side?: DrawerSide;
-  /** Native props for generated inner nodes; DrawerPanel's root takes props directly. */
+  /** Native props for generated inner nodes; Drawer's root takes props directly. */
   readonly slotProps?: DrawerSlotProps;
 }
 
@@ -56,7 +56,7 @@ export interface DrawerLabels {
   readonly close: string;
 }
 
-export interface DrawerNativeContentProps
+export interface DrawerContentProps
   extends
     Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "dangerouslySetInnerHTML">,
     DrawerAppearanceProps,
@@ -65,8 +65,17 @@ export interface DrawerNativeContentProps
   readonly side?: DrawerSide;
 }
 
-export type DrawerNativeInvokerProps = NativeButtonProps<"button", { readonly target: string }> &
+export type DrawerTriggerProps = NativeButtonProps<"button", { readonly target: string }> &
   ConsumerDataAttributes;
+/** Closes the drawer whose `id` is `target` (`request-close`). */
+export type DrawerCloseProps = DrawerTriggerProps;
+
+export type DrawerHeaderProps = ComponentPropsWithRef<"div">;
+export type DrawerTitleProps = ComponentPropsWithRef<"h2">;
+export type DrawerDescriptionProps = ComponentPropsWithRef<"p">;
+export type DrawerBodyProps = ComponentPropsWithRef<"div">;
+export type DrawerFooterProps = ComponentPropsWithRef<"div">;
+export type DrawerGrabberProps = Omit<ComponentPropsWithRef<"div">, "children">;
 
 export interface DrawerStoreOptions {
   readonly activeSnapPoint?: number;
@@ -112,7 +121,7 @@ export interface DrawerContextValue {
   readonly triggerRef: RefObject<HTMLButtonElement | null>;
 }
 
-export interface DrawerRootOwnProps {
+export interface DrawerClientOwnProps {
   readonly activeSnapPoint?: number;
   readonly closeOnOverlayClick?: boolean;
   readonly defaultActiveSnapPoint?: number;
@@ -126,59 +135,61 @@ export interface DrawerRootOwnProps {
   readonly snapPoints?: readonly number[];
 }
 
-export interface DrawerRootProps extends DrawerRootOwnProps {
+export interface DrawerClientProps extends DrawerClientOwnProps {
   readonly children?: ReactNode;
 }
 
-export interface DrawerTriggerOwnProps {
+export interface DrawerClientTriggerOwnProps {
   readonly children?: ReactNode;
   readonly className?: string;
 }
 
-export interface DrawerTriggerProps
+export interface DrawerClientTriggerProps
   extends
-    DrawerTriggerOwnProps,
-    Omit<ComponentPropsWithRef<"button">, keyof DrawerTriggerOwnProps> {
+    DrawerClientTriggerOwnProps,
+    Omit<ComponentPropsWithRef<"button">, keyof DrawerClientTriggerOwnProps> {
   readonly onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   readonly ref?: Ref<HTMLButtonElement>;
 }
 
-export interface DrawerContentOwnProps extends DrawerAppearanceProps {
+export interface DrawerClientContentOwnProps extends DrawerAppearanceProps {
   readonly children?: ReactNode;
   readonly className?: string;
   readonly style?: CSSProperties;
 }
 
-export interface DrawerContentProps
+export interface DrawerClientContentProps
   extends
-    DrawerContentOwnProps,
-    Omit<ComponentPropsWithRef<"dialog">, "open" | keyof DrawerContentOwnProps> {
+    DrawerClientContentOwnProps,
+    Omit<ComponentPropsWithRef<"dialog">, "open" | keyof DrawerClientContentOwnProps> {
   readonly onCancel?: DrawerContextValue["dialogProps"]["onCancel"];
   readonly onClose?: DrawerContextValue["dialogProps"]["onClose"];
   readonly ref?: Ref<HTMLDialogElement>;
 }
 
-export interface DrawerTitleOwnProps extends ComponentPropsWithRef<"h2"> {
+export interface DrawerClientTitleOwnProps extends ComponentPropsWithRef<"h2"> {
   readonly children?: ReactNode;
   readonly className?: string;
 }
 
-export interface DrawerDescriptionOwnProps extends ComponentPropsWithRef<"p"> {
+export interface DrawerClientDescriptionOwnProps extends ComponentPropsWithRef<"p"> {
   readonly children?: ReactNode;
   readonly className?: string;
 }
 
-export interface DrawerCloseOwnProps {
+export interface DrawerClientCloseOwnProps {
   readonly children?: ReactNode;
   readonly className?: string;
 }
 
-export interface DrawerCloseProps
-  extends DrawerCloseOwnProps, Omit<ComponentPropsWithRef<"button">, keyof DrawerCloseOwnProps> {
+export interface DrawerClientCloseProps
+  extends
+    DrawerClientCloseOwnProps,
+    Omit<ComponentPropsWithRef<"button">, keyof DrawerClientCloseOwnProps> {
   readonly onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
-export interface DrawerHandleOwnProps extends ComponentPropsWithRef<"div"> {
+export interface DrawerClientHandleOwnProps extends ComponentPropsWithRef<"div"> {
   readonly className?: string;
   readonly onPointerCancel?: (event: PointerEvent<HTMLDivElement>) => void;
   readonly onPointerDown?: (event: PointerEvent<HTMLDivElement>) => void;

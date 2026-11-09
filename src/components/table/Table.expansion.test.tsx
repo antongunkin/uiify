@@ -1,25 +1,33 @@
 import { createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { TableClient as Table } from "./client.js";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableExpandedRow,
+  TableExpandTrigger,
+  TableRow,
+  TableRowSelect,
+} from "./client.js";
 
 describe("Table expansion", () => {
   it("renders a semantic sibling row and respects controlled expansion", () => {
     const onExpandedChange = vi.fn();
     function Example({ keys }: { keys: readonly string[] }) {
       return (
-        <Table.Root expandedKeys={keys} onExpandedChange={onExpandedChange} aria-label="Invoices">
-          <Table.Body>
-            <Table.Row id="invoice">
-              <Table.Cell>
-                <Table.ExpandTrigger rowId="invoice">Details</Table.ExpandTrigger>
-              </Table.Cell>
-            </Table.Row>
-            <Table.ExpandedRow rowId="invoice">
-              <Table.Cell colSpan={1}>Invoice details</Table.Cell>
-            </Table.ExpandedRow>
-          </Table.Body>
-        </Table.Root>
+        <Table expandedKeys={keys} onExpandedChange={onExpandedChange} aria-label="Invoices">
+          <TableBody>
+            <TableRow id="invoice">
+              <TableCell>
+                <TableExpandTrigger rowId="invoice">Details</TableExpandTrigger>
+              </TableCell>
+            </TableRow>
+            <TableExpandedRow rowId="invoice">
+              <TableCell colSpan={1}>Invoice details</TableCell>
+            </TableExpandedRow>
+          </TableBody>
+        </Table>
       );
     }
     Example.displayName = "Example";
@@ -43,16 +51,16 @@ describe("Table expansion", () => {
 it("leaves descendant button and checkbox keyboard events to their native controls", () => {
   const selection = vi.fn();
   render(
-    <Table.Root selectionMode="multiple" onSelectionChange={selection}>
-      <Table.Body>
-        <Table.Row id="keyboard-row">
-          <Table.Cell>
-            <Table.ExpandTrigger rowId="keyboard-row">Open details</Table.ExpandTrigger>
-            <Table.RowSelect rowId="keyboard-row" />
-          </Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table.Root>,
+    <Table selectionMode="multiple" onSelectionChange={selection}>
+      <TableBody>
+        <TableRow id="keyboard-row">
+          <TableCell>
+            <TableExpandTrigger rowId="keyboard-row">Open details</TableExpandTrigger>
+            <TableRowSelect rowId="keyboard-row" />
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
   );
   const button = screen.getByRole("button", { name: "Open details" });
   expect(fireEvent.keyDown(button, { key: " " })).toBe(true);
@@ -66,13 +74,13 @@ it("forwards body render and row refs in selectable tables", () => {
   const ref = createRef<HTMLTableRowElement>();
   const renderBody = vi.fn((props) => <tbody {...props} data-testid="rendered-body" />);
   render(
-    <Table.Root selectionMode="multiple">
-      <Table.Body render={renderBody}>
-        <Table.Row id="ref-row" ref={ref}>
-          <Table.Cell>Value</Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table.Root>,
+    <Table selectionMode="multiple">
+      <TableBody render={renderBody}>
+        <TableRow id="ref-row" ref={ref}>
+          <TableCell>Value</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
   );
   expect(renderBody).toHaveBeenCalled();
   expect(screen.getByTestId("rendered-body")).toBeTruthy();

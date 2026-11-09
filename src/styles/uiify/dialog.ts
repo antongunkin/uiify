@@ -14,9 +14,9 @@ export const dialog = defineRecipe<
   childParts: ["grabber"],
   defaultVariants: { size: "md" },
   base: {
-    root: "m-auto w-112 p-6 border border-border rounded-xl bg-popover text-popover-foreground shadow-modal flex-col gap-3 open:flex",
+    root: "m-auto w-112 p-6 border border-border rounded-2xl bg-popover text-popover-foreground shadow-modal flex-col gap-3 open:flex",
     header: "flex-none pe-10",
-    title: "m-0 text-xl font-semibold leading-8",
+    title: "m-0 text-2xl font-semibold leading-8",
     description: "mbs-2 mbe-4 text-muted-foreground text-sm leading-normal",
     close: "absolute inset-bs-2.5 end-2.5 grid place-items-center",
     body: "flex-auto min-h-0 overflow-auto overscroll-contain",

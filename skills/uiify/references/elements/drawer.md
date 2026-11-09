@@ -22,7 +22,7 @@ Use a bottom sheet on narrow screens when the task reads naturally as a sheet; k
 
 ## States
 
-The native Tier 0 shell opens a dialog. Choose 'dismiss' deliberately: 'any' permits backdrop/Escape, 'closerequest' allows close requests, and 'none' requires an explicit close. The compound client API adds controlled state and optional snap-point dragging.
+The native Tier 0 shell opens a dialog. Choose 'dismiss' deliberately: 'any' permits backdrop/Escape, 'closerequest' allows close requests, and 'none' requires an explicit close. The client Drawer (`@gunkin/uiify/components/drawer/client`: `Drawer`, `DrawerTrigger`, `DrawerContent`, `DrawerTitle`, `DrawerDescription`, `DrawerClose`, `DrawerHandle`) adds controlled state and optional snap-point dragging.
 
 ## Verify
 

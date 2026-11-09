@@ -1,15 +1,15 @@
 export {
   Breadcrumb,
-  BreadcrumbEllipsisPart as BreadcrumbEllipsis,
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbRoot,
+  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "./Breadcrumb.js";
 export type {
   BreadcrumbItemData,
-  BreadcrumbEllipsisPartProps,
+  BreadcrumbEllipsisProps,
   BreadcrumbLabels,
   BreadcrumbItemProps,
   BreadcrumbLinkOwnProps,
@@ -17,8 +17,9 @@ export type {
   BreadcrumbListOwnProps,
   BreadcrumbListProps,
   BreadcrumbListSlotProps,
-  BreadcrumbRootOwnProps,
-  BreadcrumbRootProps,
+  BreadcrumbOwnProps,
+  BreadcrumbPageProps,
+  BreadcrumbProps,
   BreadcrumbSeparatorOwnProps,
   BreadcrumbSeparatorProps,
 } from "./types.js";

@@ -1,16 +1,10 @@
-export {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipRoot,
-  TooltipTrigger,
-} from "./Tooltip.js";
+export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./Tooltip.js";
 export type {
   TooltipContentOwnProps,
   TooltipContentProps,
   TooltipProviderOwnProps,
-  TooltipRootOwnProps,
-  TooltipRootProps,
+  TooltipOwnProps,
+  TooltipProps,
   TooltipTriggerOwnProps,
   TooltipTriggerProps,
 } from "./types.js";

@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import type { BreadcrumbEllipsisPartProps, BreadcrumbListProps } from "./types.js";
+import type { BreadcrumbEllipsisProps, BreadcrumbListProps } from "./types.js";
 
 it("accepts native overrides for generated breadcrumb parts", () => {
   const valid: BreadcrumbListProps = {
@@ -41,9 +41,7 @@ it("accepts native overrides for generated breadcrumb parts", () => {
       },
     },
   };
-  const standalone: BreadcrumbEllipsisPartProps = {
-    slotProps: { item: { "data-testid": "ellipsis-item" }, ellipsis: { className: "glyph" } },
-  };
+  const standalone: BreadcrumbEllipsisProps = { className: "glyph", id: "ellipsis" };
 
   expect([valid, invalidHref, invalidSummaryLabel, invalidAnatomy, standalone].length).toBe(5);
 });

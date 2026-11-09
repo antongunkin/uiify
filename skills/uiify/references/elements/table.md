@@ -14,7 +14,7 @@ Do not use a table only to position content. Turn rows into cards only when peop
 
 ## Structure
 
-Use `Table.Root`, `Table.Caption`, `Table.Header`, `Table.ColumnHeader`, `Table.Body`, `Table.Row`, and `Table.Cell` for native table structure. Give the table a caption or an accessible name and mark header cells so their relationship to data is clear. Keep action controls in a separate column. Align numbers to the end and use tabular numerals for easier comparison.
+Use `Table`, `TableCaption`, `TableHeader`, `TableHead`, `TableBody`, `TableRow`, and `TableCell` for native table structure. Give the table a caption or an accessible name and mark header cells so their relationship to data is clear. Keep action controls in a separate column. Align numbers to the end and use tabular numerals for easier comparison.
 
 ## Responsive
 
@@ -22,7 +22,7 @@ Preserve the table's row and column relationships. If columns need horizontal sc
 
 ## States
 
-Distinguish an empty dataset from a filter with no matches. Communicate loading and errors, and keep selection or sort state visible when requested. The native table is Tier 0; row selection, sorting, and expansion require the `/client` entry. In that entry, use `TableClient.ColumnHeader.slotProps.sortButton` for the sortable control and `slotProps.input/label` on `TableClient.SelectAll` or `TableClient.RowSelect` for generated checkbox parts.
+Distinguish an empty dataset from a filter with no matches. Communicate loading and errors, and keep selection or sort state visible when requested. The native table is Tier 0; row selection, sorting, and expansion require the `/client` entry. In that entry, use `TableHead.slotProps.sortButton` for the sortable control and `slotProps.input/label` on `TableSelectAll` or `TableRowSelect` for generated checkbox parts.
 
 ## Verify
 

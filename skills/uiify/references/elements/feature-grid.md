@@ -1,6 +1,6 @@
 # feature-grid
 
-Binding: gap
+Binding: feature-grid
 
 Present related product capabilities as a coherent set.
 
@@ -14,7 +14,7 @@ Do not force unequal priorities or long-form explanations into a uniform grid. U
 
 ## Structure
 
-This is an app-level composition, not a UIify component. Render a labeled section containing a list of items; give each item a heading and short explanation. Use the same order and content hierarchy for every item.
+Use `FeatureGrid` with one `Feature` per item; it renders a labeled section containing a list of items; give each item a heading and short explanation. Use the same order and content hierarchy for every item.
 
 ## Responsive
 
@@ -31,20 +31,6 @@ Check section label, heading levels, source order, one-column reflow, link names
 ## Common mistake
 
 Do not use three equal cards to imply equal priority when one feature is the primary action.
-
-## Custom implementation
-
-```html
-<section aria-labelledby="features-title">
-  <h2 id="features-title">Built for daily work</h2>
-  <ul>
-    <li><article><h3>Shared workspace</h3><p>Keep team work together.</p></article></li>
-    <li><article><h3>Clear history</h3><p>See what changed and when.</p></article></li>
-  </ul>
-</section>
-```
-
-This is an app-level composition; UIify does not currently ship this component.
 
 Related laws: references/laws/proximity.md, references/laws/readability.md
 

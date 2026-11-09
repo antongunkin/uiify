@@ -6,10 +6,10 @@ import { useIsomorphicLayoutEffect } from "@gunkin/uiify/hooks";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
 import { RovingFocusItem } from "@gunkin/uiify/core/roving-focus";
 import { TableRow as TableRowElement } from "../TableShell.js";
-import type { TableRowProps } from "../types.js";
+import type { TableClientRowProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
 
-export function TableRow(props: TableRowProps): ReactElement | null {
+export function TableRow(props: TableClientRowProps): ReactElement | null {
   const { disabled = false, id, as, render, ...consumerProps } = props;
   const { ref: consumerRef } = props as ComponentPropsWithRef<"tr">;
   const { interactive: selectionEnabled, inBody, store } = useTableContext("Row");

@@ -1,18 +1,22 @@
 import { existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { lstat, mkdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import { dirname, join, relative, sep } from "node:path";
 import {
   classifySection,
   composeSection,
+  markedSection,
   refreshSkill,
   sectionBody,
   skillState,
   upsertSection,
 } from "./agents-section.mjs";
+import { loadTypeScript, PROJECT_CATALOG_BYTE_LIMIT, projectCatalog, projectComponents } from "./project-catalog.mjs";
 
 const USAGE = "usage: sync-agents.mjs [--check | --write] [--force] [file ...]";
 const SKILL_DIRS = [".claude/skills/uiify", ".agents/skills/uiify"];
+/** Short rules for agents that load `.claude/rules/*.md` but expand neither `@AGENTS.md` nor symlinks. */
+const CLAUDE_RULES = ".claude/rules/uiify.md";
 
 async function readOrEmpty(path) {
   try {
@@ -57,13 +61,26 @@ async function sync() {
   const installedSkill = join(directory, "skills", "uiify");
   const rules = await readFile(join(installedSkill, "references", "agents-rules.md"), "utf8");
   const catalog = await readFile(join(directory, "agents", "catalog.md"), "utf8");
-  const section = composeSection(version, rules, catalog);
-  const body = sectionBody(rules, catalog);
+  // The project's own components screens may use (package.json `uiify.components`), from their types.
+  let listed = catalog;
+  const entries = projectComponents(root);
+  if (entries.length > 0) {
+    const namesPath = join(directory, "agents", "names.json");
+    const uiifyNames = existsSync(namesPath) ? new Set(JSON.parse(await readFile(namesPath, "utf8"))) : new Set();
+    const project = projectCatalog({ root, typescript: loadTypeScript(root), entries, uiifyNames });
+    for (const entry of project.unresolved) console.log(`project components: "${entry}" resolves to no file`);
+    if (project.bytes > PROJECT_CATALOG_BYTE_LIMIT) {
+      console.log(`project components: ${project.bytes} bytes, over ${PROJECT_CATALOG_BYTE_LIMIT}; list fewer modules in package.json "uiify.components"`);
+    }
+    if (project.text) listed = `${catalog.trimEnd()}\n\n${project.text}`;
+  }
+  const section = composeSection(version, rules, listed);
+  const body = sectionBody(rules, listed);
 
-  const targets = files.length > 0 ? files : ["AGENTS.md", ...(existsSync(join(root, "CLAUDE.md")) ? ["CLAUDE.md"] : [])];
   let failed = false;
   let upgraded = false;
-  for (const name of targets) {
+  /** Bring the marked section of one file to `body`, reporting its state. */
+  async function syncFile(name, body, section) {
     const path = join(root, name);
     const text = await readOrEmpty(path);
     const { state, fromVersion } = classifySection(text, version, body);
@@ -71,7 +88,7 @@ async function sync() {
       const detail = state === "outdated" ? ` ${fromVersion} → ${version}` : state === "edited" ? ` (${fromVersion})` : "";
       console.log(`${name}: ${state}${detail}`);
       if (state !== "current") failed = true;
-      continue;
+      return;
     }
     if (state === "current") {
       console.log(`${name}: current`);
@@ -83,6 +100,31 @@ async function sync() {
       if (state === "missing") console.log(`${name}: added`);
       else console.log(`${name}: ${state === "edited" ? "replaced edited section" : `updated ${fromVersion} → ${version}`}`);
       if (state !== "missing") upgraded = true;
+    }
+  }
+
+  const targets = files.length > 0 ? files : ["AGENTS.md"];
+  if (files.length === 0 && existsSync(join(root, "CLAUDE.md"))) {
+    const claude = await readFile(join(root, "CLAUDE.md"), "utf8");
+    // Claude Code loads AGENTS.md through an `@AGENTS.md` line; a second section would load twice.
+    if (!/^@(?:\.\/)?AGENTS\.md[ \t]*\r?$/m.test(claude)) targets.push("CLAUDE.md");
+    else if (classifySection(claude, version, body).state === "missing") console.log("CLAUDE.md: imports AGENTS.md");
+    else {
+      console.log("CLAUDE.md: imports AGENTS.md and has its own section; delete that section");
+      failed = true;
+    }
+  }
+  for (const name of targets) await syncFile(name, body, section);
+  if (files.length === 0) {
+    const path = join(root, CLAUDE_RULES);
+    if ((await lstat(path).catch(() => null))?.isSymbolicLink()) {
+      console.log(`${CLAUDE_RULES}: linked, not written`);
+    } else {
+      const skillPath = relative(root, installedSkill).split(sep).join("/");
+      const template = await readFile(join(installedSkill, "references", "claude-rules.md"), "utf8");
+      const rulesBody = template.trimEnd().replaceAll("{skill}", skillPath);
+      if (write) await mkdir(dirname(path), { recursive: true });
+      await syncFile(CLAUDE_RULES, rulesBody, markedSection(version, rulesBody));
     }
   }
 

@@ -1,26 +1,32 @@
 import type { ReactElement } from "react";
 import { cn } from "../../core/class-names.js";
 import { renderNativeInvoker } from "@gunkin/uiify/core/render";
-import type { DrawerProps, DrawerNativeContentProps, DrawerNativeInvokerProps } from "./types.js";
+import type {
+  DrawerCloseProps,
+  DrawerContentProps,
+  DrawerProps,
+  DrawerTriggerProps,
+} from "./types.js";
+// API informed by shadcn/ui public documentation (names and props only).
 const DEFAULT_DRAWER_LABELS = { close: "Close" } as const;
-export function DrawerNativeTrigger({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
+export function DrawerTrigger({ target, ...props }: DrawerTriggerProps): ReactElement {
   return renderNativeInvoker("button", "uiify-drawer-trigger", "show-modal", target, props, {
     button: true,
   });
 }
-export function DrawerNativeClose({ target, ...props }: DrawerNativeInvokerProps): ReactElement {
+export function DrawerClose({ target, ...props }: DrawerCloseProps): ReactElement {
   return renderNativeInvoker("button", "uiify-drawer-close", "request-close", target, props, {
     button: true,
     variant: "ghost",
   });
 }
-export function DrawerNativeContent({
+export function DrawerContent({
   size,
   dismiss = "any",
   backdrop,
   side = "bottom",
   ...props
-}: DrawerNativeContentProps): ReactElement {
+}: DrawerContentProps): ReactElement {
   return (
     <dialog
       closedby={dismiss}
@@ -32,8 +38,8 @@ export function DrawerNativeContent({
     />
   );
 }
-DrawerNativeContent.displayName = "DrawerNativeContent";
-export function DrawerPanel({
+DrawerContent.displayName = "DrawerContent";
+export function Drawer({
   id,
   trigger,
   title,
@@ -52,10 +58,10 @@ export function DrawerPanel({
   const effectiveCloseLabel = closeLabel ?? labels?.close ?? DEFAULT_DRAWER_LABELS.close;
   return (
     <div data-side={side} {...rootProps} className={cn("uiify-drawer-root", rootProps.className)}>
-      <DrawerNativeTrigger target={id} {...slotProps?.trigger}>
+      <DrawerTrigger target={id} {...slotProps?.trigger}>
         {trigger}
-      </DrawerNativeTrigger>
-      <DrawerNativeContent
+      </DrawerTrigger>
+      <DrawerContent
         aria-describedby={
           description === null || description === undefined ? undefined : `${id}-description`
         }
@@ -92,7 +98,7 @@ export function DrawerPanel({
               {description}
             </p>
           )}
-          <DrawerNativeClose
+          <DrawerClose
             aria-label={effectiveCloseLabel}
             data-size="icon"
             target={id}
@@ -112,8 +118,8 @@ export function DrawerPanel({
             {footer}
           </div>
         )}
-      </DrawerNativeContent>
+      </DrawerContent>
     </div>
   );
 }
-DrawerPanel.displayName = "DrawerPanel";
+Drawer.displayName = "Drawer";

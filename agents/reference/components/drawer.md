@@ -6,7 +6,7 @@
 - Without JavaScript: full
 - Types file: `dist/components/drawer.d.ts`
 - Related native Element (manifest): [native-dialog](../elements/native-dialog.md)
-- Note: DrawerPanel native shell + compound Drawer.* client API; snap-point drag on client entry.
+- Note: Tier 0 Drawer (native dialog shell, show-modal/request-close) in the root entry; the client Drawer (controlled state, snap-point drag, shadcn/Vaul names) is @gunkin/uiify/components/drawer/client.
 
 ## Related knowledge
 
@@ -14,8 +14,8 @@
 
 ## Exports
 
-- Runtime: `Drawer`, `DrawerClose`, `DrawerContent`, `DrawerDescription`, `DrawerHandle`, `DrawerRoot`, `DrawerTitle`, `DrawerTrigger`, `DrawerPanel`, `DrawerNativeTrigger`, `DrawerNativeClose`, `DrawerNativeContent`
-- Types: `DrawerCloseOwnProps`, `DrawerCloseProps`, `DrawerContentOwnProps`, `DrawerContentProps`, `DrawerDescriptionOwnProps`, `DrawerHandleOwnProps`, `DrawerRootOwnProps`, `DrawerRootProps`, `DrawerTitleOwnProps`, `DrawerTriggerOwnProps`, `DrawerTriggerProps`, `DrawerProps`, `DrawerLabels`, `DrawerSide`, `DrawerAppearanceProps`, `DrawerNativeContentProps`, `DrawerNativeInvokerProps`, `DrawerOwnProps`, `DrawerSlotProps`
+- Runtime: `Drawer`, `DrawerClose`, `DrawerContent`, `DrawerTrigger`, `DrawerBody`, `DrawerDescription`, `DrawerFooter`, `DrawerGrabber`, `DrawerHeader`, `DrawerTitle`
+- Types: `DrawerAppearanceProps`, `DrawerBodyProps`, `DrawerCloseProps`, `DrawerContentProps`, `DrawerDescriptionProps`, `DrawerFooterProps`, `DrawerGrabberProps`, `DrawerHeaderProps`, `DrawerLabels`, `DrawerOwnProps`, `DrawerProps`, `DrawerSide`, `DrawerSlotProps`, `DrawerTitleProps`, `DrawerTriggerProps`
 
 ## Values
 
@@ -46,7 +46,7 @@ Extends: `DrawerAppearanceProps`
 | `labels` | `Partial<DrawerLabels>` | no |  |
 | `footer` | `ReactNode` | no |  |
 | `side` | `DrawerSide` | no |  |
-| `slotProps` | `DrawerSlotProps` | no | Native props for generated inner nodes; DrawerPanel's root takes props directly. |
+| `slotProps` | `DrawerSlotProps` | no | Native props for generated inner nodes; Drawer's root takes props directly. |
 
 ### DrawerSlotProps
 
@@ -68,7 +68,7 @@ Extends: `DrawerAppearanceProps`
 | --- | --- | --- | --- |
 | `close` | `string` | yes |  |
 
-### DrawerNativeContentProps
+### DrawerContentProps
 
 Extends: `Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "dangerouslySetInnerHTML">`, `DrawerAppearanceProps`, `ConsumerDataAttributes`
 
@@ -127,7 +127,7 @@ Extends: `Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "dangerousl
 | `store` | `DrawerStore` | yes |  |
 | `triggerRef` | `RefObject<HTMLButtonElement \| null>` | yes |  |
 
-### DrawerRootOwnProps
+### DrawerClientOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -143,31 +143,31 @@ Extends: `Omit<ComponentPropsWithRef<"dialog">, "open" | "popover" | "dangerousl
 | `side` | `DrawerSide` | no |  |
 | `snapPoints` | `readonly number[]` | no |  |
 
-### DrawerRootProps
+### DrawerClientProps
 
-Extends: `DrawerRootOwnProps`
+Extends: `DrawerClientOwnProps`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 
-### DrawerTriggerOwnProps
+### DrawerClientTriggerOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
 
-### DrawerTriggerProps
+### DrawerClientTriggerProps
 
-Extends: `DrawerTriggerOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof DrawerTriggerOwnProps>`
+Extends: `DrawerClientTriggerOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof DrawerClientTriggerOwnProps>`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `onClick` | `(event: MouseEvent<HTMLButtonElement>) => void` | no |  |
 | `ref` | `Ref<HTMLButtonElement>` | no |  |
 
-### DrawerContentOwnProps
+### DrawerClientContentOwnProps
 
 Extends: `DrawerAppearanceProps`
 
@@ -177,9 +177,9 @@ Extends: `DrawerAppearanceProps`
 | `className` | `string` | no |  |
 | `style` | `CSSProperties` | no |  |
 
-### DrawerContentProps
+### DrawerClientContentProps
 
-Extends: `DrawerContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "open" | keyof DrawerContentOwnProps>`
+Extends: `DrawerClientContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "open" | keyof DrawerClientContentOwnProps>`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -187,7 +187,7 @@ Extends: `DrawerContentOwnProps`, `Omit<ComponentPropsWithRef<"dialog">, "open" 
 | `onClose` | `DrawerContextValue["dialogProps"]["onClose"]` | no |  |
 | `ref` | `Ref<HTMLDialogElement>` | no |  |
 
-### DrawerTitleOwnProps
+### DrawerClientTitleOwnProps
 
 Extends: `ComponentPropsWithRef<"h2">`
 
@@ -196,7 +196,7 @@ Extends: `ComponentPropsWithRef<"h2">`
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
 
-### DrawerDescriptionOwnProps
+### DrawerClientDescriptionOwnProps
 
 Extends: `ComponentPropsWithRef<"p">`
 
@@ -205,22 +205,22 @@ Extends: `ComponentPropsWithRef<"p">`
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
 
-### DrawerCloseOwnProps
+### DrawerClientCloseOwnProps
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `className` | `string` | no |  |
 
-### DrawerCloseProps
+### DrawerClientCloseProps
 
-Extends: `DrawerCloseOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof DrawerCloseOwnProps>`
+Extends: `DrawerClientCloseOwnProps`, `Omit<ComponentPropsWithRef<"button">, keyof DrawerClientCloseOwnProps>`
 
 | Member | Type | Required | Description |
 | --- | --- | --- | --- |
 | `onClick` | `(event: MouseEvent<HTMLButtonElement>) => void` | no |  |
 
-### DrawerHandleOwnProps
+### DrawerClientHandleOwnProps
 
 Extends: `ComponentPropsWithRef<"div">`
 
@@ -235,4 +235,11 @@ Extends: `ComponentPropsWithRef<"div">`
 ## Other types
 
 - `DrawerProps`: `DrawerOwnProps & Omit<SlotProps<"div">, keyof DrawerOwnProps>`
-- `DrawerNativeInvokerProps`: `NativeButtonProps<"button", { readonly target: string }> & ConsumerDataAttributes`
+- `DrawerTriggerProps`: `NativeButtonProps<"button", { readonly target: string }> & ConsumerDataAttributes`
+- `DrawerCloseProps`: `DrawerTriggerProps` — Closes the drawer whose `id` is `target` (`request-close`).
+- `DrawerHeaderProps`: `ComponentPropsWithRef<"div">`
+- `DrawerTitleProps`: `ComponentPropsWithRef<"h2">`
+- `DrawerDescriptionProps`: `ComponentPropsWithRef<"p">`
+- `DrawerBodyProps`: `ComponentPropsWithRef<"div">`
+- `DrawerFooterProps`: `ComponentPropsWithRef<"div">`
+- `DrawerGrabberProps`: `Omit<ComponentPropsWithRef<"div">, "children">`

@@ -4,8 +4,8 @@ import { useSyncExternalStore } from "react";
 import type { ElementType, ReactElement } from "react";
 import { cn } from "../../../core/class-names.js";
 import { composeEventHandlers } from "@gunkin/uiify/core/compose-event-handlers";
-import { TableColumnHeader as TableColumnHeaderElement } from "../TableShell.js";
-import type { SortDescriptor, TableClientColumnHeaderProps } from "../types.js";
+import { TableHead as TableColumnHeaderElement } from "../TableShell.js";
+import type { SortDescriptor, TableClientHeadProps } from "../types.js";
 import { useTableContext } from "./table-context.js";
 
 function ariaSortForColumn(
@@ -16,8 +16,8 @@ function ariaSortForColumn(
   return descriptor.direction;
 }
 
-export function TableColumnHeader<TAs extends ElementType = "th">(
-  props: TableClientColumnHeaderProps<TAs>,
+export function TableHead<TAs extends ElementType = "th">(
+  props: TableClientHeadProps<TAs>,
 ): ReactElement | null {
   const {
     allowsSorting = false,
@@ -27,7 +27,7 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
     render,
     slotProps,
     ...rest
-  } = props as TableClientColumnHeaderProps<ElementType>;
+  } = props as TableClientHeadProps<ElementType>;
   const { store } = useTableContext("ColumnHeader");
   const sortDescriptor = useSyncExternalStore(
     store.subscribeSort,
@@ -90,4 +90,4 @@ export function TableColumnHeader<TAs extends ElementType = "th">(
     />
   );
 }
-TableColumnHeader.displayName = "TableColumnHeader";
+TableHead.displayName = "TableHead";

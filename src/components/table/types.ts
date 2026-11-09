@@ -65,7 +65,7 @@ export interface TableContextValue {
   readonly store: TableStore;
 }
 
-export interface TableRootOwnProps {
+export interface TableOwnProps {
   readonly "aria-label"?: string;
   readonly "aria-labelledby"?: string;
   readonly layout?: "auto" | "fixed";
@@ -82,9 +82,9 @@ export interface TableInteractiveRootOwnProps {
   readonly selectionMode?: SelectionMode;
 }
 
-export type TableRootProps<TAs extends ElementType = "table"> = RenderableProps<
+export type TableProps<TAs extends ElementType = "table"> = RenderableProps<
   TAs,
-  TableRootOwnProps,
+  TableOwnProps,
   Record<string, never>,
   HTMLTableElement
 >;
@@ -105,7 +105,8 @@ export type TableBodyProps<TAs extends ElementType = "tbody"> = RenderableProps<
 
 export interface TableRowOwnProps extends TableStickySectionOwnProps {
   readonly disabled?: boolean;
-  readonly id: string;
+  /** Needed only by the client Table, where it keys selection and expansion. */
+  readonly id?: string;
   readonly selected?: boolean;
 }
 
@@ -116,10 +117,11 @@ export type TableRowProps<TAs extends ElementType = "tr"> = RenderableProps<
   HTMLTableRowElement
 >;
 
-export interface TableColumnHeaderOwnProps extends TableStickyCellOwnProps {
+export interface TableHeadOwnProps extends TableStickyCellOwnProps {
   readonly allowsSorting?: boolean;
   readonly children?: ReactNode;
-  readonly id: string;
+  /** Needed only by the client Table, where it keys sorting. */
+  readonly id?: string;
   readonly onClick?: React.MouseEventHandler<HTMLTableCellElement>;
   readonly sortDirection?: SortDescriptor["direction"] | null;
 }
@@ -135,18 +137,24 @@ export interface TableSelectAllOwnProps {
 
 export type TableSelectionSlotProps = NativeCheckControlSlotProps;
 
-export interface TableClientColumnHeaderSlotProps {
+export interface TableClientHeadSlotProps {
   readonly sortButton?: SlotProps<"button">;
 }
 
-export type TableClientColumnHeaderProps<TAs extends ElementType = "th"> =
-  TableColumnHeaderProps<TAs> & {
-    readonly slotProps?: TableClientColumnHeaderSlotProps;
-  };
+export type TableClientHeadProps<TAs extends ElementType = "th"> = TableHeadProps<TAs> & {
+  /** Sorting is keyed by the column id. */
+  readonly id: string;
+  readonly slotProps?: TableClientHeadSlotProps;
+};
 
-export type TableColumnHeaderProps<TAs extends ElementType = "th"> = RenderableProps<
+/** A client Table row: selection and expansion are keyed by its id. */
+export type TableClientRowProps<TAs extends ElementType = "tr"> = TableRowProps<TAs> & {
+  readonly id: string;
+};
+
+export type TableHeadProps<TAs extends ElementType = "th"> = RenderableProps<
   TAs,
-  TableColumnHeaderOwnProps,
+  TableHeadOwnProps,
   Record<string, never>,
   HTMLTableCellElement
 >;
@@ -165,7 +173,7 @@ export type TableCaptionProps<TAs extends ElementType = "caption"> = RenderableP
   HTMLTableCaptionElement
 >;
 
-export interface TableClientRootOwnProps extends TableRootOwnProps {
+export interface TableClientOwnProps extends TableOwnProps {
   readonly defaultSelectedKeys?: Iterable<string>;
   readonly defaultSortDescriptor?: SortDescriptor | null;
   readonly onSelectionChange?: (selectedKeys: Set<string>) => void;
@@ -178,9 +186,9 @@ export interface TableClientRootOwnProps extends TableRootOwnProps {
   readonly defaultExpandedKeys?: Iterable<string>;
   readonly onExpandedChange?: (keys: Set<string>) => void;
 }
-export type TableClientRootProps<TAs extends ElementType = "table"> = RenderableProps<
+export type TableClientProps<TAs extends ElementType = "table"> = RenderableProps<
   TAs,
-  TableClientRootOwnProps,
+  TableClientOwnProps,
   Record<string, never>,
   HTMLTableElement
 >;

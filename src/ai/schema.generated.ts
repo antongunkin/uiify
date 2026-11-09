@@ -38,11 +38,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/AspectRatio" },
         { $ref: "#/$defs/Avatar" },
         { $ref: "#/$defs/Badge" },
-        { $ref: "#/$defs/Breadcrumb.Item" },
-        { $ref: "#/$defs/Breadcrumb.Link" },
-        { $ref: "#/$defs/Breadcrumb.List" },
-        { $ref: "#/$defs/Breadcrumb.Root" },
-        { $ref: "#/$defs/Breadcrumb.Separator" },
+        { $ref: "#/$defs/Breadcrumb" },
+        { $ref: "#/$defs/BreadcrumbEllipsis" },
+        { $ref: "#/$defs/BreadcrumbItem" },
+        { $ref: "#/$defs/BreadcrumbLink" },
+        { $ref: "#/$defs/BreadcrumbList" },
+        { $ref: "#/$defs/BreadcrumbPage" },
+        { $ref: "#/$defs/BreadcrumbSeparator" },
         { $ref: "#/$defs/Button" },
         { $ref: "#/$defs/Card" },
         { $ref: "#/$defs/CardAction" },
@@ -67,17 +69,16 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/DialogHeader" },
         { $ref: "#/$defs/DialogTitle" },
         { $ref: "#/$defs/DialogTrigger" },
-        { $ref: "#/$defs/Drawer.Close" },
-        { $ref: "#/$defs/Drawer.Content" },
-        { $ref: "#/$defs/Drawer.Description" },
-        { $ref: "#/$defs/Drawer.Handle" },
-        { $ref: "#/$defs/Drawer.Root" },
-        { $ref: "#/$defs/Drawer.Title" },
-        { $ref: "#/$defs/Drawer.Trigger" },
-        { $ref: "#/$defs/DrawerPanel" },
-        { $ref: "#/$defs/DrawerNativeTrigger" },
-        { $ref: "#/$defs/DrawerNativeClose" },
-        { $ref: "#/$defs/DrawerNativeContent" },
+        { $ref: "#/$defs/Drawer" },
+        { $ref: "#/$defs/DrawerClose" },
+        { $ref: "#/$defs/DrawerContent" },
+        { $ref: "#/$defs/DrawerTrigger" },
+        { $ref: "#/$defs/DrawerBody" },
+        { $ref: "#/$defs/DrawerDescription" },
+        { $ref: "#/$defs/DrawerFooter" },
+        { $ref: "#/$defs/DrawerGrabber" },
+        { $ref: "#/$defs/DrawerHeader" },
+        { $ref: "#/$defs/DrawerTitle" },
         { $ref: "#/$defs/Empty" },
         { $ref: "#/$defs/EmptyContent" },
         { $ref: "#/$defs/EmptyDescription" },
@@ -96,7 +97,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/FileUpload.Root" },
         { $ref: "#/$defs/FileUpload.Trigger" },
         { $ref: "#/$defs/Form" },
-        { $ref: "#/$defs/Header.Root" },
+        { $ref: "#/$defs/Header" },
         { $ref: "#/$defs/Input" },
         { $ref: "#/$defs/InputGroup" },
         { $ref: "#/$defs/InputGroupAddon" },
@@ -131,25 +132,27 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         { $ref: "#/$defs/Slider" },
         { $ref: "#/$defs/Spinner" },
         { $ref: "#/$defs/Switch" },
-        { $ref: "#/$defs/Table.Footer" },
-        { $ref: "#/$defs/Table.RowHeader" },
-        { $ref: "#/$defs/Table.Body" },
-        { $ref: "#/$defs/Table.Caption" },
-        { $ref: "#/$defs/Table.Cell" },
-        { $ref: "#/$defs/Table.ColumnHeader" },
-        { $ref: "#/$defs/Table.Header" },
-        { $ref: "#/$defs/Table.Root" },
-        { $ref: "#/$defs/Table.Row" },
+        { $ref: "#/$defs/Table" },
+        { $ref: "#/$defs/TableFooter" },
+        { $ref: "#/$defs/TableRowHeader" },
+        { $ref: "#/$defs/TableBody" },
+        { $ref: "#/$defs/TableCaption" },
+        { $ref: "#/$defs/TableCell" },
+        { $ref: "#/$defs/TableHead" },
+        { $ref: "#/$defs/TableHeader" },
+        { $ref: "#/$defs/TableRow" },
         { $ref: "#/$defs/Tabs" },
         { $ref: "#/$defs/TabsContent" },
         { $ref: "#/$defs/TabsList" },
         { $ref: "#/$defs/TabsTrigger" },
         { $ref: "#/$defs/Textarea" },
+        { $ref: "#/$defs/ToastProvider" },
+        { $ref: "#/$defs/ToastViewport" },
         { $ref: "#/$defs/Toggle" },
-        { $ref: "#/$defs/Tooltip.Content" },
-        { $ref: "#/$defs/Tooltip.Provider" },
-        { $ref: "#/$defs/Tooltip.Root" },
-        { $ref: "#/$defs/Tooltip.Trigger" },
+        { $ref: "#/$defs/Tooltip" },
+        { $ref: "#/$defs/TooltipContent" },
+        { $ref: "#/$defs/TooltipProvider" },
+        { $ref: "#/$defs/TooltipTrigger" },
         { $ref: "#/$defs/Box" },
         { $ref: "#/$defs/Section" },
         { $ref: "#/$defs/Stack" },
@@ -385,54 +388,12 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Breadcrumb.Item": {
-      description: "Place inside `Breadcrumb.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Breadcrumb.Item" },
-        props: { $ref: "#/$defs/Breadcrumb.Item.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Breadcrumb.Link": {
-      description: "Place inside `Breadcrumb.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Breadcrumb.Link" },
-        props: { $ref: "#/$defs/Breadcrumb.Link.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Breadcrumb.List": {
-      description: "Place inside `Breadcrumb.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Breadcrumb.List" },
-        props: { $ref: "#/$defs/Breadcrumb.List.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Breadcrumb.Root": {
+    Breadcrumb: {
       description:
         "Show the current page within a hierarchy of parent pages.\nUse when: Show the current page within a hierarchy of parent pages.\nAvoid when: The task does not need this pattern; do not add it only for catalog coverage.",
       type: "object",
       properties: {
-        type: { const: "Breadcrumb.Root" },
+        type: { const: "Breadcrumb" },
         props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
@@ -442,12 +403,79 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Breadcrumb.Separator": {
-      description: "Place inside `Breadcrumb.Root`.",
+    BreadcrumbEllipsis: {
       type: "object",
       properties: {
-        type: { const: "Breadcrumb.Separator" },
+        type: { const: "BreadcrumbEllipsis" },
         props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    BreadcrumbItem: {
+      description: "Place inside `BreadcrumbList`.",
+      type: "object",
+      properties: {
+        type: { const: "BreadcrumbItem" },
+        props: { $ref: "#/$defs/BreadcrumbItem.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    BreadcrumbLink: {
+      type: "object",
+      properties: {
+        type: { const: "BreadcrumbLink" },
+        props: { $ref: "#/$defs/BreadcrumbLink.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    BreadcrumbList: {
+      description: "Place inside `Breadcrumb`.",
+      type: "object",
+      properties: {
+        type: { const: "BreadcrumbList" },
+        props: { $ref: "#/$defs/BreadcrumbList.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    BreadcrumbPage: {
+      type: "object",
+      properties: {
+        type: { const: "BreadcrumbPage" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    BreadcrumbSeparator: {
+      description: "Place inside `BreadcrumbList`.",
+      type: "object",
+      properties: {
+        type: { const: "BreadcrumbSeparator" },
+        props: { $ref: "#/$defs/BreadcrumbItem.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -754,69 +782,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Drawer.Close": {
-      description: "Place inside `Drawer.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Drawer.Close" },
-        props: { $ref: "#/$defs/Drawer.Close.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Drawer.Content": {
-      description: "Place inside `Drawer.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Drawer.Content" },
-        props: { $ref: "#/$defs/Drawer.Content.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Drawer.Description": {
-      description: "Place inside `Drawer.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Drawer.Description" },
-        props: { $ref: "#/$defs/Accordion.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Drawer.Handle": {
-      description: "Place inside `Drawer.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Drawer.Handle" },
-        props: { $ref: "#/$defs/Accordion.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Drawer.Root": {
+    Drawer: {
       description:
         "A focused secondary task or navigation surface should enter from an edge and temporarily cover or accompany the page\nUse when: The described drawer interaction is present; keep it focused on the user's current task.\nAvoid when: The task does not need drawer; do not add it for coverage.",
       type: "object",
       properties: {
-        type: { const: "Drawer.Root" },
-        props: { $ref: "#/$defs/Drawer.Root.props" },
+        type: { const: "Drawer" },
+        props: { $ref: "#/$defs/Drawer.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -825,11 +797,49 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Drawer.Title": {
-      description: "Place inside `Drawer.Root`.",
+    DrawerClose: {
       type: "object",
       properties: {
-        type: { const: "Drawer.Title" },
+        type: { const: "DrawerClose" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DrawerContent: {
+      type: "object",
+      properties: {
+        type: { const: "DrawerContent" },
+        props: { $ref: "#/$defs/DrawerContent.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DrawerTrigger: {
+      type: "object",
+      properties: {
+        type: { const: "DrawerTrigger" },
+        props: { $ref: "#/$defs/AlertDialogAction.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DrawerBody: {
+      type: "object",
+      properties: {
+        type: { const: "DrawerBody" },
         props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
@@ -839,12 +849,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Drawer.Trigger": {
-      description: "Place inside `Drawer.Root`.",
+    DrawerDescription: {
       type: "object",
       properties: {
-        type: { const: "Drawer.Trigger" },
-        props: { $ref: "#/$defs/Drawer.Close.props" },
+        type: { const: "DrawerDescription" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -853,11 +862,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    DrawerPanel: {
+    DrawerFooter: {
       type: "object",
       properties: {
-        type: { const: "DrawerPanel" },
-        props: { $ref: "#/$defs/DrawerPanel.props" },
+        type: { const: "DrawerFooter" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -866,11 +875,17 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    DrawerNativeTrigger: {
+    DrawerGrabber: {
+      type: "object",
+      properties: { type: { const: "DrawerGrabber" }, props: { $ref: "#/$defs/Accordion.props" } },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    DrawerHeader: {
       type: "object",
       properties: {
-        type: { const: "DrawerNativeTrigger" },
-        props: { $ref: "#/$defs/AlertDialogAction.props" },
+        type: { const: "DrawerHeader" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -879,24 +894,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    DrawerNativeClose: {
+    DrawerTitle: {
       type: "object",
       properties: {
-        type: { const: "DrawerNativeClose" },
-        props: { $ref: "#/$defs/AlertDialogAction.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    DrawerNativeContent: {
-      type: "object",
-      properties: {
-        type: { const: "DrawerNativeContent" },
-        props: { $ref: "#/$defs/DrawerNativeContent.props" },
+        type: { const: "DrawerTitle" },
+        props: { $ref: "#/$defs/Accordion.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1149,13 +1151,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Header.Root": {
+    Header: {
       description:
         "Orient visitors with stable top-level navigation.\nUse when: The demonstrated page-frame relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
       type: "object",
       properties: {
-        type: { const: "Header.Root" },
-        props: { $ref: "#/$defs/Header.Root.props" },
+        type: { const: "Header" },
+        props: { $ref: "#/$defs/Header.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1206,7 +1208,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Item" },
-        props: { $ref: "#/$defs/Breadcrumb.Item.props" },
+        props: { $ref: "#/$defs/BreadcrumbItem.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1378,7 +1380,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "NumberField.Increment" },
-        props: { $ref: "#/$defs/Drawer.Close.props" },
+        props: { $ref: "#/$defs/NumberField.Increment.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1392,7 +1394,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "NumberField.Decrement" },
-        props: { $ref: "#/$defs/Drawer.Close.props" },
+        props: { $ref: "#/$defs/NumberField.Increment.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1420,7 +1422,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       type: "object",
       properties: {
         type: { const: "Pagination.Item" },
-        props: { $ref: "#/$defs/Breadcrumb.Item.props" },
+        props: { $ref: "#/$defs/BreadcrumbItem.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1604,111 +1606,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Table.Footer": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.Footer" },
-        props: { $ref: "#/$defs/Table.Footer.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.RowHeader": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.RowHeader" },
-        props: { $ref: "#/$defs/Table.RowHeader.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.Body": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.Body" },
-        props: { $ref: "#/$defs/Accordion.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.Caption": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.Caption" },
-        props: { $ref: "#/$defs/Accordion.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.Cell": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.Cell" },
-        props: { $ref: "#/$defs/Table.RowHeader.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.ColumnHeader": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.ColumnHeader" },
-        props: { $ref: "#/$defs/Table.ColumnHeader.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.Header": {
-      description: "Place inside `Table.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Table.Header" },
-        props: { $ref: "#/$defs/Table.Footer.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Table.Root": {
+    Table: {
       description:
         "Compare structured member records.\nUse when: The demonstrated table-controls relationship is present.\nAvoid when: The task does not need this element; do not add it for coverage.",
       type: "object",
       properties: {
-        type: { const: "Table.Root" },
-        props: { $ref: "#/$defs/Table.Root.props" },
+        type: { const: "Table" },
+        props: { $ref: "#/$defs/Table.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1717,12 +1621,110 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Table.Row": {
-      description: "Place inside `Table.Root`.",
+    TableFooter: {
+      description: "Place inside `Table`.",
       type: "object",
       properties: {
-        type: { const: "Table.Row" },
-        props: { $ref: "#/$defs/Table.Row.props" },
+        type: { const: "TableFooter" },
+        props: { $ref: "#/$defs/TableFooter.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableRowHeader: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableRowHeader" },
+        props: { $ref: "#/$defs/TableRowHeader.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableBody: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableBody" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableCaption: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableCaption" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableCell: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableCell" },
+        props: { $ref: "#/$defs/TableRowHeader.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableHead: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableHead" },
+        props: { $ref: "#/$defs/TableHead.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableHeader: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableHeader" },
+        props: { $ref: "#/$defs/TableFooter.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TableRow: {
+      description: "Place inside `Table`.",
+      type: "object",
+      properties: {
+        type: { const: "TableRow" },
+        props: { $ref: "#/$defs/TableRow.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1800,6 +1802,32 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
+    ToastProvider: {
+      type: "object",
+      properties: {
+        type: { const: "ToastProvider" },
+        props: { $ref: "#/$defs/ToastProvider.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    ToastViewport: {
+      type: "object",
+      properties: {
+        type: { const: "ToastViewport" },
+        props: { $ref: "#/$defs/Accordion.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
     Toggle: {
       description:
         "Expose a binary value with a toggle-style presentation.\nUse when: Expose a binary value with a toggle-style presentation.\nAvoid when: Use a switch for a persistent on/off setting or ordinary buttons for one-time actions.",
@@ -1808,40 +1836,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Tooltip.Content": {
-      description: "Place inside `Tooltip.Root`.",
-      type: "object",
-      properties: {
-        type: { const: "Tooltip.Content" },
-        props: { $ref: "#/$defs/Tooltip.Content.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Tooltip.Provider": {
-      type: "object",
-      properties: {
-        type: { const: "Tooltip.Provider" },
-        props: { $ref: "#/$defs/Tooltip.Provider.props" },
-        children: {
-          type: "array",
-          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
-        },
-      },
-      required: ["type", "props"],
-      additionalProperties: false,
-    },
-    "Tooltip.Root": {
+    Tooltip: {
       description:
-        "Add a brief supplemental label to a control without replacing its name.\nUse when: The demonstrated supplemental-label relationship is present.\nAvoid when: The information is essential or interactive; use visible text, popover, or hover-card.\nAvoid when: The tooltip would be the only label for a form field.\nPlace inside `Tooltip.Provider`.",
+        "Add a brief supplemental label to a control without replacing its name.\nUse when: The demonstrated supplemental-label relationship is present.\nAvoid when: The information is essential or interactive; use visible text, popover, or hover-card.\nAvoid when: The tooltip would be the only label for a form field.\nPlace inside `TooltipProvider`.",
       type: "object",
       properties: {
-        type: { const: "Tooltip.Root" },
-        props: { $ref: "#/$defs/Tooltip.Root.props" },
+        type: { const: "Tooltip" },
+        props: { $ref: "#/$defs/Tooltip.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -1850,12 +1851,39 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["type", "props"],
       additionalProperties: false,
     },
-    "Tooltip.Trigger": {
-      description: "Place inside `Tooltip.Root`.",
+    TooltipContent: {
+      description: "Place inside `Tooltip`.",
       type: "object",
       properties: {
-        type: { const: "Tooltip.Trigger" },
-        props: { $ref: "#/$defs/Drawer.Close.props" },
+        type: { const: "TooltipContent" },
+        props: { $ref: "#/$defs/TooltipContent.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TooltipProvider: {
+      type: "object",
+      properties: {
+        type: { const: "TooltipProvider" },
+        props: { $ref: "#/$defs/TooltipProvider.props" },
+        children: {
+          type: "array",
+          items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
+        },
+      },
+      required: ["type", "props"],
+      additionalProperties: false,
+    },
+    TooltipTrigger: {
+      description: "Place inside `Tooltip`.",
+      type: "object",
+      properties: {
+        type: { const: "TooltipTrigger" },
+        props: { $ref: "#/$defs/NumberField.Increment.props" },
         children: {
           type: "array",
           items: { anyOf: [{ $ref: "#/$defs/node" }, { type: "string" }] },
@@ -2451,7 +2479,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Breadcrumb.Item.props": {
+    "BreadcrumbItem.props": {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
@@ -2465,10 +2493,9 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Breadcrumb.Link.props": {
+    "BreadcrumbLink.props": {
       type: "object",
       properties: {
-        current: { type: "boolean" },
         href: { $ref: "#/$defs/attribute.href" },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -2481,7 +2508,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Breadcrumb.List.props": {
+    "BreadcrumbList.props": {
       type: "object",
       properties: {
         itemsAfterCollapse: { type: "number" },
@@ -2645,52 +2672,7 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["id"],
       additionalProperties: false,
     },
-    "Drawer.Close.props": {
-      type: "object",
-      properties: {
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        name: { $ref: "#/$defs/attribute.name" },
-        value: { $ref: "#/$defs/attribute.value" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        disabled: { $ref: "#/$defs/attribute.disabled" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-        formAction: { $ref: "#/$defs/attribute.formAction" },
-      },
-      additionalProperties: false,
-    },
-    "Drawer.Content.props": {
-      type: "object",
-      properties: {
-        size: { enum: ["sm", "md", "lg", "full"] },
-        dismiss: { enum: ["any", "closerequest", "none"] },
-        backdrop: { enum: ["opaque", "transparent"] },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      additionalProperties: false,
-    },
-    "Drawer.Root.props": {
-      type: "object",
-      properties: {
-        closeOnOverlayClick: { type: "boolean" },
-        defaultActiveSnapPoint: { type: "number" },
-        defaultOpen: { type: "boolean" },
-        dismissible: { type: "boolean" },
-        modal: { type: "boolean" },
-        side: { enum: ["top", "right", "bottom", "left"] },
-      },
-      additionalProperties: false,
-    },
-    "DrawerPanel.props": {
+    "Drawer.props": {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
@@ -2699,8 +2681,8 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         description: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         closeLabel: { $ref: "#/$defs/attribute.layout.Box.aria-label" },
         side: { enum: ["top", "right", "bottom", "left"] },
-        size: { enum: ["sm", "md", "lg", "full"] },
-        dismiss: { enum: ["any", "closerequest", "none"] },
+        size: { enum: ["sm", "lg", "md", "full"] },
+        dismiss: { enum: ["none", "any", "closerequest"] },
         backdrop: { enum: ["opaque", "transparent"] },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
         "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
@@ -2711,13 +2693,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["id", "trigger", "title"],
       additionalProperties: false,
     },
-    "DrawerNativeContent.props": {
+    "DrawerContent.props": {
       type: "object",
       properties: {
         id: { $ref: "#/$defs/attribute.id" },
         side: { enum: ["top", "right", "bottom", "left"] },
-        size: { enum: ["sm", "md", "lg", "full"] },
-        dismiss: { enum: ["any", "closerequest", "none"] },
+        size: { enum: ["sm", "lg", "md", "full"] },
+        dismiss: { enum: ["none", "any", "closerequest"] },
         backdrop: { enum: ["opaque", "transparent"] },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -2887,10 +2869,10 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Header.Root.props": {
+    "Header.props": {
       type: "object",
       properties: {
-        placement: { enum: ["static", "sticky"] },
+        placement: { enum: ["sticky", "static"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -3064,6 +3046,23 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         step: { $ref: "#/$defs/attribute.step" },
         dir: { $ref: "#/$defs/attribute.dir" },
         src: { $ref: "#/$defs/attribute.src" },
+      },
+      additionalProperties: false,
+    },
+    "NumberField.Increment.props": {
+      type: "object",
+      properties: {
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        name: { $ref: "#/$defs/attribute.name" },
+        value: { $ref: "#/$defs/attribute.value" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        disabled: { $ref: "#/$defs/attribute.disabled" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+        formAction: { $ref: "#/$defs/attribute.formAction" },
       },
       additionalProperties: false,
     },
@@ -3283,7 +3282,23 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Table.Footer.props": {
+    "Table.props": {
+      type: "object",
+      properties: {
+        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
+        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
+        layout: { enum: ["auto", "fixed"] },
+        size: { enum: ["sm", "lg", "md"] },
+        variant: { enum: ["outline", "ghost", "solid"] },
+        id: { $ref: "#/$defs/attribute.id" },
+        title: { $ref: "#/$defs/attribute.title" },
+        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
+        hidden: { $ref: "#/$defs/attribute.hidden" },
+        dir: { $ref: "#/$defs/attribute.dir" },
+      },
+      additionalProperties: false,
+    },
+    "TableFooter.props": {
       type: "object",
       properties: {
         sticky: { type: "boolean" },
@@ -3297,10 +3312,10 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Table.RowHeader.props": {
+    "TableRowHeader.props": {
       type: "object",
       properties: {
-        align: { enum: ["start", "center", "end"] },
+        align: { enum: ["center", "start", "end"] },
         sticky: { enum: ["start", "end"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -3312,13 +3327,13 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Table.ColumnHeader.props": {
+    "TableHead.props": {
       type: "object",
       properties: {
         allowsSorting: { type: "boolean" },
         id: { $ref: "#/$defs/attribute.id" },
         sortDirection: { enum: ["ascending", "descending"] },
-        align: { enum: ["start", "center", "end"] },
+        align: { enum: ["center", "start", "end"] },
         sticky: { enum: ["start", "end"] },
         title: { $ref: "#/$defs/attribute.title" },
         "aria-label": { $ref: "#/$defs/attribute.aria-label" },
@@ -3327,26 +3342,9 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["id"],
       additionalProperties: false,
     },
-    "Table.Root.props": {
-      type: "object",
-      properties: {
-        "aria-label": { $ref: "#/$defs/attribute.aria-label" },
-        "aria-labelledby": { $ref: "#/$defs/attribute.aria-labelledby" },
-        layout: { enum: ["auto", "fixed"] },
-        size: { enum: ["sm", "md", "lg"] },
-        variant: { enum: ["solid", "outline", "ghost"] },
-        id: { $ref: "#/$defs/attribute.id" },
-        title: { $ref: "#/$defs/attribute.title" },
-        "aria-describedby": { $ref: "#/$defs/attribute.aria-describedby" },
-        hidden: { $ref: "#/$defs/attribute.hidden" },
-        dir: { $ref: "#/$defs/attribute.dir" },
-      },
-      additionalProperties: false,
-    },
-    "Table.Row.props": {
+    "TableRow.props": {
       type: "object",
       properties: {
         disabled: { $ref: "#/$defs/attribute.disabled" },
@@ -3360,7 +3358,6 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
         hidden: { $ref: "#/$defs/attribute.hidden" },
         dir: { $ref: "#/$defs/attribute.dir" },
       },
-      required: ["id"],
       additionalProperties: false,
     },
     "TabsContent.props": {
@@ -3420,6 +3417,11 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
+    "ToastProvider.props": {
+      type: "object",
+      properties: { limit: { type: "number" } },
+      additionalProperties: false,
+    },
     "Toggle.props": {
       type: "object",
       properties: {
@@ -3437,10 +3439,15 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       required: ["id", "label"],
       additionalProperties: false,
     },
-    "Tooltip.Content.props": {
+    "Tooltip.props": {
+      type: "object",
+      properties: { defaultOpen: { type: "boolean" }, id: { $ref: "#/$defs/attribute.id" } },
+      additionalProperties: false,
+    },
+    "TooltipContent.props": {
       type: "object",
       properties: {
-        align: { enum: ["start", "center", "end"] },
+        align: { enum: ["center", "start", "end"] },
         side: { enum: ["top", "right", "bottom", "left"] },
         id: { $ref: "#/$defs/attribute.id" },
         title: { $ref: "#/$defs/attribute.title" },
@@ -3452,14 +3459,9 @@ export const uiDocumentSchema: Readonly<Record<string, unknown>> = {
       },
       additionalProperties: false,
     },
-    "Tooltip.Provider.props": {
+    "TooltipProvider.props": {
       type: "object",
       properties: { delayDuration: { type: "number" }, skipDelayDuration: { type: "number" } },
-      additionalProperties: false,
-    },
-    "Tooltip.Root.props": {
-      type: "object",
-      properties: { defaultOpen: { type: "boolean" }, id: { $ref: "#/$defs/attribute.id" } },
       additionalProperties: false,
     },
     "Box.props": {

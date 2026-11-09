@@ -22,6 +22,13 @@ describe("Switch", () => {
     expect(getCommitCount()).toBe(1);
   });
 
+  it("passes no onChange to the input when no handler is given (Server Components)", () => {
+    const props = (element: unknown) => (element as { props: { onChange?: unknown } }).props;
+    expect(props(Switch({ "aria-label": "Wi-Fi" })).onChange).toBeUndefined();
+    expect(typeof props(Switch({ onCheckedChange: () => {} })).onChange).toBe("function");
+    expect(typeof props(Switch({ onChange: () => {} })).onChange).toBe("function");
+  });
+
   it("reflects controlled checked state and data-state", () => {
     render(<Switch checked aria-label="Wi-Fi" />);
     const control = screen.getByRole("switch", { name: "Wi-Fi" });
@@ -36,7 +43,7 @@ describe("Switch", () => {
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
 
-  it("owns type, role, data-disabled and data-state; consumer cannot override them", () => {
+  it("lets a consumer override type, role, data-disabled and data-state (hard rule 4)", () => {
     render(
       <Switch
         checked
@@ -49,10 +56,10 @@ describe("Switch", () => {
         aria-label="Wi-Fi"
       />,
     );
-    const control = screen.getByRole("switch", { name: "Wi-Fi" });
-    expect(control.getAttribute("type")).toBe("checkbox");
-    expect(control.getAttribute("data-disabled")).toBe("");
-    expect(control.getAttribute("data-state")).toBe("checked");
+    const control = screen.getByRole("checkbox", { name: "Wi-Fi" });
+    expect(control.getAttribute("type")).toBe("radio");
+    expect(control.getAttribute("data-disabled")).toBe("no");
+    expect(control.getAttribute("data-state")).toBe("unchecked");
   });
 
   it("lets a consumer onChange veto the internal value sync (policy #1: form-control change veto)", () => {

@@ -42,7 +42,31 @@ describe("Tailwind adapter cascade layers", () => {
     const components = order.filter((layer) => /^components\.[^.]+$/.test(layer));
 
     expect(topLevel).toEqual(["properties", "theme", "base", "components", "utilities"]);
-    expect(components).toEqual(["components.ui", "components.uiify", "components.app"]);
+    expect(components).toEqual([
+      "components.ui",
+      "components.uiify",
+      "components.layout",
+      "components.app",
+    ]);
     expect(order).toContain("components.ui.behavior");
+  });
+
+  it("ships the layout and text geometry, below consumer overrides and utilities", async () => {
+    const compiler = await compile(consumerEntry, { base: import.meta.dirname, onDependency() {} });
+    const geometry: string[] = [];
+    postcss.parse(compiler.build([])).walkRules((rule) => {
+      if (
+        rule.selector !== '[data-ui-layout="stack"]' &&
+        rule.selector !== '[data-ui-text="heading"]'
+      )
+        return;
+      const layers: string[] = [];
+      for (let node = rule.parent; node; node = node.parent as AtRule["parent"])
+        if (node.type === "atrule" && (node as AtRule).name === "layer")
+          layers.unshift((node as AtRule).params);
+      geometry.push(`${rule.selector} @ ${layers.join(".")}`);
+    });
+    expect(geometry).toContain('[data-ui-layout="stack"] @ components.layout');
+    expect(geometry).toContain('[data-ui-text="heading"] @ components.layout');
   });
 });

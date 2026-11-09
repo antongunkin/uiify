@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { useMergedRefs } from "../../../hooks/use-merged-refs.js";
-import { HeaderRoot } from "../Header.js";
+import { Header } from "../Header.js";
 import type { HeaderClientProps, HeaderClientState } from "../types.js";
 
 export function HeaderClient({
@@ -94,6 +94,6 @@ export function HeaderClient({
     };
   }, [hideOnScroll, scrollTarget, placement]);
 
-  return <HeaderRoot data-state={state} {...props} placement={placement} ref={mergedRef} />;
+  return <Header data-state={state} {...props} placement={placement} ref={mergedRef} />;
 }
 HeaderClient.displayName = "HeaderClient";

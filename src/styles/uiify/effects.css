@@ -123,7 +123,7 @@
 
   /* Combobox option radius subtracts the old small-space step from the large radius. */
   .uiify-combobox-item {
-    border-radius: calc(var(--radius-lg) - var(--spacing));
+    border-radius: calc(var(--radius-2xl) - var(--spacing));
   }
 
   .uiify-slider-client .uiify-slider-mark {
@@ -211,14 +211,16 @@
 
   /* A focus ring belongs on the visible label; sibling targeting crosses recipe parts. */
   .uiify-toggle > .uiify-toggle-control:focus-visible + .uiify-button {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 
   .uiify-toggle-group
     > .uiify-toggle-group-item
     > .uiify-toggle-group-control:focus-visible
     + .uiify-button {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 
   /* Explicit minmax grid tracks and the exact 28rem breakpoint need authored CSS because the
@@ -264,6 +266,23 @@
     object-fit: contain;
   }
 
+  /* Form control sizes, as on Button (`sm`, `md`, `lg`): the root sets the height and font size
+     its parts read. Custom properties, because the build-time aliases have no runtime variable. */
+  .uiify-input-group {
+    --uiify-control-size: --theme(--spacing-control-md);
+    --uiify-control-font: --theme(--text-control);
+  }
+
+  .uiify-input-group[data-size="sm"] {
+    --uiify-control-size: --theme(--spacing-control-sm);
+    --uiify-control-font: --theme(--text-control-sm);
+  }
+
+  .uiify-input-group[data-size="lg"] {
+    --uiify-control-size: --theme(--spacing-control-lg);
+    --uiify-control-font: --theme(--text-control-lg);
+  }
+
   /* InputGroup composes consumer-owned native controls; these sibling relationships cannot live
      on Input's own recipe because its border and padding depend on the surrounding wrapper. */
   .uiify-input-group > :is(input, textarea, select) {
@@ -285,7 +304,7 @@
 
   /* Single-line controls fill the group height; textarea keeps a multiline minimum. */
   .uiify-input-group > :is(input, select) {
-    block-size: calc(var(--uiify-control-size, var(--control-md)) - 2 * var(--border-width));
+    block-size: calc(var(--uiify-control-size) - 2 * var(--border-width));
     min-block-size: 0;
     padding-block: 0;
   }
@@ -298,7 +317,8 @@
   /* Focus belongs to the native child; the wrapper supplies its visible group ring. */
   .uiify-input-group:focus-within {
     border-color: var(--primary);
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 
   /* Addon action sizing and passive affix order are relationships between caller-owned nodes. */
@@ -341,7 +361,7 @@
   .uiify-input-group:has(
       > :is(input, textarea, select):is([data-invalid], [aria-invalid="true"], :user-invalid)
     ):focus-within {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--destructive) 20%, transparent);
+    outline-color: var(--destructive);
   }
 
   /* The surface has a fixed cap and viewport gutters that must shrink together. */
@@ -377,16 +397,32 @@
   }
 
   /* Mix against the theme background to keep the tint opaque on every parent surface. */
+
+  /* Status badges read in their tone on any surface: a translucent fill rather than one mixed
+     with the page background, and the tone itself as text in dark mode — light mode darkens it
+     toward the foreground so yellow stays legible on white. */
   .uiify-badge[data-variant="success"] {
-    background-color: color-mix(in oklch, var(--success) 16%, var(--background));
+    --uiify-badge-tone: var(--success);
   }
 
   .uiify-badge[data-variant="warning"] {
-    background-color: color-mix(in oklch, var(--warning) 16%, var(--background));
+    --uiify-badge-tone: var(--warning);
   }
 
   .uiify-badge[data-variant="destructive"] {
-    background-color: color-mix(in oklch, var(--destructive) 12%, var(--background));
+    --uiify-badge-tone: var(--destructive);
+  }
+
+  .uiify-badge:is(
+    [data-variant="success"],
+    [data-variant="warning"],
+    [data-variant="destructive"]
+  ) {
+    background-color: color-mix(in oklch, var(--uiify-badge-tone) 22%, transparent);
+    color: light-dark(
+      color-mix(in oklch, var(--uiify-badge-tone) 70%, var(--foreground)),
+      var(--uiify-badge-tone)
+    );
   }
 
   /* Status symbols mix a semantic tone with the opaque card foreground. Each root
@@ -457,9 +493,12 @@
      and per-variant colour variables for them. `::before` is the wash, a blurred copy of the
      shape raised by half its height so only its soft lower edge glows inside the upper half
      (`filter` runs before `clip-path`). `::after` is the rim, a half-pixel ring fading towards the
-     bottom (a box-shadow cannot take a gradient; `border-image` ignores the radius). */
+     bottom (a box-shadow cannot take a gradient; `border-image` ignores the radius). A rim that
+     should rise from the bottom instead sets `--uiify-button-rim-end` and clears the top one. */
   .uiify-button {
+    --uiify-button-radius: --theme(--radius-control);
     --uiify-button-rim: rgb(255 255 255 / 20%);
+    --uiify-button-rim-end: transparent;
     --uiify-button-wash: light-dark(rgb(255 255 255 / 15%), rgb(255 255 255 / 30%));
   }
 
@@ -477,12 +516,14 @@
     background-color: var(--uiify-button-wash);
     filter: blur(10px);
     translate: 0 -50%;
-    clip-path: inset(50% 0 -50% 0 round var(--radius-full));
+    clip-path: inset(50% 0 -50% 0 round var(--uiify-button-radius));
   }
 
   .uiify-button::after {
     padding: 0.5px;
-    background-image: linear-gradient(to bottom, var(--uiify-button-rim), transparent 75%);
+    background-image:
+      linear-gradient(to bottom, var(--uiify-button-rim), transparent 75%),
+      linear-gradient(to top, var(--uiify-button-rim-end), transparent 75%);
     mask:
       linear-gradient(#fff 0 0) content-box exclude,
       linear-gradient(#fff 0 0);
@@ -493,9 +534,17 @@
     --uiify-button-wash: light-dark(rgb(255 255 255 / 20%), rgb(255 255 255 / 5%));
   }
 
-  /* Outline: no wash; its rim is a full border-width ring laid over the border. */
+  /* Outline: no wash; its rim is a full border-width ring laid over the border. Dark mode lights
+     the top edge; light mode shades the bottom one, as a raised edge does under light from above. */
   .uiify-button[data-variant="outline"] {
-    --uiify-button-rim: color-mix(in oklch, var(--foreground) 25%, transparent);
+    --uiify-button-rim: light-dark(
+      transparent,
+      color-mix(in oklch, var(--foreground) 25%, transparent)
+    );
+    --uiify-button-rim-end: light-dark(
+      color-mix(in oklch, var(--foreground) 25%, transparent),
+      transparent
+    );
   }
 
   .uiify-button[data-variant="outline"]::after {
@@ -509,19 +558,21 @@
     content: none;
   }
 
-  /* Destructive darkens towards black on hover/press — a mix utilities cannot express. */
+  /* Destructive lowers the fill's lightness on hover/press, keeping its chroma — a relative
+     color utilities cannot express. */
   .uiify-button[data-variant="destructive"] {
+    --uiify-button-fill: --theme(--color-destructive-fill);
     --uiify-button-wash: rgb(255 255 255 / 15%);
   }
 
   @media (any-hover: hover) and (any-pointer: fine) {
     .uiify-button[data-variant="destructive"]:hover:not(:disabled, [data-disabled]) {
-      background-color: color-mix(in oklch, var(--destructive), black 12%);
+      background-color: oklch(from var(--uiify-button-fill) calc(l - 0.05) c h);
     }
   }
 
   .uiify-button[data-variant="destructive"]:active:not(:disabled, [data-disabled]) {
-    background-color: color-mix(in oklch, var(--destructive), black 20%);
+    background-color: oklch(from var(--uiify-button-fill) calc(l - 0.09) c h);
   }
 
   .uiify-button:is([data-selected], [aria-pressed="true"], [aria-current="page"], :checked + *) {
@@ -1132,18 +1183,37 @@
     rotate: 225deg;
   }
 
-  /* The picker is a browser-created top-layer box with anchor-relative placement. */
+  /* The picker is a browser-created top-layer box with anchor-relative placement. It is at
+     least as wide as its select and grows only for longer options. */
   .uiify-native-select::picker(select) {
-    min-inline-size: 12rem;
+    min-inline-size: anchor-size(inline);
     max-block-size: min(24rem, calc(100dvb - 2rem));
     padding: var(--spacing);
     border: var(--border-width) solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-2xl);
     background-color: var(--popover);
     color: var(--popover-foreground);
     box-shadow: var(--shadow-popover);
     overscroll-behavior: contain;
-    inset-block-start: calc(anchor(bottom) + calc(var(--spacing) * 2));
+    inset-block-start: calc(anchor(bottom) + calc(var(--spacing) * 0.5));
+  }
+
+  /* Options take the select's own text size, including inside an optgroup whose label is
+     smaller: the registered length resolves `1em` on the select, then inherits as pixels.
+     A registered initial value must not depend on fonts, so it is 0; options never render
+     outside their select. */
+  @property --uiify-native-select-text {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 0;
+  }
+
+  .uiify-native-select {
+    --uiify-native-select-text: 1em;
+  }
+
+  .uiify-native-select .uiify-native-select-item {
+    font-size: var(--uiify-native-select-text);
   }
 
   /* Grouped options compensate for optgroup's inline label inset. */
@@ -1160,7 +1230,7 @@
     block-size: 1.25rem;
     flex: 0 0 1.25rem;
     display: block;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-sm);
     background: var(--primary);
     content: "";
     clip-path: polygon(
@@ -1276,9 +1346,9 @@
 
   /* Hidden radio focus needs a visible ring on the adjacent star label. */
   .uiify-rating-item > .uiify-rating-input:focus-visible ~ .uiify-rating-label {
-    outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
-    border-radius: var(--radius-xs);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
+    border-radius: var(--radius-sm);
   }
 
   .uiify-rating[data-readonly] > .uiify-rating-item > .uiify-rating-label,
@@ -1314,11 +1384,27 @@
 }
 
 @layer components.uiify {
-  /* OTP slots read the root control size tokens so consumer scale overrides remain live. */
+  /* Form control sizes for the parts below, as on InputGroup. */
+  .uiify-input-otp {
+    --uiify-control-size: --theme(--spacing-control-md);
+    --uiify-control-font: --theme(--text-control);
+  }
+
+  .uiify-input-otp[data-size="sm"] {
+    --uiify-control-size: --theme(--spacing-control-sm);
+    --uiify-control-font: --theme(--text-control-sm);
+  }
+
+  .uiify-input-otp[data-size="lg"] {
+    --uiify-control-size: --theme(--spacing-control-lg);
+    --uiify-control-font: --theme(--text-control-lg);
+  }
+
+  /* OTP slots read the root control size so consumer scale overrides remain live. */
   .uiify-input-otp-slot {
-    inline-size: var(--uiify-control-size, var(--control-md));
-    block-size: var(--uiify-control-size, var(--control-md));
-    font-size: var(--uiify-control-font, 1rem);
+    inline-size: var(--uiify-control-size);
+    block-size: var(--uiify-control-size);
+    font-size: var(--uiify-control-font);
   }
 
   .uiify-input-otp-slot[data-active] {
@@ -1348,12 +1434,25 @@
 }
 
 @layer components.uiify {
-  /* Date input sizing and inherited system typography read the shared native control tokens. */
+  /* Date input sizing and inherited system typography; the size variables follow InputGroup's. */
   .uiify-date-picker {
-    block-size: var(--uiify-control-size, var(--control-md));
+    --uiify-control-size: --theme(--spacing-control-md);
+    --uiify-control-font: --theme(--text-control);
+
+    block-size: var(--uiify-control-size);
     font: inherit;
-    font-size: var(--uiify-control-font, 1rem);
+    font-size: var(--uiify-control-font);
     line-height: var(--leading-normal);
+  }
+
+  .uiify-date-picker[data-size="sm"] {
+    --uiify-control-size: --theme(--spacing-control-sm);
+    --uiify-control-font: --theme(--text-control-sm);
+  }
+
+  .uiify-date-picker[data-size="lg"] {
+    --uiify-control-size: --theme(--spacing-control-lg);
+    --uiify-control-font: --theme(--text-control-lg);
   }
 }
 
@@ -1596,7 +1695,7 @@
     inline-size: 24px;
     block-size: 24px;
     margin-block: auto;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-2xl);
     content: "";
     z-index: 1;
     pointer-events: none;
@@ -1619,14 +1718,15 @@
   .uiify-color-picker-surface:has(> .uiify-color-picker-native-input:focus-visible)
     > .uiify-color-picker-control {
     border-color: var(--primary);
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 
   .uiify-color-picker-surface:has(
       > .uiify-color-picker-native-input[aria-invalid="true"]:focus-visible
     )
     > .uiify-color-picker-control {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--destructive) 20%, transparent);
+    outline-color: var(--destructive);
   }
 
   .uiify-color-picker-surface:has(> .uiify-color-picker-native-input:disabled)
@@ -1754,16 +1854,16 @@
     margin-block-start: auto;
     block-size: min(var(--uiify-drawer-inline-size), 80dvh);
     max-block-size: 80dvh;
-    border-start-start-radius: var(--radius-xl);
-    border-start-end-radius: var(--radius-xl);
+    border-start-start-radius: var(--radius-2xl);
+    border-start-end-radius: var(--radius-2xl);
     transform: var(--uiify-drawer-transform, none);
   }
   .uiify-drawer-content[data-side="top"] {
     margin-block-end: auto;
     block-size: min(var(--uiify-drawer-inline-size), 80dvh);
     max-block-size: 80dvh;
-    border-end-start-radius: var(--radius-xl);
-    border-end-end-radius: var(--radius-xl);
+    border-end-start-radius: var(--radius-2xl);
+    border-end-end-radius: var(--radius-2xl);
     transform: var(--uiify-drawer-transform, none);
   }
   .uiify-drawer-content:is([data-side="left"], [data-side="right"]) {
@@ -1831,8 +1931,8 @@
       max-block-size: 80dvh;
       margin-block: auto 0;
       margin-inline: 0;
-      border-start-start-radius: var(--radius-xl);
-      border-start-end-radius: var(--radius-xl);
+      border-start-start-radius: var(--radius-2xl);
+      border-start-end-radius: var(--radius-2xl);
       border-end-start-radius: 0;
       border-end-end-radius: 0;
       transform: var(--uiify-drawer-transform, none);
@@ -1958,22 +2058,18 @@
   }
 
   .uiify-table
-    :is(
-      .uiify-table-column-header,
-      .uiify-table-row-header,
-      .uiify-table-cell
-    )[data-sticky="start"] {
+    :is(.uiify-table-head, .uiify-table-row-header, .uiify-table-cell)[data-sticky="start"] {
     inset-inline-start: var(--uiify-table-sticky-offset, 0);
   }
 
   .uiify-table
-    :is(.uiify-table-column-header, .uiify-table-row-header, .uiify-table-cell)[data-sticky="end"] {
+    :is(.uiify-table-head, .uiify-table-row-header, .uiify-table-cell)[data-sticky="end"] {
     inset-inline-end: var(--uiify-table-sticky-offset, 0);
   }
 
   .uiify-table
     :is(.uiify-table-header, .uiify-table-footer)[data-sticky]
-    :is(.uiify-table-column-header, .uiify-table-row-header, .uiify-table-cell)[data-sticky] {
+    :is(.uiify-table-head, .uiify-table-row-header, .uiify-table-cell)[data-sticky] {
     z-index: 3;
   }
 
@@ -1982,11 +2078,11 @@
   }
 
   /* Sort indicators are generated text that must stay hidden from assistive technology. */
-  .uiify-table-column-header[aria-sort="ascending"] > .uiify-table-sort-button::after {
+  .uiify-table-head[aria-sort="ascending"] > .uiify-table-sort-button::after {
     content: "↑" / "";
   }
 
-  .uiify-table-column-header[aria-sort="descending"] > .uiify-table-sort-button::after {
+  .uiify-table-head[aria-sort="descending"] > .uiify-table-sort-button::after {
     content: "↓" / "";
   }
 }
@@ -2005,8 +2101,10 @@
   }
 
   .uiify-table-of-contents-trigger {
-    min-inline-size: var(--control-md);
-    min-block-size: var(--control-md);
+    --uiify-toc-trigger-size: --theme(--spacing-control-md);
+
+    min-inline-size: var(--uiify-toc-trigger-size);
+    min-block-size: var(--uiify-toc-trigger-size);
     font: inherit;
   }
 
@@ -2062,15 +2160,34 @@
 }
 
 @layer components.uiify {
-  /* The control is a variable-height pill whose radius and inner input track the selected size. */
+  /* Form control sizes for the parts below, as on InputGroup. */
+  .uiify-combobox {
+    --uiify-control-size: --theme(--spacing-control-md);
+    --uiify-control-font: --theme(--text-control);
+    --uiify-control-radius: --theme(--radius-control);
+  }
+
+  .uiify-combobox[data-size="sm"] {
+    --uiify-control-size: --theme(--spacing-control-sm);
+    --uiify-control-font: --theme(--text-control-sm);
+  }
+
+  .uiify-combobox[data-size="lg"] {
+    --uiify-control-size: --theme(--spacing-control-lg);
+    --uiify-control-font: --theme(--text-control-lg);
+  }
+
+  /* The control is a variable-height pill (or the control radius, when smaller) whose radius and
+     inner input track the selected size. */
   .uiify-combobox-control {
-    min-block-size: var(--uiify-control-size, var(--control-md));
-    border-radius: calc(var(--uiify-control-size, var(--control-md)) / 2);
+    min-block-size: var(--uiify-control-size);
+    border-radius: min(var(--uiify-control-radius), calc(var(--uiify-control-size) / 2));
   }
 
   .uiify-combobox-control:focus-within {
     border-color: var(--primary);
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 
   .uiify-combobox-control:has(.uiify-combobox-input:disabled) {
@@ -2084,12 +2201,13 @@
   }
 
   .uiify-combobox-input {
-    block-size: var(--uiify-control-size, var(--control-md));
-    font-size: var(--uiify-control-font, 1rem);
+    block-size: var(--uiify-control-size);
+    font-size: var(--uiify-control-font);
   }
 
   .uiify-combobox-input:focus-visible {
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 
   .uiify-combobox-control .uiify-combobox-input {
@@ -2097,9 +2215,7 @@
     min-inline-size: min(100%, calc(calc(var(--spacing) * 6) * 8));
     inline-size: auto;
     block-size: auto;
-    min-block-size: calc(
-      var(--uiify-control-size, var(--control-md)) - 2 * var(--spacing) - 2 * var(--border-width)
-    );
+    min-block-size: calc(var(--uiify-control-size) - 2 * var(--spacing) - 2 * var(--border-width));
     padding-inline: calc(calc(var(--spacing) * 2) + var(--border-width));
     border: 0;
     border-radius: 0;
@@ -2235,8 +2351,10 @@
 
   /* The dot keeps its accessible label while the generated circle is the visible marker. */
   .uiify-carousel-dot {
-    inline-size: var(--control-md);
-    block-size: var(--control-md);
+    --uiify-carousel-dot-size: --theme(--spacing-control-md);
+
+    inline-size: var(--uiify-carousel-dot-size);
+    block-size: var(--uiify-carousel-dot-size);
     font-size: 0;
   }
 

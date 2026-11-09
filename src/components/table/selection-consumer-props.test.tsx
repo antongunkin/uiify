@@ -1,7 +1,16 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import { Table } from "./client/Table.js";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableRowSelect,
+  TableSelectAll,
+} from "./client/Table.js";
 function outline(html: string): string[] {
   const host = document.createElement("div");
   host.innerHTML = html;
@@ -16,33 +25,33 @@ it("preserves default table DOM", () => {
   expect(
     outline(
       renderToStaticMarkup(
-        <Table.Root selectionMode="multiple">
-          <Table.Header>
+        <Table selectionMode="multiple">
+          <TableHeader>
             <tr>
-              <Table.ColumnHeader id="select">
-                <Table.SelectAll />
-              </Table.ColumnHeader>
+              <TableHead id="select">
+                <TableSelectAll />
+              </TableHead>
             </tr>
-          </Table.Header>
-          <Table.Body>
-            <Table.Row id="row">
-              <Table.Cell>
-                <Table.RowSelect rowId="row" />
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>,
+          </TableHeader>
+          <TableBody>
+            <TableRow id="row">
+              <TableCell>
+                <TableRowSelect rowId="row" />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
       ),
     ),
   ).toMatchSnapshot();
 });
 it("lets table selection slots replace native defaults and veto selection", () => {
   render(
-    <Table.Root selectionMode="multiple">
-      <Table.Header>
+    <Table selectionMode="multiple">
+      <TableHeader>
         <tr>
-          <Table.ColumnHeader id="select">
-            <Table.SelectAll
+          <TableHead id="select">
+            <TableSelectAll
               slotProps={{
                 input: {
                   id: "select-native",
@@ -54,13 +63,13 @@ it("lets table selection slots replace native defaults and veto selection", () =
                 label: { id: "all-label", "data-uiify-checkbox": "custom" },
               }}
             />
-          </Table.ColumnHeader>
+          </TableHead>
         </tr>
-      </Table.Header>
-      <Table.Body>
-        <Table.Row id="row">
-          <Table.Cell>
-            <Table.RowSelect
+      </TableHeader>
+      <TableBody>
+        <TableRow id="row">
+          <TableCell>
+            <TableRowSelect
               rowId="row"
               slotProps={{
                 input: {
@@ -72,10 +81,10 @@ it("lets table selection slots replace native defaults and veto selection", () =
                 },
               }}
             />
-          </Table.Cell>
-        </Table.Row>
-      </Table.Body>
-    </Table.Root>,
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
   );
   const all = screen.getByRole("checkbox", { name: "All native" });
   const row = screen.getByRole("checkbox", { name: "Row native" });

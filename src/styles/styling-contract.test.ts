@@ -18,7 +18,9 @@ describe("strict styling contract", () => {
     const source = cssSources(stylesRoot)
       .filter((path) => !path.startsWith(`${generatedRoot}/`) && !path.endsWith(".generated.css"))
       .map((path) => readFileSync(path, "utf8"))
-      .join("\n");
+      .join("\n")
+      // `@theme` blocks map build-time aliases onto Tailwind's own `--text-*` keys.
+      .replace(/@theme[^{]*\{[^}]*\}/g, "");
 
     expect(source).not.toMatch(/var\(--(?:space|text)-/);
   });
@@ -57,7 +59,6 @@ describe("strict styling contract", () => {
   test("migrated UIify sources use the Tailwind scales directly", () => {
     const migratedSources = [
       "base.css",
-      "components/control-size.css",
       "components/dialog-surface.css",
       "tailwind-legacy.css",
       "uiify/effects.css",

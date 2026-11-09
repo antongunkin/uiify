@@ -1,8 +1,18 @@
 import { createRef, type KeyboardEvent, type MouseEvent } from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createTableStore } from "./table-store.js";
-import { Table } from "./client/Table.js";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableRowSelect,
+  TableSelectAll,
+} from "./client/Table.js";
 
 describe("createTableStore", () => {
   it("toggles single selection", () => {
@@ -112,26 +122,26 @@ describe("Table client", () => {
     };
 
     render(
-      <Table.Root aria-label="Data" onSortChange={onSortChange} selectionMode="multiple">
-        <Table.Header>
+      <Table aria-label="Data" onSortChange={onSortChange} selectionMode="multiple">
+        <TableHeader>
           <tr>
-            <Table.ColumnHeader allowsSorting id="name" slotProps={{ sortButton: sortButtonProps }}>
+            <TableHead allowsSorting id="name" slotProps={{ sortButton: sortButtonProps }}>
               Name
-            </Table.ColumnHeader>
-            <Table.ColumnHeader id="selection">
-              <Table.SelectAll {...selectAllProps} />
-            </Table.ColumnHeader>
+            </TableHead>
+            <TableHead id="selection">
+              <TableSelectAll {...selectAllProps} />
+            </TableHead>
           </tr>
-        </Table.Header>
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>Alice</Table.Cell>
-            <Table.Cell>
-              <Table.RowSelect {...rowSelectProps} />
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+        </TableHeader>
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>Alice</TableCell>
+            <TableCell>
+              <TableRowSelect {...rowSelectProps} />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     for (const [testId, className] of [
@@ -151,16 +161,16 @@ describe("Table client", () => {
 
   it("selects row on click in multiple mode", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
               Row 1
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
     fireEvent.click(screen.getByRole("checkbox", { name: "Select row" }));
     expect(screen.getByRole("checkbox", { name: "Select row" }).getAttribute("data-state")).toBe(
@@ -170,29 +180,29 @@ describe("Table client", () => {
 
   it("keeps the select-all header in sync with none, some and all", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Header>
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableHeader>
           <tr>
-            <Table.ColumnHeader id="select">
-              <Table.SelectAll />
-            </Table.ColumnHeader>
+            <TableHead id="select">
+              <TableSelectAll />
+            </TableHead>
           </tr>
-        </Table.Header>
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
+        </TableHeader>
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
               Row 1
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row id="r2">
-            <Table.Cell>
-              <Table.RowSelect rowId="r2" />
+            </TableCell>
+          </TableRow>
+          <TableRow id="r2">
+            <TableCell>
+              <TableRowSelect rowId="r2" />
               Row 2
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     const selectAll = () =>
@@ -217,29 +227,29 @@ describe("Table client", () => {
 
   it("selects all mounted rows through the component API", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Header>
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableHeader>
           <tr>
-            <Table.ColumnHeader id="select">
-              <Table.SelectAll />
-            </Table.ColumnHeader>
+            <TableHead id="select">
+              <TableSelectAll />
+            </TableHead>
           </tr>
-        </Table.Header>
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
+        </TableHeader>
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
               Row 1
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row id="r2">
-            <Table.Cell>
-              <Table.RowSelect rowId="r2" />
+            </TableCell>
+          </TableRow>
+          <TableRow id="r2">
+            <TableCell>
+              <TableRowSelect rowId="r2" />
               Row 2
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
@@ -251,29 +261,29 @@ describe("Table client", () => {
 
   it("skips disabled rows when selecting all through the component API", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Header>
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableHeader>
           <tr>
-            <Table.ColumnHeader id="select">
-              <Table.SelectAll />
-            </Table.ColumnHeader>
+            <TableHead id="select">
+              <TableSelectAll />
+            </TableHead>
           </tr>
-        </Table.Header>
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
+        </TableHeader>
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
               Row 1
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row disabled id="r2">
-            <Table.Cell>
-              <Table.RowSelect rowId="r2" />
+            </TableCell>
+          </TableRow>
+          <TableRow disabled id="r2">
+            <TableCell>
+              <TableRowSelect rowId="r2" />
               Row 2
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
@@ -288,28 +298,28 @@ describe("Table client", () => {
 
   it("selects a row range with shift-click through the component API", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
               Row 1
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row id="r2">
-            <Table.Cell>
-              <Table.RowSelect rowId="r2" />
+            </TableCell>
+          </TableRow>
+          <TableRow id="r2">
+            <TableCell>
+              <TableRowSelect rowId="r2" />
               Row 2
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row id="r3">
-            <Table.Cell>
-              <Table.RowSelect rowId="r3" />
+            </TableCell>
+          </TableRow>
+          <TableRow id="r3">
+            <TableCell>
+              <TableRowSelect rowId="r3" />
               Row 3
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     fireEvent.click(screen.getByText("Row 1").closest("tr")!);
@@ -323,33 +333,33 @@ describe("Table client", () => {
   it("does not echo controlled selection prop sync through onSelectionChange", () => {
     const onSelectionChange = vi.fn();
     const { rerender } = render(
-      <Table.Root
+      <Table
         aria-label="Data"
         onSelectionChange={onSelectionChange}
         selectedKeys={new Set(["r1"])}
         selectionMode="multiple"
       >
-        <Table.Body>
-          <Table.Row id="r1">
-            <Table.Cell>Row 1</Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+        <TableBody>
+          <TableRow id="r1">
+            <TableCell>Row 1</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     rerender(
-      <Table.Root
+      <Table
         aria-label="Data"
         onSelectionChange={onSelectionChange}
         selectedKeys={new Set(["r2"])}
         selectionMode="multiple"
       >
-        <Table.Body>
-          <Table.Row id="r2">
-            <Table.Cell>Row 2</Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+        <TableBody>
+          <TableRow id="r2">
+            <TableCell>Row 2</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
 
     expect(onSelectionChange).not.toHaveBeenCalled();
@@ -357,19 +367,16 @@ describe("Table client", () => {
 
   it("sets aria-sort on sortable column header", () => {
     render(
-      <Table.Root
-        aria-label="Data"
-        defaultSortDescriptor={{ column: "name", direction: "ascending" }}
-      >
-        <Table.Header>
+      <Table aria-label="Data" defaultSortDescriptor={{ column: "name", direction: "ascending" }}>
+        <TableHeader>
           <tr>
-            <Table.ColumnHeader allowsSorting id="name">
+            <TableHead allowsSorting id="name">
               Name
-            </Table.ColumnHeader>
+            </TableHead>
           </tr>
-        </Table.Header>
-        <Table.Body />
-      </Table.Root>,
+        </TableHeader>
+        <TableBody />
+      </Table>,
     );
     expect(screen.getByRole("columnheader", { name: "Name" }).getAttribute("aria-sort")).toBe(
       "ascending",
@@ -379,16 +386,16 @@ describe("Table client", () => {
   it("fires onSortChange when column header clicked", () => {
     const onSortChange = vi.fn();
     render(
-      <Table.Root aria-label="Data" onSortChange={onSortChange}>
-        <Table.Header>
+      <Table aria-label="Data" onSortChange={onSortChange}>
+        <TableHeader>
           <tr>
-            <Table.ColumnHeader allowsSorting id="name">
+            <TableHead allowsSorting id="name">
               Name
-            </Table.ColumnHeader>
+            </TableHead>
           </tr>
-        </Table.Header>
-        <Table.Body />
-      </Table.Root>,
+        </TableHeader>
+        <TableBody />
+      </Table>,
     );
     fireEvent.click(screen.getByRole("columnheader", { name: "Name" }));
     expect(onSortChange).toHaveBeenCalledWith({ column: "name", direction: "ascending" });
@@ -396,30 +403,30 @@ describe("Table client", () => {
 
   it("owns aria-selected on interactive rows; consumer cannot override it", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Body>
-          <Table.Row id="r1" aria-selected="true" data-testid="row">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableBody>
+          <TableRow id="r1" aria-selected="true" data-testid="row">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
     expect(screen.getByTestId("row").getAttribute("aria-selected")).toBe("false");
   });
 
   it("owns row selection data-attributes even when the consumer attempts to override them", () => {
     render(
-      <Table.Root aria-label="Data" selectionMode="multiple">
-        <Table.Body>
-          <Table.Row id="r1" data-selected="bogus" data-state="bogus" data-testid="row">
-            <Table.Cell>
-              <Table.RowSelect rowId="r1" />
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+      <Table aria-label="Data" selectionMode="multiple">
+        <TableBody>
+          <TableRow id="r1" data-selected="bogus" data-state="bogus" data-testid="row">
+            <TableCell>
+              <TableRowSelect rowId="r1" />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
     fireEvent.click(screen.getByRole("checkbox", { name: "Select row" }));
     const row = screen.getByTestId("row");
@@ -430,13 +437,13 @@ describe("Table client", () => {
   it("consumer onClick can veto row toggle on interactive rows", () => {
     const onSelectionChange = vi.fn();
     render(
-      <Table.Root aria-label="Data" selectionMode="single" onSelectionChange={onSelectionChange}>
-        <Table.Body>
-          <Table.Row id="r1" onClick={(event) => event.preventDefault()} data-testid="row">
-            <Table.Cell>Row 1</Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>,
+      <Table aria-label="Data" selectionMode="single" onSelectionChange={onSelectionChange}>
+        <TableBody>
+          <TableRow id="r1" onClick={(event) => event.preventDefault()} data-testid="row">
+            <TableCell>Row 1</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
     );
     fireEvent.click(screen.getByTestId("row"));
     expect(onSelectionChange).not.toHaveBeenCalled();
@@ -445,13 +452,13 @@ describe("Table client", () => {
   describe("TableRow keyboard composition (T5 three-way nested merge)", () => {
     it("Space toggles the row (roving-focus does not preventDefault for Space)", () => {
       render(
-        <Table.Root aria-label="Data" selectionMode="single">
-          <Table.Body>
-            <Table.Row id="r1" data-testid="row">
-              <Table.Cell>Row 1</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>,
+        <Table aria-label="Data" selectionMode="single">
+          <TableBody>
+            <TableRow id="r1" data-testid="row">
+              <TableCell>Row 1</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
       );
       const row = screen.getByTestId("row");
       fireEvent.keyDown(row, { key: " " });
@@ -460,16 +467,16 @@ describe("Table client", () => {
 
     it("Arrow key does not toggle the row; it moves roving focus instead", () => {
       render(
-        <Table.Root aria-label="Data" selectionMode="single">
-          <Table.Body>
-            <Table.Row id="r1" data-testid="row1">
-              <Table.Cell>Row 1</Table.Cell>
-            </Table.Row>
-            <Table.Row id="r2" data-testid="row2">
-              <Table.Cell>Row 2</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>,
+        <Table aria-label="Data" selectionMode="single">
+          <TableBody>
+            <TableRow id="r1" data-testid="row1">
+              <TableCell>Row 1</TableCell>
+            </TableRow>
+            <TableRow id="r2" data-testid="row2">
+              <TableCell>Row 2</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
       );
       const row1 = screen.getByTestId("row1");
       const row2 = screen.getByTestId("row2");
@@ -487,13 +494,13 @@ describe("Table client", () => {
     it("consumer onKeyDown vetoes only the internal Space-toggle (the innermost layer)", () => {
       const consumerKeyDown = vi.fn((event: KeyboardEvent) => event.preventDefault());
       render(
-        <Table.Root aria-label="Data" selectionMode="single">
-          <Table.Body>
-            <Table.Row id="r1" onKeyDown={consumerKeyDown} data-testid="row">
-              <Table.Cell>Row 1</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>,
+        <Table aria-label="Data" selectionMode="single">
+          <TableBody>
+            <TableRow id="r1" onKeyDown={consumerKeyDown} data-testid="row">
+              <TableCell>Row 1</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
       );
       const row = screen.getByTestId("row");
       fireEvent.keyDown(row, { key: " " });
@@ -505,13 +512,13 @@ describe("Table client", () => {
       const calls: string[] = [];
       const consumerKeyDown = vi.fn(() => calls.push("consumer"));
       render(
-        <Table.Root aria-label="Data" selectionMode="single">
-          <Table.Body>
-            <Table.Row id="r1" onKeyDown={consumerKeyDown} data-testid="row">
-              <Table.Cell>Row 1</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>,
+        <Table aria-label="Data" selectionMode="single">
+          <TableBody>
+            <TableRow id="r1" onKeyDown={consumerKeyDown} data-testid="row">
+              <TableCell>Row 1</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
       );
       const row = screen.getByTestId("row");
       fireEvent.keyDown(row, { key: " " });
@@ -522,16 +529,16 @@ describe("Table client", () => {
     it("roving-focus's arrow navigation runs before the consumer handler and is unaffected by it (outermost layer, chained first)", () => {
       const consumerKeyDown = vi.fn((event: KeyboardEvent) => event.preventDefault());
       render(
-        <Table.Root aria-label="Data" selectionMode="single">
-          <Table.Body>
-            <Table.Row id="r1" onKeyDown={consumerKeyDown} data-testid="row1">
-              <Table.Cell>Row 1</Table.Cell>
-            </Table.Row>
-            <Table.Row id="r2" data-testid="row2">
-              <Table.Cell>Row 2</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table.Root>,
+        <Table aria-label="Data" selectionMode="single">
+          <TableBody>
+            <TableRow id="r1" onKeyDown={consumerKeyDown} data-testid="row1">
+              <TableCell>Row 1</TableCell>
+            </TableRow>
+            <TableRow id="r2" data-testid="row2">
+              <TableCell>Row 2</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>,
       );
       const row1 = screen.getByTestId("row1");
       fireEvent.keyDown(row1, { key: "ArrowDown" });
@@ -548,26 +555,29 @@ describe("Table client", () => {
     function Row({ id }: { readonly id: string }) {
       renders[Number(id)] = (renders[Number(id)] ?? 0) + 1;
       return (
-        <Table.Row id={id}>
-          <Table.Cell>
-            <Table.RowSelect rowId={id} />
-          </Table.Cell>
-        </Table.Row>
+        <TableRow id={id}>
+          <TableCell>
+            <TableRowSelect rowId={id} />
+          </TableCell>
+        </TableRow>
       );
     }
     Row.displayName = "Row";
 
-    render(
-      <Table.Root aria-label="Large" selectionMode="multiple">
-        <Table.Body>
+    const { container } = render(
+      <Table aria-label="Large" selectionMode="multiple">
+        <TableBody>
           {renders.map((_, index) => (
             <Row id={String(index)} key={index} />
           ))}
-        </Table.Body>
-      </Table.Root>,
+        </TableBody>
+      </Table>,
     );
     renders.fill(0);
-    fireEvent.click(screen.getAllByRole("checkbox", { name: "Select row" })[0]!);
+    // Query inside the first row: a page-wide role query computes roles and names for all
+    // 1,000 rows, ~10 s under a loaded run, which is what timed this test out.
+    const firstRow = container.querySelector<HTMLElement>("tbody tr")!;
+    fireEvent.click(within(firstRow).getByRole("checkbox", { name: "Select row" }));
     expect(renders.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(3);
   });
 });
@@ -575,25 +585,25 @@ describe("Table client", () => {
 it("keeps header and footer rows outside body selection and roving focus", () => {
   const onSelectionChange = vi.fn();
   render(
-    <Table.Root selectionMode="multiple" onSelectionChange={onSelectionChange}>
-      <Table.Header>
-        <Table.Row id="header">
-          <Table.ColumnHeader id="select">
-            <Table.SelectAll />
-          </Table.ColumnHeader>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        <Table.Row id="member">
-          <Table.Cell>Member</Table.Cell>
-        </Table.Row>
-      </Table.Body>
-      <Table.Footer>
-        <Table.Row id="footer">
-          <Table.Cell>Total</Table.Cell>
-        </Table.Row>
-      </Table.Footer>
-    </Table.Root>,
+    <Table selectionMode="multiple" onSelectionChange={onSelectionChange}>
+      <TableHeader>
+        <TableRow id="header">
+          <TableHead id="select">
+            <TableSelectAll />
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow id="member">
+          <TableCell>Member</TableCell>
+        </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow id="footer">
+          <TableCell>Total</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>,
   );
   fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
   expect(onSelectionChange).toHaveBeenCalledWith(new Set(["member"]));

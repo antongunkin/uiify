@@ -41,8 +41,8 @@
     --uiify-anchor-offset: calc(var(--spacing) * 2);
   }
 
-  /* Shared focus-visible ring for public interactive parts. A flush,
-     translucent glow reads as a soft halo instead of a hard ring. */
+  /* Shared focus-visible ring for public interactive parts: a solid outline off the edge, so it
+     meets 3:1 against the page and survives forced colors (box-shadow does not). */
   :where(
     .uiify-button,
     .uiify-input,
@@ -52,7 +52,7 @@
     .uiify-radio-group-control,
     .uiify-toggle
   ):focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--ring-width) color-mix(in oklch, var(--ring) 20%, transparent);
+    outline: 2px solid var(--ring);
+    outline-offset: var(--ring-offset);
   }
 }

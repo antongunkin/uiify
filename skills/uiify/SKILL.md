@@ -20,7 +20,7 @@ Reuse existing design decisions, tokens and conventions, including `DESIGN.md` w
 
 ## Project setup and upgrades
 
-At the start of every run, run `node .agents/skills/uiify/scripts/sync-agents.mjs --check` from the project root (adjust the path to this skill's directory). It keeps the catalog in `AGENTS.md` (and `CLAUDE.md`) in step with the installed package.
+At the start of every run, run `node .agents/skills/uiify/scripts/sync-agents.mjs --check` from the project root (path to this skill). It keeps the catalog in `AGENTS.md` (and `CLAUDE.md`) in step with the package.
 
 - `missing` or `outdated`: run `--write`; tell the user in one line what changed.
 - `edited`: show the file and ask before `--write --force`.
@@ -28,6 +28,8 @@ At the start of every run, run `node .agents/skills/uiify/scripts/sync-agents.mj
 For skill install, `skill:` states and upgrades, read `references/guides/setup.md`.
 
 ## Choose an approach before composition
+
+To change one selected element, read `references/guides/visual-edits.md`; do not compose a page.
 
 Choose internally: reproduce a supplied reference; extend the existing UI for scoped work; create/redesign for a new direction; audit for findings only. For a reference, read its guide before composition and compare again after rendering.
 
@@ -51,8 +53,6 @@ Always describe the page as a UI tree first (`references/guides/document.md`): i
 
 - **Components** (default): ordinary JSX importing `@gunkin/uiify/components/<name>`, written into the project's own files. A second pass turns the validated tree into JSX (`references/guides/components.md`); give it to a separate agent when the host can run one, with only the tree, the brief and that guide.
 - **Document**: the tree itself, rendered by `UiDocument` from `@gunkin/uiify/ai`. Use it only when the request or project says the UI is stored or generated rather than written once: a database, CMS, server-driven or LLM-produced page, an explicit "document" or JSON, or code that already imports `@gunkin/uiify/ai`.
-
-Both forms share the Index, references, laws and design guidance.
 
 ## Select knowledge for the page
 
@@ -124,14 +124,14 @@ dialog|modal|dialog|references/elements/dialog.md
 drawer|sheet,off-canvas-menu|drawer|references/elements/drawer.md
 dropdown-menu|menu|dropdown-menu|references/elements/dropdown-menu.md
 empty-state|empty-state|empty|references/elements/empty-state.md
-feature-grid|feature-cards,feature-list|gap|references/elements/feature-grid.md
+feature-grid|feature-cards,feature-list|feature-grid|references/elements/feature-grid.md
 field|form-field,fieldset,fieldset-legend|field|references/elements/field.md
 file-upload|file-input,dropzone|file-upload|references/elements/file-upload.md
 footer|site-footer|gap|references/elements/footer.md
 form||form|references/elements/form.md
 form-error-summary|error-summary|form-error-summary|references/elements/form-error-summary.md
 header|navbar,top-nav|header|references/elements/header.md
-hero|hero-section,hero-banner|gap|references/elements/hero.md
+hero|hero-section,hero-banner|hero|references/elements/hero.md
 hover-card||hover-card|references/elements/hover-card.md
 image-gallery|gallery,lightbox|gap|references/elements/image-gallery.md
 inline-alert|banner-alert,callout|alert|references/elements/inline-alert.md
@@ -147,7 +147,7 @@ number-field|number-input|number-field|references/elements/number-field.md
 pagination||pagination|references/elements/pagination.md
 password-input|show-hide-password|gap|references/elements/password-input.md
 popover|popup|popover|references/elements/popover.md
-pricing-table|pricing,plan-cards,pricing-plans|gap|references/elements/pricing-table.md
+pricing-table|pricing,plan-cards,pricing-plans|pricing-plans|references/elements/pricing-table.md
 progress-bar|progress,linear-progress|progress|references/elements/progress-bar.md
 radio-group|radio|radio-group|references/elements/radio-group.md
 rating|star-rating|rating|references/elements/rating.md
@@ -165,7 +165,7 @@ table|data-table,comparison-table|table|references/elements/table.md
 table-of-contents|toc,in-page-nav|table-of-contents|references/elements/table-of-contents.md
 tabs|tab-navigation|tabs|references/elements/tabs.md
 tags-input|token-input|tags-input|references/elements/tags-input.md
-testimonial|testimonials,quote-card|gap|references/elements/testimonial.md
+testimonial|testimonials,quote-card|testimonial|references/elements/testimonial.md
 textarea||textarea|references/elements/textarea.md
 timeline||gap|references/elements/timeline.md
 toast|snackbar,toast-notification|toast|references/elements/toast.md

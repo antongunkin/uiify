@@ -38,7 +38,7 @@ UI documents (`@gunkin/uiify/ai`) use many of these components as parts; the par
 | [checkbox](./reference/components/checkbox.md) | `@gunkin/uiify/components/checkbox` | 0 | S1 | `input[type=checkbox] + fieldset` | `dist/components/checkbox.d.ts` | Native checkbox + label and a native fieldset CheckboxGroup. Controlled group values, select-all and the DOM mixed state live in the /client entries (CheckboxClient, CheckboxGroupClient). |
 | [collapsible](./reference/components/collapsible.md) | `@gunkin/uiify/components/collapsible` | 0 | S1 | `details` | `dist/components/collapsible.d.ts` | Native details/summary disclosure. Built on @gunkin/uiify/elements/native-details. |
 | [dialog](./reference/components/dialog.md) | `@gunkin/uiify/components/dialog` | 0 | S1 | `dialog + command=show-modal` | `dist/components/dialog.d.ts` | True modal via show-modal/request-close; the browser owns inertness, Escape and focus return. Controlled/initially open state lives in @gunkin/uiify/components/dialog/client. Trigger/Close built on @gunkin/uiify/elements/native-dialog. Backdrop tap and swipe-down are optional UIEnhance improvements; without them the modal still closes by icon, Escape and (Chrome/Firefox) backdrop tap. |
-| [drawer](./reference/components/drawer.md) | `@gunkin/uiify/components/drawer` | 0 | S1 | `dialog + command=show-modal` | `dist/components/drawer.d.ts` | DrawerPanel native shell + compound Drawer.* client API; snap-point drag on client entry. |
+| [drawer](./reference/components/drawer.md) | `@gunkin/uiify/components/drawer` | 0 | S1 | `dialog + command=show-modal` | `dist/components/drawer.d.ts` | Tier 0 Drawer (native dialog shell, show-modal/request-close) in the root entry; the client Drawer (controlled state, snap-point drag, shadcn/Vaul names) is @gunkin/uiify/components/drawer/client. |
 | [field](./reference/components/field.md) | `@gunkin/uiify/components/field` | 0 | none | `div[role=group]` | `dist/components/field.d.ts` | Field (role=group, data-orientation; responsive via FieldGroup container query) with FieldLabel/Description/Error/Content/Title/Group/Set/Legend/Separator; errors are server-rendered (no CSS reveal). |
 | [form](./reference/components/form.md) | `@gunkin/uiify/components/form` | 0 | none | `form` | `dist/components/form.d.ts` |  |
 | [input](./reference/components/input.md) | `@gunkin/uiify/components/input` | 0 | S1 | `input` | `dist/components/input.d.ts` |  |
@@ -85,6 +85,19 @@ UI documents (`@gunkin/uiify/ai`) use many of these components as parts; the par
 | [date-picker](./reference/components/date-picker.md) | `@gunkin/uiify/components/date-picker` | 0 | native | `input[type=date]` | `dist/components/date-picker.d.ts` | Native date picker; stylesheet styles the outer input only. |
 | [form-error-summary](./reference/components/form-error-summary.md) | `@gunkin/uiify/components/form-error-summary` | 0 | none | `section + heading + ul + links` | `dist/components/form-error-summary.d.ts` | Static server-rendered error links; no alert or focus script. |
 | [description-list](./reference/components/description-list.md) | `@gunkin/uiify/components/description-list` | 0 | none | `dl + dt + dd` | `dist/components/description-list.d.ts` |  |
+
+## Blocks
+
+Tier 0 sections and slot content built from the components above. Import them from
+`@gunkin/uiify` (or `@gunkin/uiify/blocks`); their props are in the screen catalog (`catalog.md`).
+
+| Block | Import | Tier | Types |
+| --- | --- | --- | --- |
+| feature-grid | `@gunkin/uiify/blocks` | 0 | `dist/blocks/feature-grid/index.d.ts` |
+| hero | `@gunkin/uiify/blocks` | 0 | `dist/blocks/hero/index.d.ts` |
+| plan-option | `@gunkin/uiify/blocks` | 0 | `dist/blocks/plan-option/index.d.ts` |
+| pricing-plans | `@gunkin/uiify/blocks` | 0 | `dist/blocks/pricing-plans/index.d.ts` |
+| testimonial | `@gunkin/uiify/blocks` | 0 | `dist/blocks/testimonial/index.d.ts` |
 
 ## Elements
 

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   layoutDeclarations,
@@ -104,5 +106,26 @@ describe("one layout declaration compiler", () => {
     expect(layoutTailwindClasses("Heading", { size: { lg: "2xl" } })).toContain(
       "@min-[72rem]:[font-size:2rem]",
     );
+  });
+  it("fills the inline axis of a query container unless width says otherwise", () => {
+    // A size-contained box has no content width: in a centring parent it collapsed to 0.
+    expect(resolveLayoutDeclarations("Section", { container: true }).base["inline-size"]).toBe(
+      "100%",
+    );
+    expect(
+      resolveLayoutDeclarations("Section", { container: true, width: "fit" }).base["inline-size"],
+    ).toBe("fit-content");
+    expect(layoutTailwindClasses("Box", { container: true }).split(" ")).toContain(
+      "[inline-size:100%]",
+    );
+    expect(layoutTailwindClasses("Box", { container: true, width: "auto" }).split(" ")).toContain(
+      "[inline-size:auto]",
+    );
+    const css = readFileSync(resolve(import.meta.dirname, "../layout.generated.css"), "utf8");
+    const containerRule = css.indexOf('[data-container="true"] {');
+    expect(css.slice(containerRule, css.indexOf("}", containerRule))).toContain(
+      "inline-size: 100%",
+    );
+    expect(containerRule).toBeLessThan(css.indexOf('[data-width="fit"]'));
   });
 });

@@ -22,7 +22,7 @@ The lines are flexible and logical, so they follow writing direction. FieldSepar
 
 ## States
 
-Static. For a purely decorative line pass `role="presentation"`; a decorative vertical line also needs `aria-orientation={undefined}`.
+Static. For a purely decorative line pass `role="none"`; a decorative vertical line also needs `aria-orientation={undefined}`.
 
 ## Verify
 

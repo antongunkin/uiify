@@ -28,7 +28,7 @@ import type {
   TooltipContentProps,
   TooltipProviderOwnProps,
   TooltipProviderStore,
-  TooltipRootProps,
+  TooltipProps,
   TooltipTriggerProps,
 } from "./types.js";
 interface TooltipClientContextValue {
@@ -43,9 +43,9 @@ interface TooltipClientContextValue {
 }
 const [TooltipProviderStoreProvider, useTooltipProviderStore] =
   createPartContext<TooltipProviderStore>("Tooltip", "Provider");
-// Root name "Root" (the default): Trigger/Content require <Tooltip.Root>, a
-// distinct nesting requirement from TooltipRoot itself requiring
-// <Tooltip.Provider> above. Keeping the two contexts' root names accurate
+// Root name "Root" (the default): Trigger/Content require <Tooltip>, a
+// distinct nesting requirement from Tooltip itself requiring
+// <TooltipProvider> above. Keeping the two contexts' root names accurate
 // (rather than pointing both at "Provider") preserves the original's
 // correct, non-misleading error for the "Trigger without Root" case.
 const [TooltipContextProvider, useTooltipContext] =
@@ -59,7 +59,7 @@ export function TooltipProvider(props: TooltipProviderOwnProps): ReactElement | 
   return <TooltipProviderStoreProvider value={store}>{children}</TooltipProviderStoreProvider>;
 }
 TooltipProvider.displayName = "TooltipProvider";
-export function TooltipRoot(props: TooltipRootProps): ReactElement | null {
+export function Tooltip(props: TooltipProps): ReactElement | null {
   const { children, defaultOpen = false, id, onOpenChange, open } = props;
   const provider = useTooltipProviderStore("Root");
   const pointerFocusRef = useRef(false);
@@ -86,7 +86,7 @@ export function TooltipRoot(props: TooltipRootProps): ReactElement | null {
   };
   return <TooltipContextProvider value={contextValue}>{children}</TooltipContextProvider>;
 }
-TooltipRoot.displayName = "TooltipRoot";
+Tooltip.displayName = "Tooltip";
 export function TooltipTrigger<TAs extends ElementType = "button">(
   props: TooltipTriggerProps<TAs>,
 ): ReactElement | null {
@@ -241,9 +241,3 @@ export function TooltipContent<TAs extends ElementType = "div">(
     state: { open, positioning: "native" as const },
   });
 }
-export const Tooltip = {
-  Content: TooltipContent,
-  Provider: TooltipProvider,
-  Root: TooltipRoot,
-  Trigger: TooltipTrigger,
-};

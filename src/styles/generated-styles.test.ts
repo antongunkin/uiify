@@ -8,9 +8,9 @@ const stylesRoot = import.meta.dirname;
 const read = (path: string) => readFileSync(resolve(stylesRoot, path), "utf8");
 
 describe("committed generated styles", () => {
-  it("match a fresh compile of the uiify style (run npm run build -w @gunkin/uiify)", async () => {
+  it("match a fresh compile of the uiify style for UIify's own entry (run npm run build -w @gunkin/uiify)", async () => {
     const compiled = await compileStyle(uiify, {
-      tailwindEntry: resolve(stylesRoot, "build/entry.css"),
+      tailwindEntry: resolve(stylesRoot, "build/entry-own.css"),
       effectsCss: read("uiify/effects.css"),
     });
     expect(compiled.perRecipe.get("field")).toContain('@import "./input.css";');

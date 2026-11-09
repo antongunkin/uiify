@@ -14,6 +14,9 @@ import { surface } from "./surface.js";
 import { card } from "./card.js";
 import { alert } from "./alert.js";
 import { empty } from "./empty.js";
+import { pricingPlans } from "./pricing-plans.js";
+import { featureGrid } from "./feature-grid.js";
+import { testimonial } from "./testimonial.js";
 import { skeleton } from "./skeleton.js";
 import { spinner } from "./spinner.js";
 import { progress } from "./progress.js";
@@ -119,4 +122,7 @@ export const uiify = defineStyle("uiify", [
   carousel,
   virtualScroll,
   candleChart,
+  pricingPlans,
+  featureGrid,
+  testimonial,
 ]);

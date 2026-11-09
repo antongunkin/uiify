@@ -31,7 +31,7 @@ import type {
   ToastContextValue,
   ToastProviderOwnProps,
   ToastViewportOwnProps,
-  ToastRootOwnProps,
+  ToastOwnProps,
   ToastActionProps,
   ToastCloseProps,
   ToastLabels,
@@ -46,12 +46,12 @@ export type {
   ToastPriority,
   ToastProviderOwnProps,
   ToastRecord,
-  ToastRootOwnProps,
+  ToastOwnProps,
   ToastStore,
   ToastTitleOwnProps,
   ToastViewportOwnProps,
   ToastProviderSlotProps,
-  ToastRootSlotProps,
+  ToastSlotProps,
   ToastItemSlotProps,
   ToastTitleSlotProps,
   ToastDescriptionSlotProps,
@@ -159,7 +159,7 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
     <ToastViewportElement popover="manual" {...domProps} labels={resolvedLabels} ref={mergedRef}>
       {toasts.map((toast) => (
         <ViewTransition default={TOAST_TRANSITION} key={toast.id}>
-          <ToastRoot
+          <Toast
             {...resolveRepeatedSlotProps(itemSlotProps, toast.id)}
             toast={toast}
             slotProps={rootSlotProps}
@@ -171,7 +171,7 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
 }
 ToastViewport.displayName = "ToastViewport";
 
-export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
+export function Toast(props: ToastOwnProps): ReactElement | null {
   const { toast, labels: labelOverrides, slotProps, ...consumerRootProps } = props;
   const { dismiss, pause, resume, labels: providerLabels } = useToastStoreContext("Root");
   const labels = { ...providerLabels, ...labelOverrides };
@@ -254,7 +254,7 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
   );
   /* oxlint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/prefer-tag-over-role */
 }
-ToastRoot.displayName = "ToastRoot";
+Toast.displayName = "Toast";
 
 export function ToastAction(props: ToastActionProps): ReactElement | null {
   return <ToastActionElement {...props} />;
@@ -275,13 +275,3 @@ export function useToast() {
     },
   };
 }
-
-export const Toast = {
-  Action: ToastAction,
-  Close: ToastClose,
-  Description: ToastDescription,
-  Provider: ToastProvider,
-  Root: ToastRoot,
-  Title: ToastTitle,
-  Viewport: ToastViewport,
-};

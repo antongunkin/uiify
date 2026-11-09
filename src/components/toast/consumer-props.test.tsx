@@ -1,8 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import { Toast as LiveToast } from "./Toast.js";
-import { Toast } from "./ToastElements.js";
+import {
+  Toast as LiveToast,
+  ToastProvider as LiveToastProvider,
+  ToastViewport as LiveToastViewport,
+} from "./Toast.js";
+import { Toast, ToastViewport } from "./ToastElements.js";
 function outline(html: string): string[] {
   const host = document.createElement("div");
   host.innerHTML = html;
@@ -26,17 +30,17 @@ it("preserves default toast DOM", () => {
   expect({
     shell: outline(
       renderToStaticMarkup(
-        <Toast.Viewport>
-          <Toast.Root toast={toast} />
-        </Toast.Viewport>,
+        <ToastViewport>
+          <Toast toast={toast} />
+        </ToastViewport>,
       ),
     ),
     client: outline(
       renderToStaticMarkup(
-        <LiveToast.Provider>
-          <LiveToast.Root toast={toast} />
-          <LiveToast.Viewport />
-        </LiveToast.Provider>,
+        <LiveToastProvider>
+          <LiveToast toast={toast} />
+          <LiveToastViewport />
+        </LiveToastProvider>,
       ),
     ),
   }).toMatchSnapshot();
@@ -44,8 +48,8 @@ it("preserves default toast DOM", () => {
 
 it("lets toast native props and slots override defaults", () => {
   render(
-    <Toast.Viewport aria-label={undefined} data-part="tray" data-testid="viewport">
-      <Toast.Root
+    <ToastViewport aria-label={undefined} data-part="tray" data-testid="viewport">
+      <Toast
         toast={toast}
         role="log"
         data-part="notice"
@@ -57,7 +61,7 @@ it("lets toast native props and slots override defaults", () => {
           close: { "aria-label": "Dismiss", type: "reset" },
         }}
       />
-    </Toast.Viewport>,
+    </ToastViewport>,
   );
   expect(screen.getByTestId("viewport").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("toast").getAttribute("role")).toBe("log");
@@ -68,7 +72,7 @@ it("lets toast native props and slots override defaults", () => {
 
 it("lets live regions replace announcement semantics", () => {
   render(
-    <LiveToast.Provider
+    <LiveToastProvider
       slotProps={{
         politeLiveRegion: { "aria-live": undefined, "aria-atomic": false, "data-testid": "polite" },
       }}
@@ -80,15 +84,15 @@ it("lets live regions replace announcement semantics", () => {
 
 it("lets live toast native props override card semantics", () => {
   render(
-    <LiveToast.Provider>
-      <LiveToast.Root
+    <LiveToastProvider>
+      <LiveToast
         toast={toast}
         aria-label={undefined}
         data-state="custom"
         data-testid="live-card"
         slotProps={{ close: { "aria-label": "Dismiss live", type: "reset" } }}
       />
-    </LiveToast.Provider>,
+    </LiveToastProvider>,
   );
   expect(screen.getByTestId("live-card").hasAttribute("aria-label")).toBe(false);
   expect(screen.getByTestId("live-card").getAttribute("data-state")).toBe("custom");

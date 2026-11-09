@@ -72,14 +72,14 @@ export type ToastDescriptionSlotProps = ToastTitleSlotProps;
 export type ToastActionSlotProps = RepeatedSlotProps<SlotProps<"button">>;
 export type ToastCloseSlotProps = RepeatedSlotProps<SlotProps<"button">>;
 
-export interface ToastRootSlotProps {
+export interface ToastSlotProps {
   readonly title?: ToastTitleSlotProps;
   readonly description?: ToastDescriptionSlotProps;
   readonly action?: ToastActionSlotProps;
   readonly close?: ToastCloseSlotProps;
 }
 
-export interface ToastViewportSlotProps extends ToastRootSlotProps {
+export interface ToastViewportSlotProps extends ToastSlotProps {
   readonly item?: ToastItemSlotProps;
 }
 
@@ -103,12 +103,12 @@ export interface ToastViewportOwnProps
   readonly slotProps?: ToastViewportSlotProps;
 }
 
-export interface ToastRootOwnProps
+export interface ToastOwnProps
   extends
     Omit<ComponentPropsWithRef<"div">, "children" | "dangerouslySetInnerHTML">,
     ConsumerDataAttributes {
   readonly labels?: Partial<ToastLabels>;
-  readonly slotProps?: ToastRootSlotProps;
+  readonly slotProps?: ToastSlotProps;
   readonly toast: ToastRecord;
 }
 

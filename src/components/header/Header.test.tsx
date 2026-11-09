@@ -4,9 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 import { assertSSRRenderable } from "../test-utils/ssr.js";
 import { Header } from "./Header.js";
 
-describe("Header.Root", () => {
+describe("Header", () => {
   it("renders a semantic header with static placement by default", () => {
-    render(<Header.Root>Site navigation</Header.Root>);
+    render(<Header>Site navigation</Header>);
     const root = screen.getByRole("banner");
     expect(root.tagName).toBe("HEADER");
     expect(root.classList.contains("uiify-header")).toBe(true);
@@ -17,7 +17,7 @@ describe("Header.Root", () => {
 
   it("preserves consumer attributes", () => {
     render(
-      <Header.Root
+      <Header
         data-testid="root"
         placement="sticky"
         data-uiify-header="fake"
@@ -32,7 +32,7 @@ describe("Header.Root", () => {
   it("forwards native attributes, consumer styling, data attributes, and events", () => {
     const onClick = vi.fn();
     render(
-      <Header.Root
+      <Header
         id="site-header"
         aria-label="Site"
         className="custom-header"
@@ -52,24 +52,24 @@ describe("Header.Root", () => {
 
   it("forwards the ref to the native header", () => {
     const ref = createRef<HTMLElement>();
-    render(<Header.Root ref={ref} />);
+    render(<Header ref={ref} />);
     expect(ref.current).toBe(screen.getByRole("banner"));
   });
 
   it("renders semantic markup on the server", () => {
     const html = assertSSRRenderable(
-      <Header.Root placement="sticky">
+      <Header placement="sticky">
         <nav aria-label="Main">
           <a href="/docs">Docs</a>
         </nav>
-      </Header.Root>,
+      </Header>,
     );
     expect(html).toContain("<header");
     expect(html).toContain('data-placement="sticky"');
     expect(html).toContain('href="/docs"');
   });
 
-  it("exposes only the Root compound part", () => {
-    expect(Object.keys(Header)).toEqual(["Root"]);
+  it("is a plain component, not a namespace object", () => {
+    expect(typeof Header).toBe("function");
   });
 });

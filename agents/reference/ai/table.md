@@ -6,80 +6,14 @@ Every node is `{ type, props, children? }`; `props` is required, even when empty
 
 ## Props shared by every part
 
-- `title` (optional): `string`
 - `aria-label` (optional): `string`
 - `aria-labelledby` (optional): `string`; a list of ids; separate ids with single spaces, each starting with a letter and using only letters, digits, -, _, : and .
+- `title` (optional): `string`
 - `aria-describedby` (optional): `string`; a list of ids; separate ids with single spaces, each starting with a letter and using only letters, digits, -, _, : and .
 - `hidden` (optional): `boolean`
 - `dir` (optional): `"ltr" | "rtl" | "auto"`; allowed: "ltr", "rtl", "auto"
 
-## Table.Footer
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `sticky` (optional): `boolean`
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Table.RowHeader
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `align` (optional): `"start" | "center" | "end"`; allowed: "start", "center", "end"
-- `sticky` (optional): `"start" | "end"`; allowed: "start", "end"
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Table.Body
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Table.Caption
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Table.Cell
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `align` (optional): `"start" | "center" | "end"`; allowed: "start", "center", "end"
-- `sticky` (optional): `"start" | "end"`; allowed: "start", "end"
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Table.ColumnHeader
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `allowsSorting` (optional): `boolean`
-- `id` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-- `sortDirection` (optional): `"ascending" | "descending"`; allowed: "ascending", "descending"
-- `align` (optional): `"start" | "center" | "end"`; allowed: "start", "center", "end"
-- `sticky` (optional): `"start" | "end"`; allowed: "start", "end"
-
-## Table.Header
-
-Place inside `Table.Root`.
-
-Optional `children`: nodes or strings.
-
-- `sticky` (optional): `boolean`
-- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
-
-## Table.Root
+## Table
 
 Compare structured member records.
 Use when: The demonstrated table-controls relationship is present.
@@ -88,17 +22,83 @@ Avoid when: The task does not need this element; do not add it for coverage.
 Optional `children`: nodes or strings.
 
 - `layout` (optional): `"auto" | "fixed"`; allowed: "auto", "fixed"
-- `size` (optional): `"sm" | "md" | "lg"`; allowed: "sm", "md", "lg"
-- `variant` (optional): `"solid" | "outline" | "ghost"`; allowed: "solid", "outline", "ghost"
+- `size` (optional): `"sm" | "lg" | "md"`; allowed: "sm", "lg", "md"
+- `variant` (optional): `"outline" | "ghost" | "solid"`; allowed: "outline", "ghost", "solid"
 - `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
 
-## Table.Row
+## TableFooter
 
-Place inside `Table.Root`.
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `sticky` (optional): `boolean`
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## TableRowHeader
+
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `align` (optional): `"center" | "start" | "end"`; allowed: "center", "start", "end"
+- `sticky` (optional): `"start" | "end"`; allowed: "start", "end"
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## TableBody
+
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## TableCaption
+
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## TableCell
+
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `align` (optional): `"center" | "start" | "end"`; allowed: "center", "start", "end"
+- `sticky` (optional): `"start" | "end"`; allowed: "start", "end"
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## TableHead
+
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `allowsSorting` (optional): `boolean`
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. Needed only by the client Table, where it keys sorting.
+- `sortDirection` (optional): `"ascending" | "descending"`; allowed: "ascending", "descending"
+- `align` (optional): `"center" | "start" | "end"`; allowed: "center", "start", "end"
+- `sticky` (optional): `"start" | "end"`; allowed: "start", "end"
+
+## TableHeader
+
+Place inside `Table`.
+
+Optional `children`: nodes or strings.
+
+- `sticky` (optional): `boolean`
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+
+## TableRow
+
+Place inside `Table`.
 
 Optional `children`: nodes or strings.
 
 - `disabled` (optional): `boolean`
-- `id` (required): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .
+- `id` (optional): `string`; a valid id; start with a letter and use only letters, digits, -, _, : and .. Needed only by the client Table, where it keys selection and expansion.
 - `selected` (optional): `boolean`
 - `sticky` (optional): `boolean`

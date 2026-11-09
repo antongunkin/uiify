@@ -7,7 +7,11 @@ Export: `SelectBasic`
 ## Source
 
 ```tsx
-import { NativeSelect, NativeSelectContent, NativeSelectOption } from "@gunkin/uiify/components/native-select";
+import {
+  NativeSelect,
+  NativeSelectContent,
+  NativeSelectOption,
+} from "@gunkin/uiify/components/native-select";
 
 export function SelectBasic() {
   return (

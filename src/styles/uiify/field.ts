@@ -15,7 +15,7 @@ export const field = defineRecipe<
   // field.css is public: it also styles FieldSet/FieldLegend and FieldSeparator on its own.
   requires: ["input", "textarea", "field-set", "field-separator"],
   base: {
-    root: "grid gap-2 w-full max-w-96",
+    root: "grid gap-2 w-full max-w-field",
     label: "text-foreground text-sm font-medium leading-normal select-none",
     description: "m-0 text-muted-foreground text-xs leading-normal",
     error:
@@ -34,7 +34,7 @@ export const field = defineRecipe<
     },
     variant: {
       card: {
-        root: "relative max-w-none items-start gap-3 rounded-lg border border-border p-4 cursor-pointer transition-colors has-checked:border-primary has-checked:bg-primary/5 has-focus-visible:ring-3 has-focus-visible:ring-ring/20 has-disabled:opacity-50 has-disabled:cursor-not-allowed",
+        root: "relative max-w-none items-start gap-3 rounded-2xl border border-border p-4 cursor-pointer transition-colors has-checked:border-primary has-checked:bg-primary/5 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring has-disabled:opacity-50 has-disabled:cursor-not-allowed",
         label: "after:absolute after:inset-0",
       },
     },

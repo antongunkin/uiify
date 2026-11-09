@@ -1,16 +1,16 @@
 import { expect, it } from "vitest";
-import { Tooltip } from "./Tooltip.js";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./Tooltip.js";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
 
 it("preserves default Tooltip DOM", () => {
   const host = document.createElement("div");
   host.innerHTML = renderToStaticMarkup(
-    <Tooltip.Provider>
-      <Tooltip.Root id="hint">
-        <Tooltip.Trigger>Help</Tooltip.Trigger>
-        <Tooltip.Content side="top">Hint</Tooltip.Content>
-      </Tooltip.Root>
-    </Tooltip.Provider>,
+    <TooltipProvider>
+      <Tooltip id="hint">
+        <TooltipTrigger>Help</TooltipTrigger>
+        <TooltipContent side="top">Hint</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>,
   );
   expect(
     [...host.querySelectorAll("*")].map((element) => [

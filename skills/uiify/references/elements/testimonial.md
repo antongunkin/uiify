@@ -1,6 +1,6 @@
 # testimonial
 
-Binding: gap
+Binding: testimonial
 
 Attribute a customer quote to a named source.
 
@@ -14,7 +14,7 @@ Do not invent a quote, imply an endorsement that was not given, or use a testimo
 
 ## Structure
 
-This is an app-level composition, not a UIify component. Mark the quoted words with blockquote and include a clear attribution in a nearby caption or paragraph. Keep the quote and its speaker together.
+Use `Testimonial` (`quote`, `name`, `byline`, `avatar`); it marks the quoted words with blockquote and keeps the attribution in a figcaption. Keep the quote and its speaker together.
 
 ## Responsive
 
@@ -31,19 +31,6 @@ Check quote accuracy and attribution, semantic quotation markup, text contrast, 
 ## Common mistake
 
 A decorative quotation mark does not identify who said the words.
-
-## Custom implementation
-
-```html
-<figure>
-  <blockquote cite="/customers/acme">
-    <p>Our team can find the latest project status quickly.</p>
-  </blockquote>
-  <figcaption>Jordan Lee, Operations Lead</figcaption>
-</figure>
-```
-
-This is an app-level composition; UIify does not currently ship this component.
 
 ## Sources
 

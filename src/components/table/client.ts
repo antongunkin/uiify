@@ -1,10 +1,9 @@
 "use client";
 export {
-  Table as TableClient,
-  TableRoot,
+  Table,
   TableBody,
   TableRow,
-  TableColumnHeader,
+  TableHead,
   TableSelectAll,
   TableRowSelect,
   TableExpandTrigger,
@@ -12,10 +11,11 @@ export {
 } from "./client/Table.js";
 export { TableCell, TableCaption, TableHeader, TableFooter, TableRowHeader } from "./TableShell.js";
 export type {
-  TableClientRootProps,
-  TableClientRootOwnProps,
-  TableClientColumnHeaderProps,
-  TableClientColumnHeaderSlotProps,
+  TableClientProps,
+  TableClientOwnProps,
+  TableClientHeadProps,
+  TableClientHeadSlotProps,
+  TableClientRowProps,
   TableExpandTriggerProps,
   TableExpandedRowProps,
   TableSelectAllOwnProps,

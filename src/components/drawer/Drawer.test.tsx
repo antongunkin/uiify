@@ -3,18 +3,20 @@ import { createRef } from "react";
 import type { MouseEvent, PointerEvent, ReactElement, SyntheticEvent } from "react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "../test-utils/ssr.js";
-import { Drawer } from "./Drawer.js";
 import {
-  DrawerNativeClose,
-  DrawerNativeContent,
-  DrawerNativeTrigger,
-  DrawerPanel,
-} from "./DrawerNative.js";
+  Drawer as ClientDrawer,
+  DrawerClose as ClientDrawerClose,
+  DrawerContent as ClientDrawerContent,
+  DrawerHandle as ClientDrawerHandle,
+  DrawerTitle as ClientDrawerTitle,
+  DrawerTrigger as ClientDrawerTrigger,
+} from "./Drawer.js";
+import { DrawerClose, DrawerContent, DrawerTrigger, Drawer } from "./DrawerNative.js";
 
-describe("DrawerPanel (native shell)", () => {
+describe("Drawer (native shell)", () => {
   it("provides native dismissal, size and complete dialog anatomy", () => {
     const { container } = render(
-      <DrawerPanel
+      <Drawer
         id="anatomy"
         trigger="Open"
         title="Settings"
@@ -23,7 +25,7 @@ describe("DrawerPanel (native shell)", () => {
         footer={<span>Actions</span>}
       >
         <p>Content</p>
-      </DrawerPanel>,
+      </Drawer>,
     );
     const dialog = container.querySelector("dialog");
     expect(dialog?.getAttribute("closedby")).toBe("any");
@@ -33,7 +35,7 @@ describe("DrawerPanel (native shell)", () => {
     expect(dialog?.querySelector(".uiify-drawer-close")?.getAttribute("aria-label")).toBe("Close");
   });
   it("renders a show-modal trigger and a request-close invoker", () => {
-    render(<DrawerPanel id="settings" side="right" trigger="Open" title="Settings" />);
+    render(<Drawer id="settings" side="right" trigger="Open" title="Settings" />);
 
     const dialog = screen.getByRole("dialog", { hidden: true });
     const trigger = screen.getByRole("button", { name: "Open" });
@@ -53,12 +55,12 @@ describe("DrawerPanel (native shell)", () => {
 
   it("allows the close label to be localized while closeLabel keeps priority", () => {
     const { rerender } = render(
-      <DrawerPanel id="settings" trigger="Open" title="Settings" labels={{ close: "إغلاق" }} />,
+      <Drawer id="settings" trigger="Open" title="Settings" labels={{ close: "إغلاق" }} />,
     );
     expect(screen.getByRole("button", { name: "إغلاق", hidden: true })).toBeTruthy();
 
     rerender(
-      <DrawerPanel
+      <Drawer
         id="settings"
         trigger="Open"
         title="Settings"
@@ -71,12 +73,7 @@ describe("DrawerPanel (native shell)", () => {
 
   it("renders native dialog semantics during SSR with no popover markup", () => {
     const markup = renderToStaticMarkup(
-      <DrawerPanel
-        id="settings"
-        trigger="Open"
-        title="Settings"
-        description="Update preferences."
-      />,
+      <Drawer id="settings" trigger="Open" title="Settings" description="Update preferences." />,
     );
 
     expect(markup).toContain('aria-describedby="settings-description"');
@@ -105,7 +102,7 @@ describe("DrawerPanel (native shell)", () => {
       footer: createRef<HTMLDivElement>(),
     };
     render(
-      <DrawerPanel
+      <Drawer
         className="root-class"
         data-testid="root"
         description="Description"
@@ -132,7 +129,7 @@ describe("DrawerPanel (native shell)", () => {
         trigger="Open"
       >
         Body
-      </DrawerPanel>,
+      </Drawer>,
     );
 
     const slotExpectations: readonly [keyof typeof refs, string, string][] = [
@@ -164,7 +161,7 @@ describe("DrawerPanel (native shell)", () => {
 
   it("lets native shell slots replace defaults", () => {
     render(
-      <DrawerPanel
+      <Drawer
         id="drawer"
         trigger="Open"
         title="Settings"
@@ -201,20 +198,15 @@ describe("DrawerPanel (native shell)", () => {
     const ref = createRef<HTMLDialogElement>();
     render(
       <>
-        <DrawerNativeTrigger
-          target="drawer"
-          command="request-close"
-          commandfor="other"
-          type="submit"
-        >
+        <DrawerTrigger target="drawer" command="request-close" commandfor="other" type="submit">
           Open
-        </DrawerNativeTrigger>
-        <DrawerNativeContent id="drawer" closedby="none" data-part="custom" ref={ref}>
+        </DrawerTrigger>
+        <DrawerContent id="drawer" closedby="none" data-part="custom" ref={ref}>
           Body
-        </DrawerNativeContent>
-        <DrawerNativeClose target="drawer" type="submit">
+        </DrawerContent>
+        <DrawerClose target="drawer" type="submit">
           Close
-        </DrawerNativeClose>
+        </DrawerClose>
       </>,
     );
     const trigger = screen.getByRole("button", { name: "Open" });
@@ -271,34 +263,34 @@ beforeEach(() => {
 describe("Drawer compound — props ownership", () => {
   it("accepts native invoker props", () => {
     const elements: ReactElement[] = [
-      <DrawerNativeTrigger key="safe" target="dialog">
+      <DrawerTrigger key="safe" target="dialog">
         Open
-      </DrawerNativeTrigger>,
-      <DrawerNativeClose key="unsafe" target="dialog" type="submit" />,
+      </DrawerTrigger>,
+      <DrawerClose key="unsafe" target="dialog" type="submit" />,
     ];
     expect(elements).toHaveLength(2);
   });
 
   it("accepts the native Trigger type", () => {
     const elements: ReactElement[] = [
-      <Drawer.Trigger key="ok">Open</Drawer.Trigger>,
-      <Drawer.Trigger key="type" type="submit">
+      <ClientDrawerTrigger key="ok">Open</ClientDrawerTrigger>,
+      <ClientDrawerTrigger key="type" type="submit">
         Open
-      </Drawer.Trigger>,
+      </ClientDrawerTrigger>,
     ];
     expect(elements).toHaveLength(2);
   });
 
   it("lets consumer ARIA override Trigger defaults", () => {
     render(
-      <Drawer.Root>
-        <Drawer.Trigger aria-controls="not-the-content" aria-expanded aria-haspopup="menu">
+      <ClientDrawer>
+        <ClientDrawerTrigger aria-controls="not-the-content" aria-expanded aria-haspopup="menu">
           Open
-        </Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+        </ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const trigger = screen.getByRole("button", { name: "Open" });
     const dialog = screen.getByRole("dialog", { hidden: true });
@@ -310,12 +302,12 @@ describe("Drawer compound — props ownership", () => {
 
   it("renders Trigger's owned type/aria-controls/aria-expanded/aria-haspopup and syncs aria-expanded with open state", () => {
     render(
-      <Drawer.Root>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const trigger = screen.getByRole("button", { name: "Open" });
     const dialog = screen.getByRole("dialog", { hidden: true });
@@ -332,12 +324,12 @@ describe("Drawer compound — props ownership", () => {
     const onOpenChange = vi.fn();
     const onClick = vi.fn((event: MouseEvent<HTMLButtonElement>) => event.preventDefault());
     render(
-      <Drawer.Root onOpenChange={onOpenChange}>
-        <Drawer.Trigger onClick={onClick}>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer onOpenChange={onOpenChange}>
+        <ClientDrawerTrigger onClick={onClick}>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Open" }));
     expect(onClick).toHaveBeenCalledOnce();
@@ -348,12 +340,12 @@ describe("Drawer compound — props ownership", () => {
     const onOpenChange = vi.fn();
     const onClick = vi.fn();
     render(
-      <Drawer.Root onOpenChange={onOpenChange}>
-        <Drawer.Trigger onClick={onClick}>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer onOpenChange={onOpenChange}>
+        <ClientDrawerTrigger onClick={onClick}>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Open" }));
     expect(onClick).toHaveBeenCalledOnce();
@@ -366,29 +358,29 @@ describe("Drawer compound — props ownership", () => {
   it("still merges Trigger's internal ref with a consumer ref (T6 — ref ownership unchanged)", () => {
     const consumerRef = createRef<HTMLButtonElement>();
     render(
-      <Drawer.Root>
-        <Drawer.Trigger ref={consumerRef}>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer>
+        <ClientDrawerTrigger ref={consumerRef}>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     expect(consumerRef.current).toBe(screen.getByRole("button", { name: "Open" }));
   });
 
   it("accepts a native Content id", () => {
     const elements: ReactElement[] = [
-      <Drawer.Content key="ok" />,
-      <Drawer.Content key="id" id="not-the-content" />,
+      <ClientDrawerContent key="ok" />,
+      <ClientDrawerContent key="id" id="not-the-content" />,
     ];
     expect(elements).toHaveLength(2);
   });
 
   it("lets consumer Content attributes override defaults", () => {
     render(
-      <Drawer.Root defaultOpen side="left">
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content
+      <ClientDrawer defaultOpen side="left">
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent
           aria-describedby="bogus"
           aria-labelledby="bogus"
           aria-modal={false}
@@ -396,9 +388,9 @@ describe("Drawer compound — props ownership", () => {
           data-state="bogus"
           data-snap-enabled="bogus"
         >
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const dialog = screen.getByRole("dialog", { hidden: true });
     expect(dialog.getAttribute("aria-labelledby")).toBe("bogus");
@@ -423,13 +415,13 @@ describe("Drawer compound — props ownership", () => {
     );
     try {
       const { container } = render(
-        <Drawer.Root defaultOpen side="bottom" snapPoints={[0.5, 1]}>
-          <Drawer.Trigger>Open</Drawer.Trigger>
-          <Drawer.Content style={{ color: "red" }}>
-            <Drawer.Title>Settings</Drawer.Title>
-            <Drawer.Handle className="handle" />
-          </Drawer.Content>
-        </Drawer.Root>,
+        <ClientDrawer defaultOpen side="bottom" snapPoints={[0.5, 1]}>
+          <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+          <ClientDrawerContent style={{ color: "red" }}>
+            <ClientDrawerTitle>Settings</ClientDrawerTitle>
+            <ClientDrawerHandle className="handle" />
+          </ClientDrawerContent>
+        </ClientDrawer>,
       );
       act(() => {
         resizeCallback?.([{ contentRect: { height: 200, width: 200 } as DOMRectReadOnly }]);
@@ -455,11 +447,11 @@ describe("Drawer compound — props ownership", () => {
       onPointerCancel: vi.fn(),
     };
     const { container } = render(
-      <Drawer.Root>
-        <Drawer.Content>
-          <Drawer.Handle {...handlers} />
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer>
+        <ClientDrawerContent>
+          <ClientDrawerHandle {...handlers} />
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const handle = container.querySelector(".uiify-drawer-handle");
     expect(handle).not.toBeNull();
@@ -477,12 +469,12 @@ describe("Drawer compound — props ownership", () => {
     const onOpenChange = vi.fn();
     const onCancel = vi.fn((event: SyntheticEvent<HTMLDialogElement>) => event.preventDefault());
     render(
-      <Drawer.Root defaultOpen onOpenChange={onOpenChange}>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content onCancel={onCancel}>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer defaultOpen onOpenChange={onOpenChange}>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent onCancel={onCancel}>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const dialog = screen.getByRole("dialog", { hidden: true });
     fireEvent(dialog, new Event("cancel", { bubbles: false, cancelable: true }));
@@ -494,12 +486,12 @@ describe("Drawer compound — props ownership", () => {
   it("runs Content's default close bookkeeping when the consumer's onCancel does not veto", () => {
     const onOpenChange = vi.fn();
     render(
-      <Drawer.Root defaultOpen onOpenChange={onOpenChange}>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content onCancel={() => {}}>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer defaultOpen onOpenChange={onOpenChange}>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent onCancel={() => {}}>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const dialog = screen.getByRole("dialog", { hidden: true });
     fireEvent(dialog, new Event("cancel", { bubbles: false, cancelable: true }));
@@ -514,12 +506,12 @@ describe("Drawer compound — props ownership", () => {
     const onOpenChange = vi.fn();
     const onClose = vi.fn((event: SyntheticEvent<HTMLDialogElement>) => event.preventDefault());
     render(
-      <Drawer.Root defaultOpen onOpenChange={onOpenChange}>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content onClose={onClose}>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer defaultOpen onOpenChange={onOpenChange}>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent onClose={onClose}>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const dialog = screen.getByRole("dialog", { hidden: true });
     fireEvent(dialog, new Event("close", { bubbles: false, cancelable: true }));
@@ -530,24 +522,24 @@ describe("Drawer compound — props ownership", () => {
   it("still merges Content's internal refs with a consumer ref (T6 — ref ownership unchanged)", () => {
     const consumerRef = createRef<HTMLDialogElement>();
     render(
-      <Drawer.Root defaultOpen>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content ref={consumerRef}>
-          <Drawer.Title>Settings</Drawer.Title>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer defaultOpen>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent ref={consumerRef}>
+          <ClientDrawerTitle>Settings</ClientDrawerTitle>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     expect(consumerRef.current).toBe(screen.getByRole("dialog", { hidden: true }));
   });
 
   it("lets a consumer onClick veto Close's close() call", () => {
     render(
-      <Drawer.Root defaultOpen>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Close onClick={(event) => event.preventDefault()}>Dismiss</Drawer.Close>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer defaultOpen>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerClose onClick={(event) => event.preventDefault()}>Dismiss</ClientDrawerClose>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
     expect(close).not.toHaveBeenCalled();
@@ -556,12 +548,12 @@ describe("Drawer compound — props ownership", () => {
 
   it("closes normally when the consumer's onClick does not veto", () => {
     render(
-      <Drawer.Root defaultOpen>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Close onClick={() => {}}>Dismiss</Drawer.Close>
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer defaultOpen>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerClose onClick={() => {}}>Dismiss</ClientDrawerClose>
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
     expect(close.mock.calls.length + requestClose.mock.calls.length).toBeGreaterThan(0);
@@ -578,12 +570,12 @@ describe("Drawer compound — props ownership", () => {
   it("lets a consumer onPointerDown veto Handle's drag start (policy #6: dismiss/drag veto)", () => {
     const onPointerDown = vi.fn((event: PointerEvent<HTMLDivElement>) => event.preventDefault());
     const { container } = render(
-      <Drawer.Root snapPoints={[0.5, 1]}>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Handle className="handle" onPointerDown={onPointerDown} />
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer snapPoints={[0.5, 1]}>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerHandle className="handle" onPointerDown={onPointerDown} />
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const handle = container.querySelector(".handle") as HTMLElement;
     const { setPointerCapture } = stubPointerCapture(handle);
@@ -595,12 +587,12 @@ describe("Drawer compound — props ownership", () => {
 
   it("starts dragging when the consumer's onPointerDown does not veto", () => {
     const { container } = render(
-      <Drawer.Root snapPoints={[0.5, 1]}>
-        <Drawer.Trigger>Open</Drawer.Trigger>
-        <Drawer.Content>
-          <Drawer.Handle className="handle" onPointerDown={() => {}} />
-        </Drawer.Content>
-      </Drawer.Root>,
+      <ClientDrawer snapPoints={[0.5, 1]}>
+        <ClientDrawerTrigger>Open</ClientDrawerTrigger>
+        <ClientDrawerContent>
+          <ClientDrawerHandle className="handle" onPointerDown={() => {}} />
+        </ClientDrawerContent>
+      </ClientDrawer>,
     );
     const handle = container.querySelector(".handle") as HTMLElement;
     const { setPointerCapture } = stubPointerCapture(handle);

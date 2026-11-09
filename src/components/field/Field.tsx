@@ -126,7 +126,7 @@ function FieldSeparatorComponent(props: FieldSeparatorProps): ReactElement | nul
   const contentProps = slotProps?.content;
   const line = (
     <hr
-      role={content ? "presentation" : undefined}
+      role={content ? "none" : undefined}
       {...lineProps}
       className={cn("uiify-field-separator-line", lineProps?.className)}
     />

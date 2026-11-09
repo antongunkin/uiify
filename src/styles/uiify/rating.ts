@@ -7,6 +7,6 @@ export const rating = defineRecipe("rating", {
     item: "text-input has-checked:text-primary",
     input: "sr-only",
     label:
-      "inline-flex items-center justify-center text-current text-xl leading-none cursor-pointer transition-colors",
+      "inline-flex items-center justify-center text-current text-2xl leading-none cursor-pointer transition-colors",
   },
 });

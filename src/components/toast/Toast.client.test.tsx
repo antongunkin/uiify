@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { MouseEvent } from "react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { Toast, useToast } from "./Toast.js";
+import { Toast, ToastProvider, ToastViewport, useToast } from "./Toast.js";
 
 // jsdom does not implement the Popover API — stub it the same way
 // components/enhance/invoker-fallback.test.ts and tooltip/Tooltip.test.tsx do,
@@ -28,7 +28,7 @@ function ToastHarness() {
       <button type="button" onClick={() => toast({ title: "Saved", duration: 4000 })}>
         Show toast
       </button>
-      <Toast.Viewport />
+      <ToastViewport />
     </>
   );
 }
@@ -51,7 +51,7 @@ function ToastPartsHarness() {
       >
         Show parts
       </button>
-      <Toast.Viewport />
+      <ToastViewport />
     </>
   );
 }
@@ -87,9 +87,9 @@ describe("Toast client", () => {
 
   it("enqueues a toast and announces it", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -98,16 +98,16 @@ describe("Toast client", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 
-  it("forwards native props directly to the public Toast.Root element", () => {
+  it("forwards native props directly to the public Toast element", () => {
     render(
-      <Toast.Provider>
-        <Toast.Root
+      <ToastProvider>
+        <Toast
           toast={{ id: "authored", duration: 0, priority: "polite", title: "Authored toast" }}
           className="authored-toast"
           data-testid="authored-toast"
           style={{ order: 3 }}
         />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     const root = screen.getByTestId("authored-toast");
@@ -124,16 +124,16 @@ describe("Toast client", () => {
           <button type="button" onClick={() => toast({ duration: 0 })}>
             Show untitled
           </button>
-          <Toast.Viewport />
+          <ToastViewport />
         </>
       );
     }
     UntitledToastHarness.displayName = "UntitledToastHarness";
 
     render(
-      <Toast.Provider labels={{ region: "Alertes", notification: "Notification", close: "Fermer" }}>
+      <ToastProvider labels={{ region: "Alertes", notification: "Notification", close: "Fermer" }}>
         <UntitledToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show untitled" }));
@@ -147,9 +147,9 @@ describe("Toast client", () => {
 
   it("marks every public toast part in the client entry", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastPartsHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show parts" }));
@@ -189,7 +189,7 @@ describe("Toast client", () => {
           >
             Show slotted toast
           </button>
-          <Toast.Viewport
+          <ToastViewport
             className="toast-viewport-class"
             data-testid="custom-toast-viewport"
             slotProps={{
@@ -214,7 +214,7 @@ describe("Toast client", () => {
     SlottedToastHarness.displayName = "SlottedToastHarness";
 
     render(
-      <Toast.Provider
+      <ToastProvider
         slotProps={{
           politeLiveRegion: {
             className: "polite-region",
@@ -227,7 +227,7 @@ describe("Toast client", () => {
         }}
       >
         <SlottedToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show slotted toast" }));
@@ -247,9 +247,9 @@ describe("Toast client", () => {
 
   it("auto-dismisses after duration", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -275,16 +275,16 @@ describe("Toast client", () => {
           >
             Flood
           </button>
-          <Toast.Viewport />
+          <ToastViewport />
         </>
       );
     }
     MultiToastHarness.displayName = "MultiToastHarness";
 
     render(
-      <Toast.Provider limit={3}>
+      <ToastProvider limit={3}>
         <MultiToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Flood" }));
@@ -294,9 +294,9 @@ describe("Toast client", () => {
 
   it("dismisses on swipe threshold using pointer deltas", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -321,9 +321,9 @@ describe("Toast client", () => {
 
   it("ignores secondary pointers while tracking the primary swipe origin", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -364,9 +364,9 @@ describe("Toast client", () => {
 
   it.each(["pointerup", "pointercancel"] as const)("resets swipe tracking on %s", (type) => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -408,9 +408,9 @@ describe("Toast client", () => {
 
   it("does not dismiss on a vertical pointer gesture", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -437,9 +437,9 @@ describe("Toast client", () => {
 
   it("pauses while focused and resumes the remaining duration", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -458,9 +458,9 @@ describe("Toast client", () => {
 
   it("stays paused when the pointer leaves while Close remains focused", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -486,9 +486,9 @@ describe("Toast client", () => {
 
   it("stays paused when focus leaves while the pointer remains over the toast", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -523,9 +523,9 @@ describe("Toast client", () => {
 
   it("dismisses the focused toast on Escape", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show toast" }));
@@ -538,9 +538,9 @@ describe("Toast client", () => {
 
   it("updates the stable live region for repeated identical messages", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
     const liveRegion = document.querySelector("[aria-live='polite']");
 
@@ -560,9 +560,9 @@ describe("Toast client", () => {
     // browser (see e2e/specs/top-layer.spec.ts). This test covers the one
     // direction jsdom can actually exercise.
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     expect(showPopover).not.toHaveBeenCalled();
@@ -572,9 +572,9 @@ describe("Toast client", () => {
 
   it("keeps the two live-region announcers outside the popover-bearing viewport", () => {
     render(
-      <Toast.Provider>
+      <ToastProvider>
         <ToastHarness />
-      </Toast.Provider>,
+      </ToastProvider>,
     );
 
     const viewport = screen.getByTestId("toast-viewport");
@@ -598,16 +598,16 @@ it("keeps the enqueue owner within its render budget", () => {
         <button onClick={() => toast({ title: "Saved" })} type="button">
           Show
         </button>
-        <Toast.Viewport />
+        <ToastViewport />
       </>
     );
   }
   Harness.displayName = "Harness";
 
   render(
-    <Toast.Provider>
+    <ToastProvider>
       <Harness />
-    </Toast.Provider>,
+    </ToastProvider>,
   );
   providerRenders = 0;
   fireEvent.click(screen.getByRole("button", { name: "Show" }));

@@ -33,14 +33,18 @@ export function Switch<TAs extends ElementType = "input">(
     as,
     defaultTag: "input",
     props: {
-      ...consumerProps,
+      // Library defaults first: consumer values replace them (hard rule 4).
       type: "checkbox",
       role: "switch",
       disabled: disabled || undefined,
       "data-disabled": disabled ? "" : undefined,
       "data-state": isControlled ? (checked ? "checked" : "unchecked") : undefined,
+      ...consumerProps,
       className: cn("uiify-switch", consumerProps.className),
-      onChange: composeEventHandlers(consumerOnChange, handleChange),
+      // No handler at all stays undefined, so a Server Component never passes a function prop.
+      onChange: onCheckedChange
+        ? composeEventHandlers(consumerOnChange, handleChange)
+        : consumerOnChange,
       ...(isControlled ? { checked } : defaultChecked !== undefined ? { defaultChecked } : {}),
     },
     render,

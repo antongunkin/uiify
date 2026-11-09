@@ -5,7 +5,7 @@ import { resolveRepeatedSlotProps } from "../../core/slot-props.js";
 import type {
   ToastProviderOwnProps,
   ToastViewportOwnProps,
-  ToastRootOwnProps,
+  ToastOwnProps,
   ToastTitleOwnProps,
   ToastDescriptionOwnProps,
   ToastActionProps,
@@ -51,7 +51,7 @@ export function ToastViewport(props: ToastViewportOwnProps): ReactElement | null
 }
 ToastViewport.displayName = "ToastViewport";
 
-export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
+export function Toast(props: ToastOwnProps): ReactElement | null {
   const { toast, labels, slotProps, ...consumerRootProps } = props;
   const resolvedLabels = { ...DEFAULT_TOAST_LABELS, ...labels };
   const rootProps = consumerRootProps;
@@ -79,7 +79,7 @@ export function ToastRoot(props: ToastRootOwnProps): ReactElement | null {
   );
   /* oxlint-enable jsx-a11y/prefer-tag-over-role */
 }
-ToastRoot.displayName = "ToastRoot";
+Toast.displayName = "Toast";
 
 export function ToastTitle(props: ToastTitleOwnProps): ReactElement | null {
   const { children, className, ...consumerProps } = props;
@@ -143,13 +143,3 @@ export function ToastClose(props: ToastCloseProps): ReactElement | null {
     state: {},
   });
 }
-
-export const Toast = {
-  Action: ToastAction,
-  Close: ToastClose,
-  Description: ToastDescription,
-  Provider: ToastProvider,
-  Root: ToastRoot,
-  Title: ToastTitle,
-  Viewport: ToastViewport,
-};

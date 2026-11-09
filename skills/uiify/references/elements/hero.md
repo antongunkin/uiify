@@ -1,6 +1,6 @@
 # hero
 
-Binding: gap
+Binding: hero
 
 Introduce the product and its next action.
 
@@ -14,7 +14,7 @@ Do not lead with a generic slogan, a large decorative image, or multiple equally
 
 ## Structure
 
-Start with one specific `h1` that states the page's purpose, one supporting sentence, and one main action. Add a secondary action only for a different useful path. Use an image only when it shows the product or subject and supports the page's claim; prefer existing assets from the project, preserve the focal point across responsive crops, and provide suitable alternative text. If no suitable asset exists, keep the layout complete without inventing one.
+Start with one specific `h1` that states the page's purpose, one supporting sentence, and one main action. Add a secondary action only for a different useful path. Use an image only when it shows the product or subject and supports the page's claim; prefer existing assets from the project, preserve the focal point across responsive crops, and provide suitable alternative text. If no suitable asset exists, keep the layout complete without inventing one. Use the `Hero` block: `title`, `description`, `actions` (main action first) and optional `media`; it keeps this reading order.
 
 ## Responsive
 
@@ -31,18 +31,6 @@ Confirm there is one `h1`, the main action is visible at 390×844 and 1440×900,
 ## Common mistake
 
 A generic slogan, decorative gradient, and two equal buttons do not explain the page or the next step.
-
-## Custom implementation
-
-Use a named section, semantic heading, supporting copy, and the documented Button. The main action usually opens another page, so render it as a link. Add only static CSS for layout.
-
-```tsx
-<section aria-labelledby="page-title">
-  <h1 id="page-title">Plan releases your whole team can follow</h1>
-  <p>Orbit turns scattered tasks into one shared release timeline.</p>
-  <Button as="a" href="/signup">Start a free trial</Button>
-</section>
-```
 
 Related laws: references/laws/von-restorff.md, references/laws/accessibility.md
 

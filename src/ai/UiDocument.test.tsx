@@ -220,15 +220,15 @@ describe("UiDocument", () => {
 
   it("renders a Tooltip with its Provider outside the Root", async () => {
     const node = {
-      type: "Tooltip.Provider",
+      type: "TooltipProvider",
       props: {},
       children: [
         {
-          type: "Tooltip.Root",
+          type: "Tooltip",
           props: { id: "tip" },
           children: [
-            { type: "Tooltip.Trigger", props: {}, children: ["Help"] },
-            { type: "Tooltip.Content", props: {}, children: ["More detail"] },
+            { type: "TooltipTrigger", props: {}, children: ["Help"] },
+            { type: "TooltipContent", props: {}, children: ["More detail"] },
           ],
         },
       ],

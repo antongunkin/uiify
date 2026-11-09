@@ -53,15 +53,15 @@ const HTML_TAGS: Readonly<Partial<Record<UiType, string>>> = {
   DescriptionList: "dl",
   DescriptionTerm: "dt",
   DescriptionDetails: "dd",
-  "Table.Root": "table",
-  "Table.Caption": "caption",
-  "Table.Header": "thead",
-  "Table.Body": "tbody",
-  "Table.Footer": "tfoot",
-  "Table.Row": "tr",
-  "Table.Cell": "td",
-  "Table.ColumnHeader": "th",
-  "Table.RowHeader": "th",
+  Table: "table",
+  TableCaption: "caption",
+  TableHeader: "thead",
+  TableBody: "tbody",
+  TableFooter: "tfoot",
+  TableRow: "tr",
+  TableCell: "td",
+  TableHead: "th",
+  TableRowHeader: "th",
 };
 
 const BUTTONS: ReadonlySet<UiType> = new Set([
@@ -73,23 +73,20 @@ const BUTTONS: ReadonlySet<UiType> = new Set([
   "DialogClose",
   "PopoverTrigger",
   "PopoverClose",
-  "Drawer.Trigger",
-  "Drawer.Close",
-  "DrawerNativeTrigger",
-  "DrawerNativeClose",
+  "DrawerTrigger",
+  "DrawerClose",
   "NumberField.Increment",
   "NumberField.Decrement",
   "Pagination.Link",
   "FileUpload.ItemRemove",
-  "Tooltip.Trigger",
+  "TooltipTrigger",
 ]);
 
 /** These parts return their children/context providers without a DOM element. */
 const TRANSPARENT: ReadonlySet<UiType> = new Set([
   "NativeSelectContent",
-  "Tooltip.Provider",
-  "Tooltip.Root",
-  "Drawer.Root",
+  "TooltipProvider",
+  "Tooltip",
 ]);
 
 const TABLE_CHILDREN: Readonly<Record<string, readonly string[]>> = {

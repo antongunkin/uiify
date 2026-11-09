@@ -1,7 +1,7 @@
-export { Header, HeaderRoot } from "./Header.js";
+export { Header } from "./Header.js";
 export type {
   HeaderClientProps,
   HeaderClientState,
   HeaderPlacement,
-  HeaderRootProps,
+  HeaderProps,
 } from "./types.js";

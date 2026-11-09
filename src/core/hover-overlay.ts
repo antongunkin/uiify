@@ -31,7 +31,7 @@ export interface UseHoverOverlayReturn {
 }
 
 /**
- * Shared body of TooltipRoot and HoverCardRoot: controllable open state, a
+ * Shared body of Tooltip and HoverCardRoot: controllable open state, a
  * hover-intent timer pair, and a content id that a Content part can override.
  *
  * Tooltip's group skip-delay (several tooltips sharing one Provider) has no

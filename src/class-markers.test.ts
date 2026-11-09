@@ -38,7 +38,7 @@ const UIIFY_CLASS = /(?<![\w-])uiify-[a-z0-9]+(?:-[a-z0-9]+)*/g;
 const folders = new Set([
   "menu",
   ...files.flatMap(({ path }) => {
-    const match = /^(components|elements)\/([a-z0-9-]+)\//.exec(path);
+    const match = /^(components|elements|blocks)\/([a-z0-9-]+)\//.exec(path);
     return match?.[2] && match[2] !== "internal" ? [match[2]] : [];
   }),
 ]);
@@ -69,7 +69,7 @@ function isValidClass(className: string, allowed: Iterable<string>): boolean {
 describe("component identity classes", () => {
   it("every uiify-* class literal names its own component or Element and a known part", () => {
     const invalid = files.flatMap(({ path, source }) => {
-      const own = /^(components|elements)\/([a-z0-9-]+)\//.exec(path)?.[2];
+      const own = /^(components|elements|blocks)\/([a-z0-9-]+)\//.exec(path)?.[2];
       const allowed =
         own === "enhance"
           ? ["tabs", "dialog", "drawer"]
