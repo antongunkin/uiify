@@ -21,7 +21,7 @@ const textExtensions = new Set([
 ]);
 
 const allowedPath =
-  /^(?:README\.md|LICENSE|package\.json|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|version\.json|scripts\/(?:lint|static|agents-section|check-screens|screens|project-css|sync-agents|project-catalog)\.mjs|references\/(?:(?:agents-rules|claude-rules|editor-lint)\.md|(?:elements|laws|compositions|guides)\/[a-z0-9-]+\.md)))$/;
+  /^(?:README\.md|LICENSE|package\.json|bin\/uiify\.mjs|(?:dist|agents)\/.+|skills\/uiify\/(?:SKILL\.md|version\.json|scripts\/(?:lint|static|agents-section|check-screens|screens|project-css|sync-agents|project-catalog)\.mjs|references\/(?:(?:agents-rules|claude-rules|editor-lint)\.md|(?:elements|laws|compositions|guides)\/[a-z0-9-]+\.md)))$/;
 const credentialLike = [
   /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
   /\bnpm_[A-Za-z0-9]{8,}\b/,
@@ -212,6 +212,33 @@ async function main() {
       /0 findings \(2 accepted static checks: no-positive-tabindex, button-type\)\./,
     );
 
+    // `npx @gunkin/uiify init`: the installed bin copies the skill and writes the section; bad args write nothing.
+    const uiify = (...args) =>
+      execFileAsync("npx", ["--no-install", "uiify", ...args], { cwd: consumerDirectory });
+    await assert.rejects(uiify("bogus"), (error) => {
+      assert.equal(error.code, 2);
+      assert.match(error.stderr, /usage: npx @gunkin\/uiify init \[--force\]/);
+      return true;
+    });
+    await assert.rejects(readFile(join(consumerDirectory, "AGENTS.md"), "utf8"), {
+      code: "ENOENT",
+    });
+    await uiify("init");
+    const shippedSkill = await readFile(
+      join(consumerDirectory, "node_modules/@gunkin/uiify/skills/uiify/SKILL.md"),
+    );
+    for (const dir of [".agents/skills/uiify", ".claude/skills/uiify"]) {
+      assert.deepEqual(
+        await readFile(join(consumerDirectory, dir, "SKILL.md")),
+        shippedSkill,
+        `${dir} copy differs`,
+      );
+    }
+    assert.match(await readFile(join(consumerDirectory, "AGENTS.md"), "utf8"), /uiify:start/);
+    const again = await uiify("init");
+    for (const line of again.stdout.trim().split("\n"))
+      assert.match(line, /: (?:current|imports AGENTS\.md)$/, line);
+
     console.log(
       JSON.stringify(
         {
@@ -225,6 +252,7 @@ async function main() {
             "root, components/alert (all parts), components/aspect-ratio, components/button, elements/native-dialog, core/render, hooks",
           css: "behavior.css, styles, styles/tokens, styles/layout, styles/layout.css, styles/controls, styles/controls.css, styles/reset",
           skillLint: "runs with the consumer's installed TypeScript parser",
+          init: "npx @gunkin/uiify init copies the skill and is idempotent",
           secrets: "none detected",
         },
         null,

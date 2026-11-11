@@ -1,22 +1,20 @@
 # Setup and upgrades
 
-Read this when `sync-agents.mjs` reports a skill state other than `current` or `linked`, when the user asks how to install the skill, or after an upgrade.
+Read this when `sync-agents.mjs` reports a skill state other than `current`, when the user asks how to install the skill, or after an upgrade.
 
 ## Install the skill
 
-Link it in both places, so it follows the installed package without a refresh step:
+From the app's folder (in a monorepo too: the package may be hoisted to the root):
 
 ```shell
-mkdir -p .agents/skills .claude/skills
-ln -s ../../node_modules/@gunkin/uiify/skills/uiify .agents/skills/uiify
-ln -s ../../node_modules/@gunkin/uiify/skills/uiify .claude/skills/uiify
+npx @gunkin/uiify init
 ```
 
-In a monorepo, link from the app's folder to the hoisted package (`../../../../node_modules/…` from `apps/web`) and run `sync-agents.mjs` there, so the app's `AGENTS.md` gets the section. Copy the directory only where links are impossible or the team wants it in git. Commands use `.agents/skills/uiify`; `sync-agents.mjs` checks and refreshes every copy in either place, one `skill` line each.
+It copies the skill into `.agents/skills/uiify` and `.claude/skills/uiify` and writes the `AGENTS.md` section. Commit both copies. Commands use `.agents/skills/uiify`; `sync-agents.mjs` checks and refreshes every copy in either place, one `skill` line each.
 
 ## Upgrade the package
 
-Use `npm install @gunkin/uiify@latest`; `npm update` does not cross `0.0.x` alpha versions. Then run `sync-agents.mjs --write`, then `node .agents/skills/uiify/scripts/check-screens.mjs <dir>`, which runs `tsc` too; fix what it reports. A name a release removed fails `tsc` on every screen that still uses it.
+Use `npm install @gunkin/uiify@latest`; `npm update` does not cross `0.0.x` alpha versions. Then run `npx @gunkin/uiify init`, then `node .agents/skills/uiify/scripts/check-screens.mjs <dir>`, which runs `tsc` too; fix what it reports. A name a release removed fails `tsc` on every screen that still uses it.
 
 ## React 19.3
 
@@ -34,9 +32,9 @@ The project's `tsconfig` needs `strict` and `noUnusedParameters`: the screen che
 
 ## The skill line
 
-- `skill: linked`: a link into the installed package; always current, never written to.
 - `skill: current`: a copy that matches the installed version.
-- `skill: outdated`: a copy whose `version.json` hash differs; `--write` refreshes it.
+- `skill: outdated`: a copy whose `version.json` hash differs, or a link left by an old install; `--write` replaces it with a copy.
+- `skill: added`: `init` copied the skill where there was none.
 
 ## TanStack Intent
 

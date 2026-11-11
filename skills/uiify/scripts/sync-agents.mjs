@@ -1,7 +1,8 @@
-import { existsSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { lstat, mkdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join, relative, sep } from "node:path";
+import { pathToFileURL } from "node:url";
 import {
   classifySection,
   composeSection,
@@ -13,9 +14,9 @@ import {
 } from "./agents-section.mjs";
 import { loadTypeScript, PROJECT_CATALOG_BYTE_LIMIT, projectCatalog, projectComponents } from "./project-catalog.mjs";
 
-const USAGE = "usage: sync-agents.mjs [--check | --write] [--force] [file ...]";
+const USAGE = "usage: sync-agents.mjs [--check | --write [--install]] [--force] [file ...]";
 const SKILL_DIRS = [".claude/skills/uiify", ".agents/skills/uiify"];
-/** Short rules for agents that load `.claude/rules/*.md` but expand neither `@AGENTS.md` nor symlinks. */
+/** Short rules for agents that load `.claude/rules/*.md` but do not expand `@AGENTS.md` imports. */
 const CLAUDE_RULES = ".claude/rules/uiify.md";
 
 async function readOrEmpty(path) {
@@ -40,22 +41,23 @@ function installedPackage(root) {
   return { directory: dirname(manifest), manifest };
 }
 
-async function sync() {
-  const args = process.argv.slice(2);
-  let write = false;
-  let force = false;
-  let sawCheck = false;
-  const files = [];
-  for (const arg of args) {
-    if (arg === "--write") write = true;
-    else if (arg === "--check") sawCheck = true;
-    else if (arg === "--force") force = true;
-    else if (arg.startsWith("--")) throw new Error(USAGE);
-    else files.push(arg);
+/**
+ * Bring the project's AGENTS.md (and CLAUDE.md) section, `.claude/rules/uiify.md` and skill copies in step with
+ * the installed package. `install` also copies the skill where it is absent. Returns the exit code:
+ * 0 in step, 1 needs attention (outdated on --check, an edited section kept), 2 an error (printed to stderr).
+ * @param {{ root?: string, write?: boolean, force?: boolean, install?: boolean, files?: string[] }} [options]
+ * @returns {Promise<number>}
+ */
+export async function syncAgents(options = {}) {
+  try {
+    return await sync(options);
+  } catch (error) {
+    console.error(error.message);
+    return 2;
   }
-  if (write && sawCheck) throw new Error(USAGE);
+}
 
-  const root = process.cwd();
+async function sync({ root = process.cwd(), write = false, force = false, install = false, files = [] }) {
   const { directory, manifest } = installedPackage(root);
   const version = JSON.parse(await readFile(manifest, "utf8")).version;
   const installedSkill = join(directory, "skills", "uiify");
@@ -131,7 +133,12 @@ async function sync() {
   const found = [];
   for (const dir of SKILL_DIRS) {
     let state = await skillState(join(root, dir), installedSkill);
-    if (state === "absent") continue;
+    if (state === "absent") {
+      if (!(write && install)) continue;
+      await refreshSkill(join(root, dir), installedSkill);
+      found.push({ dir, state: "added" });
+      continue;
+    }
     if (write && state === "outdated") {
       await refreshSkill(join(root, dir), installedSkill);
       state = "refreshed";
@@ -139,7 +146,7 @@ async function sync() {
     }
     found.push({ dir, state });
   }
-  if (found.length === 0) console.log("skill: not installed in .claude/skills or .agents/skills");
+  if (found.length === 0) console.log("skill: not installed; run npx @gunkin/uiify init");
   for (const { dir, state } of found) {
     console.log(`${found.length === 1 ? "skill" : `skill ${dir}`}: ${state}`);
     if (!write && state === "outdated") failed = true;
@@ -148,12 +155,31 @@ async function sync() {
   if (write && upgraded) {
     console.log("Run `node .agents/skills/uiify/scripts/check-screens.mjs <dir>` (it runs `tsc` too) and fix what it reports.");
   }
-  process.exitCode = failed ? 1 : 0;
+  return failed ? 1 : 0;
 }
 
-try {
-  await sync();
-} catch (error) {
-  console.error(error.message);
-  process.exitCode = 2;
+/** Command-line options, or null when they do not parse. */
+function parseArgs(args) {
+  const options = { write: false, force: false, install: false, files: [] };
+  let check = false;
+  for (const arg of args) {
+    if (arg === "--write") options.write = true;
+    else if (arg === "--check") check = true;
+    else if (arg === "--force") options.force = true;
+    else if (arg === "--install") options.install = true;
+    else if (arg.startsWith("--")) return null;
+    else options.files.push(arg);
+  }
+  if ((options.write && check) || (options.install && !options.write)) return null;
+  return options;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
+  const options = parseArgs(process.argv.slice(2));
+  if (options === null) {
+    console.error(USAGE);
+    process.exitCode = 2;
+  } else {
+    process.exitCode = await syncAgents(options);
+  }
 }

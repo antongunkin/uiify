@@ -31,7 +31,7 @@ Paste this into your coding agent in a React 19.3 project with Tailwind CSS 4.1 
 "our sign-up page" with the screen you want to try:
 
 ```text
-Install @gunkin/uiify in this project. Link its skill from node_modules/@gunkin/uiify/skills/uiify into .agents/skills/uiify and .claude/skills/uiify, then run node .agents/skills/uiify/scripts/sync-agents.mjs --write (details: https://uiify.gunkin.dev/docs/ai-agents). Then, as the PM, write a brief and three designs for our sign-up page and show me the preview.
+Set up uiify in this project: install @gunkin/uiify, then run npx @gunkin/uiify init (details: https://uiify.gunkin.dev/docs/ai-agents). Then, as the PM, write a brief and three designs for our sign-up page and show me the preview.
 ```
 
 1. **Write a brief.** A few lines: the problem, who sees the screen, the one number that should move
@@ -89,24 +89,21 @@ Server Components so client boundaries remain explicit.
 ## AI coding agents
 
 The package ships a closed component catalog for coding agents, the `/uiify` skill and a screen
-check, all matching the installed version. Link the skill into your project (Claude Code reads
-`.claude/skills`, the scripts and other agents `.agents/skills`), then write the catalog into your
-`AGENTS.md`:
+check, all matching the installed version. From the app's folder, copy the skill into your project
+(Claude Code reads `.claude/skills`, the scripts and other agents `.agents/skills`) and write the
+catalog into your `AGENTS.md`:
 
 ```bash
-mkdir -p .agents/skills .claude/skills
-ln -s ../../node_modules/@gunkin/uiify/skills/uiify .agents/skills/uiify
-ln -s ../../node_modules/@gunkin/uiify/skills/uiify .claude/skills/uiify
-node .agents/skills/uiify/scripts/sync-agents.mjs --write
+npx @gunkin/uiify init
 ```
 
-`sync-agents.mjs` adds a section between `uiify:start` and `uiify:end` with a few fixed rules and
+`init` adds a section between `uiify:start` and `uiify:end` with a few fixed rules and
 every component, part and closed prop value under its shadcn name (`Dialog`, `PopoverContent`,
 `InputOTP`, `NativeSelect`, `CardHeader`, `RadioGroupItem`, `TabsTrigger`). It also updates
 `CLAUDE.md` when that file exists and does not import `AGENTS.md` (`@AGENTS.md`), and writes
-`.claude/rules/uiify.md`, a short real file (not a symlink) with the screen rules and the skill path,
-for agents that expand neither `@AGENTS.md` imports nor symlinks, such as Onlook's. Run it again
-after each upgrade; `--check` fails CI when the section is missing, outdated or edited.
+`.claude/rules/uiify.md`, a short file with the screen rules and the skill path,
+for agents that do not expand `@AGENTS.md` imports, such as Onlook's. Commit the skill folders and run
+`init` again after each upgrade; `--check` fails CI when the section is missing, outdated or edited.
 
 A screen arranges UIify parts and never sets a raw color; `className` and `style` customize a part
 (`className` with theme classes on Tailwind's default scale: no palette colors; arbitrary values like
@@ -269,4 +266,6 @@ export.
 
 Documentation: https://uiify.gunkin.dev/
 
-MIT © Anton Gunkin
+## License
+
+[MIT](LICENSE) © Anton Gunkin

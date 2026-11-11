@@ -1,0 +1,46 @@
+uiify Framework
+Copyright 2026 Anton Gunkin
+
+This software is built through clean-room reimplementation. Its authors studied
+publicly available source code from open-source React component libraries to
+understand patterns and techniques, then independently implemented all code from
+scratch. No source code was copied or directly derived from any third-party library.
+
+Third-party libraries referenced for research purposes (all MIT or compatible):
+- Radix UI        (MIT) — https://github.com/radix-ui/primitives
+- shadcn/ui       (MIT) — https://github.com/shadcn-ui/ui
+- Bootstrap       (MIT) — https://github.com/twbs/bootstrap
+- React Aria      (Apache-2.0) — https://github.com/adobe/react-spectrum
+- Ariakit         (MIT) — https://github.com/ariakit/ariakit
+- Base UI         (MIT) — https://github.com/mui/base-ui
+- Ark UI          (MIT) — https://github.com/chakra-ui/ark
+- Floating UI     (MIT) — https://github.com/floating-ui/floating-ui
+- Headless UI     (MIT) — https://github.com/tailwindlabs/headlessui
+- Zag.js          (MIT) — https://github.com/chakra-ui/zag
+- Downshift       (MIT) — https://github.com/downshift-js/downshift
+- react-use       (Unlicense) — https://github.com/streamich/react-use
+- usehooks-ts     (MIT) — https://github.com/juliencrn/usehooks-ts
+- ahooks          (MIT) — https://github.com/alibaba/hooks
+- json-render     (Apache-2.0) — https://github.com/vercel-labs/json-render
+
+uiify/hooks (Phase 1) — additional sources studied for hook APIs/behavior
+(clean-room; no code copied):
+- @uidotdev/usehooks        (MIT) — https://github.com/uidotdev/usehooks
+- use-debounce              (MIT) — https://github.com/xnimorz/use-debounce
+- react-intersection-observer (MIT) — https://github.com/thebuilder/react-intersection-observer
+- react-resize-detector     (MIT) — https://github.com/maslianok/react-resize-detector
+- use-local-storage-state   (MIT) — https://github.com/astoilkov/use-local-storage-state
+
+The full clean-room policy is kept in the development repository (docs/CONTRIBUTING-clean-room.md).
+
+uiify/components (Phase 3) — components studied for API/a11y/render trade-offs
+(clean-room; no code copied).
+
+uiify/core (Phase 2) also follows public web standards from WHATWG and CSSWG for
+dialog, popover, Web Animations, and CSS Anchor Positioning. Standards were used
+as behavioral specifications; no third-party runtime implementation is bundled.
+
+TableOfContents — API and behavior research (clean-room; no code copied):
+- Mantine (MIT) — https://github.com/mantinedev/mantine
+- Fumadocs (MIT) — https://github.com/fuma-nama/fumadocs
+- Tocbot (MIT) — https://github.com/tscanlin/tocbot

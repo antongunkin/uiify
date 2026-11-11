@@ -1,6 +1,6 @@
 {
   "name": "@gunkin/uiify",
-  "version": "0.0.34-alpha",
+  "version": "0.0.1-alpha",
   "description": "Native-first, accessible React 19 components that work before hydration.",
   "keywords": [
     "accessibility",
@@ -21,7 +21,11 @@
     "type": "git",
     "url": "git+https://github.com/antongunkin/uiify.git"
   },
+  "bin": {
+    "uiify": "bin/uiify.mjs"
+  },
   "files": [
+    "bin",
     "dist",
     "agents",
     "skills"
@@ -145,9 +149,9 @@
     "dev": "tsup --watch",
     "size": "size-limit",
     "size:update": "node scripts/update-size-limits.mjs",
-    "format": "oxfmt src scripts tsup.config.ts vitest.config.ts vitest.setup.ts package.json tsconfig.json tsconfig.build.json .size-limit.json README.md .github",
+    "format": "oxfmt bin src scripts tsup.config.ts vitest.config.ts vitest.setup.ts package.json tsconfig.json tsconfig.build.json .size-limit.json README.md .github",
     "format:check": "npm run format -- --check",
-    "lint": "oxlint --config .oxlintrc.json src scripts",
+    "lint": "oxlint --config .oxlintrc.json bin src scripts",
     "stylelint": "stylelint \"src/**/*.css\"",
     "check:layout-reads": "node scripts/check-banned-layout-reads.mjs",
     "check:package": "publint . && attw --pack . --profile esm-only --exclude-entrypoints ./components/behavior.css ./behavior.css ./tailwind.css ./themes/*.css ./styles/uiify.css ./styles/uiify.scoped.css ./styles/uiify/*.css ./elements/behavior.css ./styles ./styles/index.css ./styles.css ./styles/tokens ./styles/tokens.css ./styles/tailwind ./styles/tailwind.css ./styles/layout ./styles/layout.css ./styles/controls ./styles/controls.css ./styles/reset ./styles/reset.css",
